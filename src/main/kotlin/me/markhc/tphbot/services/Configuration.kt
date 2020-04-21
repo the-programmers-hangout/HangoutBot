@@ -6,13 +6,7 @@ import com.beust.klaxon.Parser
 import java.io.File
 
 data class Configuration(val token: String = "<insert-token>",
-                         val developmentMode: Boolean = false,
-                         val mysqlConfig: MySQLConfig = MySQLConfig());
-
-data class MySQLConfig(val url: String = "localhost:3306",
-                       val dbname: String = "tphbot",
-                       val username: String = "<user>",
-                       val password: String = "<pass>")
+                         val developmentMode: Boolean = false);
 
 fun loadConfig(onFinishedLoading: (Configuration?) -> Unit) {
     val configFile = File("config/config.json")

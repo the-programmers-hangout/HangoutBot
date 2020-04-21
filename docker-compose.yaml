@@ -16,6 +16,11 @@ services:
     depends_on:
       - db
     build: .
-
+    command: ["/wait-for-it.sh", "db:3306", "--", "java", "-jar", "/home/app/tphbot.jar"]
+    environment:
+      DB_URL: db:3306
+      DB_NAME: tphbot
+      DB_USER: tphbot
+      DB_PASSWORD: tphbot
 volumes:
   db_data: {}

@@ -12,17 +12,20 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.Properties
 
 fun createDatabaseSchema(configuration: Configuration) {
-    with(configuration.mysqlConfig) {
-        Database.connect(
-                url = "jdbc:mysql://$url/$dbname",
-                driver = "com.mysql.cj.jdbc.Driver",
-                user = username,
-                password = password)
-        transaction {
-            addLogger(StdOutSqlLogger)
+    val url    = System.getenv("DB_URL");
+    val dbname = System.getenv("DB_NAME");
+    val user   = System.getenv("DB_USER");
+    val pass   = System.getenv("DB_PASS");
 
-            SchemaUtils.create(GuildConfiguration)
-        }
+    Database.connect(
+            url = "jdbc:mysql://$url/$dbname?autoReconnect=true&useSSL=false",
+            driver = "com.mysql.cj.jdbc.Driver",
+            user = user,
+            password = pass)
+    transaction {
+        addLogger(StdOutSqlLogger)
+
+        SchemaUtils.create(GuildConfiguration)
     }
 }
 
