@@ -1,15 +1,11 @@
 package me.markhc.tphbot.services
 
-import java.sql.*
-import me.aberrantfox.kjdautils.api.annotation.Service
 import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.jodatime.date
 import org.jetbrains.exposed.sql.transactions.transaction
-import java.util.Properties
 
 fun createDatabaseSchema(configuration: Configuration) {
     val url    = System.getenv("DB_URL");
@@ -25,21 +21,36 @@ fun createDatabaseSchema(configuration: Configuration) {
     transaction {
         addLogger(StdOutSqlLogger)
 
-        SchemaUtils.create(GuildConfiguration)
+        SchemaUtils.createMissingTablesAndColumns(GuildConfigurationTable)
     }
 }
 
-object GuildConfiguration : IntIdTable() {
+object GuildConfigurationTable : IntIdTable() {
     val guildId = varchar("guildId", 18).uniqueIndex()
     val prefix = varchar("prefix", 32)
     val reactToCommands = bool("react")
     val welcomeEmbeds = bool("welcomeEmbeds")
+    val welcomeChannel = varchar("welcomeChannel", 18).nullable()
 }
 
-fun GuildConfiguration.findGuild(id: String?, result: (ResultRow?) -> Unit) {
-    if(id == null) {
-        result(null)
-    } else {
-        result(GuildConfiguration.select {GuildConfiguration.guildId eq id }.firstOrNull())
+class GuildConfiguration(id: EntityID<Int>) : IntEntity(id) {
+    companion object : IntEntityClass<GuildConfiguration>(GuildConfigurationTable)
+    var guildId by GuildConfigurationTable.guildId
+    var prefix by GuildConfigurationTable.prefix
+    var reactToCommands by GuildConfigurationTable.reactToCommands
+    var welcomeEmbeds by GuildConfigurationTable.welcomeEmbeds
+    var welcomeChannel by GuildConfigurationTable.welcomeChannel
+}
+
+fun GuildConfiguration.Companion.findOrCreate(id: String): GuildConfiguration {
+    val guild = GuildConfiguration.find {GuildConfigurationTable.guildId eq id }.firstOrNull()
+
+    if(guild != null) return guild
+
+    return GuildConfiguration.new {
+        guildId = id
+        prefix = "++"
+        reactToCommands = true
+        welcomeEmbeds = false
     }
 }

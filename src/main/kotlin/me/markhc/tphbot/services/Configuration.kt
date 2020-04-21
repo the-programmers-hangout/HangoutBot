@@ -8,6 +8,7 @@ import java.io.File
 data class Configuration(val token: String = "<insert-token>",
                          val developmentMode: Boolean = false);
 
+
 fun loadConfig(onFinishedLoading: (Configuration?) -> Unit) {
     val configFile = File("config/config.json")
 

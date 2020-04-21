@@ -25,13 +25,8 @@ class StartupService(configuration: Configuration,
                     color = Color(0x00bfff)
                     thumbnail = self.effectiveAvatarUrl
                     addField(self.fullName(), "It's a bot!")
-                    GuildConfiguration.findGuild(it.guild?.id) {
-                        addInlineField(
-                                "Prefix",
-                                if(it != null)
-                                    it[GuildConfiguration.prefix]
-                                else "++")
-                    }
+
+                    addInlineField("Prefix", GuildConfiguration.findOrCreate(it.guild.id).prefix)
 
                     with (project) {
                         val kotlinVersion = kotlin.KotlinVersion.CURRENT
