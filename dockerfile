@@ -3,16 +3,23 @@
 #
 FROM maven:3-jdk-8-slim AS build
 
-COPY src /home/app/src
-COPY pom.xml /home/app
-RUN mvn -f /home/app/pom.xml clean package
+ENV HOME=/home/app
+RUN mkdir -p $HOME
+WORKDIR $HOME
+
+ADD pom.xml $HOME
+RUN mvn verify clean --fail-never
+
+ADD . $HOME
+RUN mvn package
 
 #
 # Package stage
 #
 FROM openjdk:8-alpine
 
-COPY config /home/app/config
-COPY --from=build /home/app/target/tphbot*-jar-with-dependencies.jar /home/app/tphbot.jar
-WORKDIR /home/app/
+ENV HOME=/home/app
+WORKDIR $HOME
+COPY config $HOME/config
+COPY --from=build $HOME/target/tphbot*-jar-with-dependencies.jar $HOME/tphbot.jar
 ENTRYPOINT ["java","-jar","tphbot.jar"]
