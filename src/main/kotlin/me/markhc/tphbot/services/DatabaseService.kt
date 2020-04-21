@@ -13,27 +13,16 @@ import java.util.Properties
 
 fun createDatabaseSchema(configuration: Configuration) {
     with(configuration.mysqlConfig) {
-        val dbParams = listOf(
-                "useUnicode=true",
-                "useJDBCCompliantTimezoneShift=true",
-                "useLegacyDatetimeCode=true",
-                "serverTimezone=UTC",
-                "nullNamePatternMatchesAll=true",
-                "useSSL=false"
-        )
-        println("1")
         Database.connect(
-                url = "jdbc:mysql://$url/$dbname?${dbParams.joinToString("&")}",
+                url = "jdbc:mysql://$url/$dbname",
                 driver = "com.mysql.cj.jdbc.Driver",
                 user = username,
                 password = password)
-        println("2")
         transaction {
             addLogger(StdOutSqlLogger)
 
             SchemaUtils.create(GuildConfiguration)
         }
-        println("3")
     }
 }
 
