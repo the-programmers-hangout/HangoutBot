@@ -32,6 +32,8 @@ class WelcomeListener(private val logger: KLogger) {
             it.id == guild.welcomeChannel
         }
 
+        logger.info { "Sending welcome embed on channel ${welcomeChannel ?: "null"}" }
+
         welcomeChannel?.sendMessage("Welcome ${event.user.name}! Have a cookie.")
     }
 }
