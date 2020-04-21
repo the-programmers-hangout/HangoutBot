@@ -22,6 +22,7 @@ fun main(args: Array<String>) {
             }
         }
     } catch (e: Exception) {
-        exitProcess(-1);
+        println(e.message)
+        exitProcess(-1)
     }
 }
