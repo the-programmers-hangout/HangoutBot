@@ -5,12 +5,11 @@ import me.aberrantfox.kjdautils.api.annotation.Service
 import me.aberrantfox.kjdautils.api.dsl.embed
 import me.aberrantfox.kjdautils.discord.Discord
 import me.aberrantfox.kjdautils.extensions.jda.fullName
+import mu.KLogger
 import java.awt.Color
 
 @Service
-class StartupService(configuration: Configuration,
-                     discord: Discord
-) {
+class StartupService(discord: Discord) {
     private data class Properties(val version: String, val kutils: String, val repository: String)
     private val propFile = Properties::class.java.getResource("/properties.json").readText()
     private val project = Klaxon().parse<Properties>(propFile) ?: throw Exception("Failed to parse properties");
