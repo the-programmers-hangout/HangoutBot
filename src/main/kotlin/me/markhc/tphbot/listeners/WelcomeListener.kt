@@ -1,31 +1,35 @@
 package me.markhc.tphbot.listeners
 
 import com.google.common.eventbus.Subscribe
-import me.markhc.tphbot.services.Configuration
+import me.aberrantfox.kjdautils.extensions.jda.fullName
+import me.aberrantfox.kjdautils.extensions.stdlib.formatJdaDate
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
-import me.aberrantfox.kjdautils.internal.di.PersistenceService
+import me.aberrantfox.kjdautils.internal.logging.BotLogger
 import me.markhc.tphbot.services.GuildConfiguration
 import me.markhc.tphbot.services.findOrCreate
 import org.jetbrains.exposed.sql.transactions.transaction
+import java.util.concurrent.TimeUnit
 
-class WelcomeListener(configuration: Configuration, persistenceService: PersistenceService) {
+class WelcomeListener(private val logger: BotLogger) {
     @Subscribe
     fun onGuildMemberJoinEvent(event: GuildMemberJoinEvent) {
         val guild = transaction {
             GuildConfiguration.findOrCreate(event.guild.id)
         }
 
+        val secsSinceCreation = (System.currentTimeMillis() / 1000) - event.user.timeCreated.toEpochSecond()
+        val numOfDays = TimeUnit.DAYS.convert(secsSinceCreation, TimeUnit.SECONDS).toInt()
+        val user = "${event.user.fullName()} :: ${event.user.asMention}"
+        val date = event.user.timeCreated.toString().formatJdaDate()
+
+        logger.info("$user created $numOfDays days ago ($date) -- joined the server")
+
         if(guild.welcomeChannel == null) {
-            println("Welcome channel not set")
+            logger.error("Welcome channel not set")
         }
 
         val welcomeChannel = event.guild.textChannels.find {
             it.id == guild.welcomeChannel
-        }
-
-        if(welcomeChannel == null) {
-            println("Failed to find welcome channel")
         }
 
         welcomeChannel?.sendMessage("Welcome ${event.user.name}! Have a cookie.")
