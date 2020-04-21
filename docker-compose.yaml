@@ -21,6 +21,6 @@ services:
       DB_URL: db:3306
       DB_NAME: tphbot
       DB_USER: tphbot
-      DB_PASSWORD: tphbot
+      DB_PASS: tphbot
 volumes:
   db_data: {}
