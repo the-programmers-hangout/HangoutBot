@@ -1,4 +1,10 @@
 {
-  "token": "<token here>>",
-  "developmentMode": true
+  "developmentMode" : false,
+  "token" : "<inser-token>",
+  "mysqlConfig": {
+    "url": "localhost:8080",
+    "dbname": "tphbot",
+    "username": "<insert-user>",
+    "password": "<insert-pass>"
+  }
 }

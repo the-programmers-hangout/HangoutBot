@@ -7,18 +7,17 @@ import java.io.File
 
 data class Configuration(val token: String = "<insert-token>",
                          val developmentMode: Boolean = false,
-                         val prefix: String = "++",
-                         val reactToCommands: Boolean = false);
+                         val mysqlConfig: MySQLConfig = MySQLConfig());
 
+data class MySQLConfig(val url: String = "localhost:3306",
+                       val dbname: String = "tphbot",
+                       val username: String = "<user>",
+                       val password: String = "<pass>")
 
 fun loadConfig(onFinishedLoading: (Configuration?) -> Unit) {
     val configFile = File("config/config.json")
 
     if(!configFile.exists()) {
-        val builder = StringBuilder(Klaxon().toJsonString(Configuration()))
-        val jsonData = (Parser().parse(builder) as JsonBase).toJsonString(true)
-        configFile.printWriter().use { it.print(jsonData) }
-
         return onFinishedLoading(null)
     }
 

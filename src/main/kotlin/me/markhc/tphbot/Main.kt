@@ -13,10 +13,6 @@ import kotlin.system.exitProcess
 
 fun main(args: Array<String>) {
     try {
-        data class Properties(val version: String, val kutils: String, val repository: String)
-        val propFile = Properties::class.java.getResource("/properties.json").readText()
-        val project = Klaxon().parse<Properties>(propFile) ?: throw Exception("Failed to parse properties");
-
         loadConfig {
             val configuration = it ?: throw Exception("Failed to parse configuration");
 
@@ -24,33 +20,8 @@ fun main(args: Array<String>) {
                 registerInjectionObject(it);
 
                 configure {
-                    prefix = configuration.prefix
-                    reactToCommands = configuration.reactToCommands
+                    prefix = "++"
                     deleteMode = PrefixDeleteMode.None
-                    mentionEmbed = {
-                        embed {
-                            val channel = it.channel
-                            val self = channel.jda.selfUser
-
-                            color = Color(0x00bfff)
-                            thumbnail = self.effectiveAvatarUrl
-                            addField(self.fullName(), "It's a bot!")
-                            addInlineField("Prefix", configuration.prefix)
-
-                            with (project) {
-                                val kotlinVersion = KotlinVersion.CURRENT
-
-                                addField("Build Info", "```" +
-                                        "Version: $version\n" +
-                                        "KUtils: $kutils\n" +
-                                        "Kotlin: $kotlinVersion" +
-                                        "```")
-
-                                addField("Source", repository)
-                            }
-
-                        }
-                    }
                 }
             }
         }

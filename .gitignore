@@ -54,6 +54,7 @@ build/
 .idea/artifacts/kotlin_compiler_client_embeddable_jar.xml
 .idea/artifacts/kotlin_reflect_jar.xml
 .idea/jarRepositories.xml
+.idea/dictionaries
 kotlin-ultimate/
 node_modules/
 .rpt2_cache/
