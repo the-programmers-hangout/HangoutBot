@@ -16,11 +16,16 @@ class WelcomeListener(configuration: Configuration, persistenceService: Persiste
             GuildConfiguration.findOrCreate(event.guild.id)
         }
 
-        if(guild.welcomeChannel == null)
-            return;
+        if(guild.welcomeChannel == null) {
+            println("Welcome channel not set")
+        }
 
         val welcomeChannel = event.guild.textChannels.find {
             it.id == guild.welcomeChannel
+        }
+
+        if(welcomeChannel == null) {
+            println("Failed to find welcome channel")
         }
 
         welcomeChannel?.sendMessage("Welcome ${event.user.name}! Have a cookie.")
