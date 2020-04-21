@@ -5,8 +5,10 @@ import com.beust.klaxon.Klaxon
 import com.beust.klaxon.Parser
 import java.io.File
 
-data class Configuration(val token: String = "",
-                         val developmentMode: Boolean = false);
+data class Configuration(val token: String = "<insert-token>",
+                         val developmentMode: Boolean = false,
+                         val prefix: String = "++",
+                         val reactToCommands: Boolean = false);
 
 
 fun loadConfig(onFinishedLoading: (Configuration?) -> Unit) {
