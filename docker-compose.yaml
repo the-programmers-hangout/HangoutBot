@@ -19,6 +19,7 @@ services:
   tphbot:
     depends_on:
       - db
+      - build
     build:
       context: .
       dockerfile: dockerfiles/tphbot

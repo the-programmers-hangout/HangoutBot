@@ -1,5 +1,5 @@
 FROM openjdk:8-jre-alpine
-ADD target/tphbot*-jar-with-dependencies.jar /tphbot/tphbot.jar
+ADD target/tphbot*.jar /tphbot/tphbot.jar
 WORKDIR /tphbot/
 
 CMD ["java", "-jar", "tphbot.jar"]
