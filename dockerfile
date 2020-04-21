@@ -12,5 +12,5 @@ RUN mvn -f /home/app/pom.xml clean package
 #
 FROM openjdk:8-alpine
 
-COPY --from=build /home/app/target/tphbot*.jar /usr/local/lib/tphbot.jar
+COPY --from=build /home/app/target/tphbot*-jar-with-dependencies.jar /usr/local/lib/tphbot.jar
 ENTRYPOINT ["java","-jar","/usr/local/lib/tphbot.jar"]
