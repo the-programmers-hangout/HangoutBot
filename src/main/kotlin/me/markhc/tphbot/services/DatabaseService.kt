@@ -26,7 +26,7 @@ class DatabaseService(configuration: Configuration) {
 
             Database.connect(
                     url = "jdbc:mysql://$url/$dbname?${dbParams.joinToString("&")}",
-                    driver = "com.mysql.jdbc.Driver",
+                    driver = "com.mysql.cj.jdbc.Driver",
                     user = username,
                     password = password)
 
