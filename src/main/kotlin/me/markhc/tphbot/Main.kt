@@ -17,7 +17,8 @@ fun main(args: Array<String>) {
             val configuration = it ?: throw Exception("Failed to parse configuration");
 
             startBot(configuration.token) {
-                registerInjectionObject(it);
+                createDatabaseSchema(configuration)
+                registerInjectionObject(configuration)
 
                 configure {
                     prefix = "++"

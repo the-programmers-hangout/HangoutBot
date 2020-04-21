@@ -11,29 +11,29 @@ import org.jetbrains.exposed.sql.jodatime.date
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.Properties
 
-@Service
-class DatabaseService(configuration: Configuration) {
-    init {
-        with(configuration.mysqlConfig) {
-            val dbParams = listOf(
-                    "useUnicode=true",
-                    "useJDBCCompliantTimezoneShift=true",
-                    "useLegacyDatetimeCode=true",
-                    "serverTimezone=UTC",
-                    "nullNamePatternMatchesAll=true",
-                    "useSSL=false"
-            )
+fun createDatabaseSchema(configuration: Configuration) {
+    with(configuration.mysqlConfig) {
+        val dbParams = listOf(
+                "useUnicode=true",
+                "useJDBCCompliantTimezoneShift=true",
+                "useLegacyDatetimeCode=true",
+                "serverTimezone=UTC",
+                "nullNamePatternMatchesAll=true",
+                "useSSL=false"
+        )
+        println("1")
+        Database.connect(
+                url = "jdbc:mysql://$url/$dbname?${dbParams.joinToString("&")}",
+                driver = "com.mysql.cj.jdbc.Driver",
+                user = username,
+                password = password)
+        println("2")
+        transaction {
+            addLogger(StdOutSqlLogger)
 
-            Database.connect(
-                    url = "jdbc:mysql://$url/$dbname?${dbParams.joinToString("&")}",
-                    driver = "com.mysql.cj.jdbc.Driver",
-                    user = username,
-                    password = password)
-
-            transaction {
-                SchemaUtils.createMissingTablesAndColumns(GuildConfiguration)
-            }
+            SchemaUtils.create(GuildConfiguration)
         }
+        println("3")
     }
 }
 
