@@ -27,10 +27,11 @@ fun createDatabaseSchema(configuration: Configuration) {
 
 object GuildConfigurationTable : IntIdTable() {
     val guildId = varchar("guildId", 18).uniqueIndex()
-    val prefix = varchar("prefix", 32)
-    val reactToCommands = bool("react")
-    val welcomeEmbeds = bool("welcomeEmbeds")
+    val prefix = varchar("prefix", 32).default("+")
+    val reactToCommands = bool("react").default(false)
+    val welcomeEmbeds = bool("welcomeEmbeds").default(false)
     val welcomeChannel = varchar("welcomeChannel", 18).nullable()
+    val staffRoleName = varchar("staffRoleName", 32).nullable()
 }
 
 class GuildConfiguration(id: EntityID<Int>) : IntEntity(id) {
@@ -40,6 +41,7 @@ class GuildConfiguration(id: EntityID<Int>) : IntEntity(id) {
     var reactToCommands by GuildConfigurationTable.reactToCommands
     var welcomeEmbeds by GuildConfigurationTable.welcomeEmbeds
     var welcomeChannel by GuildConfigurationTable.welcomeChannel
+    var staffRoleName by GuildConfigurationTable.staffRoleName
 }
 
 fun GuildConfiguration.Companion.findOrCreate(id: String): GuildConfiguration {

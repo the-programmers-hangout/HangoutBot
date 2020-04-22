@@ -2,14 +2,19 @@ package me.markhc.tphbot.services
 
 import com.beust.klaxon.Klaxon
 import me.aberrantfox.kjdautils.api.annotation.Service
+import me.aberrantfox.kjdautils.api.dsl.command.Command
 import me.aberrantfox.kjdautils.api.dsl.embed
 import me.aberrantfox.kjdautils.discord.Discord
 import me.aberrantfox.kjdautils.extensions.jda.fullName
-import mu.KLogger
+import me.aberrantfox.kjdautils.extensions.jda.toMember
+import me.markhc.tphbot.extensions.requiredPermissionLevel
+import net.dv8tion.jda.api.entities.Guild
+import net.dv8tion.jda.api.entities.MessageChannel
+import net.dv8tion.jda.api.entities.User
 import java.awt.Color
 
 @Service
-class StartupService(discord: Discord) {
+class StartupService(discord: Discord, permissionsService: PermissionsService) {
     private data class Properties(val version: String, val kutils: String, val repository: String)
     private val propFile = Properties::class.java.getResource("/properties.json").readText()
     private val project = Klaxon().parse<Properties>(propFile) ?: throw Exception("Failed to parse properties");
@@ -40,6 +45,16 @@ class StartupService(discord: Discord) {
                     }
                 }
             }
+
+            visibilityPredicate = predicate@{ command: Command, user: User, _: MessageChannel, guild: Guild? ->
+                guild ?: return@predicate false
+
+                val member = user.toMember(guild)!!
+                val permission = command.requiredPermissionLevel
+
+                permissionsService.hasClearance(member, permission)
+            }
+
         }
     }
 }

@@ -3,13 +3,18 @@ package me.markhc.tphbot.commands
 import me.aberrantfox.kjdautils.api.annotation.CommandSet
 import me.aberrantfox.kjdautils.api.dsl.command.commands
 import me.aberrantfox.kjdautils.internal.arguments.TextChannelArg
+import me.markhc.tphbot.extensions.requiredPermissionLevel
 import me.markhc.tphbot.services.Configuration
 import me.markhc.tphbot.services.GuildConfiguration
+import me.markhc.tphbot.services.Permission
 import me.markhc.tphbot.services.findOrCreate
 import org.jetbrains.exposed.sql.transactions.transaction
 
 @CommandSet("Configuration")
 fun configurationCommands(configuration: Configuration) = commands {
+
+    requiredPermissionLevel = Permission.Staff
+
     command("EnableWelcomeEmbed") {
         description = "Enables the display of welcome messages upon guild user join."
         execute { event ->

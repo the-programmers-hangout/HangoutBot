@@ -3,8 +3,8 @@ package me.markhc.tphbot.services
 import com.beust.klaxon.Klaxon
 import java.io.File
 
-data class Configuration(val token: String = "<insert-token>",
-                         val developmentMode: Boolean = false);
+data class Configuration(val token: String = "",
+                         val ownerId: String = "");
 
 
 fun loadConfig(onFinishedLoading: (Configuration?) -> Unit) {
