@@ -35,7 +35,7 @@ fun configurationCommands(configuration: Configuration) = commands {
 
     command("SetWelcomeChannel") {
         description = "Sets the channel used for welcome embeds."
-        execute(TextChannelArg) { event ->
+        execute(TextChannelArg("Channel")) { event ->
             event.guild?.id?.let {
                 setWelcomeChannel(it, event.args.first.id)
             }
