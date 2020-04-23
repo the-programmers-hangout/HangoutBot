@@ -36,7 +36,7 @@ class PermissionsService(private val configuration: Configuration) {
 
         val requiredRole = guildConfig.adminRoleName?.let {
             guild.getRolesByName(it, true).firstOrNull()
-        }
+        } ?: return false
 
         return requiredRole in roles
     }
@@ -47,7 +47,7 @@ class PermissionsService(private val configuration: Configuration) {
 
         val requiredRole = guildConfig.staffRoleName?.let {
             guild.getRolesByName(it, true).firstOrNull()
-        }
+        } ?: return false
 
         return requiredRole in roles
     }
