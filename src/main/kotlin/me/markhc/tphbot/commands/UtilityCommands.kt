@@ -13,6 +13,7 @@ import me.aberrantfox.kjdautils.internal.arguments.RoleArg
 import me.aberrantfox.kjdautils.internal.arguments.SentenceArg
 import me.aberrantfox.kjdautils.internal.arguments.TextChannelArg
 import me.aberrantfox.kjdautils.internal.arguments.WordArg
+import me.markhc.tphbot.arguments.MyTextChannelArg
 import me.markhc.tphbot.extensions.requiredPermissionLevel
 import me.markhc.tphbot.services.GuildConfiguration
 import me.markhc.tphbot.services.Permission
@@ -47,9 +48,7 @@ fun staffUtilityCommands() = commands {
 
     command("Echo") {
         description = "Echo a message to a channel."
-        execute(TextChannelArg("Channel").makeOptional { it.channel as TextChannel },
-                SentenceArg("Message")) {
-
+        execute(MyTextChannelArg.makeOptional { it.channel as TextChannel }, SentenceArg) {
             val (target, message) = it.args
 
             target.sendMessage(message.sanitiseMentions()).queue()
