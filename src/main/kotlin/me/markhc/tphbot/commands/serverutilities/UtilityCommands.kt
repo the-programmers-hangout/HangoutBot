@@ -18,7 +18,7 @@ fun utilityCommands() = commands {
     command("ping") {
         description = "Display a message giving basic server information"
         execute {
-            it.respond("<:ping_pang:650122486364504074>")
+            it.respond("<:ping_pang:702977946050101278>")
         }
     }
 

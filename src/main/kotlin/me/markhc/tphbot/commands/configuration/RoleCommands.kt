@@ -26,7 +26,7 @@ import java.io.StringReader
 
 @CommandSet("RoleCommands")
 fun configurationCommands(configuration: Configuration) = commands {
-    command("AddGrantableRole") {
+    command("addGrantableRole") {
         requiredPermissionLevel = Permission.Administrator
         description = "Adds a role to the list of grantable roles."
         execute(WordArg("Category"), SentenceArg("RoleName")) { event ->
@@ -57,7 +57,7 @@ fun configurationCommands(configuration: Configuration) = commands {
         }
     }
 
-    command("RemoveGrantableRole") {
+    command("removeGrantableRole") {
         requiredPermissionLevel = Permission.Administrator
         description = "Removes a role to the list of grantable roles."
         execute(WordArg("Category"), SentenceArg("RoleName")) { event ->
@@ -88,7 +88,7 @@ fun configurationCommands(configuration: Configuration) = commands {
         }
     }
 
-    command("ListGrantableRoles") {
+    command("listGrantableRoles") {
         requiredPermissionLevel = Permission.Staff
         description = "Lists the available grantable roles."
         execute { event ->

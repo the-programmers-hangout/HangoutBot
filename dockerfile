@@ -13,6 +13,9 @@ RUN mvn verify clean --fail-never
 ADD . $HOME
 RUN mvn package
 
+FROM debian:buster-slim as wait-for-it
+RUN apt-get update && apt-get install -y wait-for-it
+
 #
 # Package stage
 #
@@ -21,11 +24,10 @@ FROM openjdk:8-alpine
 ENV HOME=/home/app
 WORKDIR $HOME
 
-COPY scripts/wait-for-it.sh ./wait-for-it.sh
-RUN chmod +x ./wait-for-it.sh
 RUN apk add --no-cache bash
 
 COPY config $HOME/config
+COPY --from=wait-for-it /usr/bin/wait-for-it /usr/bin/wait-for-it
 COPY --from=build $HOME/target/tphbot*-jar-with-dependencies.jar $HOME/tphbot.jar
 
 ENTRYPOINT [ "/bin/bash", "-c" ]
