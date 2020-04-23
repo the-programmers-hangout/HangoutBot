@@ -15,7 +15,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 fun welcomeEmbedCommands(configuration: Configuration) = commands {
     requiredPermissionLevel = Permission.Administrator
 
-    command("EnableWelcomeEmbed") {
+    command("enableWelcomeEmbed") {
         description = "Enables the display of welcome messages upon guild user join."
         execute { event ->
             event.guild?.id?.let {
@@ -24,7 +24,7 @@ fun welcomeEmbedCommands(configuration: Configuration) = commands {
         }
     }
 
-    command("DisableWelcomeEmbed") {
+    command("disableWelcomeEmbed") {
         description = "Disables the display of welcome messages upon guild user join."
         execute { event ->
             event.guild?.id?.let {
@@ -33,7 +33,7 @@ fun welcomeEmbedCommands(configuration: Configuration) = commands {
         }
     }
 
-    command("SetWelcomeChannel") {
+    command("setWelcomeChannel") {
         description = "Sets the channel used for welcome embeds."
         execute(TextChannelArg("Channel")) { event ->
             event.guild?.id?.let {
@@ -42,7 +42,7 @@ fun welcomeEmbedCommands(configuration: Configuration) = commands {
         }
     }
 
-    command("GetWelcomeChannel") {
+    command("getWelcomeChannel") {
         description = "Gets the channel used for welcome embeds."
         execute { event ->
             event.guild?.id?.let {

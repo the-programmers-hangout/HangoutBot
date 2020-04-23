@@ -30,29 +30,30 @@ fun configurationCommands(configuration: Configuration) = commands {
         requiredPermissionLevel = Permission.Administrator
         description = "Adds a role to the list of grantable roles."
         execute(WordArg("Category"), SentenceArg("RoleName")) { event ->
-            val (category, role) = event.args
+            val category = event.args.first.toLowerCase()
+            val roleName = event.args.second
 
             val guild = event.guild ?: return@execute
 
-            guild.getRoleByName(role, true) ?: return@execute event.respond("Invalid role.")
+            val role = guild.getRoleByName(roleName, true) ?: return@execute event.respond("Invalid role.")
 
             transaction {
                 val guildConfig = GuildConfiguration.findOrCreate(guild.id)
                 val roles = Klaxon().parseJsonObject(StringReader(guildConfig.grantableRoles))
 
                 if(roles[category] == null) {
-                    roles[category] = listOf(role);
+                    roles[category] = listOf(role.name);
                 } else {
                     val list = (roles[category] as List<*>)
                             .filterIsInstance<String>()
                             .toMutableList()
-                    list.add(role)
+                    list.add(role.name)
                     roles[category] = list;
                 }
 
                 guildConfig.grantableRoles = Klaxon().toJsonString(roles)
 
-                event.respond("Added \"$role\" to the category \"$category\".")
+                event.respond("Added \"${role.name}\" to the category \"$category\".")
             }
         }
     }
@@ -61,29 +62,30 @@ fun configurationCommands(configuration: Configuration) = commands {
         requiredPermissionLevel = Permission.Administrator
         description = "Removes a role to the list of grantable roles."
         execute(WordArg("Category"), SentenceArg("RoleName")) { event ->
-            val (category, role) = event.args
+            val category = event.args.first.toLowerCase()
+            val roleName = event.args.second
 
             val guild = event.guild ?: return@execute
 
-            guild.getRoleByName(role, true) ?: return@execute event.respond("Invalid role.")
+            val role = guild.getRoleByName(roleName, true) ?: return@execute event.respond("Invalid role.")
 
             transaction {
                 val guildConfig = GuildConfiguration.findOrCreate(guild.id)
                 val roles = Klaxon().parseJsonObject(StringReader(guildConfig.grantableRoles))
 
                 if(roles[category] == null) {
-                    return@transaction event.respond("\"$category\" has no role named \"$role\"")
+                    return@transaction event.respond("\"$category\" has no role named \"${role.name}\"")
                 } else {
                     val list = (roles[category] as List<*>)
                             .filterIsInstance<String>()
                             .toMutableList()
-                    list.remove(role)
+                    list.remove(role.name)
                     roles[category] = list;
                 }
 
                 guildConfig.grantableRoles = Klaxon().toJsonString(roles)
 
-                event.respond("Removed \"$role\" from the category \"$category\".")
+                event.respond("Removed \"${role.name}\" from the category \"$category\".")
             }
         }
     }
@@ -111,7 +113,7 @@ fun configurationCommands(configuration: Configuration) = commands {
     command("grant") {
         requiredPermissionLevel = Permission.Staff
         description = "Grants a role to a lower ranked member or yourself"
-        execute(LowerRankedUserArg("Member").makeOptional { it.author }, SentenceArg("Role Name")) { event ->
+        execute(LowerRankedUserArg("Member"), SentenceArg("Role Name")) { event ->
             val (user, roleName) = event.args
 
             val guild = event.guild
@@ -126,7 +128,7 @@ fun configurationCommands(configuration: Configuration) = commands {
 
             rolesConfig.forEach {category ->
                 val roles = (category.value as List<*>).filterIsInstance<String>()
-                if(roleName in roles) {
+                if(containsIgnoreCase(roles, roleName)) {
                     return@execute removeRoles(guild, member, roles).also {
                         grantRole(guild, member, role)
                     }
@@ -140,7 +142,7 @@ fun configurationCommands(configuration: Configuration) = commands {
     command("revoke") {
         requiredPermissionLevel = Permission.Staff
         description = "Revokes a role from a lower ranked member or yourself"
-        execute(LowerRankedUserArg("Member").makeOptional { it.author }, SentenceArg("Role Name")) { event ->
+        execute(LowerRankedUserArg("Member"), SentenceArg("Role Name")) { event ->
             val (user, roleName) = event.args
 
             val guild = event.guild
@@ -155,7 +157,7 @@ fun configurationCommands(configuration: Configuration) = commands {
 
             rolesConfig.forEach {category ->
                 val roles = (category.value as List<*>).filterIsInstance<String>()
-                if(roleName in roles) {
+                if(containsIgnoreCase(roles, roleName)) {
                     return@execute removeRoles(guild, member, roles)
                 }
             }
@@ -163,6 +165,15 @@ fun configurationCommands(configuration: Configuration) = commands {
             event.respond("\"$roleName\" is not a revokable role")
         }
     }
+}
+
+fun containsIgnoreCase(list: List<String>, value: String): Boolean {
+    list.forEach { item ->
+        if(item.compareTo(value, true) == 0) {
+            return true
+        }
+    }
+    return false
 }
 
 fun buildRolesEmbed(roles: JsonObject): MessageEmbed  {
