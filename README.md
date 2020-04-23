@@ -7,8 +7,8 @@ Works in progress bot for TheProgrammersHangout Discord server.
 The bot makes use of Docker and Docker Compose to setup the required environment. It makes use of a MySQL database image for persistent data.
 
 ```console
-$ git clone https://github.com/MarkHC/tphbot
-$ cd tphbot
+$ git clone https://github.com/MarkHC/hangoutbot
+$ cd hangoutbot
 
 # Create the configuration file
 $ cp config/config.json.example config/config.json
