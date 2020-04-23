@@ -1,4 +1,4 @@
-# tphbot (Name TBD)
+# HangoutBot
 
 Works in progress bot for TheProgrammersHangout Discord server.
 
