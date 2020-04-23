@@ -42,41 +42,6 @@ fun utilityCommands() = commands {
     }
 }
 
-@CommandSet("StaffUtility")
-fun staffUtilityCommands() = commands {
-    requiredPermissionLevel = Permission.Staff
-
-    command("Echo") {
-        description = "Echo a message to a channel."
-        execute(MyTextChannelArg.makeOptional { it.channel as TextChannel }, SentenceArg) {
-            val (target, message) = it.args
-
-            target.sendMessage(message.sanitiseMentions()).queue()
-        }
-    }
-
-    command("SetColor") {
-        description = "Give yourself one of the color roles."
-        execute(SentenceArg("Role")) { event ->
-            val (roleName) = event.args
-
-            val guild = event.guild ?: return@execute
-            val role  = guild.getRoleByName(roleName, true) ?: return@execute
-
-            val colors = guild.id.let { transaction { GuildConfiguration.findOrCreate(it) }.grantableRoles }
-                    .let { Klaxon().parseJsonObject(StringReader(it)) }
-                    .takeIf { it["colors"] != null }
-                    ?.let { (it["colors"] as List<*>).filterIsInstance<String>() }
-
-            colors ?: return@execute event.respond("Category \"colors\" has no roles")
-
-            colors.takeIf { roleName in it }
-                    ?.apply { removeRoles(event, this) }
-                    ?.apply { grantRole(event, role) }
-        }
-    }
-}
-
 private fun produceServerInfoEmbed(guild: Guild) =
         embed {
             title = guild.name
@@ -96,23 +61,3 @@ private fun produceServerInfoEmbed(guild: Guild) =
             addInlineField(name = "Text Channels", value = guild.textChannelCache.size().toString())
             addInlineField(name = "Voice Channels", value = guild.voiceChannels.size.toString())
         }
-
-private fun removeRoles(event: CommandEvent<SingleArg<String>>, roles: List<String>) {
-    val guild = event.guild!!
-    val member = guild.getMember(event.author)!!
-
-    // TODO: Perhaps we should check if the user has more than 1 color role
-    //       and remove all of them instead of just 1
-    member.roles.find { it.name in roles }?.let {
-        guild.removeRoleFromMember(member, it).queue()
-    }
-}
-
-private fun grantRole(event: CommandEvent<SingleArg<String>>, role: Role) {
-    val guild = event.guild!!
-    val member = guild.getMember(event.author)!!
-    val roleName = role.name
-
-    guild.addRoleToMember(member, role).queue()
-    event.respond("$roleName assigned to ${event.author.fullName()}")
-}

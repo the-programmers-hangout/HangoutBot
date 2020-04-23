@@ -5,15 +5,24 @@ import me.markhc.tphbot.services.*
 import java.util.*
 
 private object CommandsContainerPropertyStore {
-    val permissions = WeakHashMap<CommandsContainer, Permission>()
+    val setPermissions = WeakHashMap<CommandsContainer, Permission>()
 }
 
+private val commandPermissions: MutableMap<Command, Permission> = mutableMapOf()
+
 var CommandsContainer.requiredPermissionLevel
-    get() = CommandsContainerPropertyStore.permissions[this] ?: DEFAULT_REQUIRED_PERMISSION
+    get() = CommandsContainerPropertyStore.setPermissions[this] ?: DEFAULT_REQUIRED_PERMISSION
     set(value) {
-        CommandsContainerPropertyStore.permissions[this] = value
+        CommandsContainerPropertyStore.setPermissions[this] = value
     }
 
-val Command.requiredPermissionLevel: Permission
-    get() = CommandsContainerPropertyStore.permissions.toList()
-            .firstOrNull { this in it.first.commands }?.second ?: DEFAULT_REQUIRED_PERMISSION
+var Command.requiredPermissionLevel: Permission
+    get() {
+        val setLevel = CommandsContainerPropertyStore.setPermissions.toList()
+                .firstOrNull { this in it.first.commands }?.second ?: DEFAULT_REQUIRED_PERMISSION
+
+        val cmdLevel = commandPermissions[this] ?: DEFAULT_REQUIRED_PERMISSION
+
+        return if(cmdLevel < setLevel) cmdLevel else setLevel
+    }
+    set(value) { commandPermissions[this] = value }

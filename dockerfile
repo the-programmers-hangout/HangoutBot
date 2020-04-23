@@ -21,9 +21,11 @@ FROM openjdk:8-alpine
 ENV HOME=/home/app
 WORKDIR $HOME
 
-COPY scripts/wait-for-it.sh /wait-for-it.sh
-RUN chmod +x /wait-for-it.sh
+COPY scripts/wait-for-it.sh ./wait-for-it.sh
+RUN chmod +x ./wait-for-it.sh
+RUN apk add --no-cache bash
 
 COPY config $HOME/config
 COPY --from=build $HOME/target/tphbot*-jar-with-dependencies.jar $HOME/tphbot.jar
-ENTRYPOINT ["java","-jar","tphbot.jar"]
+
+ENTRYPOINT [ "/bin/bash", "-c" ]
