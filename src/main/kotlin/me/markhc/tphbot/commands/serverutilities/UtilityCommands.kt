@@ -1,38 +1,28 @@
-package me.markhc.tphbot.commands
+package me.markhc.tphbot.commands.serverutilities
 
-import com.beust.klaxon.Klaxon
 import me.aberrantfox.kjdautils.api.annotation.CommandSet
-import me.aberrantfox.kjdautils.api.dsl.command.CommandEvent
-import me.aberrantfox.kjdautils.api.dsl.command.SingleArg
 import me.aberrantfox.kjdautils.api.dsl.command.commands
 import me.aberrantfox.kjdautils.api.dsl.embed
 import me.aberrantfox.kjdautils.extensions.jda.fullName
-import me.aberrantfox.kjdautils.extensions.jda.getRoleByName
-import me.aberrantfox.kjdautils.extensions.stdlib.sanitiseMentions
-import me.aberrantfox.kjdautils.internal.arguments.RoleArg
-import me.aberrantfox.kjdautils.internal.arguments.SentenceArg
-import me.aberrantfox.kjdautils.internal.arguments.TextChannelArg
-import me.aberrantfox.kjdautils.internal.arguments.WordArg
-import me.markhc.tphbot.arguments.MyTextChannelArg
 import me.markhc.tphbot.extensions.requiredPermissionLevel
-import me.markhc.tphbot.services.GuildConfiguration
 import me.markhc.tphbot.services.Permission
-import me.markhc.tphbot.services.findOrCreate
 import net.dv8tion.jda.api.OnlineStatus
 import net.dv8tion.jda.api.entities.Guild
-import net.dv8tion.jda.api.entities.Role
-import net.dv8tion.jda.api.entities.TextChannel
-import net.dv8tion.jda.api.entities.User
-import org.jetbrains.exposed.sql.transactions.transaction
 import java.awt.Color
-import java.io.StringReader
 import java.time.format.DateTimeFormatter
 
 @CommandSet("Utility")
 fun utilityCommands() = commands {
     requiredPermissionLevel = Permission.Everyone
 
-    command("ServerInfo") {
+    command("ping") {
+        description = "Display a message giving basic server information"
+        execute {
+            it.respond("<:ping_pang:650122486364504074>")
+        }
+    }
+
+    command("serverinfo") {
         description = "Display a message giving basic server information"
         execute {event ->
             event.guild
