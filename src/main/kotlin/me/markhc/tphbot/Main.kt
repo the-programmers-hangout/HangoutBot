@@ -1,9 +1,11 @@
 package me.markhc.tphbot;
 
+import com.beust.klaxon.Klaxon
 import me.aberrantfox.kjdautils.api.dsl.PrefixDeleteMode
 import me.aberrantfox.kjdautils.api.startBot;
 import me.markhc.tphbot.services.*
 import mu.KotlinLogging
+import java.io.StringReader
 import kotlin.system.exitProcess
 
 fun main(args: Array<String>) {
@@ -17,8 +19,8 @@ fun main(args: Array<String>) {
                 registerInjectionObject(configuration, logger)
 
                 configure {
-                    prefix = "++"
-                    deleteMode = PrefixDeleteMode.None
+                    prefix = "+"
+                    deleteMode = PrefixDeleteMode.Single
                 }
             }
         }

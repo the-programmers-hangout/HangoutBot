@@ -1,6 +1,7 @@
 package me.markhc.tphbot.listeners
 
 import com.google.common.eventbus.Subscribe
+import me.aberrantfox.kjdautils.api.dsl.embed
 import me.aberrantfox.kjdautils.extensions.jda.fullName
 import me.aberrantfox.kjdautils.extensions.stdlib.formatJdaDate
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent
@@ -30,19 +31,14 @@ class WelcomeListener(private val logger: KLogger) {
             it.id == guild.welcomeChannel
         }
 
-        welcomeChannel?.sendMessage(buildJoinMessage(
-                title = "Welcome",
-                response = "Aww yeeee it\u0027s ${event.user.asMention}(${event.user.fullName()})",
-                image = event.user.effectiveAvatarUrl)
-        )?.queue{msg -> msg.addReaction("\uD83D\uDC4B").queue()}
+        welcomeChannel?.sendMessage(
+            embed {
+                title = "Welcome"
+                description = "Aww yea it\u0027s ${event.user.asMention}(${event.user.fullName()})"
+                thumbnail = event.user.effectiveAvatarUrl
+                color = Color.red
+        })?.queue{
+                it.addReaction("\uD83D\uDC4B").queue()
+        }
     }
-
-    private fun buildJoinMessage(response: String, image: String, title: String) =
-            EmbedBuilder()
-                    .setTitle(title)
-                    .setDescription(response)
-                    .setColor(Color.red)
-                    .setThumbnail(image)
-                    .build()
-
 }
