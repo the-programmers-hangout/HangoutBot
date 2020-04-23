@@ -32,6 +32,7 @@ object GuildConfigurationTable : IntIdTable() {
     val welcomeEmbeds = bool("welcomeEmbeds").default(false)
     val welcomeChannel = varchar("welcomeChannel", 18).nullable()
     val staffRoleName = varchar("staffRoleName", 32).nullable()
+    var colorRoles = text("colorRoles").nullable()
 }
 
 class GuildConfiguration(id: EntityID<Int>) : IntEntity(id) {
@@ -42,6 +43,7 @@ class GuildConfiguration(id: EntityID<Int>) : IntEntity(id) {
     var welcomeEmbeds by GuildConfigurationTable.welcomeEmbeds
     var welcomeChannel by GuildConfigurationTable.welcomeChannel
     var staffRoleName by GuildConfigurationTable.staffRoleName
+    var colorRoles by GuildConfigurationTable.colorRoles
 }
 
 fun GuildConfiguration.Companion.findOrCreate(id: String): GuildConfiguration {
@@ -51,7 +53,7 @@ fun GuildConfiguration.Companion.findOrCreate(id: String): GuildConfiguration {
 
     return GuildConfiguration.new {
         guildId = id
-        prefix = "++"
+        prefix = "+"
         reactToCommands = true
         welcomeEmbeds = false
     }
