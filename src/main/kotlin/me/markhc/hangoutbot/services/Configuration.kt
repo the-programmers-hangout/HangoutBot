@@ -7,7 +7,6 @@ data class Configuration(val token: String = "",
                          val ownerId: String = "",
                          val logLevel: String = "WARN");
 
-
 fun loadConfig(onFinishedLoading: (Configuration?) -> Unit) {
     val configFile = File("config/config.json")
 

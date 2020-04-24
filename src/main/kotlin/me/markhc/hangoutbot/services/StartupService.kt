@@ -7,6 +7,7 @@ import me.aberrantfox.kjdautils.api.dsl.embed
 import me.aberrantfox.kjdautils.discord.Discord
 import me.aberrantfox.kjdautils.extensions.jda.fullName
 import me.aberrantfox.kjdautils.extensions.jda.toMember
+import me.markhc.hangoutbot.dataclasses.GuildConfigurations
 import me.markhc.hangoutbot.extensions.requiredPermissionLevel
 import net.dv8tion.jda.api.entities.Guild
 import net.dv8tion.jda.api.entities.MessageChannel
@@ -14,7 +15,7 @@ import net.dv8tion.jda.api.entities.User
 import java.awt.Color
 
 @Service
-class StartupService(discord: Discord, permissionsService: PermissionsService) {
+class StartupService(guilds: GuildConfigurations, discord: Discord, permissionsService: PermissionsService) {
     private data class Properties(val version: String, val kutils: String, val repository: String)
     private val propFile = Properties::class.java.getResource("/properties.json").readText()
     private val project = Klaxon().parse<Properties>(propFile) ?: throw Exception("Failed to parse properties");
@@ -30,7 +31,7 @@ class StartupService(discord: Discord, permissionsService: PermissionsService) {
                     thumbnail = self.effectiveAvatarUrl
                     addField(self.fullName(), "It's a bot!")
 
-                    addInlineField("Prefix", GuildConfiguration.findOrCreate(it.guild.id).prefix)
+                    addInlineField("Prefix", guilds.getGuildConfig(it.guild.id).prefix)
 
                     with (project) {
                         val kotlinVersion = kotlin.KotlinVersion.CURRENT

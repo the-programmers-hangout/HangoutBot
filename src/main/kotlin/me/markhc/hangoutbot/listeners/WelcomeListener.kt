@@ -3,23 +3,17 @@ package me.markhc.hangoutbot.listeners
 import com.google.common.eventbus.Subscribe
 import me.aberrantfox.kjdautils.api.dsl.embed
 import me.aberrantfox.kjdautils.extensions.jda.fullName
+import me.markhc.hangoutbot.dataclasses.GuildConfigurations
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent
-import me.markhc.hangoutbot.services.GuildConfiguration
-import me.markhc.hangoutbot.services.findOrCreate
 import mu.KLogger
-import org.jetbrains.exposed.sql.transactions.transaction
 import java.awt.Color
 
-class WelcomeListener(private val logger: KLogger) {
+class WelcomeListener(private val logger: KLogger, private val guildConfigs: GuildConfigurations) {
     @Subscribe
     fun onGuildMemberJoinEvent(event: GuildMemberJoinEvent) {
-        logger.debug { "Join event on guild ${event.guild.id}" }
+        val guild = guildConfigs.getGuildConfig(event.guild.id)
 
-        val guild = transaction {
-            GuildConfiguration.findOrCreate(event.guild.id)
-        }
-
-        if(!guild.welcomeEmbeds || guild.welcomeChannel == null) return;
+        if(!guild.welcomeEmbeds || guild.welcomeChannel.isEmpty()) return;
 
         val welcomeChannel = event.guild.textChannels.find  {
             it.id == guild.welcomeChannel

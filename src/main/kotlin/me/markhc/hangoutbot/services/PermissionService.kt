@@ -1,9 +1,9 @@
 package me.markhc.hangoutbot.services
 
 import me.aberrantfox.kjdautils.api.annotation.Service
+import me.markhc.hangoutbot.dataclasses.GuildConfigurations
 import mu.KLogger
 import net.dv8tion.jda.api.entities.Member
-import org.jetbrains.exposed.sql.transactions.transaction
 
 enum class Permission {
     BotOwner,
@@ -16,7 +16,7 @@ enum class Permission {
 val DEFAULT_REQUIRED_PERMISSION = Permission.Everyone
 
 @Service
-class PermissionsService(private val logger: KLogger, private val configuration: Configuration) {
+class PermissionsService(private val logger: KLogger, private val configuration: Configuration, private val guildConfigs: GuildConfigurations) {
     fun hasClearance(member: Member, requiredPermissionLevel: Permission): Boolean {
         return member.getPermissionLevel().ordinal <= requiredPermissionLevel.ordinal
     }
@@ -34,24 +34,22 @@ class PermissionsService(private val logger: KLogger, private val configuration:
     private fun Member.isBotOwner() = user.id == configuration.ownerId
     private fun Member.isGuildOwner() = isOwner
     private fun Member.isAdministrator() : Boolean {
-        val guildConfig = transaction {
-            GuildConfiguration.findOrCreate(guild.id)
-        }
+        val guildConfig = guildConfigs.getGuildConfig(this.guild.id)
 
-        val requiredRole = guildConfig.adminRoleName?.let {
-            guild.getRolesByName(it, true).firstOrNull()
-        } ?: return false
+        if(guildConfig.adminRoleName.isEmpty()) return false
+
+        val requiredRole = guild.getRolesByName(guildConfig.adminRoleName, true).firstOrNull()
+                ?: return false
 
         return requiredRole in roles
     }
     private fun Member.isStaff(): Boolean {
-        val guildConfig = transaction {
-            GuildConfiguration.findOrCreate(guild.id)
-        }
+        val guildConfig = guildConfigs.getGuildConfig(this.guild.id)
 
-        val requiredRole = guildConfig.staffRoleName?.let {
-            guild.getRolesByName(it, true).firstOrNull()
-        } ?: return false
+        if(guildConfig.staffRoleName.isEmpty()) return false
+
+        val requiredRole = guild.getRolesByName(guildConfig.staffRoleName, true).firstOrNull()
+                ?: return false
 
         return requiredRole in roles
     }

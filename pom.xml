@@ -11,12 +11,11 @@
 
     <properties>
         <main.class>me.markhc.hangoutbot.MainKt</main.class>
-        <project.repository>https://github.com/markhc/tphbot</project.repository>
+        <project.repository>https://github.com/markhc/hangoutbot</project.repository>
         <kotlin.version>1.3.72</kotlin.version>
         <kutils.version>0.14.0</kutils.version>
         <mavenjar.version>3.1.0</mavenjar.version>
         <mavenassembly.version>2.6</mavenassembly.version>
-        <exposed.version>0.23.1</exposed.version>
     </properties>
 
     <dependencies>
@@ -40,31 +39,6 @@
             <groupId>com.beust</groupId>
             <artifactId>klaxon</artifactId>
             <version>5.2</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jetbrains.exposed</groupId>
-            <artifactId>exposed-core</artifactId>
-            <version>${exposed.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jetbrains.exposed</groupId>
-            <artifactId>exposed-dao</artifactId>
-            <version>${exposed.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jetbrains.exposed</groupId>
-            <artifactId>exposed-jdbc</artifactId>
-            <version>${exposed.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jetbrains.exposed</groupId>
-            <artifactId>exposed-jodatime</artifactId>
-            <version>${exposed.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.19</version>
         </dependency>
         <dependency>
             <groupId>io.github.microutils</groupId>
@@ -102,7 +76,6 @@
             </resource>
         </resources>
         <sourceDirectory>src/main/kotlin</sourceDirectory>
-        <testSourceDirectory>src/test/kotlin</testSourceDirectory>
         <plugins>
             <plugin>
                 <groupId>org.jetbrains.kotlin</groupId>
