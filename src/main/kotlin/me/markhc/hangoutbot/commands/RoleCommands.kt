@@ -110,7 +110,7 @@ fun configurationCommands() = commands {
     command("grant") {
         requiredPermissionLevel = Permission.Staff
         description = "Grants a role to a lower ranked member or yourself"
-        execute(LowerRankedMemberArg("Member").makeOptional { it.guild!!.getMember(it.author)!! }, RoleArg) { event ->
+        execute(LowerRankedMemberArg("Member").makeOptional { it.guild!!.getMember(it.author)!! }, RoleArg("GrantableRole")) { event ->
             val (member, role) = event.args
 
             val guild = event.guild
@@ -135,7 +135,7 @@ fun configurationCommands() = commands {
     command("revoke") {
         requiredPermissionLevel = Permission.Staff
         description = "Revokes a role from a lower ranked member or yourself"
-        execute(LowerRankedMemberArg("Member").makeOptional { it.guild!!.getMember(it.author)!! }, RoleArg) { event ->
+        execute(LowerRankedMemberArg("Member").makeOptional { it.guild!!.getMember(it.author)!! }, RoleArg("GrantableRole")) { event ->
             val (member, role) = event.args
 
             val guild = event.guild
@@ -151,7 +151,7 @@ fun configurationCommands() = commands {
                 }
             }
 
-            event.respond("\"${role.name}\" is not a revokable role")
+            event.respond("\"${role.name}\" is not a grantable role")
         }
     }
 }
