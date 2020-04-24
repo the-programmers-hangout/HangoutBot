@@ -4,11 +4,14 @@ import me.aberrantfox.kjdautils.api.annotation.CommandSet
 import me.aberrantfox.kjdautils.api.dsl.command.commands
 import me.aberrantfox.kjdautils.api.dsl.embed
 import me.aberrantfox.kjdautils.extensions.jda.fullName
+import me.aberrantfox.kjdautils.internal.arguments.MemberArg
+import me.aberrantfox.kjdautils.internal.arguments.UserArg
 import me.markhc.hangoutbot.extensions.requiredPermissionLevel
 import me.markhc.hangoutbot.services.Permission
 import net.dv8tion.jda.api.OnlineStatus
 import net.dv8tion.jda.api.entities.Guild
 import java.awt.Color
+import java.text.SimpleDateFormat
 import java.time.format.DateTimeFormatter
 
 @CommandSet("Utility")
@@ -28,6 +31,32 @@ fun utilityCommands() = commands {
             event.guild
                     ?.let { produceServerInfoEmbed(it) }
                     ?.let { event.respond(it) }
+        }
+    }
+
+    command("viewjoindate") {
+        description = "Displays when a user joined the guild"
+        execute(MemberArg) {
+            val member = it.args.first
+
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd")
+            val joinDateParsed = dateFormat.parse(member.timeJoined.toString())
+            val joinDate = dateFormat.format(joinDateParsed)
+
+            it.respond("${member.fullName()}'s join date: $joinDate")
+        }
+    }
+
+    command("viewcreationdate") {
+        description = "Displays when a user was created"
+        execute(UserArg) {
+            val member = it.args.first
+
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd")
+            val joinDateParsed = dateFormat.parse(member.timeCreated.toString())
+            val joinDate = dateFormat.format(joinDateParsed)
+
+            it.respond("${member.fullName()}'s creation date: $joinDate")
         }
     }
 }
