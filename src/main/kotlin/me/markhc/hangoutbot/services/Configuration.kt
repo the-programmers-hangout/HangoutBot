@@ -4,7 +4,8 @@ import com.beust.klaxon.Klaxon
 import java.io.File
 
 data class Configuration(val token: String = "",
-                         val ownerId: String = "");
+                         val ownerId: String = "",
+                         val logLevel: String = "WARN");
 
 
 fun loadConfig(onFinishedLoading: (Configuration?) -> Unit) {

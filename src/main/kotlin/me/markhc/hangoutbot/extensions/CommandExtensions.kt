@@ -19,10 +19,12 @@ var CommandsContainer.requiredPermissionLevel
 var Command.requiredPermissionLevel: Permission
     get() {
         val setLevel = CommandsContainerPropertyStore.setPermissions.toList()
-                .firstOrNull { this in it.first.commands }?.second ?: DEFAULT_REQUIRED_PERMISSION
+                .firstOrNull { this in it.first.commands }?.second
 
-        val cmdLevel = commandPermissions[this] ?: DEFAULT_REQUIRED_PERMISSION
+        val cmdLevel = commandPermissions[this]
 
-        return if(cmdLevel < setLevel) cmdLevel else setLevel
+        if(cmdLevel != null) return cmdLevel
+        if(setLevel != null) return setLevel
+        return DEFAULT_REQUIRED_PERMISSION
     }
     set(value) { commandPermissions[this] = value }

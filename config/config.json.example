@@ -1,4 +1,5 @@
 {
-  "token" : "<inser-token>"
-  "ownerId": "<insert-bot-owner-id>"
+  "token" : "<inser-token>",
+  "ownerId": "<insert-bot-owner-id>",
+  "logLevel": "warn"
 }

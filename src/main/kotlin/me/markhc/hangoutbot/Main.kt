@@ -7,10 +7,13 @@ import mu.KotlinLogging
 import kotlin.system.exitProcess
 
 fun main(args: Array<String>) {
-    val logger = KotlinLogging.logger {}
     try {
         loadConfig {
             val configuration = it ?: throw Exception("Failed to parse configuration");
+
+            System.setProperty(org.slf4j.impl.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, configuration.logLevel);
+
+            val logger = KotlinLogging.logger {}
 
             startBot(configuration.token) {
                 createDatabaseSchema(configuration)
