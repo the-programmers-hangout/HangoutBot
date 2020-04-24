@@ -1,11 +1,9 @@
-package me.markhc.tphbot;
+package me.markhc.hangoutbot;
 
-import com.beust.klaxon.Klaxon
 import me.aberrantfox.kjdautils.api.dsl.PrefixDeleteMode
 import me.aberrantfox.kjdautils.api.startBot;
-import me.markhc.tphbot.services.*
+import me.markhc.hangoutbot.services.*
 import mu.KotlinLogging
-import java.io.StringReader
 import kotlin.system.exitProcess
 
 fun main(args: Array<String>) {

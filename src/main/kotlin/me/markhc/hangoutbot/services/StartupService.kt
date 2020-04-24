@@ -1,4 +1,4 @@
-package me.markhc.tphbot.services
+package me.markhc.hangoutbot.services
 
 import com.beust.klaxon.Klaxon
 import me.aberrantfox.kjdautils.api.annotation.Service
@@ -7,7 +7,7 @@ import me.aberrantfox.kjdautils.api.dsl.embed
 import me.aberrantfox.kjdautils.discord.Discord
 import me.aberrantfox.kjdautils.extensions.jda.fullName
 import me.aberrantfox.kjdautils.extensions.jda.toMember
-import me.markhc.tphbot.extensions.requiredPermissionLevel
+import me.markhc.hangoutbot.extensions.requiredPermissionLevel
 import net.dv8tion.jda.api.entities.Guild
 import net.dv8tion.jda.api.entities.MessageChannel
 import net.dv8tion.jda.api.entities.User

@@ -1,7 +1,7 @@
-package me.markhc.tphbot.extensions
+package me.markhc.hangoutbot.extensions
 
 import me.aberrantfox.kjdautils.api.dsl.command.*
-import me.markhc.tphbot.services.*
+import me.markhc.hangoutbot.services.*
 import java.util.*
 
 private object CommandsContainerPropertyStore {

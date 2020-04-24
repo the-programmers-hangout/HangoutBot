@@ -1,12 +1,12 @@
-package me.markhc.tphbot.commands.serverutilities
+package me.markhc.hangoutbot.commands.serverutilities
 
 import me.aberrantfox.kjdautils.api.annotation.CommandSet
 import me.aberrantfox.kjdautils.api.dsl.command.commands
 import me.aberrantfox.kjdautils.extensions.stdlib.sanitiseMentions
 import me.aberrantfox.kjdautils.internal.arguments.SentenceArg
-import me.markhc.tphbot.arguments.MyTextChannelArg
-import me.markhc.tphbot.extensions.requiredPermissionLevel
-import me.markhc.tphbot.services.Permission
+import me.markhc.hangoutbot.arguments.MyTextChannelArg
+import me.markhc.hangoutbot.extensions.requiredPermissionLevel
+import me.markhc.hangoutbot.services.Permission
 import net.dv8tion.jda.api.entities.TextChannel
 
 @CommandSet("StaffUtility")

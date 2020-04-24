@@ -1,4 +1,4 @@
-package me.markhc.tphbot.services
+package me.markhc.hangoutbot.services
 
 import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass

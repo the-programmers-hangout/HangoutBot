@@ -1,4 +1,4 @@
-package me.markhc.tphbot.services
+package me.markhc.hangoutbot.services
 
 import com.beust.klaxon.Klaxon
 import java.io.File

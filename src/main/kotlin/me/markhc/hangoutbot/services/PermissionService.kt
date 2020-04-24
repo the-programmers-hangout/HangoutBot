@@ -1,4 +1,4 @@
-package me.markhc.tphbot.services
+package me.markhc.hangoutbot.services
 
 import me.aberrantfox.kjdautils.api.annotation.Service
 import net.dv8tion.jda.api.entities.Member
@@ -17,6 +17,7 @@ val DEFAULT_REQUIRED_PERMISSION = Permission.GuildOwner
 @Service
 class PermissionsService(private val configuration: Configuration) {
     fun hasClearance(member: Member, requiredPermissionLevel: Permission) = member.getPermissionLevel().ordinal <= requiredPermissionLevel.ordinal
+    fun getPermissionLevel(member: Member) = member.getPermissionLevel().ordinal
 
     private fun Member.getPermissionLevel() =
             when {

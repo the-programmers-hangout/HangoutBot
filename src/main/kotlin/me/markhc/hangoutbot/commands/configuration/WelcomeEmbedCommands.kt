@@ -1,13 +1,13 @@
-package me.markhc.tphbot.commands.configuration
+package me.markhc.hangoutbot.commands.configuration
 
 import me.aberrantfox.kjdautils.api.annotation.CommandSet
 import me.aberrantfox.kjdautils.api.dsl.command.commands
 import me.aberrantfox.kjdautils.internal.arguments.TextChannelArg
-import me.markhc.tphbot.extensions.requiredPermissionLevel
-import me.markhc.tphbot.services.Configuration
-import me.markhc.tphbot.services.GuildConfiguration
-import me.markhc.tphbot.services.Permission
-import me.markhc.tphbot.services.findOrCreate
+import me.markhc.hangoutbot.extensions.requiredPermissionLevel
+import me.markhc.hangoutbot.services.Configuration
+import me.markhc.hangoutbot.services.GuildConfiguration
+import me.markhc.hangoutbot.services.Permission
+import me.markhc.hangoutbot.services.findOrCreate
 import org.jetbrains.exposed.sql.transactions.transaction
 
 

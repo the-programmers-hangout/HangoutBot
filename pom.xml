@@ -4,13 +4,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>me.markhc</groupId>
-    <artifactId>tphbot</artifactId>
+    <artifactId>hangoutbot</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>tphbot</name>
+    <name>hangoutbot</name>
     <description>TheProgrammersHangout Bot</description>
 
     <properties>
-        <main.class>me.markhc.tphbot.MainKt</main.class>
+        <main.class>me.markhc.hangoutbot.MainKt</main.class>
         <project.repository>https://github.com/markhc/tphbot</project.repository>
         <kotlin.version>1.3.72</kotlin.version>
         <kutils.version>0.14.0</kutils.version>

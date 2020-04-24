@@ -1,12 +1,11 @@
-package me.markhc.tphbot.preconditions
+package me.markhc.hangoutbot.preconditions
 
 
 import me.aberrantfox.kjdautils.api.annotation.Precondition
-import me.aberrantfox.kjdautils.api.dsl.*
 import me.aberrantfox.kjdautils.extensions.jda.toMember
 import me.aberrantfox.kjdautils.internal.command.*
-import me.markhc.tphbot.extensions.requiredPermissionLevel
-import me.markhc.tphbot.services.*
+import me.markhc.hangoutbot.extensions.requiredPermissionLevel
+import me.markhc.hangoutbot.services.*
 
 @Precondition
 fun produceHasPermissionPrecondition(permissionsService: PermissionsService) = precondition {

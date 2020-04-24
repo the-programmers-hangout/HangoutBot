@@ -1,4 +1,4 @@
-package me.markhc.tphbot.arguments
+package me.markhc.hangoutbot.arguments
 
 import me.aberrantfox.kjdautils.api.dsl.command.CommandEvent
 import me.aberrantfox.kjdautils.extensions.stdlib.trimToID

@@ -1,11 +1,11 @@
-package me.markhc.tphbot.commands.serverutilities
+package me.markhc.hangoutbot.commands.serverutilities
 
 import me.aberrantfox.kjdautils.api.annotation.CommandSet
 import me.aberrantfox.kjdautils.api.dsl.command.commands
 import me.aberrantfox.kjdautils.api.dsl.embed
 import me.aberrantfox.kjdautils.extensions.jda.fullName
-import me.markhc.tphbot.extensions.requiredPermissionLevel
-import me.markhc.tphbot.services.Permission
+import me.markhc.hangoutbot.extensions.requiredPermissionLevel
+import me.markhc.hangoutbot.services.Permission
 import net.dv8tion.jda.api.OnlineStatus
 import net.dv8tion.jda.api.entities.Guild
 import java.awt.Color
