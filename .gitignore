@@ -15,6 +15,7 @@ config/*
 .idea/**/tasks.xml
 .idea/**/usage.statistics.xml
 .idea/**/dictionaries
+.idea/**/inspectionProfiles
 .idea/**/shelf
 
 # Generated files
