@@ -2,15 +2,14 @@ package me.markhc.hangoutbot.commands.configuration
 
 import me.aberrantfox.kjdautils.api.annotation.CommandSet
 import me.aberrantfox.kjdautils.api.dsl.command.commands
-import me.aberrantfox.kjdautils.internal.arguments.RoleArg
 import me.markhc.hangoutbot.extensions.requiredPermissionLevel
-import me.markhc.hangoutbot.services.Configuration
 import me.markhc.hangoutbot.services.GuildConfiguration
 import me.markhc.hangoutbot.services.Permission
 import me.markhc.hangoutbot.services.findOrCreate
 import org.jetbrains.exposed.sql.transactions.transaction
 import me.aberrantfox.kjdautils.internal.arguments.WordArg
 import me.markhc.hangoutbot.locale.Messages
+import me.markhc.hangoutbot.arguments.RoleArg
 
 @CommandSet("GuildConfiguration")
 fun guildConfigurationCommands() = commands {

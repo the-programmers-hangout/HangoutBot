@@ -1,17 +1,16 @@
 package me.markhc.hangoutbot.commands.configuration
 
-import me.markhc.hangoutbot.arguments.LowerRankedUserArg
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Klaxon
 import me.aberrantfox.kjdautils.api.annotation.CommandSet
 import me.aberrantfox.kjdautils.api.dsl.command.commands
 import me.aberrantfox.kjdautils.api.dsl.embed
 import me.aberrantfox.kjdautils.extensions.jda.getRoleByName
-import me.aberrantfox.kjdautils.internal.arguments.SentenceArg
 import me.aberrantfox.kjdautils.internal.arguments.WordArg
+import me.markhc.hangoutbot.arguments.LowerRankedMemberArg
+import me.markhc.hangoutbot.arguments.RoleArg
 import me.markhc.hangoutbot.extensions.requiredPermissionLevel
 import me.markhc.hangoutbot.locale.Messages
-import me.markhc.hangoutbot.services.Configuration
 import me.markhc.hangoutbot.services.GuildConfiguration
 import me.markhc.hangoutbot.services.Permission
 import me.markhc.hangoutbot.services.findOrCreate
@@ -25,14 +24,11 @@ fun configurationCommands() = commands {
     command("addgrantablerole") {
         requiredPermissionLevel = Permission.Administrator
         description = "Adds a role to the list of grantable roles."
-        execute(WordArg("Category"), SentenceArg("RoleName")) { event ->
-            val category = event.args.first
-            val roleName = event.args.second
+        execute(WordArg("Category"), RoleArg) { event ->
+            val (category, role) = event.args
 
             val guild = event.guild
                     ?: return@execute event.respond(Messages.COMMAND_NOT_SUPPORTED_IN_DMS)
-            val role = guild.getRoleByName(roleName, true)
-                    ?: return@execute event.respond("Invalid role.")
 
             transaction {
                 val guildConfig = GuildConfiguration.findOrCreate(guild.id)
@@ -62,13 +58,10 @@ fun configurationCommands() = commands {
     command("removegrantablerole") {
         requiredPermissionLevel = Permission.Administrator
         description = "Removes a role to the list of grantable roles."
-        execute(WordArg("Category"), SentenceArg("RoleName")) { event ->
-            val category = event.args.first
-            val roleName = event.args.second
+        execute(WordArg("Category"), RoleArg) { event ->
+            val (category, role) = event.args
 
             val guild = event.guild ?: return@execute event.respond(Messages.COMMAND_NOT_SUPPORTED_IN_DMS)
-
-            val role = guild.getRoleByName(roleName, true) ?: return@execute event.respond("Invalid role.")
 
             transaction {
                 val guildConfig = GuildConfiguration.findOrCreate(guild.id)
@@ -117,56 +110,48 @@ fun configurationCommands() = commands {
     command("grant") {
         requiredPermissionLevel = Permission.Staff
         description = "Grants a role to a lower ranked member or yourself"
-        execute(LowerRankedUserArg("Member").makeOptional { it.author }, SentenceArg("Role Name")) { event ->
-            val (user, roleName) = event.args
+        execute(LowerRankedMemberArg("Member").makeOptional { it.guild!!.getMember(it.author)!! }, RoleArg) { event ->
+            val (member, role) = event.args
 
             val guild = event.guild
                     ?: return@execute event.respond(Messages.COMMAND_NOT_SUPPORTED_IN_DMS)
-            val member = guild.getMember(user)
-                    ?: return@execute event.respond("\"${user.name}\" is not a member of this guild")
-            val role  = guild.getRoleByName(roleName, true)
-                    ?: return@execute event.respond("\"${roleName}\" is not a valid role")
 
             val grantableRoles = guild.id.let { transaction { GuildConfiguration.findOrCreate(it) }.grantableRoles }
             val rolesConfig = Klaxon().parseJsonObject(StringReader(grantableRoles))
 
             rolesConfig.forEach {category ->
                 val roles = (category.value as List<*>).filterIsInstance<String>()
-                if(containsIgnoreCase(roles, roleName)) {
+                if(containsIgnoreCase(roles, role.name)) {
                     return@execute removeRoles(guild, member, roles).also {
                         grantRole(guild, member, role)
                     }
                 }
             }
 
-            event.respond("\"$roleName\" is not a grantable role")
+            event.respond("\"$role.name\" is not a grantable role")
         }
     }
 
     command("revoke") {
         requiredPermissionLevel = Permission.Staff
         description = "Revokes a role from a lower ranked member or yourself"
-        execute(LowerRankedUserArg("Member").makeOptional { it.author }, SentenceArg("Role Name")) { event ->
-            val (user, roleName) = event.args
+        execute(LowerRankedMemberArg("Member").makeOptional { it.guild!!.getMember(it.author)!! }, RoleArg) { event ->
+            val (member, role) = event.args
 
             val guild = event.guild
                     ?: return@execute event.respond(Messages.COMMAND_NOT_SUPPORTED_IN_DMS)
-            val member = guild.getMember(user)
-                    ?: return@execute event.respond("\"${user.name}\" is not a member of this guild")
-            val role  = guild.getRoleByName(roleName, true)
-                    ?: return@execute event.respond("\"${roleName}\" is not a valid role")
 
             val grantableRoles = guild.id.let { transaction { GuildConfiguration.findOrCreate(it) }.grantableRoles }
             val rolesConfig = Klaxon().parseJsonObject(StringReader(grantableRoles))
 
             rolesConfig.forEach {category ->
                 val roles = (category.value as List<*>).filterIsInstance<String>()
-                if(containsIgnoreCase(roles, roleName)) {
+                if(containsIgnoreCase(roles, role.name)) {
                     return@execute removeRoles(guild, member, roles)
                 }
             }
 
-            event.respond("\"$roleName\" is not a revokable role")
+            event.respond("\"$role.name\" is not a revokable role")
         }
     }
 }

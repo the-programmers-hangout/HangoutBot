@@ -6,8 +6,7 @@ import me.aberrantfox.kjdautils.extensions.jda.fullName
 import me.aberrantfox.kjdautils.extensions.stdlib.sanitiseMentions
 import me.aberrantfox.kjdautils.internal.arguments.IntegerArg
 import me.aberrantfox.kjdautils.internal.arguments.SentenceArg
-import me.aberrantfox.kjdautils.internal.arguments.UserArg
-import me.markhc.hangoutbot.arguments.MyTextChannelArg
+import me.markhc.hangoutbot.arguments.TextChannelArg
 import me.markhc.hangoutbot.extensions.requiredPermissionLevel
 import me.markhc.hangoutbot.services.Permission
 import net.dv8tion.jda.api.entities.Message
@@ -20,7 +19,7 @@ fun staffUtilityCommands() = commands {
 
     command("echo") {
         description = "Echo a message to a channel."
-        execute(MyTextChannelArg.makeOptional { it.channel as TextChannel }, SentenceArg) {
+        execute(TextChannelArg.makeOptional { it.channel as TextChannel }, SentenceArg) {
             val (target, message) = it.args
 
             target.sendMessage(message.sanitiseMentions()).queue()
@@ -29,7 +28,7 @@ fun staffUtilityCommands() = commands {
 
     command("nuke") {
         description = "Delete 2 - 99 past messages in the given channel (default is the invoked channel)"
-        execute(MyTextChannelArg.makeOptional { it.channel as TextChannel },
+        execute(TextChannelArg.makeOptional { it.channel as TextChannel },
                 IntegerArg) {
             val (channel, amount) = it.args
 
