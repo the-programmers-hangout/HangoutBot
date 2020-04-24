@@ -10,7 +10,6 @@ import me.markhc.hangoutbot.services.Permission
 import me.markhc.hangoutbot.services.findOrCreate
 import org.jetbrains.exposed.sql.transactions.transaction
 
-
 @CommandSet("WelcomeEmbeds")
 fun welcomeEmbedCommands() = commands {
     requiredPermissionLevel = Permission.Administrator
@@ -30,7 +29,7 @@ fun welcomeEmbedCommands() = commands {
         }
     }
 
-    command("setWelcomeChannel") {
+    command("setwelcomechannel") {
         description = "Sets the channel used for welcome embeds."
         execute(TextChannelArg("Channel")) { event ->
             event.guild?.id?.let {
@@ -41,7 +40,7 @@ fun welcomeEmbedCommands() = commands {
         }
     }
 
-    command("getWelcomeChannel") {
+    command("getwelcomechannel") {
         description = "Gets the channel used for welcome embeds."
         execute { event ->
             event.guild?.id?.let {

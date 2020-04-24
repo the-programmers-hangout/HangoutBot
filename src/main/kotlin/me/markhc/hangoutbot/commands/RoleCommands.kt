@@ -10,6 +10,7 @@ import me.aberrantfox.kjdautils.extensions.jda.getRoleByName
 import me.aberrantfox.kjdautils.internal.arguments.SentenceArg
 import me.aberrantfox.kjdautils.internal.arguments.WordArg
 import me.markhc.hangoutbot.extensions.requiredPermissionLevel
+import me.markhc.hangoutbot.locale.Messages
 import me.markhc.hangoutbot.services.Configuration
 import me.markhc.hangoutbot.services.GuildConfiguration
 import me.markhc.hangoutbot.services.Permission
@@ -25,30 +26,35 @@ fun configurationCommands() = commands {
         requiredPermissionLevel = Permission.Administrator
         description = "Adds a role to the list of grantable roles."
         execute(WordArg("Category"), SentenceArg("RoleName")) { event ->
-            val category = event.args.first.toLowerCase()
+            val category = event.args.first
             val roleName = event.args.second
 
-            val guild = event.guild ?: return@execute
-
-            val role = guild.getRoleByName(roleName, true) ?: return@execute event.respond("Invalid role.")
+            val guild = event.guild
+                    ?: return@execute event.respond(Messages.COMMAND_NOT_SUPPORTED_IN_DMS)
+            val role = guild.getRoleByName(roleName, true)
+                    ?: return@execute event.respond("Invalid role.")
 
             transaction {
                 val guildConfig = GuildConfiguration.findOrCreate(guild.id)
                 val roles = Klaxon().parseJsonObject(StringReader(guildConfig.grantableRoles))
 
-                if(roles[category] == null) {
+                val key = roles.keys.find {
+                    it.compareTo(category, true) == 0
+                }
+
+                if(key == null) {
                     roles[category] = listOf(role.name);
                 } else {
-                    val list = (roles[category] as List<*>)
+                    val list = (roles[key] as List<*>)
                             .filterIsInstance<String>()
                             .toMutableList()
                     list.add(role.name)
-                    roles[category] = list;
+                    roles[key] = list;
                 }
 
                 guildConfig.grantableRoles = Klaxon().toJsonString(roles)
 
-                event.respond("Added \"${role.name}\" to the category \"$category\".")
+                event.respond("Added \"${role.name}\" to the category \"${key ?: category}\".")
             }
         }
     }
@@ -57,10 +63,10 @@ fun configurationCommands() = commands {
         requiredPermissionLevel = Permission.Administrator
         description = "Removes a role to the list of grantable roles."
         execute(WordArg("Category"), SentenceArg("RoleName")) { event ->
-            val category = event.args.first.toLowerCase()
+            val category = event.args.first
             val roleName = event.args.second
 
-            val guild = event.guild ?: return@execute
+            val guild = event.guild ?: return@execute event.respond(Messages.COMMAND_NOT_SUPPORTED_IN_DMS)
 
             val role = guild.getRoleByName(roleName, true) ?: return@execute event.respond("Invalid role.")
 
@@ -68,19 +74,22 @@ fun configurationCommands() = commands {
                 val guildConfig = GuildConfiguration.findOrCreate(guild.id)
                 val roles = Klaxon().parseJsonObject(StringReader(guildConfig.grantableRoles))
 
-                if(roles[category] == null) {
-                    return@transaction event.respond("\"$category\" has no role named \"${role.name}\"")
-                } else {
-                    val list = (roles[category] as List<*>)
-                            .filterIsInstance<String>()
-                            .toMutableList()
-                    list.remove(role.name)
-                    roles[category] = list;
-                }
+                val key = roles.keys.find {
+                    it.compareTo(category, true) == 0
+                } ?: return@transaction event.respond("Category \"$category\" not found")
+
+                val list = (roles[category] as List<*>)
+                    .filterIsInstance<String>()
+                    .toMutableList()
+                val removed = list.remove(role.name)
+                roles[category] = list;
 
                 guildConfig.grantableRoles = Klaxon().toJsonString(roles)
 
-                event.respond("Removed \"${role.name}\" from the category \"$category\".")
+                if(removed)
+                    event.respond("Removed \"${role.name}\" from the category \"$category\".")
+                else
+                    event.respond("Role \"${role.name}\" not found in category \"$category\".")
             }
         }
     }
@@ -89,7 +98,7 @@ fun configurationCommands() = commands {
         requiredPermissionLevel = Permission.Staff
         description = "Lists the available grantable roles."
         execute { event ->
-            event.guild ?: return@execute
+            event.guild ?: return@execute event.respond(Messages.COMMAND_NOT_SUPPORTED_IN_DMS)
 
             val roles = event.guild!!.id.let {
                 transaction {
@@ -112,7 +121,7 @@ fun configurationCommands() = commands {
             val (user, roleName) = event.args
 
             val guild = event.guild
-                    ?: return@execute
+                    ?: return@execute event.respond(Messages.COMMAND_NOT_SUPPORTED_IN_DMS)
             val member = guild.getMember(user)
                     ?: return@execute event.respond("\"${user.name}\" is not a member of this guild")
             val role  = guild.getRoleByName(roleName, true)
@@ -141,7 +150,7 @@ fun configurationCommands() = commands {
             val (user, roleName) = event.args
 
             val guild = event.guild
-                    ?: return@execute
+                    ?: return@execute event.respond(Messages.COMMAND_NOT_SUPPORTED_IN_DMS)
             val member = guild.getMember(user)
                     ?: return@execute event.respond("\"${user.name}\" is not a member of this guild")
             val role  = guild.getRoleByName(roleName, true)

@@ -7,6 +7,7 @@ import me.aberrantfox.kjdautils.extensions.jda.fullName
 import me.aberrantfox.kjdautils.internal.arguments.MemberArg
 import me.aberrantfox.kjdautils.internal.arguments.UserArg
 import me.markhc.hangoutbot.extensions.requiredPermissionLevel
+import me.markhc.hangoutbot.locale.Messages
 import me.markhc.hangoutbot.services.Permission
 import net.dv8tion.jda.api.OnlineStatus
 import net.dv8tion.jda.api.entities.Guild
@@ -19,18 +20,18 @@ fun utilityCommands() = commands {
     requiredPermissionLevel = Permission.Everyone
 
     command("ping") {
-        description = "Display a message giving basic server information"
+        description = "pong"
         execute {
-            it.respond("<:ping_pang:702977946050101278>")
+            it.respond("Gateway ping: ${it.discord.jda.gatewayPing}")
         }
     }
 
     command("serverinfo") {
         description = "Display a message giving basic server information"
-        execute {event ->
-            event.guild
-                    ?.let { produceServerInfoEmbed(it) }
-                    ?.let { event.respond(it) }
+        execute {
+            val guild = it.guild ?: return@execute it.respond(Messages.COMMAND_NOT_SUPPORTED_IN_DMS)
+
+            it.respond(produceServerInfoEmbed(guild))
         }
     }
 

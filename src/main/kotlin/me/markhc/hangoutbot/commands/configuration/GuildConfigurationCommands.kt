@@ -10,16 +10,17 @@ import me.markhc.hangoutbot.services.Permission
 import me.markhc.hangoutbot.services.findOrCreate
 import org.jetbrains.exposed.sql.transactions.transaction
 import me.aberrantfox.kjdautils.internal.arguments.WordArg
+import me.markhc.hangoutbot.locale.Messages
 
-@CommandSet("WelcomeEmbeds")
-fun guildConfigurationCommands(configuration: Configuration) = commands {
+@CommandSet("GuildConfiguration")
+fun guildConfigurationCommands() = commands {
     requiredPermissionLevel = Permission.GuildOwner
 
     command("setadminrole") {
         description = "Sets the role that distinguishes an Administrator"
         execute(RoleArg) {
             val (role) = it.args
-            val guildId = it.guild?.id ?: return@execute it.respond("This command needs to be executed in a guild")
+            val guildId = it.guild?.id ?: return@execute it.respond(Messages.COMMAND_NOT_SUPPORTED_IN_DMS)
 
             transaction {
                 val guild = GuildConfiguration.findOrCreate(guildId)
@@ -34,7 +35,7 @@ fun guildConfigurationCommands(configuration: Configuration) = commands {
         description = "Sets the role that distinguishes an Administrator"
         execute(RoleArg) {
             val (role) = it.args
-            val guildId = it.guild?.id ?: return@execute it.respond("This command needs to be executed in a guild")
+            val guildId = it.guild?.id ?: return@execute it.respond(Messages.COMMAND_NOT_SUPPORTED_IN_DMS)
 
             transaction {
                 val guild = GuildConfiguration.findOrCreate(guildId)
@@ -49,7 +50,7 @@ fun guildConfigurationCommands(configuration: Configuration) = commands {
         description = "Sets the prefix used by the bot in this guild"
         execute(WordArg("prefix")) {
             val (prefix) = it.args
-            val guildId = it.guild?.id ?: return@execute it.respond("This command needs to be executed in a guild")
+            val guildId = it.guild?.id ?: return@execute it.respond(Messages.COMMAND_NOT_SUPPORTED_IN_DMS)
 
             transaction {
                 val guild = GuildConfiguration.findOrCreate(guildId)
@@ -65,7 +66,7 @@ fun guildConfigurationCommands(configuration: Configuration) = commands {
     command("togglebotreactions") {
         description = "Sets the prefix used by the bot in this guild"
         execute() {
-            val guildId = it.guild?.id ?: return@execute it.respond("This command needs to be executed in a guild")
+            val guildId = it.guild?.id ?: return@execute it.respond(Messages.COMMAND_NOT_SUPPORTED_IN_DMS)
 
             transaction {
                 val guild = GuildConfiguration.findOrCreate(guildId)
