@@ -7,6 +7,7 @@ import me.aberrantfox.kjdautils.internal.command.*
 import me.markhc.hangoutbot.extensions.CommandsContainerPropertyStore
 import me.markhc.hangoutbot.extensions.commandPermissions
 import me.markhc.hangoutbot.extensions.requiredPermissionLevel
+import me.markhc.hangoutbot.extensions.setPermissions
 import me.markhc.hangoutbot.services.*
 import mu.KLogger
 
@@ -17,7 +18,10 @@ fun produceHasPermissionPrecondition(logger: KLogger, permissionsService: Permis
     val guild = it.guild!!
     val member = it.author.toMember(guild)!!
 
-    val setLevel = CommandsContainerPropertyStore.setPermissions.toList()
+    //
+    // For debugging purposes, REMOVE AFTER BUG FIX
+    //
+    val setLevel = setPermissions.toList()
             .firstOrNull { command in it.first.commands }?.second
 
     val cmdLevel = commandPermissions[command]
@@ -25,6 +29,7 @@ fun produceHasPermissionPrecondition(logger: KLogger, permissionsService: Permis
     logger.debug { "setLevel: $setLevel" }
     logger.debug { "cmdLevel: $cmdLevel" }
     logger.debug { "command?.requiredPermissionLevel: ${command?.requiredPermissionLevel}" }
+    // end of debugging
 
     if (!permissionsService.hasClearance(member, requiredPermissionLevel))
         return@precondition Fail("You do not have the required permissions to perform this action.")
