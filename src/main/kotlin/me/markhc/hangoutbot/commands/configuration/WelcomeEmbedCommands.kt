@@ -12,23 +12,20 @@ import org.jetbrains.exposed.sql.transactions.transaction
 
 
 @CommandSet("WelcomeEmbeds")
-fun welcomeEmbedCommands(configuration: Configuration) = commands {
+fun welcomeEmbedCommands() = commands {
     requiredPermissionLevel = Permission.Administrator
 
-    command("enableWelcomeEmbed") {
-        description = "Enables the display of welcome messages upon guild user join."
+    command("togglewelcomeembeds") {
+        description = "Toggles the display of welcome messages upon guild user join."
         execute { event ->
             event.guild?.id?.let {
-                setWelcomeEmbed(it, true)
-            }
-        }
-    }
+                transaction {
+                    val guild = GuildConfiguration.findOrCreate(it)
 
-    command("disableWelcomeEmbed") {
-        description = "Disables the display of welcome messages upon guild user join."
-        execute { event ->
-            event.guild?.id?.let {
-                setWelcomeEmbed(it, false)
+                    guild.welcomeEmbeds = !guild.welcomeEmbeds
+
+                    event.respond("Welcome embeds are now \"${if(guild.welcomeEmbeds) "enabled" else "disabled"}\"")
+                }
             }
         }
     }
@@ -38,6 +35,8 @@ fun welcomeEmbedCommands(configuration: Configuration) = commands {
         execute(TextChannelArg("Channel")) { event ->
             event.guild?.id?.let {
                 setWelcomeChannel(it, event.args.first.id)
+
+                event.respond("Welcome channel set to #${event.args.first.name}")
             }
         }
     }
@@ -52,29 +51,14 @@ fun welcomeEmbedCommands(configuration: Configuration) = commands {
     }
 }
 
-fun setWelcomeEmbed(guildId: String, enable: Boolean) {
-    transaction {
-        val guild = GuildConfiguration.findOrCreate(guildId)
+fun setWelcomeChannel(guildId: String, channel: String) = transaction {
+    val guild = GuildConfiguration.findOrCreate(guildId)
 
-        if(guild.welcomeChannel != null) {
-            guild.welcomeEmbeds = enable
-        }
-        return@transaction guild.welcomeEmbeds
-    }
+    guild.welcomeChannel = channel
 }
 
-fun setWelcomeChannel(guildId: String, channel: String) {
-    return transaction {
-        val guild = GuildConfiguration.findOrCreate(guildId)
+fun getWelcomeChannel(guildId: String) = transaction {
+    val guild = GuildConfiguration.findOrCreate(guildId)
 
-        guild.welcomeChannel = channel
-    }
-}
-
-fun getWelcomeChannel(guildId: String): String? {
-    return transaction {
-        val guild = GuildConfiguration.findOrCreate(guildId)
-
-        guild.welcomeChannel
-    }
+    guild.welcomeChannel
 }

@@ -20,8 +20,8 @@ import java.awt.Color
 import java.io.StringReader
 
 @CommandSet("RoleCommands")
-fun configurationCommands(configuration: Configuration) = commands {
-    command("addGrantableRole") {
+fun configurationCommands() = commands {
+    command("addgrantablerole") {
         requiredPermissionLevel = Permission.Administrator
         description = "Adds a role to the list of grantable roles."
         execute(WordArg("Category"), SentenceArg("RoleName")) { event ->
@@ -53,7 +53,7 @@ fun configurationCommands(configuration: Configuration) = commands {
         }
     }
 
-    command("removeGrantableRole") {
+    command("removegrantablerole") {
         requiredPermissionLevel = Permission.Administrator
         description = "Removes a role to the list of grantable roles."
         execute(WordArg("Category"), SentenceArg("RoleName")) { event ->
@@ -85,7 +85,7 @@ fun configurationCommands(configuration: Configuration) = commands {
         }
     }
 
-    command("listGrantableRoles") {
+    command("listgrantableroles") {
         requiredPermissionLevel = Permission.Staff
         description = "Lists the available grantable roles."
         execute { event ->
@@ -108,7 +108,7 @@ fun configurationCommands(configuration: Configuration) = commands {
     command("grant") {
         requiredPermissionLevel = Permission.Staff
         description = "Grants a role to a lower ranked member or yourself"
-        execute(LowerRankedUserArg("Member"), SentenceArg("Role Name")) { event ->
+        execute(LowerRankedUserArg("Member").makeOptional { it.author }, SentenceArg("Role Name")) { event ->
             val (user, roleName) = event.args
 
             val guild = event.guild
@@ -137,7 +137,7 @@ fun configurationCommands(configuration: Configuration) = commands {
     command("revoke") {
         requiredPermissionLevel = Permission.Staff
         description = "Revokes a role from a lower ranked member or yourself"
-        execute(LowerRankedUserArg("Member"), SentenceArg("Role Name")) { event ->
+        execute(LowerRankedUserArg("Member").makeOptional { it.author }, SentenceArg("Role Name")) { event ->
             val (user, roleName) = event.args
 
             val guild = event.guild
