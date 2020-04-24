@@ -1,0 +1,9 @@
+version: '3'
+
+services:
+  tphbot:
+    build: .
+    volumes:
+      - guild_data:/home/app/data
+volumes:
+  guild_data: {}

@@ -18,9 +18,9 @@ fun funCommands() = commands {
 
             if(coins == 1) {
                 if(Random.nextDouble() > 0.5) {
-                    it.respond("Heads!")
+                    return@execute it.respond("Heads!")
                 } else {
-                    it.respond("Tails!")
+                    return@execute it.respond("Tails!")
                 }
             }
 
