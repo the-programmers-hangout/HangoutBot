@@ -151,7 +151,7 @@ fun configurationCommands() = commands {
                 }
             }
 
-            event.respond("\"$role.name\" is not a revokable role")
+            event.respond("\"${role.name}\" is not a revokable role")
         }
     }
 }
