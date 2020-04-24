@@ -2,6 +2,7 @@ package me.markhc.hangoutbot.utilities
 
 import me.aberrantfox.kjdautils.api.dsl.embed
 import me.aberrantfox.kjdautils.extensions.jda.fullName
+import me.markhc.hangoutbot.locale.Messages
 import net.dv8tion.jda.api.OnlineStatus
 import net.dv8tion.jda.api.entities.Guild
 import java.awt.Color

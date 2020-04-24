@@ -4,17 +4,23 @@ import me.aberrantfox.kjdautils.api.annotation.CommandSet
 import me.aberrantfox.kjdautils.api.dsl.command.commands
 import me.aberrantfox.kjdautils.api.dsl.embed
 import me.aberrantfox.kjdautils.extensions.jda.fullName
+import me.aberrantfox.kjdautils.extensions.jda.hasRole
+import me.aberrantfox.kjdautils.internal.arguments.IntegerArg
 import me.aberrantfox.kjdautils.internal.arguments.MemberArg
 import me.aberrantfox.kjdautils.internal.arguments.TimeStringArg
 import me.aberrantfox.kjdautils.internal.arguments.UserArg
+import me.markhc.hangoutbot.dataclasses.GuildConfigurations
 import me.markhc.hangoutbot.extensions.requiredPermissionLevel
 import me.markhc.hangoutbot.locale.Messages
 import me.markhc.hangoutbot.services.Permission
 import me.markhc.hangoutbot.utilities.buildServerInfoEmbed
+import net.dv8tion.jda.api.entities.Guild
+import net.dv8tion.jda.api.entities.Member
 import java.text.SimpleDateFormat
+import kotlin.random.Random
 
 @CommandSet("Utility")
-fun utilityCommands() = commands {
+fun utilityCommands(guildConfigs: GuildConfigurations) = commands {
     requiredPermissionLevel = Permission.Everyone
 
     command("ping") {
@@ -72,4 +78,12 @@ fun utilityCommands() = commands {
         }
     }
 
+    command("avatar") {
+        description = "Gets the avatar from the given user"
+        execute(UserArg) {
+            val user = it.args.first
+
+            it.respond("${user.avatarUrl}")
+        }
+    }
 }
