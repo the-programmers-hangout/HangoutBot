@@ -7,12 +7,10 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="hangoutbot" />
-        <module name="tphbot" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="hangoutbot" target="1.5" />
-      <module name="tphbot" target="1.5" />
     </bytecodeTargetLevel>
   </component>
 </project>
