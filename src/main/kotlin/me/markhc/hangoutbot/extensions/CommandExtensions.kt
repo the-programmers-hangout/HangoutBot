@@ -4,11 +4,11 @@ import me.aberrantfox.kjdautils.api.dsl.command.*
 import me.markhc.hangoutbot.services.*
 import java.util.*
 
-private object CommandsContainerPropertyStore {
+object CommandsContainerPropertyStore {
     val setPermissions = WeakHashMap<CommandsContainer, Permission>()
 }
 
-private val commandPermissions: MutableMap<Command, Permission> = mutableMapOf()
+val commandPermissions: MutableMap<Command, Permission> = mutableMapOf()
 
 var CommandsContainer.requiredPermissionLevel
     get() = CommandsContainerPropertyStore.setPermissions[this] ?: DEFAULT_REQUIRED_PERMISSION
