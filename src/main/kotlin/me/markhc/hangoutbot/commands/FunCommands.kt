@@ -1,9 +1,11 @@
 package me.markhc.hangoutbot.commands
 
+import me.aberrantfox.kjdautils.api.annotation.CommandSet
 import me.aberrantfox.kjdautils.api.dsl.command.commands
 import me.aberrantfox.kjdautils.internal.arguments.IntegerArg
 import kotlin.random.Random
 
+@CommandSet("Fun")
 fun funCommands() = commands {
     command("flip") {
         description = "Flip a coin (or coins)"
