@@ -10,6 +10,8 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import me.aberrantfox.kjdautils.internal.arguments.WordArg
 import me.markhc.hangoutbot.locale.Messages
 import me.markhc.hangoutbot.arguments.RoleArg
+import me.markhc.hangoutbot.services.GuildConfigurationTable
+import org.jetbrains.exposed.sql.deleteWhere
 
 @CommandSet("GuildConfiguration")
 fun guildConfigurationCommands() = commands {
@@ -59,6 +61,28 @@ fun guildConfigurationCommands() = commands {
             it.discord.configuration.prefix = prefix
 
             return@execute it.respond("Guild prefix set to \"${prefix}\"")
+        }
+    }
+
+    command("resetconfig") {
+        description = "Resets the guild configuration to its default state"
+        execute {
+            it.guild ?: return@execute it.respond(Messages.COMMAND_NOT_SUPPORTED_IN_DMS)
+
+            transaction {
+                val guild = GuildConfiguration.findOrCreate(it.guild!!.id)
+
+                guild.delete()
+            }
+
+            transaction {
+                val guild = GuildConfiguration.findOrCreate(it.guild!!.id)
+
+                it.discord.configuration.prefix = guild.prefix
+                it.discord.configuration.reactToCommands = guild.reactToCommands
+            }
+
+            it.respond("Guild configuration has been reset. Bot prefix is now ${it.discord.configuration.prefix}")
         }
     }
 

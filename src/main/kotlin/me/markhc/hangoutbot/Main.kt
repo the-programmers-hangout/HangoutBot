@@ -21,7 +21,8 @@ fun main(args: Array<String>) {
 
                 configure {
                     prefix = "+"
-                    deleteMode = PrefixDeleteMode.Single
+                    deleteMode = PrefixDeleteMode.None
+                    allowPrivateMessages = false
                 }
             }
         }

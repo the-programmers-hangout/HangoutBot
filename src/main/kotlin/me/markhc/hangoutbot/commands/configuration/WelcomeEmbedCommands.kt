@@ -14,7 +14,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 fun welcomeEmbedCommands() = commands {
     requiredPermissionLevel = Permission.Administrator
 
-    command("togglewelcomeembeds") {
+    command("togglewelcome") {
         description = "Toggles the display of welcome messages upon guild user join."
         execute { event ->
             event.guild?.id?.let {
