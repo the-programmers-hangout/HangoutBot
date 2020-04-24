@@ -30,7 +30,7 @@ class WelcomeListener(private val logger: KLogger) {
                 title = "Welcome"
                 description = "Aww yea it\u0027s ${event.user.asMention}(${event.user.fullName()})"
                 thumbnail = event.user.effectiveAvatarUrl
-                color = Color.red
+                color = Color.CYAN
         })?.queue{
                 it.addReaction("\uD83D\uDC4B").queue()
         }

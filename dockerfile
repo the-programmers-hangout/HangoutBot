@@ -10,7 +10,7 @@ WORKDIR $HOME
 ADD pom.xml $HOME
 RUN mvn verify clean --fail-never
 
-ADD . $HOME
+ADD ./src $HOME/src
 RUN mvn package
 
 FROM debian:buster-slim as wait-for-it

@@ -1,28 +1,30 @@
 package me.markhc.hangoutbot.extensions
 
+import me.aberrantfox.kjdautils.api.annotation.CommandSet
 import me.aberrantfox.kjdautils.api.dsl.command.*
 import me.markhc.hangoutbot.services.*
 import java.util.*
 
-private object CommandsContainerPropertyStore {
-    val setPermissions = WeakHashMap<CommandsContainer, Permission>()
-}
-
-private val commandPermissions: MutableMap<Command, Permission> = mutableMapOf()
+val setPermissions: MutableMap<CommandsContainer, Permission> = mutableMapOf()
+val commandPermissions: MutableMap<Command, Permission> = mutableMapOf()
 
 var CommandsContainer.requiredPermissionLevel
-    get() = CommandsContainerPropertyStore.setPermissions[this] ?: DEFAULT_REQUIRED_PERMISSION
+    get() = setPermissions[this] ?: DEFAULT_REQUIRED_PERMISSION
     set(value) {
-        CommandsContainerPropertyStore.setPermissions[this] = value
+        setPermissions[this] = value
     }
 
 var Command.requiredPermissionLevel: Permission
     get() {
-        val setLevel = CommandsContainerPropertyStore.setPermissions.toList()
-                .firstOrNull { this in it.first.commands }?.second ?: DEFAULT_REQUIRED_PERMISSION
+        val setLevel = setPermissions.toList()
+                .firstOrNull { this in it.first.commands }?.second
 
-        val cmdLevel = commandPermissions[this] ?: DEFAULT_REQUIRED_PERMISSION
+        val cmdLevel = commandPermissions[this]
 
-        return if(cmdLevel < setLevel) cmdLevel else setLevel
+        if(cmdLevel != null) return cmdLevel
+        if(setLevel != null) return setLevel
+        return DEFAULT_REQUIRED_PERMISSION
     }
-    set(value) { commandPermissions[this] = value }
+    set(value) {
+        commandPermissions[this] = value
+    }
