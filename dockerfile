@@ -28,6 +28,6 @@ RUN apk add --no-cache bash
 
 COPY config $HOME/config
 COPY --from=wait-for-it /usr/bin/wait-for-it /usr/bin/wait-for-it
-COPY --from=build $HOME/target/tphbot*-jar-with-dependencies.jar $HOME/tphbot.jar
+COPY --from=build $HOME/target/hangoutbot*-jar-with-dependencies.jar $HOME/hangoutbot.jar
 
 ENTRYPOINT [ "/bin/bash", "-c" ]

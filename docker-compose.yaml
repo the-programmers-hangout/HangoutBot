@@ -16,7 +16,7 @@ services:
     depends_on:
       - db
     build: .
-    command: ["/usr/bin/wait-for-it db:3306 -- java -jar tphbot.jar"]
+    command: ["/usr/bin/wait-for-it db:3306 -- java -jar hangoutbot.jar"]
     environment:
       DB_URL: db:3306
       DB_NAME: tphbot
