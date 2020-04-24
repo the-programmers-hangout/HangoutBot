@@ -4,7 +4,6 @@ package me.markhc.hangoutbot.preconditions
 import me.aberrantfox.kjdautils.api.annotation.Precondition
 import me.aberrantfox.kjdautils.extensions.jda.toMember
 import me.aberrantfox.kjdautils.internal.command.*
-import me.markhc.hangoutbot.extensions.CommandsContainerPropertyStore
 import me.markhc.hangoutbot.extensions.commandPermissions
 import me.markhc.hangoutbot.extensions.requiredPermissionLevel
 import me.markhc.hangoutbot.extensions.setPermissions
