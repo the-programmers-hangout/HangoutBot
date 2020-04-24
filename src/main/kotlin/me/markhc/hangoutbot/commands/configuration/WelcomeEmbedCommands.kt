@@ -2,7 +2,7 @@ package me.markhc.hangoutbot.commands.configuration
 
 import me.aberrantfox.kjdautils.api.annotation.CommandSet
 import me.aberrantfox.kjdautils.api.dsl.command.commands
-import me.aberrantfox.kjdautils.internal.arguments.TextChannelArg
+import me.markhc.hangoutbot.arguments.TextChannelArg
 import me.markhc.hangoutbot.extensions.requiredPermissionLevel
 import me.markhc.hangoutbot.services.Configuration
 import me.markhc.hangoutbot.services.GuildConfiguration
