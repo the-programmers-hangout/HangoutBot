@@ -13,7 +13,7 @@ enum class Permission {
     Everyone
 }
 
-val DEFAULT_REQUIRED_PERMISSION = Permission.GuildOwner
+val DEFAULT_REQUIRED_PERMISSION = Permission.Everyone
 
 @Service
 class PermissionsService(private val logger: KLogger, private val configuration: Configuration) {
