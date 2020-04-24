@@ -1,6 +1,7 @@
 package me.markhc.hangoutbot.services
 
 import me.aberrantfox.kjdautils.api.annotation.Service
+import mu.KLogger
 import net.dv8tion.jda.api.entities.Member
 import org.jetbrains.exposed.sql.transactions.transaction
 
@@ -15,8 +16,13 @@ enum class Permission {
 val DEFAULT_REQUIRED_PERMISSION = Permission.GuildOwner
 
 @Service
-class PermissionsService(private val configuration: Configuration) {
-    fun hasClearance(member: Member, requiredPermissionLevel: Permission) = member.getPermissionLevel().ordinal <= requiredPermissionLevel.ordinal
+class PermissionsService(private val logger: KLogger, private val configuration: Configuration) {
+    fun hasClearance(member: Member, requiredPermissionLevel: Permission): Boolean {
+
+        logger.debug { "Required Permission Level: $requiredPermissionLevel, Member Permission Level ${member.getPermissionLevel()}" }
+
+        return member.getPermissionLevel().ordinal <= requiredPermissionLevel.ordinal
+    }
     fun getPermissionLevel(member: Member) = member.getPermissionLevel().ordinal
 
     private fun Member.getPermissionLevel() =
