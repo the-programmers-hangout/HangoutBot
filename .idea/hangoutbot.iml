@@ -22,8 +22,8 @@
     </facet>
   </component>
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_5">
-    <output url="file://$MODULE_DIR$/../target/classes" />
-    <output-test url="file://$MODULE_DIR$/../target/test-classes" />
+    <output url="file://$MODULE_DIR$/target/classes" />
+    <output-test url="file://$MODULE_DIR$/target/test-classes" />
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/../src/main/kotlin" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../src/main/resources" type="java-resource" />
@@ -32,6 +32,8 @@
       <excludeFolder url="file://$MODULE_DIR$/target" />
       <excludeFolder url="file://$MODULE_DIR$/../target" />
     </content>
+    <content url="file://$MODULE_DIR$/../src/main/kotlin" />
+    <content url="file://$MODULE_DIR$/../src/main/resources" />
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Maven: org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.72" level="project" />
@@ -68,15 +70,8 @@
     <orderEntry type="library" name="Maven: com.google.j2objc:j2objc-annotations:1.3" level="project" />
     <orderEntry type="library" name="Maven: org.jetbrains.kotlin:kotlin-reflect:1.3.61" level="project" />
     <orderEntry type="library" name="Maven: com.beust:klaxon:5.2" level="project" />
-    <orderEntry type="library" name="Maven: org.jetbrains.exposed:exposed-core:0.23.1" level="project" />
-    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.25" level="project" />
-    <orderEntry type="library" name="Maven: org.jetbrains.exposed:exposed-dao:0.23.1" level="project" />
-    <orderEntry type="library" name="Maven: org.jetbrains.exposed:exposed-jdbc:0.23.1" level="project" />
-    <orderEntry type="library" name="Maven: org.jetbrains.exposed:exposed-jodatime:0.23.1" level="project" />
-    <orderEntry type="library" name="Maven: joda-time:joda-time:2.10.5" level="project" />
-    <orderEntry type="library" name="Maven: mysql:mysql-connector-java:8.0.19" level="project" />
-    <orderEntry type="library" name="Maven: com.google.protobuf:protobuf-java:3.6.1" level="project" />
     <orderEntry type="library" name="Maven: io.github.microutils:kotlin-logging:1.7.9" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.29" level="project" />
     <orderEntry type="library" name="Maven: org.jetbrains.kotlin:kotlin-stdlib-common:1.3.70" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-simple:1.7.30" level="project" />
   </component>

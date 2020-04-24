@@ -3,18 +3,15 @@ package me.markhc.hangoutbot.commands.configuration
 import me.aberrantfox.kjdautils.api.annotation.CommandSet
 import me.aberrantfox.kjdautils.api.dsl.command.commands
 import me.markhc.hangoutbot.extensions.requiredPermissionLevel
-import me.markhc.hangoutbot.services.GuildConfiguration
 import me.markhc.hangoutbot.services.Permission
-import me.markhc.hangoutbot.services.findOrCreate
-import org.jetbrains.exposed.sql.transactions.transaction
 import me.aberrantfox.kjdautils.internal.arguments.WordArg
+import me.aberrantfox.kjdautils.internal.di.PersistenceService
 import me.markhc.hangoutbot.locale.Messages
 import me.markhc.hangoutbot.arguments.RoleArg
-import me.markhc.hangoutbot.services.GuildConfigurationTable
-import org.jetbrains.exposed.sql.deleteWhere
+import me.markhc.hangoutbot.dataclasses.GuildConfigurations
 
 @CommandSet("GuildConfiguration")
-fun guildConfigurationCommands() = commands {
+fun guildConfigurationCommands(config: GuildConfigurations, persistence: PersistenceService) = commands {
     requiredPermissionLevel = Permission.GuildOwner
 
     command("setadminrole") {
@@ -22,12 +19,11 @@ fun guildConfigurationCommands() = commands {
         execute(RoleArg) {
             val (role) = it.args
             val guildId = it.guild?.id ?: return@execute it.respond(Messages.COMMAND_NOT_SUPPORTED_IN_DMS)
+            val guild = config.getGuildConfig(guildId)
 
-            transaction {
-                val guild = GuildConfiguration.findOrCreate(guildId)
+            guild.adminRoleName = role.name
+            persistence.save(config)
 
-                guild.adminRoleName = role.name
-            }
             return@execute it.respond("Administrator role set to \"${role.name}\"")
         }
     }
@@ -37,12 +33,11 @@ fun guildConfigurationCommands() = commands {
         execute(RoleArg) {
             val (role) = it.args
             val guildId = it.guild?.id ?: return@execute it.respond(Messages.COMMAND_NOT_SUPPORTED_IN_DMS)
+            val guild = config.getGuildConfig(guildId)
 
-            transaction {
-                val guild = GuildConfiguration.findOrCreate(guildId)
+            guild.staffRoleName = role.name
+            persistence.save(config)
 
-                guild.staffRoleName = role.name
-            }
             return@execute it.respond("Staff role set to \"${role.name}\"")
         }
     }
@@ -52,13 +47,12 @@ fun guildConfigurationCommands() = commands {
         execute(WordArg("prefix")) {
             val (prefix) = it.args
             val guildId = it.guild?.id ?: return@execute it.respond(Messages.COMMAND_NOT_SUPPORTED_IN_DMS)
+            val guild = config.getGuildConfig(guildId)
 
-            transaction {
-                val guild = GuildConfiguration.findOrCreate(guildId)
-
-                guild.prefix = prefix
-            }
+            guild.prefix = prefix
             it.discord.configuration.prefix = prefix
+
+            persistence.save(config)
 
             return@execute it.respond("Guild prefix set to \"${prefix}\"")
         }
@@ -67,22 +61,17 @@ fun guildConfigurationCommands() = commands {
     command("resetconfig") {
         description = "Resets the guild configuration to its default state"
         execute {
-            it.guild ?: return@execute it.respond(Messages.COMMAND_NOT_SUPPORTED_IN_DMS)
+            val guildId = it.guild?.id ?: return@execute it.respond(Messages.COMMAND_NOT_SUPPORTED_IN_DMS)
 
-            transaction {
-                val guild = GuildConfiguration.findOrCreate(it.guild!!.id)
+            val guild = config.getGuildConfig(guildId)
 
-                guild.delete()
-            }
+            guild.reset()
+            persistence.save(config)
 
-            transaction {
-                val guild = GuildConfiguration.findOrCreate(it.guild!!.id)
+            it.discord.configuration.prefix = guild.prefix
+            it.discord.configuration.reactToCommands = guild.reactToCommands
 
-                it.discord.configuration.prefix = guild.prefix
-                it.discord.configuration.reactToCommands = guild.reactToCommands
-            }
-
-            it.respond("Guild configuration has been reset. Bot prefix is now ${it.discord.configuration.prefix}")
+            it.respond("Guild configuration, except bot prefix, has been reset.")
         }
     }
 
@@ -91,12 +80,12 @@ fun guildConfigurationCommands() = commands {
         execute() {
             val guildId = it.guild?.id ?: return@execute it.respond(Messages.COMMAND_NOT_SUPPORTED_IN_DMS)
 
-            transaction {
-                val guild = GuildConfiguration.findOrCreate(guildId)
+            val guild = config.getGuildConfig(guildId)
 
-                guild.reactToCommands = !guild.reactToCommands
-                it.discord.configuration.reactToCommands = guild.reactToCommands
-            }
+            guild.reactToCommands = !guild.reactToCommands
+            it.discord.configuration.reactToCommands = guild.reactToCommands
+
+            persistence.save(config)
 
             return@execute it.respond("Bot reactions to commands are now ${if(it.discord.configuration.reactToCommands) "enabled" else "disabled"}")
         }

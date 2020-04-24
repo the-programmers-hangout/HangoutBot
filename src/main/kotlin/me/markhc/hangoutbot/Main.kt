@@ -16,7 +16,6 @@ fun main(args: Array<String>) {
             val logger = KotlinLogging.logger {}
 
             startBot(configuration.token) {
-                createDatabaseSchema(configuration)
                 registerInjectionObject(configuration, logger)
 
                 configure {
