@@ -107,6 +107,7 @@ fun roleCommands(config: GuildConfigurations, persistence: PersistenceService) =
                 if(containsIgnoreCase(category.value, role.id)) {
                     return@execute removeRoles(guild, member, category.value).also {
                         grantRole(guild, member, role)
+                        event.respond("Granted \"${role.name}\" to ${member.effectiveName}")
                     }
                 }
             }
@@ -128,7 +129,8 @@ fun roleCommands(config: GuildConfigurations, persistence: PersistenceService) =
 
             guildConfig.grantableRoles.forEach {category ->
                 if(containsIgnoreCase(category.value, role.id)) {
-                    return@execute removeRoles(guild, member, category.value)
+                    removeRoles(guild, member, category.value)
+                    return@execute event.respond("Revoked \"${role.name}\" from ${member.effectiveName}")
                 }
             }
 
@@ -140,7 +142,7 @@ fun roleCommands(config: GuildConfigurations, persistence: PersistenceService) =
 private fun removeRoles(guild: Guild, member: Member, roles: List<String>) {
     // TODO: Perhaps we should check if the user has more than 1 color role
     //       and remove all of them instead of just 1
-    member.roles.find { it.name in roles }?.let {
+    member.roles.find { it.id in roles }?.let {
         guild.removeRoleFromMember(member, it).queue()
     }
 }
