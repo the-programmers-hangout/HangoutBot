@@ -10,8 +10,8 @@ import mu.KLogger
 
 @Precondition
 fun produceHasPermissionPrecondition(logger: KLogger, permissionsService: PermissionsService) = precondition {
-    val command = it.container[it.commandStruct.commandName]
-    val requiredPermissionLevel = command?.requiredPermissionLevel ?: DEFAULT_REQUIRED_PERMISSION
+    val command = it.container[it.commandStruct.commandName] ?: return@precondition Fail()
+    val requiredPermissionLevel = command.requiredPermissionLevel ?: DEFAULT_REQUIRED_PERMISSION
     val guild = it.guild!!
     val member = it.author.toMember(guild)!!
 
