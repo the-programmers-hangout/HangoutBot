@@ -37,6 +37,8 @@ fun macroManagementCommands(config: GuildConfigurations, persistence: Persistenc
             }
             persistence.save(config)
 
+            addMacro(macroName, macroMessage)
+
             return@execute it.respond("OK. **$macroName** (category **${key ?: category}**) will respond with: ```\n$macroMessage\n```")
         }
     }
@@ -92,4 +94,8 @@ fun buildMacroEmbed(macros: MutableMap<String, MutableMap<String, String>>) = em
             value = it.value.toList().sortedBy { it.first }.joinToString { it.first }
         }
     }
+}
+
+fun addMacro(macroName: String, macroMessage: String) {
+  // TODO
 }
