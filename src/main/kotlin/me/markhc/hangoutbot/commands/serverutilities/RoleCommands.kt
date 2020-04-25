@@ -3,6 +3,7 @@ package me.markhc.hangoutbot.commands.serverutilities
 import me.aberrantfox.kjdautils.api.annotation.CommandSet
 import me.aberrantfox.kjdautils.api.dsl.command.commands
 import me.aberrantfox.kjdautils.api.dsl.embed
+import me.aberrantfox.kjdautils.extensions.jda.fullName
 import me.aberrantfox.kjdautils.internal.arguments.WordArg
 import me.aberrantfox.kjdautils.internal.di.PersistenceService
 import me.markhc.hangoutbot.arguments.LowerRankedMemberArg
@@ -107,7 +108,7 @@ fun roleCommands(config: GuildConfigurations, persistence: PersistenceService) =
                 if(containsIgnoreCase(category.value, role.id)) {
                     return@execute removeRoles(guild, member, category.value).also {
                         grantRole(guild, member, role)
-                        event.respond("Granted \"${role.name}\" to ${member.effectiveName}")
+                        event.respond("Granted \"${role.name}\" to ${member.fullName()}")
                     }
                 }
             }
@@ -130,7 +131,7 @@ fun roleCommands(config: GuildConfigurations, persistence: PersistenceService) =
             guildConfig.grantableRoles.forEach {category ->
                 if(containsIgnoreCase(category.value, role.id)) {
                     removeRoles(guild, member, category.value)
-                    return@execute event.respond("Revoked \"${role.name}\" from ${member.effectiveName}")
+                    return@execute event.respond("Revoked \"${role.name}\" from ${member.fullName()}")
                 }
             }
 
