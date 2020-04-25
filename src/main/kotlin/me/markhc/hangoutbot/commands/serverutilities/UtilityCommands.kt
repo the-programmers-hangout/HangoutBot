@@ -21,8 +21,6 @@ import kotlin.random.Random
 
 @CommandSet("Utility")
 fun utilityCommands(guildConfigs: GuildConfigurations) = commands {
-    requiredPermissionLevel = Permission.Everyone
-
     command("ping") {
         description = "pong"
         execute {

@@ -18,9 +18,9 @@ import kotlin.random.Random
 
 @CommandSet("StaffUtility")
 fun staffUtilityCommands(config: GuildConfigurations, persistence: PersistenceService) = commands {
-    requiredPermissionLevel = Permission.Staff
 
     command("echo") {
+        requiredPermissionLevel = Permission.Staff
         description = "Echo a message to a channel."
         execute(TextChannelArg.makeOptional { it.channel as TextChannel }, SentenceArg) {
             val (target, message) = it.args
@@ -30,6 +30,7 @@ fun staffUtilityCommands(config: GuildConfigurations, persistence: PersistenceSe
     }
 
     command("nuke") {
+        requiredPermissionLevel = Permission.Staff
         description = "Delete 2 - 99 past messages in the given channel (default is the invoked channel)"
         execute(TextChannelArg.makeOptional { it.channel as TextChannel },
                 IntegerArg) {

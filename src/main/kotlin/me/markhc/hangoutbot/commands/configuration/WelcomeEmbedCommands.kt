@@ -11,9 +11,8 @@ import me.markhc.hangoutbot.services.Permission
 
 @CommandSet("WelcomeEmbeds")
 fun welcomeEmbedCommands(config: GuildConfigurations, persistence: PersistenceService) = commands {
-    requiredPermissionLevel = Permission.Administrator
-
     command("togglewelcome") {
+        requiredPermissionLevel = Permission.Administrator
         description = "Toggles the display of welcome messages upon guild user join."
         execute {
             val guildId = it.guild?.id ?: return@execute it.respond(Messages.COMMAND_NOT_SUPPORTED_IN_DMS)
@@ -27,6 +26,7 @@ fun welcomeEmbedCommands(config: GuildConfigurations, persistence: PersistenceSe
     }
 
     command("setwelcomechannel") {
+        requiredPermissionLevel = Permission.Administrator
         description = "Sets the channel used for welcome embeds."
         execute(TextChannelArg("Channel")) {
             val guildId = it.guild?.id ?: return@execute it.respond(Messages.COMMAND_NOT_SUPPORTED_IN_DMS)
@@ -40,6 +40,7 @@ fun welcomeEmbedCommands(config: GuildConfigurations, persistence: PersistenceSe
     }
 
     command("getwelcomechannel") {
+        requiredPermissionLevel = Permission.Administrator
         description = "Gets the channel used for welcome embeds."
         execute {
             val guildId = it.guild?.id ?: return@execute it.respond(Messages.COMMAND_NOT_SUPPORTED_IN_DMS)
