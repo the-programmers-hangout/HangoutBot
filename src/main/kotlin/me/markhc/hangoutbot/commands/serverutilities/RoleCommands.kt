@@ -30,6 +30,10 @@ fun roleCommands(config: GuildConfigurations, persistence: PersistenceService) =
 
             val guildConfig = config.getGuildConfig(guildId)
 
+            if(guildConfig.grantableRoles.any { it.value.contains(role.name) }) {
+                return@execute event.respond("Role is already grantable")
+            }
+
             val key = guildConfig.grantableRoles.keys.find {
                 it.compareTo(category, true) == 0
             }
