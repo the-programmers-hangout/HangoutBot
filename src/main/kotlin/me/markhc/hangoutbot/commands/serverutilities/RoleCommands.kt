@@ -84,13 +84,13 @@ fun roleCommands(config: GuildConfigurations, persistence: PersistenceService) =
         requiredPermissionLevel = Permission.Staff
         description = "Lists the available grantable roles."
         execute { event ->
-            val guildId = event.guild?.id ?: return@execute event.respond(Messages.COMMAND_NOT_SUPPORTED_IN_DMS)
+            val guild = event.guild ?: return@execute event.respond(Messages.COMMAND_NOT_SUPPORTED_IN_DMS)
 
-            val guildConfig = config.getGuildConfig(guildId)
+            val guildConfig = config.getGuildConfig(guild.id)
 
             if(guildConfig.grantableRoles.isEmpty()) return@execute event.respond("No roles set")
 
-            event.respond(buildRolesEmbed(guildConfig.grantableRoles))
+            event.respond(buildRolesEmbed(guild, guildConfig.grantableRoles))
         }
     }
 
@@ -162,7 +162,7 @@ fun containsIgnoreCase(list: List<String>, value: String): Boolean {
     return false
 }
 
-fun buildRolesEmbed(roles: Map<String, List<String>>): MessageEmbed {
+fun buildRolesEmbed(guild: Guild, roles: Map<String, List<String>>): MessageEmbed {
     return embed {
         title = "Grantable roles"
         color = Color.CYAN
@@ -170,7 +170,7 @@ fun buildRolesEmbed(roles: Map<String, List<String>>): MessageEmbed {
         roles.iterator().forEach {
             addInlineField(
                     name = it.key,
-                    value = (it.value as List<*>).filterIsInstance<String>().joinToString("\n"))
+                    value = (it.value as List<*>).filterIsInstance<String>().map {id -> guild.getRoleById(id)?.name }.joinToString("\n"))
         }
 
     }
