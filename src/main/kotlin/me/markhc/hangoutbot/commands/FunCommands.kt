@@ -62,6 +62,7 @@ fun funCommands() = commands {
         description = "Rolls a number in a range (default 1-100)"
         execute(IntegerArg("Min").makeOptional{1}, IntegerArg("Max").makeOptional { 100 }) {
             val (a, b) = it.args
+            if(a == b) return@execute it.respond("$a")
             val result = if(a > b) Random.nextInt(b, a) else Random.nextInt(a, b)
 
             it.respond("$result")
