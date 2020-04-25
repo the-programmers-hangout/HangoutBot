@@ -39,9 +39,9 @@ fun roleCommands(config: GuildConfigurations, persistence: PersistenceService) =
             }
 
             if(key == null) {
-                guildConfig.grantableRoles[category] = mutableListOf(role.name);
+                guildConfig.grantableRoles[category] = mutableListOf(role.id);
             } else {
-                guildConfig.grantableRoles[key]!!.add(role.name)
+                guildConfig.grantableRoles[key]!!.add(role.id)
             }
 
             persistence.save(config)
@@ -64,7 +64,7 @@ fun roleCommands(config: GuildConfigurations, persistence: PersistenceService) =
                 it.compareTo(category, true) == 0
             } ?: return@execute event.respond("Category \"$category\" not found")
 
-            val removed = guildConfig.grantableRoles[key]!!.remove(role.name)
+            val removed = guildConfig.grantableRoles[key]!!.remove(role.id)
 
             if(guildConfig.grantableRoles[key].isNullOrEmpty()) {
                 guildConfig.grantableRoles.remove(key)
@@ -104,14 +104,14 @@ fun roleCommands(config: GuildConfigurations, persistence: PersistenceService) =
             val guildConfig = config.getGuildConfig(guild.id)
 
             guildConfig.grantableRoles.forEach {category ->
-                if(containsIgnoreCase(category.value, role.name)) {
+                if(containsIgnoreCase(category.value, role.id)) {
                     return@execute removeRoles(guild, member, category.value).also {
                         grantRole(guild, member, role)
                     }
                 }
             }
 
-            event.respond("\"$role.name\" is not a grantable role")
+            event.respond("\"${role.name}\" is not a grantable role")
         }
     }
 
@@ -127,7 +127,7 @@ fun roleCommands(config: GuildConfigurations, persistence: PersistenceService) =
             val guildConfig = config.getGuildConfig(guild.id)
 
             guildConfig.grantableRoles.forEach {category ->
-                if(containsIgnoreCase(category.value, role.name)) {
+                if(containsIgnoreCase(category.value, role.id)) {
                     return@execute removeRoles(guild, member, category.value)
                 }
             }

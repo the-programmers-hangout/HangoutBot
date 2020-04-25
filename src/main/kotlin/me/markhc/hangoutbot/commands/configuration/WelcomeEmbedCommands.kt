@@ -32,7 +32,7 @@ fun welcomeEmbedCommands(config: GuildConfigurations, persistence: PersistenceSe
             val guildId = it.guild?.id ?: return@execute it.respond(Messages.COMMAND_NOT_SUPPORTED_IN_DMS)
             val guild = config.getGuildConfig(guildId)
 
-            guild.welcomeChannel = it.args.first.name
+            guild.welcomeChannel = it.args.first.id
             persistence.save(config)
 
             it.respond("Welcome channel set to #${it.args.first.name}")
