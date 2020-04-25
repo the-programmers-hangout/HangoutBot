@@ -8,7 +8,7 @@ data class GuildConfigurations(val guildConfigurations: MutableList<GuildConfigu
         val guild = guildConfigurations.find { it.guildId == guildId }
 
         if(guild != null) {
-           return guild
+            return guild
         }
 
         guildConfigurations.add(GuildConfiguration(guildId, "+"))
@@ -24,7 +24,8 @@ data class GuildConfiguration(val guildId: String = "",
                               var welcomeChannel: String = "",
                               var staffRoleName: String = "",
                               var adminRoleName: String = "",
-                              var grantableRoles: MutableMap<String, MutableList<String>> = mutableMapOf()) {
+                              var grantableRoles: MutableMap<String, MutableList<String>> = mutableMapOf(),
+                              var macros: MutableMap<String, MutableMap<String, String>> = mutableMapOf()) {
     fun reset() {
         reactToCommands = false
         welcomeEmbeds = false
@@ -32,5 +33,6 @@ data class GuildConfiguration(val guildId: String = "",
         staffRoleName = ""
         adminRoleName = ""
         grantableRoles = mutableMapOf()
+        macros = mutableMapOf()
     }
 }
