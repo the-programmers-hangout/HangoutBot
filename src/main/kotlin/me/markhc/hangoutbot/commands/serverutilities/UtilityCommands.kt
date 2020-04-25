@@ -65,19 +65,6 @@ fun utilityCommands(guildConfigs: GuildConfigurations) = commands {
         }
     }
 
-    command("viewcreationdate") {
-        description = "Displays when a user was created"
-        execute(UserArg) {
-            val member = it.args.first
-
-            val dateFormat = SimpleDateFormat("yyyy-MM-dd")
-            val joinDateParsed = dateFormat.parse(member.timeCreated.toString())
-            val joinDate = dateFormat.format(joinDateParsed)
-
-            it.respond("${member.fullName()}'s creation date: $joinDate")
-        }
-    }
-
     command("avatar") {
         description = "Gets the avatar from the given user"
         execute(UserArg) {
