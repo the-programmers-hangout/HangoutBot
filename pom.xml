@@ -16,9 +16,15 @@
         <kutils.version>0.14.0</kutils.version>
         <mavenjar.version>3.1.0</mavenjar.version>
         <mavenassembly.version>2.6</mavenassembly.version>
+        <cowsay.version>1.0.3</cowsay.version>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>com.github.ricksbrown</groupId>
+            <artifactId>cowsay</artifactId>
+            <version>${cowsay.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-stdlib-jdk8</artifactId>
