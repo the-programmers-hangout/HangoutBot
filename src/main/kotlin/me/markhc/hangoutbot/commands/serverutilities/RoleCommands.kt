@@ -20,18 +20,18 @@ import java.awt.Color
 
 @CommandSet("Roles")
 fun roleCommands(config: GuildConfigurations, persistence: PersistenceService) = commands {
-    command("addgrantablerole") {
+    command("makerolegrantable") {
         requiredPermissionLevel = Permission.Administrator
         description = "Adds a role to the list of grantable roles."
-        execute(WordArg("Category"), RoleArg) { event ->
-            val (category, role) = event.args
+        execute(RoleArg, WordArg("Category").makeOptional { "Default" }) { event ->
+            val (role, category) = event.args
 
             val guildId = event.guild?.id
                     ?: return@execute event.respond(Messages.COMMAND_NOT_SUPPORTED_IN_DMS)
 
             val guildConfig = config.getGuildConfig(guildId)
 
-            if(guildConfig.grantableRoles.any { it.value.contains(role.name) }) {
+            if(guildConfig.grantableRoles.any { it.value.contains(role.id) }) {
                 return@execute event.respond("Role is already grantable")
             }
 
@@ -54,29 +54,26 @@ fun roleCommands(config: GuildConfigurations, persistence: PersistenceService) =
     command("removegrantablerole") {
         requiredPermissionLevel = Permission.Administrator
         description = "Removes a role to the list of grantable roles."
-        execute(WordArg("Category"), RoleArg) { event ->
-            val (category, role) = event.args
+        execute(RoleArg) { event ->
+            val (role) = event.args
 
             val guildId = event.guild?.id ?: return@execute event.respond(Messages.COMMAND_NOT_SUPPORTED_IN_DMS)
 
             val guildConfig = config.getGuildConfig(guildId)
 
-            val key = guildConfig.grantableRoles.keys.find {
-                it.compareTo(category, true) == 0
-            } ?: return@execute event.respond("Category \"$category\" not found")
+            val entry = guildConfig.grantableRoles.entries.find {
+                it.value.contains(role.id)
+            } ?: return@execute event.respond("Role ${role.name} is not a grantable role.")
 
-            val removed = guildConfig.grantableRoles[key]!!.remove(role.id)
+            entry.value.remove(role.id)
 
-            if(guildConfig.grantableRoles[key].isNullOrEmpty()) {
-                guildConfig.grantableRoles.remove(key)
+            if(entry.value.isEmpty()) {
+                guildConfig.grantableRoles.remove(entry.key)
             }
 
             persistence.save(config)
 
-            if(removed)
-                event.respond("Removed \"${role.name}\" from the category \"$category\".")
-            else
-                event.respond("Role \"${role.name}\" not found in category \"$category\".")
+            event.respond("Removed \"${role.name}\" from the list of grantable roles.")
         }
     }
 
