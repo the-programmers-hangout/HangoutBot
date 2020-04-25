@@ -23,7 +23,7 @@ fun roleCommands(config: GuildConfigurations, persistence: PersistenceService) =
     command("makerolegrantable") {
         requiredPermissionLevel = Permission.Administrator
         description = "Adds a role to the list of grantable roles."
-        execute(RoleArg, WordArg("Category").makeOptional { "Default" }) { event ->
+        execute(RoleArg, WordArg("Category")) { event ->
             val (role, category) = event.args
 
             val guildId = event.guild?.id
