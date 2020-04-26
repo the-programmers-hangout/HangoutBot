@@ -1,9 +1,10 @@
 version: '3'
 
 services:
-  tphbot:
+  bot:
     build: .
     volumes:
       - guild_data:/home/app/data
+    restart: unless-stopped
 volumes:
   guild_data: {}
