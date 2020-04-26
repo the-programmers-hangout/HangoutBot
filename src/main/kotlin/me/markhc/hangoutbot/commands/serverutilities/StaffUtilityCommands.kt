@@ -9,6 +9,7 @@ import me.markhc.hangoutbot.arguments.LowerRankedMemberArg
 import me.markhc.hangoutbot.arguments.RoleArg
 import me.markhc.hangoutbot.arguments.TextChannelArg
 import me.markhc.hangoutbot.dataclasses.GuildConfigurations
+import me.markhc.hangoutbot.extensions.availableThroughDMs
 import me.markhc.hangoutbot.extensions.requiredPermissionLevel
 import me.markhc.hangoutbot.locale.Messages
 import me.markhc.hangoutbot.services.Permission
@@ -21,6 +22,7 @@ fun staffUtilityCommands(config: GuildConfigurations, persistence: PersistenceSe
 
     command("echo") {
         requiredPermissionLevel = Permission.Staff
+        availableThroughDMs = true
         description = "Echo a message to a channel."
         execute(TextChannelArg.makeOptional { it.channel as TextChannel }, SentenceArg) {
             val (target, message) = it.args
@@ -31,6 +33,7 @@ fun staffUtilityCommands(config: GuildConfigurations, persistence: PersistenceSe
 
     command("nuke") {
         requiredPermissionLevel = Permission.Staff
+        availableThroughDMs = true
         description = "Delete 2 - 99 past messages in the given channel (default is the invoked channel)"
         execute(TextChannelArg.makeOptional { it.channel as TextChannel },
                 IntegerArg) {

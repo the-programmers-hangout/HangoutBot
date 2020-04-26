@@ -26,10 +26,7 @@ fun roleCommands(config: GuildConfigurations, persistence: PersistenceService) =
         execute(RoleArg, WordArg("Category")) { event ->
             val (role, category) = event.args
 
-            val guildId = event.guild?.id
-                    ?: return@execute event.respond(Messages.COMMAND_NOT_SUPPORTED_IN_DMS)
-
-            val guildConfig = config.getGuildConfig(guildId)
+            val guildConfig = config.getGuildConfig(event.guild!!.id)
 
             if(guildConfig.grantableRoles.any { it.value.contains(role.id) }) {
                 return@execute event.respond("Role is already grantable")
@@ -57,9 +54,7 @@ fun roleCommands(config: GuildConfigurations, persistence: PersistenceService) =
         execute(RoleArg) { event ->
             val (role) = event.args
 
-            val guildId = event.guild?.id ?: return@execute event.respond(Messages.COMMAND_NOT_SUPPORTED_IN_DMS)
-
-            val guildConfig = config.getGuildConfig(guildId)
+            val guildConfig = config.getGuildConfig(event.guild!!.id)
 
             val entry = guildConfig.grantableRoles.entries.find {
                 it.value.contains(role.id)
@@ -81,13 +76,11 @@ fun roleCommands(config: GuildConfigurations, persistence: PersistenceService) =
         requiredPermissionLevel = Permission.Staff
         description = "Lists the available grantable roles."
         execute { event ->
-            val guild = event.guild ?: return@execute event.respond(Messages.COMMAND_NOT_SUPPORTED_IN_DMS)
-
-            val guildConfig = config.getGuildConfig(guild.id)
+            val guildConfig = config.getGuildConfig(event.guild!!.id)
 
             if(guildConfig.grantableRoles.isEmpty()) return@execute event.respond("No roles set")
 
-            event.respond(buildRolesEmbed(guild, guildConfig.grantableRoles))
+            event.respond(buildRolesEmbed(event.guild!!, guildConfig.grantableRoles))
         }
     }
 
@@ -96,9 +89,7 @@ fun roleCommands(config: GuildConfigurations, persistence: PersistenceService) =
         description = "Grants a role to a lower ranked member or yourself"
         execute(LowerRankedMemberArg("Member").makeOptional { it.guild!!.getMember(it.author)!! }, RoleArg("GrantableRole")) { event ->
             val (member, role) = event.args
-
-            val guild = event.guild ?: return@execute event.respond(Messages.COMMAND_NOT_SUPPORTED_IN_DMS)
-
+            val guild = event.guild!!
             val guildConfig = config.getGuildConfig(guild.id)
 
             guildConfig.grantableRoles.forEach {category ->
@@ -119,10 +110,7 @@ fun roleCommands(config: GuildConfigurations, persistence: PersistenceService) =
         description = "Revokes a role from a lower ranked member or yourself"
         execute(LowerRankedMemberArg("Member").makeOptional { it.guild!!.getMember(it.author)!! }, RoleArg("GrantableRole")) { event ->
             val (member, role) = event.args
-
-            val guild = event.guild
-                    ?: return@execute event.respond(Messages.COMMAND_NOT_SUPPORTED_IN_DMS)
-
+            val guild = event.guild!!
             val guildConfig = config.getGuildConfig(guild.id)
 
             guildConfig.grantableRoles.forEach {category ->

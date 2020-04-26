@@ -7,6 +7,7 @@ import me.aberrantfox.kjdautils.internal.arguments.IntegerArg
 import me.aberrantfox.kjdautils.internal.arguments.SentenceArg
 import me.aberrantfox.kjdautils.internal.arguments.SplitterArg
 import me.aberrantfox.kjdautils.internal.arguments.WordArg
+import me.markhc.hangoutbot.extensions.availableThroughDMs
 import me.markhc.hangoutbot.locale.Messages
 
 import kotlin.random.Random
@@ -19,6 +20,7 @@ object CowsayData {
 fun funCommands() = commands {
     command("coin") {
         description = "Flip a coin (or coins)"
+        availableThroughDMs = true
         execute(IntegerArg("Coins").makeOptional { 1 }) {
             val (coins) = it.args
 
@@ -51,6 +53,7 @@ fun funCommands() = commands {
 
     command("flip") {
         description = "Choose one of "
+        availableThroughDMs = true
         execute(SplitterArg("Choice 1 | Choice 2 | ...")) {
             val (args) = it.args
             val choice = args[Random.nextInt(args.size)]
@@ -60,6 +63,7 @@ fun funCommands() = commands {
 
     command("roll") {
         description = "Rolls a number in a range (default 1-100)"
+        availableThroughDMs = true
         execute(IntegerArg("Min").makeOptional{1}, IntegerArg("Max").makeOptional { 100 }) {
             val (a, b) = it.args
             if(a == b) return@execute it.respond("$a")
@@ -71,6 +75,7 @@ fun funCommands() = commands {
 
     command("cowsay") {
         description = "Displays a cowsay with a given message. Run with no arguments to get a list of valid cows."
+        availableThroughDMs = true
         execute(WordArg("Cow").makeOptional { "" }, SentenceArg("Message").makeOptional { "" }) {
             val (arg0, arg1) = it.args
 

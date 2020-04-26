@@ -9,6 +9,7 @@ import me.aberrantfox.kjdautils.internal.di.PersistenceService
 import me.markhc.hangoutbot.locale.Messages
 import me.markhc.hangoutbot.arguments.RoleArg
 import me.markhc.hangoutbot.dataclasses.GuildConfigurations
+import me.markhc.hangoutbot.extensions.availableThroughDMs
 
 @CommandSet("GuildConfiguration")
 fun guildConfigurationCommands(config: GuildConfigurations, persistence: PersistenceService) = commands {
@@ -17,8 +18,7 @@ fun guildConfigurationCommands(config: GuildConfigurations, persistence: Persist
         description = "Sets the role that distinguishes an Administrator"
         execute(RoleArg) {
             val (role) = it.args
-            val guildId = it.guild?.id ?: return@execute it.respond(Messages.COMMAND_NOT_SUPPORTED_IN_DMS)
-            val guild = config.getGuildConfig(guildId)
+            val guild = config.getGuildConfig(it.guild!!.id)
 
             guild.adminRole = role.id
             persistence.save(config)
@@ -32,8 +32,7 @@ fun guildConfigurationCommands(config: GuildConfigurations, persistence: Persist
         description = "Sets the role that distinguishes an Administrator"
         execute(RoleArg) {
             val (role) = it.args
-            val guildId = it.guild?.id ?: return@execute it.respond(Messages.COMMAND_NOT_SUPPORTED_IN_DMS)
-            val guild = config.getGuildConfig(guildId)
+            val guild = config.getGuildConfig(it.guild!!.id)
 
             guild.staffRole = role.id
             persistence.save(config)
@@ -47,8 +46,7 @@ fun guildConfigurationCommands(config: GuildConfigurations, persistence: Persist
         description = "Sets the prefix used by the bot in this guild"
         execute(WordArg("prefix")) {
             val (prefix) = it.args
-            val guildId = it.guild?.id ?: return@execute it.respond(Messages.COMMAND_NOT_SUPPORTED_IN_DMS)
-            val guild = config.getGuildConfig(guildId)
+            val guild = config.getGuildConfig(it.guild!!.id)
 
             guild.prefix = prefix
             it.discord.configuration.prefix = prefix
@@ -63,9 +61,7 @@ fun guildConfigurationCommands(config: GuildConfigurations, persistence: Persist
         requiredPermissionLevel = Permission.GuildOwner
         description = "Resets the guild configuration to its default state"
         execute {
-            val guildId = it.guild?.id ?: return@execute it.respond(Messages.COMMAND_NOT_SUPPORTED_IN_DMS)
-
-            val guild = config.getGuildConfig(guildId)
+            val guild = config.getGuildConfig(it.guild!!.id)
 
             guild.reset()
             persistence.save(config)
@@ -81,9 +77,7 @@ fun guildConfigurationCommands(config: GuildConfigurations, persistence: Persist
         requiredPermissionLevel = Permission.GuildOwner
         description = "Sets the prefix used by the bot in this guild"
         execute() {
-            val guildId = it.guild?.id ?: return@execute it.respond(Messages.COMMAND_NOT_SUPPORTED_IN_DMS)
-
-            val guild = config.getGuildConfig(guildId)
+            val guild = config.getGuildConfig(it.guild!!.id)
 
             guild.reactToCommands = !guild.reactToCommands
             it.discord.configuration.reactToCommands = guild.reactToCommands

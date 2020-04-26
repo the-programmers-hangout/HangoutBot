@@ -15,8 +15,7 @@ fun welcomeEmbedCommands(config: GuildConfigurations, persistence: PersistenceSe
         requiredPermissionLevel = Permission.Administrator
         description = "Toggles the display of welcome messages upon guild user join."
         execute {
-            val guildId = it.guild?.id ?: return@execute it.respond(Messages.COMMAND_NOT_SUPPORTED_IN_DMS)
-            val guild = config.getGuildConfig(guildId)
+            val guild = config.getGuildConfig(it.guild!!.id)
 
             guild.welcomeEmbeds = !guild.welcomeEmbeds
             persistence.save(config)
@@ -29,8 +28,7 @@ fun welcomeEmbedCommands(config: GuildConfigurations, persistence: PersistenceSe
         requiredPermissionLevel = Permission.Administrator
         description = "Sets the channel used for welcome embeds."
         execute(TextChannelArg("Channel")) {
-            val guildId = it.guild?.id ?: return@execute it.respond(Messages.COMMAND_NOT_SUPPORTED_IN_DMS)
-            val guild = config.getGuildConfig(guildId)
+            val guild = config.getGuildConfig(it.guild!!.id)
 
             guild.welcomeChannel = it.args.first.id
             persistence.save(config)
@@ -43,8 +41,7 @@ fun welcomeEmbedCommands(config: GuildConfigurations, persistence: PersistenceSe
         requiredPermissionLevel = Permission.Administrator
         description = "Gets the channel used for welcome embeds."
         execute {
-            val guildId = it.guild?.id ?: return@execute it.respond(Messages.COMMAND_NOT_SUPPORTED_IN_DMS)
-            val guild = config.getGuildConfig(guildId)
+            val guild = config.getGuildConfig(it.guild!!.id)
 
             it.respond("Welcome channel is ${if(guild.welcomeChannel.isEmpty()) "<None>" else "#${guild.welcomeChannel}"}")
         }
