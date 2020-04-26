@@ -1,18 +1,40 @@
 package me.markhc.hangoutbot.commands.serverutilities
 
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import me.aberrantfox.kjdautils.api.annotation.CommandSet
 import me.aberrantfox.kjdautils.api.dsl.command.commands
+import me.aberrantfox.kjdautils.api.dsl.embed
 import me.aberrantfox.kjdautils.extensions.jda.fullName
+import me.aberrantfox.kjdautils.extensions.jda.sendPrivateMessage
+import me.aberrantfox.kjdautils.extensions.stdlib.convertToTimeString
 import me.aberrantfox.kjdautils.internal.arguments.MemberArg
+import me.aberrantfox.kjdautils.internal.arguments.TimeStringArg
 import me.aberrantfox.kjdautils.internal.arguments.UserArg
+import me.aberrantfox.kjdautils.internal.di.PersistenceService
 import me.markhc.hangoutbot.dataclasses.GuildConfigurations
+import me.markhc.hangoutbot.dataclasses.MuteEntry
 import me.markhc.hangoutbot.extensions.availableThroughDMs
-import me.markhc.hangoutbot.locale.Messages
-import me.markhc.hangoutbot.utilities.buildServerInfoEmbed
+import me.markhc.hangoutbot.utilities.*
+import net.dv8tion.jda.api.entities.Member
+import net.dv8tion.jda.api.entities.Role
+import org.joda.time.DateTime
+import org.joda.time.DateTimeZone
+import org.joda.time.Duration
+import org.joda.time.format.DateTimeFormat
 import java.text.SimpleDateFormat
+import java.util.*
+import java.util.concurrent.TimeUnit
+import java.util.logging.SimpleFormatter
+import kotlin.math.roundToLong
+import kotlin.time.hours
+import kotlin.time.milliseconds
+
+private val dateFormatter = DateTimeFormat.fullDateTime()
 
 @CommandSet("Utility")
-fun utilityCommands(guildConfigs: GuildConfigurations) = commands {
+fun utilityCommands(config: GuildConfigurations, persistence: PersistenceService) = commands {
     command("ping") {
         description = "pong"
         availableThroughDMs = true
@@ -35,11 +57,9 @@ fun utilityCommands(guildConfigs: GuildConfigurations) = commands {
         execute(MemberArg) {
             val member = it.args.first
 
-            val dateFormat = SimpleDateFormat("yyyy-MM-dd")
-            val joinDateParsed = dateFormat.parse(member.timeJoined.toString())
-            val joinDate = dateFormat.format(joinDateParsed)
+            val joinTime = DateTime(member.timeJoined.toInstant().toEpochMilli(), DateTimeZone.UTC)
 
-            it.respond("${member.fullName()}'s join date: $joinDate")
+            it.respond("${member.fullName()}'s join date: ${joinTime.toString(dateFormatter)}")
         }
     }
 
@@ -47,13 +67,11 @@ fun utilityCommands(guildConfigs: GuildConfigurations) = commands {
         description = "Displays when a user was created"
         availableThroughDMs = true
         execute(UserArg) {
-            val member = it.args.first
+            val user = it.args.first
 
-            val dateFormat = SimpleDateFormat("yyyy-MM-dd")
-            val joinDateParsed = dateFormat.parse(member.timeCreated.toString())
-            val joinDate = dateFormat.format(joinDateParsed)
+            val createdTime = DateTime(user.timeCreated.toInstant().toEpochMilli(), DateTimeZone.UTC)
 
-            it.respond("${member.fullName()}'s creation date: $joinDate")
+            it.respond("${user.fullName()}'s creation date: ${createdTime.toString(dateFormatter)}")
         }
     }
 
@@ -64,6 +82,40 @@ fun utilityCommands(guildConfigs: GuildConfigurations) = commands {
             val user = it.args.first
 
             it.respond("${user.avatarUrl}")
+        }
+    }
+
+    command("selfmute") {
+        description = "Mute yourself for an amout of time. Default is 1 hour. Max is 24 hours."
+        execute(TimeStringArg.makeOptional { 3600.0 }) {
+            val (timeInSeconds) = it.args
+            val guild = it.guild!!
+            val guildConfig = config.getGuildConfig(guild.id)
+
+            if(guildConfig.muteRole.isEmpty()) {
+                return@execute it.respond("Sorry, this guild does not have a mute role.")
+            }
+
+            val role = guild.getRoleById(guildConfig.muteRole)
+                    ?: return@execute it.respond("Sorry, this guild does not have a mute role.")
+
+            val member = guild.getMember(it.author)!!
+
+            if(guildConfig.muteRole in member.roles.map { r -> r.id }.toList()) {
+                return@execute it.respond("Nice try, but you're already muted!")
+            }
+
+            val millis = timeInSeconds.roundToLong() * 1000
+            guildConfig.addMutedMember(member, millis)
+            persistence.save(config)
+
+            muteMemberWithTimer(member, role, millis) {
+                guildConfig.removeMutedMember(this)
+                persistence.save(config)
+                unmuteMember(this, role)
+            }
+
+            it.author.sendPrivateMessage(buildSelfMuteEmbed(member, millis))
         }
     }
 }

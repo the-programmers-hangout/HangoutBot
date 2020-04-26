@@ -41,6 +41,20 @@ fun guildConfigurationCommands(config: GuildConfigurations, persistence: Persist
         }
     }
 
+    command("setmuterole") {
+        requiredPermissionLevel = Permission.GuildOwner
+        description = "Sets the role used to mute an user"
+        execute(RoleArg) {
+            val (role) = it.args
+            val guild = config.getGuildConfig(it.guild!!.id)
+
+            guild.muteRole = role.id
+            persistence.save(config)
+
+            return@execute it.respond("Mute role set to \"${role.name}\"")
+        }
+    }
+
     command("setprefix") {
         requiredPermissionLevel = Permission.GuildOwner
         description = "Sets the prefix used by the bot in this guild"
@@ -54,22 +68,6 @@ fun guildConfigurationCommands(config: GuildConfigurations, persistence: Persist
             persistence.save(config)
 
             return@execute it.respond("Guild prefix set to \"${prefix}\"")
-        }
-    }
-
-    command("resetconfig") {
-        requiredPermissionLevel = Permission.GuildOwner
-        description = "Resets the guild configuration to its default state"
-        execute {
-            val guild = config.getGuildConfig(it.guild!!.id)
-
-            guild.reset()
-            persistence.save(config)
-
-            it.discord.configuration.prefix = guild.prefix
-            it.discord.configuration.reactToCommands = guild.reactToCommands
-
-            it.respond("Guild configuration, except bot prefix, has been reset.")
         }
     }
 

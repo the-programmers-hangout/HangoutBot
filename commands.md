@@ -14,21 +14,21 @@
 | roll     | (Min), (Max)                | Rolls a number in a range (default 1-100)                                                  |
 
 ## GuildConfiguration
-| Commands           | Arguments | Description                                         |
-| ------------------ | --------- | --------------------------------------------------- |
-| resetconfig        | <none>    | Resets the guild configuration to its default state |
-| setadminrole       | Role      | Sets the role that distinguishes an Administrator   |
-| setprefix          | prefix    | Sets the prefix used by the bot in this guild       |
-| setstaffrole       | Role      | Sets the role that distinguishes an Administrator   |
-| togglebotreactions | <none>    | Sets the prefix used by the bot in this guild       |
+| Commands           | Arguments | Description                                       |
+| ------------------ | --------- | ------------------------------------------------- |
+| setadminrole       | Role      | Sets the role that distinguishes an Administrator |
+| setmuterole        | Role      | Sets the role used to mute an user                |
+| setprefix          | prefix    | Sets the prefix used by the bot in this guild     |
+| setstaffrole       | Role      | Sets the role that distinguishes an Administrator |
+| togglebotreactions | <none>    | Sets the prefix used by the bot in this guild     |
 
 ## Roles
 | Commands            | Arguments               | Description                                           |
 | ------------------- | ----------------------- | ----------------------------------------------------- |
-| addgrantablerole    | Category, Role          | Adds a role to the list of grantable roles.           |
 | grant               | (Member), GrantableRole | Grants a role to a lower ranked member or yourself    |
 | listgrantableroles  | <none>                  | Lists the available grantable roles.                  |
-| removegrantablerole | Category, Role          | Removes a role to the list of grantable roles.        |
+| makerolegrantable   | Role, Category          | Adds a role to the list of grantable roles.           |
+| removegrantablerole | Role                    | Removes a role to the list of grantable roles.        |
 | revoke              | (Member), GrantableRole | Revokes a role from a lower ranked member or yourself |
 
 ## StaffUtility
@@ -38,14 +38,15 @@
 | nuke     | (TextChannel), Integer | Delete 2 - 99 past messages in the given channel (default is the invoked channel) |
 
 ## Utility
-| Commands         | Arguments | Description                                       |
-| ---------------- | --------- | ------------------------------------------------- |
-| Help             | (Command) | Display a help menu.                              |
-| avatar           | User      | Gets the avatar from the given user               |
-| ping             | <none>    | pong                                              |
-| serverinfo       | <none>    | Display a message giving basic server information |
-| viewcreationdate | User      | Displays when a user was created                  |
-| viewjoindate     | Member    | Displays when a user joined the guild             |
+| Commands         | Arguments | Description                                                             |
+| ---------------- | --------- | ----------------------------------------------------------------------- |
+| Help             | (Command) | Display a help menu.                                                    |
+| avatar           | User      | Gets the avatar from the given user                                     |
+| ping             | <none>    | pong                                                                    |
+| selfmute         | (Time)    | Mute yourself for an amout of time. Default is 1 hour. Max is 24 hours. |
+| serverinfo       | <none>    | Display a message giving basic server information                       |
+| viewcreationdate | User      | Displays when a user was created                                        |
+| viewjoindate     | Member    | Displays when a user joined the guild                                   |
 
 ## WelcomeEmbeds
 | Commands          | Arguments | Description                                                   |

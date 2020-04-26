@@ -25,14 +25,7 @@ data class GuildConfiguration(val guildId: String = "",
                               var staffRole: String = "",
                               var adminRole: String = "",
                               var muteRole: String = "",
-                              var grantableRoles: MutableMap<String, MutableList<String>> = mutableMapOf()) {
-    fun reset() {
-        reactToCommands = false
-        welcomeEmbeds = false
-        welcomeChannel = ""
-        staffRole = ""
-        adminRole = ""
-        muteRole = ""
-        grantableRoles = mutableMapOf()
-    }
-}
+                              var grantableRoles: MutableMap<String, MutableList<String>> = mutableMapOf(),
+                              var mutedUsers: MutableList<MuteEntry> = mutableListOf())
+
+data class MuteEntry(val user: String = "", val timeUntil: String = "")
