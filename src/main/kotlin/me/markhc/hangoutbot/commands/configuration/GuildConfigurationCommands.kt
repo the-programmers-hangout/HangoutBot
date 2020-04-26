@@ -20,7 +20,7 @@ fun guildConfigurationCommands(config: GuildConfigurations, persistence: Persist
             val guildId = it.guild?.id ?: return@execute it.respond(Messages.COMMAND_NOT_SUPPORTED_IN_DMS)
             val guild = config.getGuildConfig(guildId)
 
-            guild.adminRoleName = role.id
+            guild.adminRole = role.id
             persistence.save(config)
 
             return@execute it.respond("Administrator role set to \"${role.name}\"")
@@ -35,7 +35,7 @@ fun guildConfigurationCommands(config: GuildConfigurations, persistence: Persist
             val guildId = it.guild?.id ?: return@execute it.respond(Messages.COMMAND_NOT_SUPPORTED_IN_DMS)
             val guild = config.getGuildConfig(guildId)
 
-            guild.staffRoleName = role.id
+            guild.staffRole = role.id
             persistence.save(config)
 
             return@execute it.respond("Staff role set to \"${role.name}\"")

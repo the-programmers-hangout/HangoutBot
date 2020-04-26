@@ -22,15 +22,17 @@ data class GuildConfiguration(val guildId: String = "",
                               var reactToCommands: Boolean = false,
                               var welcomeEmbeds: Boolean = false,
                               var welcomeChannel: String = "",
-                              var staffRoleName: String = "",
-                              var adminRoleName: String = "",
+                              var staffRole: String = "",
+                              var adminRole: String = "",
+                              var muteRole: String = "",
                               var grantableRoles: MutableMap<String, MutableList<String>> = mutableMapOf()) {
     fun reset() {
         reactToCommands = false
         welcomeEmbeds = false
         welcomeChannel = ""
-        staffRoleName = ""
-        adminRoleName = ""
+        staffRole = ""
+        adminRole = ""
+        muteRole = ""
         grantableRoles = mutableMapOf()
     }
 }
