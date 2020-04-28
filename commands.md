@@ -8,19 +8,26 @@
 ## Fun
 | Commands | Arguments                   | Description                                                                                |
 | -------- | --------------------------- | ------------------------------------------------------------------------------------------ |
-| coin     | (Coins)                     | Flip a coin (or coins)                                                                     |
+| coin     | (Coins)                     | Flip a coin (or coins).                                                                    |
 | cowsay   | (Cow), (Message)            | Displays a cowsay with a given message. Run with no arguments to get a list of valid cows. |
-| flip     | Choice 1 \| Choice 2 \| ... | Choose one of                                                                              |
+| flip     | Choice 1 \| Choice 2 \| ... | Choose one of the given choices.                                                           |
 | roll     | (Min), (Max)                | Rolls a number in a range (default 1-100)                                                  |
 
 ## GuildConfiguration
-| Commands           | Arguments | Description                                       |
-| ------------------ | --------- | ------------------------------------------------- |
-| setadminrole       | Role      | Sets the role that distinguishes an Administrator |
-| setmuterole        | Role      | Sets the role used to mute an user                |
-| setprefix          | prefix    | Sets the prefix used by the bot in this guild     |
-| setstaffrole       | Role      | Sets the role that distinguishes an Administrator |
-| togglebotreactions | <none>    | Sets the prefix used by the bot in this guild     |
+| Commands          | Arguments | Description                                                   |
+| ----------------- | --------- | ------------------------------------------------------------- |
+| getwelcomechannel | <none>    | Gets the channel used for welcome embeds.                     |
+| setadminrole      | Role      | Sets the role that distinguishes an Administrator             |
+| setmuterole       | Role      | Sets the role used to mute an user                            |
+| setstaffrole      | Role      | Sets the role that distinguishes an Administrator             |
+| setwelcomechannel | Channel   | Sets the channel used for welcome embeds.                     |
+| togglewelcome     | <none>    | Toggles the display of welcome messages upon guild user join. |
+
+## Information
+| Commands   | Arguments | Description                                       |
+| ---------- | --------- | ------------------------------------------------- |
+| ping       | <none>    | pong                                              |
+| serverinfo | <none>    | Display a message giving basic server information |
 
 ## Roles
 | Commands            | Arguments               | Description                                           |
@@ -42,16 +49,7 @@
 | ---------------- | --------- | ----------------------------------------------------------------------- |
 | Help             | (Command) | Display a help menu.                                                    |
 | avatar           | User      | Gets the avatar from the given user                                     |
-| ping             | <none>    | pong                                                                    |
 | selfmute         | (Time)    | Mute yourself for an amout of time. Default is 1 hour. Max is 24 hours. |
-| serverinfo       | <none>    | Display a message giving basic server information                       |
 | viewcreationdate | User      | Displays when a user was created                                        |
 | viewjoindate     | Member    | Displays when a user joined the guild                                   |
-
-## WelcomeEmbeds
-| Commands          | Arguments | Description                                                   |
-| ----------------- | --------- | ------------------------------------------------------------- |
-| getwelcomechannel | <none>    | Gets the channel used for welcome embeds.                     |
-| setwelcomechannel | Channel   | Sets the channel used for welcome embeds.                     |
-| togglewelcome     | <none>    | Toggles the display of welcome messages upon guild user join. |
 

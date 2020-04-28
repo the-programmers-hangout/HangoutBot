@@ -9,87 +9,85 @@ import me.markhc.hangoutbot.arguments.RoleArg
 import me.markhc.hangoutbot.arguments.TextChannelArg
 import me.markhc.hangoutbot.dataclasses.GuildConfigurations
 
-@CommandSet("GuildConfiguration")
 @Suppress("unused")
-class GuildConfigurationCommands(private val config: GuildConfigurations, private val persistence: PersistenceService) {
-    fun produce() = commands {
-        command("setadminrole") {
-            requiredPermissionLevel = Permission.GuildOwner
-            description = "Sets the role that distinguishes an Administrator"
-            execute(RoleArg) {
-                val (role) = it.args
+@CommandSet("GuildConfiguration")
+fun produceGuildConfigurationCommands(config: GuildConfigurations, persistence: PersistenceService) = commands {
+    fun GuildConfigurations.save() {
+        persistence.save(this)
+    }
 
-                config.findGuild(it.guild!!) { adminRole = role.id }
-                config.save()
+    command("setadminrole") {
+        requiredPermissionLevel = Permission.GuildOwner
+        description = "Sets the role that distinguishes an Administrator"
+        execute(RoleArg) {
+            val (role) = it.args
 
-                return@execute it.respond("Administrator role set to \"${role.name}\"")
-            }
-        }
+            config.findGuild(it.guild!!) { adminRole = role.id }
+            config.save()
 
-        command("setstaffrole") {
-            requiredPermissionLevel = Permission.GuildOwner
-            description = "Sets the role that distinguishes an Administrator"
-            execute(RoleArg) {
-                val (role) = it.args
-
-                config.findGuild(it.guild!!) { staffRole = role.id }
-                config.save()
-
-                return@execute it.respond("Staff role set to \"${role.name}\"")
-            }
-        }
-
-        command("setmuterole") {
-            requiredPermissionLevel = Permission.GuildOwner
-            description = "Sets the role used to mute an user"
-            execute(RoleArg) {
-                val (role) = it.args
-
-                config.findGuild(it.guild!!) { muteRole = role.id }
-                config.save()
-
-                return@execute it.respond("Mute role set to \"${role.name}\"")
-            }
-        }
-
-        command("togglewelcome") {
-            requiredPermissionLevel = Permission.Administrator
-            description = "Toggles the display of welcome messages upon guild user join."
-            execute {
-                val guild = config.getGuildConfig(it.guild!!.id)
-
-                config.findGuild(it.guild!!) { welcomeEmbeds = !welcomeEmbeds }
-                config.save()
-
-                it.respond("Welcome embeds are now \"${if(guild.welcomeEmbeds) "enabled" else "disabled"}\"")
-            }
-        }
-
-        command("setwelcomechannel") {
-            requiredPermissionLevel = Permission.Administrator
-            description = "Sets the channel used for welcome embeds."
-            execute(TextChannelArg("Channel")) {
-                val guild = config.getGuildConfig(it.guild!!.id)
-
-                config.findGuild(it.guild!!) { welcomeChannel = it.args.first.id }
-                config.save()
-
-                it.respond("Welcome channel set to #${it.args.first.name}")
-            }
-        }
-
-        command("getwelcomechannel") {
-            requiredPermissionLevel = Permission.Administrator
-            description = "Gets the channel used for welcome embeds."
-            execute {
-                config.findGuild(it.guild!!) {
-                    it.respond("Welcome channel is ${if(welcomeChannel.isEmpty()) "<None>" else "#${welcomeChannel}"}")
-                }
-            }
+            return@execute it.respond("Administrator role set to \"${role.name}\"")
         }
     }
 
-    private fun GuildConfigurations.save() {
-        persistence.save(this)
+    command("setstaffrole") {
+        requiredPermissionLevel = Permission.GuildOwner
+        description = "Sets the role that distinguishes an Administrator"
+        execute(RoleArg) {
+            val (role) = it.args
+
+            config.findGuild(it.guild!!) { staffRole = role.id }
+            config.save()
+
+            return@execute it.respond("Staff role set to \"${role.name}\"")
+        }
+    }
+
+    command("setmuterole") {
+        requiredPermissionLevel = Permission.GuildOwner
+        description = "Sets the role used to mute an user"
+        execute(RoleArg) {
+            val (role) = it.args
+
+            config.findGuild(it.guild!!) { muteRole = role.id }
+            config.save()
+
+            return@execute it.respond("Mute role set to \"${role.name}\"")
+        }
+    }
+
+    command("togglewelcome") {
+        requiredPermissionLevel = Permission.Administrator
+        description = "Toggles the display of welcome messages upon guild user join."
+        execute {
+            val guild = config.getGuildConfig(it.guild!!.id)
+
+            config.findGuild(it.guild!!) { welcomeEmbeds = !welcomeEmbeds }
+            config.save()
+
+            it.respond("Welcome embeds are now \"${if(guild.welcomeEmbeds) "enabled" else "disabled"}\"")
+        }
+    }
+
+    command("setwelcomechannel") {
+        requiredPermissionLevel = Permission.Administrator
+        description = "Sets the channel used for welcome embeds."
+        execute(TextChannelArg("Channel")) {
+            val guild = config.getGuildConfig(it.guild!!.id)
+
+            config.findGuild(it.guild!!) { welcomeChannel = it.args.first.id }
+            config.save()
+
+            it.respond("Welcome channel set to #${it.args.first.name}")
+        }
+    }
+
+    command("getwelcomechannel") {
+        requiredPermissionLevel = Permission.Administrator
+        description = "Gets the channel used for welcome embeds."
+        execute {
+            config.findGuild(it.guild!!) {
+                it.respond("Welcome channel is ${if(welcomeChannel.isEmpty()) "<None>" else "#${welcomeChannel}"}")
+            }
+        }
     }
 }

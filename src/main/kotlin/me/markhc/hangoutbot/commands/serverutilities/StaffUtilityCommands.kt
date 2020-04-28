@@ -11,53 +11,51 @@ import me.markhc.hangoutbot.extensions.requiredPermissionLevel
 import me.markhc.hangoutbot.services.Permission
 import net.dv8tion.jda.api.entities.*
 
-@CommandSet("StaffUtility")
 @Suppress("unused")
-class StaffUtilityCommands(private val config: GuildConfigurations, private val persistence: PersistenceService) {
-    fun produce() = commands {
-        command("echo") {
-            requiredPermissionLevel = Permission.Staff
-            description = "Echo a message to a channel."
-            execute(TextChannelArg.makeOptional { it.channel as TextChannel }, SentenceArg) {
-                val (target, message) = it.args
+@CommandSet("StaffUtility")
+fun produceStaffUtilityCommands(config: GuildConfigurations, persistence: PersistenceService) = commands {
+    command("echo") {
+        requiredPermissionLevel = Permission.Staff
+        description = "Echo a message to a channel."
+        execute(TextChannelArg.makeOptional { it.channel as TextChannel }, SentenceArg) {
+            val (target, message) = it.args
 
-                target.sendMessage(message).queue()
-            }
-        }
-
-        command("nuke") {
-            requiredPermissionLevel = Permission.Staff
-            description = "Delete 2 - 99 past messages in the given channel (default is the invoked channel)"
-            execute(TextChannelArg.makeOptional { it.channel as TextChannel },
-                    IntegerArg) {
-                val (channel, amount) = it.args
-
-                if (amount !in 2..99) {
-                    return@execute it.respond("You can only nuke between 2 and 99 messages")
-                }
-
-                val sameChannel = it.channel.id == channel.id
-                val singlePrefixInvocationDeleted = it.stealthInvocation
-
-                channel.history.retrievePast(amount + if (sameChannel) 1 else 0).queue { past ->
-                    val noSinglePrefixMsg = past.drop(if (sameChannel && singlePrefixInvocationDeleted) 1 else 0)
-
-                    safeDeleteMessages(channel, noSinglePrefixMsg)
-
-                    channel.sendMessage("Be nice. No spam.").queue()
-
-                    if (!sameChannel) it.respond("$amount messages deleted.")
-                }
-            }
+            target.sendMessage(message).queue()
         }
     }
 
-    private fun safeDeleteMessages(channel: TextChannel,
-                                   messages: List<Message>) {
-        try {
-            channel.deleteMessages(messages).queue()
-        } catch (e: IllegalArgumentException) { // some messages older than 2 weeks => can't mass delete
-            messages.forEach { it.delete().queue() }
+    command("nuke") {
+        requiredPermissionLevel = Permission.Staff
+        description = "Delete 2 - 99 past messages in the given channel (default is the invoked channel)"
+        execute(TextChannelArg.makeOptional { it.channel as TextChannel },
+                IntegerArg) {
+            val (channel, amount) = it.args
+
+            if (amount !in 2..99) {
+                return@execute it.respond("You can only nuke between 2 and 99 messages")
+            }
+
+            val sameChannel = it.channel.id == channel.id
+            val singlePrefixInvocationDeleted = it.stealthInvocation
+
+            channel.history.retrievePast(amount + if (sameChannel) 1 else 0).queue { past ->
+                val noSinglePrefixMsg = past.drop(if (sameChannel && singlePrefixInvocationDeleted) 1 else 0)
+
+                safeDeleteMessages(channel, noSinglePrefixMsg)
+
+                channel.sendMessage("Be nice. No spam.").queue()
+
+                if (!sameChannel) it.respond("$amount messages deleted.")
+            }
         }
+    }
+}
+
+private fun safeDeleteMessages(channel: TextChannel,
+                               messages: List<Message>) {
+    try {
+        channel.deleteMessages(messages).queue()
+    } catch (e: IllegalArgumentException) { // some messages older than 2 weeks => can't mass delete
+        messages.forEach { it.delete().queue() }
     }
 }
