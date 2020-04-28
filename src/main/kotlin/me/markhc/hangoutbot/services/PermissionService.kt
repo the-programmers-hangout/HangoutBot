@@ -36,9 +36,9 @@ class PermissionsService(private val logger: KLogger, private val configuration:
     private fun Member.isAdministrator() : Boolean {
         val guildConfig = guildConfigs.getGuildConfig(this.guild.id)
 
-        if(guildConfig.adminRoleName.isEmpty()) return false
+        if(guildConfig.adminRole.isEmpty()) return false
 
-        val requiredRole = guild.getRolesByName(guildConfig.adminRoleName, true).firstOrNull()
+        val requiredRole = guild.getRoleById(guildConfig.adminRole)
                 ?: return false
 
         return requiredRole in roles
@@ -46,9 +46,9 @@ class PermissionsService(private val logger: KLogger, private val configuration:
     private fun Member.isStaff(): Boolean {
         val guildConfig = guildConfigs.getGuildConfig(this.guild.id)
 
-        if(guildConfig.staffRoleName.isEmpty()) return false
+        if(guildConfig.staffRole.isEmpty()) return false
 
-        val requiredRole = guild.getRolesByName(guildConfig.staffRoleName, true).firstOrNull()
+        val requiredRole = guild.getRoleById(guildConfig.staffRole)
                 ?: return false
 
         return requiredRole in roles

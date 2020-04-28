@@ -2,9 +2,12 @@ package me.markhc.hangoutbot.utilities
 
 import me.aberrantfox.kjdautils.api.dsl.embed
 import me.aberrantfox.kjdautils.extensions.jda.fullName
-import me.markhc.hangoutbot.locale.Messages
 import net.dv8tion.jda.api.OnlineStatus
 import net.dv8tion.jda.api.entities.Guild
+import net.dv8tion.jda.api.entities.Member
+import org.joda.time.DateTime
+import org.joda.time.DateTimeZone
+import org.joda.time.format.DateTimeFormat
 import java.awt.Color
 import java.time.format.DateTimeFormatter
 
@@ -27,3 +30,22 @@ fun buildServerInfoEmbed(guild: Guild) =
             addInlineField(name = "Text Channels", value = guild.textChannelCache.size().toString())
             addInlineField(name = "Voice Channels", value = guild.voiceChannels.size.toString())
         }
+
+fun buildSelfMuteEmbed(member: Member, duration: Long) = embed {
+    title = "You have been muted"
+    description = "You have been muted as a result of invoking the selfmute command. " +
+            "This mute will be automatically removed when the time expires."
+    field {
+        inline = true
+        name = "Duration"
+        value = toTimeString(duration)
+    }
+
+    field {
+        inline = true
+        name = "You will be unmuted on"
+        value = DateTime.now(DateTimeZone.UTC).plus(duration).toString(DateTimeFormat.fullDateTime())
+    }
+
+    thumbnail = member.user.avatarUrl
+}

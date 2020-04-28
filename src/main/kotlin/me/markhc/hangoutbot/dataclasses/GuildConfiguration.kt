@@ -1,6 +1,7 @@
 package me.markhc.hangoutbot.dataclasses
 
 import me.aberrantfox.kjdautils.api.annotation.Data
+import net.dv8tion.jda.api.entities.Guild
 
 @Data("data/guilds.json")
 data class GuildConfigurations(val guildConfigurations: MutableList<GuildConfiguration> = mutableListOf()) {
@@ -15,6 +16,11 @@ data class GuildConfigurations(val guildConfigurations: MutableList<GuildConfigu
 
         return guildConfigurations.first { it.guildId == guildId }
     }
+
+    fun findGuild(guild: Guild, fn: GuildConfiguration.() -> Unit) = findGuild(guild.id, fn)
+    fun findGuild(id: String, fn: GuildConfiguration.() -> Unit) =
+            this.guildConfigurations.find { it.guildId == id }
+                    ?.let(fn)
 }
 
 data class GuildConfiguration(val guildId: String = "",
@@ -22,15 +28,10 @@ data class GuildConfiguration(val guildId: String = "",
                               var reactToCommands: Boolean = false,
                               var welcomeEmbeds: Boolean = false,
                               var welcomeChannel: String = "",
-                              var staffRoleName: String = "",
-                              var adminRoleName: String = "",
-                              var grantableRoles: MutableMap<String, MutableList<String>> = mutableMapOf()) {
-    fun reset() {
-        reactToCommands = false
-        welcomeEmbeds = false
-        welcomeChannel = ""
-        staffRoleName = ""
-        adminRoleName = ""
-        grantableRoles = mutableMapOf()
-    }
-}
+                              var staffRole: String = "",
+                              var adminRole: String = "",
+                              var muteRole: String = "",
+                              var grantableRoles: MutableMap<String, MutableList<String>> = mutableMapOf(),
+                              var mutedUsers: MutableList<MuteEntry> = mutableListOf())
+
+data class MuteEntry(val user: String = "", val timeUntil: String = "")
