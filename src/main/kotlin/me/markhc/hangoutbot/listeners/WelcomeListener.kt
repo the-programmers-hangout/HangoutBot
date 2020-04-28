@@ -7,7 +7,6 @@ import me.markhc.hangoutbot.dataclasses.GuildConfigurations
 import me.markhc.hangoutbot.locale.Messages
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent
 import mu.KLogger
-import sun.plugin2.message.Message
 import java.awt.Color
 
 @Suppress("unused")
