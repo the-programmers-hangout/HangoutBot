@@ -1,6 +1,7 @@
 package me.markhc.hangoutbot.dataclasses
 
 import me.aberrantfox.kjdautils.api.annotation.Data
+import net.dv8tion.jda.api.entities.Guild
 
 @Data("data/guilds.json")
 data class GuildConfigurations(val guildConfigurations: MutableList<GuildConfiguration> = mutableListOf()) {
@@ -15,6 +16,11 @@ data class GuildConfigurations(val guildConfigurations: MutableList<GuildConfigu
 
         return guildConfigurations.first { it.guildId == guildId }
     }
+
+    fun findGuild(guild: Guild, fn: GuildConfiguration.() -> Unit) = findGuild(guild.id, fn)
+    fun findGuild(id: String, fn: GuildConfiguration.() -> Unit) =
+            this.guildConfigurations.find { it.guildId == id }
+                    ?.let(fn)
 }
 
 data class GuildConfiguration(val guildId: String = "",

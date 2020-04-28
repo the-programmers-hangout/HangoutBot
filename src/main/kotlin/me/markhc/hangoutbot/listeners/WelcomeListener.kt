@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent
 import mu.KLogger
 import java.awt.Color
 
+@Suppress("unused")
 class WelcomeListener(private val logger: KLogger, private val guildConfigs: GuildConfigurations) {
     @Subscribe
     fun onGuildMemberJoinEvent(event: GuildMemberJoinEvent) {

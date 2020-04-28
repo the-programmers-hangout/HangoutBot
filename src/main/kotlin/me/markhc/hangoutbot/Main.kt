@@ -20,6 +20,7 @@ fun main(args: Array<String>) {
             configure {
                 prefix = "+"
                 deleteMode = PrefixDeleteMode.None
+                allowPrivateMessages = false
             }
         }
     }
