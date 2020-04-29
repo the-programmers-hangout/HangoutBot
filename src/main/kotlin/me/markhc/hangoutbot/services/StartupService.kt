@@ -31,23 +31,39 @@ class StartupService(properties: Properties, guilds: GuildConfigurations, persis
 
                     color = Color(0x00bfff)
                     thumbnail = self.effectiveAvatarUrl
-                    addField(self.fullName(), "It's a bot!")
 
-                    addInlineField("Prefix", guilds.getGuildConfig(it.guild.id).prefix)
+                    field {
+                        name = self.fullName()
+                        value = "A bot to manage utility commands and funcionaility that does not warrant its own bot"
+                    }
+                    field {
+                        name = "Prefix"
+                        value = guilds.getGuildConfig(it.guild.id).prefix
+                        inline = true
+                    }
+                    field {
+                        name = "Contributors"
+                        value = "markhc#0001"
+                        inline = true
+                    }
 
                     with (properties) {
                         val kotlinVersion = kotlin.KotlinVersion.CURRENT
 
-                        addField("Build Info", "```" +
-                                "Version: $version\n" +
-                                "KUtils: $kutils\n" +
-                                "Kotlin: $kotlinVersion" +
-                                "```")
+                        field {
+                            name = "Build Info"
+                            value = "```"+
+                                    "Version: $version\n" +
+                                    "KUtils:  $kutils\n" +
+                                    "Kotlin:  $kotlinVersion" +
+                                    "```"
+                        }
 
                         addField("Source", repository)
                     }
                 }
             }
+
 
             visibilityPredicate = predicate@{ command: Command, user: User, _: MessageChannel, guild: Guild? ->
                 guild ?: return@predicate false

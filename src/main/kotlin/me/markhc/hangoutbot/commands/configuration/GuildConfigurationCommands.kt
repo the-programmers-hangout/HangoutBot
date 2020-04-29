@@ -27,7 +27,7 @@ fun produceGuildConfigurationCommands(config: GuildConfigurations, persistence: 
         execute(RoleArg) {
             val (role) = it.args
 
-            config.findGuild(it.guild!!) { adminRole = role.id }
+            config.getGuildConfig(it.guild!!).apply { adminRole = role.id }
             config.save()
 
             return@execute it.respond("Administrator role set to \"${role.name}\"")
@@ -40,7 +40,7 @@ fun produceGuildConfigurationCommands(config: GuildConfigurations, persistence: 
         execute(RoleArg) {
             val (role) = it.args
 
-            config.findGuild(it.guild!!) { staffRole = role.id }
+            config.getGuildConfig(it.guild!!).apply { staffRole = role.id }
             config.save()
 
             return@execute it.respond("Staff role set to \"${role.name}\"")
@@ -53,7 +53,7 @@ fun produceGuildConfigurationCommands(config: GuildConfigurations, persistence: 
         execute(RoleArg) {
             val (role) = it.args
 
-            config.findGuild(it.guild!!) { muteRole = role.id }
+            config.getGuildConfig(it.guild!!).apply { muteRole = role.id }
             config.save()
 
             return@execute it.respond("Mute role set to \"${role.name}\"")
@@ -66,7 +66,7 @@ fun produceGuildConfigurationCommands(config: GuildConfigurations, persistence: 
         execute {
             val guild = config.getGuildConfig(it.guild!!.id)
 
-            config.findGuild(it.guild!!) { welcomeEmbeds = !welcomeEmbeds }
+            config.getGuildConfig(it.guild!!).apply { welcomeEmbeds = !welcomeEmbeds }
             config.save()
 
             it.respond("Welcome embeds are now \"${if(guild.welcomeEmbeds) "enabled" else "disabled"}\"")
@@ -79,7 +79,7 @@ fun produceGuildConfigurationCommands(config: GuildConfigurations, persistence: 
         execute(TextChannelArg("Channel")) {
             val guild = config.getGuildConfig(it.guild!!.id)
 
-            config.findGuild(it.guild!!) { welcomeChannel = it.args.first.id }
+            config.getGuildConfig(it.guild!!).apply { welcomeChannel = it.args.first.id }
             config.save()
 
             it.respond("Welcome channel set to #${it.args.first.name}")
@@ -90,7 +90,7 @@ fun produceGuildConfigurationCommands(config: GuildConfigurations, persistence: 
         requiredPermissionLevel = Permission.Administrator
         description = "Gets the channel used for welcome embeds."
         execute {
-            config.findGuild(it.guild!!) {
+            config.getGuildConfig(it.guild!!).apply {
                 it.respond("Welcome channel is ${if(welcomeChannel.isEmpty()) "<None>" else "#${welcomeChannel}"}")
             }
         }
@@ -102,9 +102,9 @@ fun produceGuildConfigurationCommands(config: GuildConfigurations, persistence: 
         execute(RoleArg, WordArg("Category")) { event ->
             val (role, category) = event.args
 
-            config.findGuild(event.guild!!) {
+            config.getGuildConfig(event.guild!!).apply {
                 if (grantableRoles.any { it.value.contains(role.id) }) {
-                    return@findGuild event.respond("Role is already grantable")
+                    return@execute event.respond("Role is already grantable")
                 } else {
                     val key = grantableRoles.keys.find {
                         it.compareTo(category, true) == 0
@@ -129,10 +129,10 @@ fun produceGuildConfigurationCommands(config: GuildConfigurations, persistence: 
         execute(RoleArg) { event ->
             val (role) = event.args
 
-            config.findGuild(event.guild!!) {
+            config.getGuildConfig(event.guild!!).apply {
                 val entry = grantableRoles.entries.find {
                     it.value.contains(role.id)
-                } ?: return@findGuild event.respond("Role ${role.name} is not a grantable role.")
+                } ?: return@execute event.respond("Role ${role.name} is not a grantable role.")
 
                 entry.value.remove(role.id)
 

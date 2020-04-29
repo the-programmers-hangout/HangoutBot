@@ -83,7 +83,7 @@ fun produceInformationCommands(configurations: GuildConfigurations) = commands {
         execute {
             val milliseconds = Date().time - startTime.time
 
-            it.respond(toTimeString(milliseconds))
+            it.respond("I have been running for " + milliseconds.toLongDurationString())
         }
     }
 }
