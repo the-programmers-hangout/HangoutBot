@@ -1,5 +1,7 @@
 package me.markhc.hangoutbot.utilities
 
+import me.aberrantfox.kjdautils.api.dsl.command.Command
+import me.aberrantfox.kjdautils.api.dsl.command.CommandsContainer
 import me.aberrantfox.kjdautils.api.dsl.embed
 import me.aberrantfox.kjdautils.extensions.jda.fullName
 import net.dv8tion.jda.api.OnlineStatus
@@ -12,6 +14,7 @@ import org.joda.time.DateTimeZone
 import org.joda.time.format.DateTimeFormat
 import java.awt.Color
 import java.time.format.DateTimeFormatter
+import kotlin.math.ceil
 
 fun buildServerInfoEmbed(guild: Guild) =
         embed {
@@ -206,4 +209,76 @@ fun buildMemberInfoEmbed(member: Member) = embed {
         value = member.roles.joinToString("\n") { it.name }
         inline = true
     }
+}
+
+fun buildHelpEmbed(prefix: String, container: CommandsContainer) = embed {
+
+    title = "Help information"
+    description = "Use `${prefix}help <command>` for more information"
+    color = Color.green
+
+    fun joinNames(value: List<Command>) =
+            value.sortedBy { it.names.joinToString() }.joinToString("\n") { it.names.joinToString() }
+
+    container.commands
+            .groupBy { it.category }
+            .map {(category, commands) ->
+                when {
+                    commands.size >= 6 -> { // Split into 3 columns
+                        val n = ceil(commands.size / 3.0).toInt()
+                        field {
+                            name = "**$category**"
+                            value = joinNames(commands.subList(0, n))
+                            inline = true
+                        }
+                        field {
+                            value = joinNames(commands.subList(n, n * 2))
+                            inline = true
+                        }
+                        field {
+                            value = joinNames(commands.subList(n * 2, commands.size))
+                            inline = true
+                        }
+                    }
+                    else -> {
+                        field {
+                            name = "**$category**"
+                            value = joinNames(commands)
+                            inline = true
+                        }
+                        field { inline = true }
+                        field { inline = true }
+                    }
+                }
+            }
+}
+
+private fun generateStructure(command: Command) =
+        command.expectedArgs.arguments.joinToString(" ") {
+            val type = it.name
+            if (it.isOptional) "($type)" else "[$type]"
+        }
+
+private fun generateExample(command: Command) =
+        command.expectedArgs.arguments.joinToString(" ") {
+            it.examples.random()
+        }
+
+fun buildHelpEmbedForCommand(prefix: String, command: Command) = embed {
+    title = command.names.joinToString()
+    description = command.description
+    color = Color.green
+
+    val commandInvocation = "${prefix}${command.names.first()}"
+
+    field {
+        name = "What is the structure of the command?"
+        value = "$commandInvocation ${generateStructure(command)}"
+    }
+
+    field {
+        name = "Show me an example of someone using the command."
+        value = "$commandInvocation ${generateExample(command)}"
+    }
+
 }

@@ -65,7 +65,7 @@ fun produceUtilityCommands(config: GuildConfigurations, persistence: Persistence
         execute(UserArg) {
             val user = it.args.first
 
-            it.respond("${user.avatarUrl}")
+            it.respond("${user.effectiveAvatarUrl}?size=512")
         }
     }
 

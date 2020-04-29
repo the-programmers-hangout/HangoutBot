@@ -29,11 +29,11 @@
 ## Information
 | Commands   | Arguments | Description                                        |
 | ---------- | --------- | -------------------------------------------------- |
-| github     | <none>    | Displays information about the bot's repository.   |
-| help       | <none>    | Display help information.                          |
+| help       | (Command) | Display help information.                          |
 | ping       | <none>    | pong.                                              |
 | roleinfo   | Role      | Displays information about the given role.         |
 | serverinfo | <none>    | Display a message giving basic server information. |
+| source     | <none>    | Displays information about the bot's repository.   |
 | uptime     | <none>    | Displays how long the bot has been running for.    |
 | userinfo   | User      | Displays information about the given user.         |
 

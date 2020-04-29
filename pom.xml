@@ -11,7 +11,7 @@
 
     <properties>
         <main.class>me.markhc.hangoutbot.MainKt</main.class>
-        <project.repository>https://github.com/markhc/hangoutbot</project.repository>
+        <project.repository>https://github.com/the-programmers-hangout/HangoutBot/</project.repository>
         <kotlin.version>1.3.72</kotlin.version>
         <kutils.version>0.14.0</kutils.version>
         <mavenjar.version>3.1.0</mavenjar.version>

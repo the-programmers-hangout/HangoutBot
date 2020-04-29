@@ -5,23 +5,32 @@ import me.aberrantfox.kjdautils.api.dsl.command.Command
 import me.aberrantfox.kjdautils.api.dsl.command.CommandsContainer
 import me.aberrantfox.kjdautils.api.dsl.command.commands
 import me.aberrantfox.kjdautils.api.dsl.embed
+import me.aberrantfox.kjdautils.api.getInjectionObject
+import me.aberrantfox.kjdautils.internal.arguments.CommandArg
 import me.aberrantfox.kjdautils.internal.arguments.RoleArg
 import me.aberrantfox.kjdautils.internal.arguments.UserArg
 import me.markhc.hangoutbot.dataclasses.GuildConfigurations
-import me.markhc.hangoutbot.utilities.buildRoleInfoEmbed
-import me.markhc.hangoutbot.utilities.buildServerInfoEmbed
-import me.markhc.hangoutbot.utilities.buildUserInfoEmbed
-import me.markhc.hangoutbot.utilities.buildMemberInfoEmbed
+import me.markhc.hangoutbot.services.Properties
+import me.markhc.hangoutbot.utilities.*
 import java.awt.Color
+import java.util.*
 import kotlin.math.ceil
+
+val startTime = Date()
 
 @Suppress("unused")
 @CommandSet("Information")
 fun produceInformationCommands(configurations: GuildConfigurations) = commands {
     command("help") {
         description = "Display help information."
-        execute {
-            it.respond(buildHelpEmbed("+", it.container))
+        execute(CommandArg.makeNullableOptional { null }) {
+            val (command) = it.args
+
+            if(command == null) {
+                it.respond(buildHelpEmbed("+", it.container))
+            } else {
+                it.respond(buildHelpEmbedForCommand("+", command))
+            }
         }
     }
 
@@ -60,60 +69,21 @@ fun produceInformationCommands(configurations: GuildConfigurations) = commands {
         }
     }
 
-    command("github") {
+    command("source") {
         description = "Displays information about the bot's repository."
         execute {
-            it.respond("NotImplementedYet")
+            val properties = it.discord.getInjectionObject<Properties>()
+
+            it.respond(properties?.repository ?: "None")
         }
     }
 
     command("uptime") {
         description = "Displays how long the bot has been running for."
         execute {
-            it.respond("NotImplementedYet")
+            val milliseconds = Date().time - startTime.time
+
+            it.respond(toTimeString(milliseconds))
         }
     }
-
-}
-
-private fun buildHelpEmbed(prefix: String, container: CommandsContainer) = embed {
-
-    title = "Help information"
-    description = "Use `${prefix}help <command>` for more information"
-    color = Color.green
-
-    fun joinNames(value: List<Command>) =
-            value.sortedBy { it.names.joinToString() }.joinToString("\n") { it.names.joinToString() }
-
-    container.commands
-            .groupBy { it.category }
-            .map {(category, commands) ->
-                when {
-                    commands.size >= 6 -> { // Split into 3 columns
-                        val n = ceil(commands.size / 3.0).toInt()
-                        field {
-                            name = "**$category**"
-                            value = joinNames(commands.subList(0, n))
-                            inline = true
-                        }
-                        field {
-                            value = joinNames(commands.subList(n, n * 2))
-                            inline = true
-                        }
-                        field {
-                            value = joinNames(commands.subList(n * 2, commands.size))
-                            inline = true
-                        }
-                    }
-                    else -> {
-                        field {
-                            name = "**$category**"
-                            value = joinNames(commands)
-                            inline = true
-                        }
-                        field { inline = true }
-                        field { inline = true }
-                    }
-                }
-            }
 }
