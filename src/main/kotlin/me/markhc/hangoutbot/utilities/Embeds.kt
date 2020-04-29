@@ -92,7 +92,7 @@ fun buildSelfMuteEmbed(member: Member, duration: Long) = embed {
     field {
         inline = true
         name = "Duration"
-        value = toTimeString(duration)
+        value = duration.toShortDurationString()
     }
 
     field {
