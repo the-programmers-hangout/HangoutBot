@@ -73,33 +73,43 @@ fun produceUtilityCommands(config: GuildConfigurations, persistence: Persistence
         description = "Mute yourself for an amout of time. Default is 1 hour. Max is 24 hours."
         execute(TimeStringArg.makeOptional { 3600.0 }) {
             val (timeInSeconds) = it.args
+
+            if(timeInSeconds > 24 * 3600.0) {
+                return@execute it.respond("You cannot mute yourself for that long.")
+            }
+
             val guild = it.guild!!
-            val guildConfig = config.getGuildConfig(guild.id)
-
-            if (guildConfig.muteRole.isEmpty()) {
-                return@execute it.respond("Sorry, this guild does not have a mute role.")
-            }
-
-            val role = guild.getRoleById(guildConfig.muteRole)
-                    ?: return@execute it.respond("Sorry, this guild does not have a mute role.")
-
-            val member = guild.getMember(it.author)!!
-
-            if (guildConfig.muteRole in member.roles.map { r -> r.id }.toList()) {
-                return@execute it.respond("Nice try, but you're already muted!")
-            }
-
             val millis = timeInSeconds.roundToLong() * 1000
-            guildConfig.addMutedMember(member, millis)
-            config.save()
 
-            muteMemberWithTimer(member, role, millis) {
-                guildConfig.removeMutedMember(this)
+            config.getGuildConfig(guild).apply {
+                if (muteRole.isEmpty()) {
+                    return@execute it.respond("Sorry, this guild does not have a mute role.")
+                }
+
+                val role = guild.getRoleById(muteRole)
+                        ?: return@execute it.respond("Sorry, this guild does not have a mute role.")
+
+                val member = guild.getMember(it.author)!!
+
+                if (muteRole in member.roles.map { r -> r.id }.toList()) {
+                    return@execute it.respond("Nice try, but you're already muted!")
+                }
+
+                if (mutedUsers.any { muted -> muted.user == member.id }) {
+                    return@execute it.respond("Sorry, you already have an active mute!")
+                }
+
+                addMutedMember(member, millis)
                 config.save()
-                unmuteMember(this, role)
-            }
 
-            it.author.sendPrivateMessage(buildSelfMuteEmbed(member, millis))
+                muteMemberWithTimer(member, role, millis) {
+                    removeMutedMember(this)
+                    config.save()
+                    unmuteMember(this, role)
+                }
+
+                it.author.sendPrivateMessage(buildSelfMuteEmbed(member, millis))
+            }
         }
     }
 

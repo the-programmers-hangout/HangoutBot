@@ -9,18 +9,14 @@ data class GuildConfigurations(val guildConfigurations: MutableList<GuildConfigu
         val guild = guildConfigurations.find { it.guildId == guildId }
 
         if(guild != null) {
-           return guild
+            return guild
         }
 
         guildConfigurations.add(GuildConfiguration(guildId, "+"))
 
         return guildConfigurations.first { it.guildId == guildId }
     }
-
-    fun findGuild(guild: Guild, fn: GuildConfiguration.() -> Unit) = findGuild(guild.id, fn)
-    fun findGuild(id: String, fn: GuildConfiguration.() -> Unit) =
-            this.guildConfigurations.find { it.guildId == id }
-                    ?.let(fn)
+    fun getGuildConfig(guild: Guild) = getGuildConfig(guild.id)
 }
 
 data class GuildConfiguration(val guildId: String = "",
