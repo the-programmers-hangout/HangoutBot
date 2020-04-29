@@ -19,11 +19,7 @@ import net.dv8tion.jda.api.entities.User
 import java.awt.Color
 
 @Service
-class StartupService(guilds: GuildConfigurations, persistenceService: PersistenceService, discord: Discord, permissionsService: PermissionsService) {
-    private data class Properties(val version: String, val kutils: String, val repository: String)
-    private val propFile = Properties::class.java.getResource("/properties.json").readText()
-    private val project = Klaxon().parse<Properties>(propFile) ?: throw Exception("Failed to parse properties");
-
+class StartupService(properties: Properties, guilds: GuildConfigurations, persistenceService: PersistenceService, discord: Discord, permissionsService: PermissionsService) {
     init {
         launchMuteTimers(guilds, persistenceService, discord)
 
@@ -39,7 +35,7 @@ class StartupService(guilds: GuildConfigurations, persistenceService: Persistenc
 
                     addInlineField("Prefix", guilds.getGuildConfig(it.guild.id).prefix)
 
-                    with (project) {
+                    with (properties) {
                         val kotlinVersion = kotlin.KotlinVersion.CURRENT
 
                         addField("Build Info", "```" +

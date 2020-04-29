@@ -2,15 +2,20 @@ package me.markhc.hangoutbot.commands.configuration
 
 import me.aberrantfox.kjdautils.api.annotation.CommandSet
 import me.aberrantfox.kjdautils.api.dsl.command.commands
+import me.aberrantfox.kjdautils.api.dsl.embed
+import me.aberrantfox.kjdautils.internal.arguments.WordArg
 import me.markhc.hangoutbot.extensions.requiredPermissionLevel
 import me.markhc.hangoutbot.services.Permission
 import me.aberrantfox.kjdautils.internal.di.PersistenceService
 import me.markhc.hangoutbot.arguments.RoleArg
 import me.markhc.hangoutbot.arguments.TextChannelArg
 import me.markhc.hangoutbot.dataclasses.GuildConfigurations
+import net.dv8tion.jda.api.entities.Guild
+import net.dv8tion.jda.api.entities.MessageEmbed
+import java.awt.Color
 
 @Suppress("unused")
-@CommandSet("GuildConfiguration")
+@CommandSet("Guild")
 fun produceGuildConfigurationCommands(config: GuildConfigurations, persistence: PersistenceService) = commands {
     fun GuildConfigurations.save() {
         persistence.save(this)
@@ -89,5 +94,82 @@ fun produceGuildConfigurationCommands(config: GuildConfigurations, persistence: 
                 it.respond("Welcome channel is ${if(welcomeChannel.isEmpty()) "<None>" else "#${welcomeChannel}"}")
             }
         }
+    }
+
+    command("makerolegrantable") {
+        requiredPermissionLevel = Permission.Administrator
+        description = "Adds a role to the list of grantable roles."
+        execute(RoleArg, WordArg("Category")) { event ->
+            val (role, category) = event.args
+
+            config.findGuild(event.guild!!) {
+                if (grantableRoles.any { it.value.contains(role.id) }) {
+                    return@findGuild event.respond("Role is already grantable")
+                } else {
+                    val key = grantableRoles.keys.find {
+                        it.compareTo(category, true) == 0
+                    }
+
+                    if (key == null) {
+                        grantableRoles[category] = mutableListOf(role.id);
+                    } else {
+                        grantableRoles[key]!!.add(role.id)
+                    }
+
+                    event.respond("Added \"${role.name}\" to the category \"${key ?: category}\".")
+                    config.save()
+                }
+            }
+        }
+    }
+
+    command("removegrantablerole") {
+        requiredPermissionLevel = Permission.Administrator
+        description = "Removes a role to the list of grantable roles."
+        execute(RoleArg) { event ->
+            val (role) = event.args
+
+            config.findGuild(event.guild!!) {
+                val entry = grantableRoles.entries.find {
+                    it.value.contains(role.id)
+                } ?: return@findGuild event.respond("Role ${role.name} is not a grantable role.")
+
+                entry.value.remove(role.id)
+
+                if (entry.value.isEmpty()) {
+                    grantableRoles.remove(entry.key)
+                }
+
+                config.save()
+
+                event.respond("Removed \"${role.name}\" from the list of grantable roles.")
+            }
+        }
+    }
+
+    command("listgrantableroles") {
+        requiredPermissionLevel = Permission.Staff
+        description = "Lists the available grantable roles."
+        execute { event ->
+            val guildConfig = config.getGuildConfig(event.guild!!.id)
+
+            if (guildConfig.grantableRoles.isEmpty()) return@execute event.respond("No roles set")
+
+            event.respond(buildRolesEmbed(event.guild!!, guildConfig.grantableRoles))
+        }
+    }
+}
+
+private fun buildRolesEmbed(guild: Guild, roles: Map<String, List<String>>): MessageEmbed {
+    return embed {
+        title = "Grantable roles"
+        color = Color.CYAN
+
+        roles.iterator().forEach {
+            addInlineField(
+                    name = it.key,
+                    value = (it.value as List<*>).filterIsInstance<String>().map {id -> guild.getRoleById(id)?.name }.joinToString("\n"))
+        }
+
     }
 }

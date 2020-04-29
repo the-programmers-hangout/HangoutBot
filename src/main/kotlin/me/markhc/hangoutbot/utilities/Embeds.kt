@@ -5,6 +5,8 @@ import me.aberrantfox.kjdautils.extensions.jda.fullName
 import net.dv8tion.jda.api.OnlineStatus
 import net.dv8tion.jda.api.entities.Guild
 import net.dv8tion.jda.api.entities.Member
+import net.dv8tion.jda.api.entities.Role
+import net.dv8tion.jda.api.entities.User
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
 import org.joda.time.format.DateTimeFormat
@@ -15,20 +17,69 @@ fun buildServerInfoEmbed(guild: Guild) =
         embed {
             title = guild.name
             color = Color.MAGENTA
-            description = "The programmer's hangout is a programming server, made for persons of all skill levels, be you someone who has wrote 10 lines of code, or someone with 10 years of experience."
             footer {
                 text = "Guild creation date: ${guild.timeCreated.format(DateTimeFormatter.RFC_1123_DATE_TIME)}"
                 iconUrl = "http://i.imgur.com/iwwEprG.png"
             }
-            thumbnail = "http://i.imgur.com/DFoaG7k.png"
+            thumbnail = guild.iconUrl ?: ""
 
-            addField(name = "Users", value = "${guild.members.filter { it.onlineStatus != OnlineStatus.OFFLINE }.size}/${guild.members.size}")
+            if(guild.description != null) {
+                field {
+                    name = "**Description**"
+                    value = guild.description
+                }
+            }
 
-            addInlineField(name = "Total Roles", value = guild.roles.size.toString())
-            addInlineField(name = "Owner", value = guild.owner?.fullName() ?: "<None>")
-            addInlineField(name = "Region", value = guild.region.toString())
-            addInlineField(name = "Text Channels", value = guild.textChannelCache.size().toString())
-            addInlineField(name = "Voice Channels", value = guild.voiceChannels.size.toString())
+            field {
+                name = "**Owner**"
+                value = guild.owner?.fullName() ?: "<None>"
+                inline = true
+            }
+            field {
+                name = "**Users**"
+                value = "${guild.members.filter { it.onlineStatus != OnlineStatus.OFFLINE }.size}/${guild.members.size}"
+                inline = true
+            }
+            field {
+                name = "**Roles**"
+                value = guild.roles.size.toString()
+                inline = true
+            }
+            field {
+                name = "**Text Channels**"
+                value = guild.textChannelCache.size().toString()
+                inline = true
+            }
+            field {
+                name = "**Voice Channels**"
+                value = guild.voiceChannels.size.toString()
+                inline = true
+            }
+            field {
+                name = "**Region**"
+                value = guild.region.toString()
+                inline = true
+            }
+            field {
+                name = "**Verification Level**"
+                value = guild.verificationLevel.toString()
+                inline = true
+            }
+            field {
+                name = "**Emotes**"
+                value = "${guild.emotes.size}/${guild.maxEmotes}"
+                inline = true
+            }
+            field {
+                name = "**Invite URL**"
+                value = guild.vanityCode ?: "Not set"
+                inline = true
+            }
+            field {
+                name = "**Boosts**"
+                value = guild.boostCount.toString()
+                inline = true
+            }
         }
 
 fun buildSelfMuteEmbed(member: Member, duration: Long) = embed {
@@ -48,4 +99,111 @@ fun buildSelfMuteEmbed(member: Member, duration: Long) = embed {
     }
 
     thumbnail = member.user.avatarUrl
+}
+
+fun buildRoleInfoEmbed(role: Role) = embed {
+    title = "Role information"
+    color = role.color
+
+    field {
+        name = "**Name**"
+        value = role.name
+        inline = true
+    }
+    field {
+        name = "**Id**"
+        value = role.id
+        inline = true
+    }
+    field {
+        name = "**Color**"
+        value = if(role.color != null) "**rgba(${role.color!!.red}, ${role.color!!.green}, ${role.color!!.blue}, ${role.color!!.alpha})**" else "None"
+        inline = true
+    }
+
+    field {
+        name = "**Is Hoisted**"
+        value = role.isHoisted.toString()
+        inline = true
+    }
+    field {
+        name = "**Is Mentionable**"
+        value = role.isMentionable.toString()
+        inline = true
+    }
+    field {
+        name = "**Is Managed**"
+        value = role.isManaged.toString()
+        inline = true
+    }
+}
+
+fun buildUserInfoEmbed(user: User) = embed {
+    title = "User information"
+
+    val createdTime = DateTime(user.timeCreated.toInstant().toEpochMilli(), DateTimeZone.UTC)
+
+    field {
+        name = "**Username**"
+        value = user.fullName()
+        inline = true
+    }
+    field {
+        name = "**Avatar**"
+        value = "[Link](${user.effectiveAvatarUrl}?size=512)"
+        inline = true
+    }
+    field {
+        name = "**Id**"
+        value = user.id
+        inline = true
+    }
+    field {
+        name = "**Creation Time**"
+        value = createdTime.toString(DateTimeFormat.shortDateTime())
+        inline = true
+    }
+}
+
+fun buildMemberInfoEmbed(member: Member) = embed {
+    title = "User information"
+
+    val createdTime = DateTime(member.timeCreated.toInstant().toEpochMilli(), DateTimeZone.UTC)
+    val joinedTime = DateTime(member.timeJoined.toInstant().toEpochMilli(), DateTimeZone.UTC)
+
+    field {
+        name = "**Username**"
+        value = member.fullName()
+        inline = true
+    }
+    field {
+        name = "**Nickname**"
+        value = member.nickname ?: "Not set"
+        inline = true
+    }
+    field {
+        name = "**Avatar**"
+        value = "[Link](${member.user.effectiveAvatarUrl}?size=512)"
+        inline = true
+    }
+    field {
+        name = "**Id**"
+        value = member.id
+        inline = true
+    }
+    field {
+        name = "**Creation Time**"
+        value = createdTime.toString(DateTimeFormat.shortDateTime())
+        inline = true
+    }
+    field {
+        name = "**Join Time**"
+        value = joinedTime.toString(DateTimeFormat.shortDateTime())
+        inline = true
+    }
+    field {
+        name = "**Roles**"
+        value = member.roles.joinToString("\n") { it.name }
+        inline = true
+    }
 }

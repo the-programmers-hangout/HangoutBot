@@ -9,6 +9,7 @@ import me.aberrantfox.kjdautils.internal.arguments.SentenceArg
 import me.aberrantfox.kjdautils.internal.arguments.SplitterArg
 import me.aberrantfox.kjdautils.internal.arguments.WordArg
 import me.markhc.hangoutbot.locale.Messages
+import me.markhc.hangoutbot.services.Properties
 
 private object CowsayData {
     val validCows = Cowsay.say(arrayOf("-l")).split("\n").filterNot { listOf("sodomized", "head-in", "telebears").contains(it) }
@@ -16,7 +17,7 @@ private object CowsayData {
 
 @Suppress("unused")
 @CommandSet("Fun")
-fun produceFunCommands() = commands {
+fun produceFunCommands(properties: Properties) = commands {
     command("coin") {
         description = "Flip a coin (or coins)."
         execute(IntegerArg("Coins").makeOptional { 1 }) {
