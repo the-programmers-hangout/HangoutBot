@@ -280,5 +280,4 @@ fun buildHelpEmbedForCommand(prefix: String, command: Command) = embed {
         name = "Show me an example of someone using the command."
         value = "$commandInvocation ${generateExample(command)}"
     }
-
 }
