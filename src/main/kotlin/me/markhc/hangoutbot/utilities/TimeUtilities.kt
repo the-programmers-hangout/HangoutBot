@@ -13,7 +13,7 @@ fun Long.toLongDurationString(): String {
     val minutes = TimeUnit.MILLISECONDS.toMinutes(this) - TimeUnit.HOURS.toMinutes(hours)
     val seconds = TimeUnit.MILLISECONDS.toSeconds(this) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(this))
     return String.format(
-            "%02d hour${if(hours > 1) "s" else ""}, " +
-            "%02d minute${if(minutes > 1) "s" else ""}, " +
-            "%02d second${if(seconds > 1) "s" else ""}", hours, minutes, seconds)
+            "%d hour${if(hours > 1 || hours == 0.toLong()) "s" else ""}, " +
+            "%d minute${if(minutes > 1) "s" else ""}, " +
+            "%d second${if(seconds > 1) "s" else ""}", hours, minutes, seconds)
 }
