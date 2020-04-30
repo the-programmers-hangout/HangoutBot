@@ -16,6 +16,7 @@ class BotStatsService(private val config: Configuration,
                       private val discord: Discord) {
 
     var totalCommands: Int = 0
+
     fun commandExecuted(event: CommandEvent<*>) {
         totalCommands++
         config.totalCommandsExecuted++
