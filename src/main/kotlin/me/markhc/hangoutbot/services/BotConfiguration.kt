@@ -19,5 +19,4 @@ fun loadConfig(onFinishedLoading: (BotConfiguration?) -> Unit) {
     }
 
     return onFinishedLoading(Gson().fromJson(configFile.readText(), BotConfiguration::class.java))
-
 }

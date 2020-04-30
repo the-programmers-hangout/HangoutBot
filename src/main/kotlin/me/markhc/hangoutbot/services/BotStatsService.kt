@@ -13,8 +13,9 @@ private val startTime = Date()
 @Service
 class BotStatsService(private val config: Configuration,
                       private val persistenceService: PersistenceService,
-                      private val discord: Discord,
-                      var totalCommands: Int = 0) {
+                      private val discord: Discord) {
+
+    var totalCommands: Int = 0
     fun commandExecuted(event: CommandEvent<*>) {
         totalCommands++
         config.totalCommandsExecuted++

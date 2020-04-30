@@ -11,7 +11,11 @@ import me.markhc.hangoutbot.utilities.launchMuteTimers
 import java.awt.Color
 
 @Service
-class StartupService(properties: Properties, config: Configuration, persistenceService: PersistenceService, discord: Discord, permissionsService: PermissionsService) {
+class StartupService(properties: Properties,
+                     config: Configuration,
+                     persistenceService: PersistenceService,
+                     discord: Discord,
+                     permissionsService: PermissionsService) {
     init {
         launchMuteTimers(config, persistenceService, discord)
 

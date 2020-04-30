@@ -88,19 +88,19 @@ fun produceInformationCommands(botStats: BotStatsService, config: Configuration)
                 color = infoColor
 
                 field {
-                    name = "# Commands executed"
+                    name = "# Commands"
                     value = "${config.totalCommandsExecuted}"
                     inline = true
                 }
 
                 field {
-                    name = "# Commands executed this session"
+                    name = "# Commands this session"
                     value = "${botStats.totalCommands}"
                     inline = true
                 }
 
                 field {
-                    name = "# Commands executed in this guild"
+                    name = "# Commands in this guild"
                     value = "${config.getGuildConfig(it.guild!!).totalCommandsExecuted}"
                     inline = true
                 }
@@ -113,9 +113,11 @@ fun produceInformationCommands(botStats: BotStatsService, config: Configuration)
 
                 val runtime = Runtime.getRuntime()
 
+                fun Long.toMB() = (this/1024/1024)
+
                 field {
                     name = "Memory Used"
-                    value = "${runtime.totalMemory() - runtime.freeMemory()}/${runtime.totalMemory()}"
+                    value = "${(runtime.totalMemory() - runtime.freeMemory()).toMB()}/${runtime.totalMemory().toMB()} MiB"
                     inline = true
                 }
 
