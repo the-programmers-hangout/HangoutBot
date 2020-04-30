@@ -1,13 +1,15 @@
 package me.markhc.hangoutbot.services
 
-import com.beust.klaxon.Klaxon
+import com.google.gson.Gson
 import java.io.File
 
 data class Configuration(val token: String = "",
                          val ownerId: String = "",
                          val logLevel: String = "WARN");
 
-data class Properties(val version: String, val kutils: String, val repository: String)
+data class Properties(val version: String = "",
+                      val kutils: String = "",
+                      val repository: String = "")
 
 fun loadConfig(onFinishedLoading: (Configuration?) -> Unit) {
     val configFile = File("config/config.json")
@@ -16,6 +18,6 @@ fun loadConfig(onFinishedLoading: (Configuration?) -> Unit) {
         return onFinishedLoading(null)
     }
 
-    return onFinishedLoading(Klaxon().parse(configFile))
+    return onFinishedLoading(Gson().fromJson(configFile.readText(), Configuration::class.java))
 
 }

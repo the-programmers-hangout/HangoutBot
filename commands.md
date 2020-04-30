@@ -32,6 +32,7 @@
 ## Information
 | Commands   | Arguments | Description                                        |
 | ---------- | --------- | -------------------------------------------------- |
+| help       | (Command) | Display help information.                          |
 | ping       | <none>    | pong.                                              |
 | roleinfo   | Role      | Displays information about the given role.         |
 | serverinfo | <none>    | Display a message giving basic server information. |
@@ -42,7 +43,6 @@
 ## Utility
 | Commands         | Arguments               | Description                                                                       |
 | ---------------- | ----------------------- | --------------------------------------------------------------------------------- |
-| Help             | (Command)               | Display a help menu.                                                              |
 | avatar           | User                    | Gets the avatar from the given user                                               |
 | echo             | (TextChannel), Text     | Echo a message to a channel.                                                      |
 | getpermission    | Command                 | Returns the required permission level for the given command                       |

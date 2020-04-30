@@ -18,79 +18,81 @@ import java.awt.Color
 import java.time.format.DateTimeFormatter
 import kotlin.math.ceil
 
-fun buildServerInfoEmbed(guild: Guild) =
-        embed {
-            title = guild.name
-            color = Color.MAGENTA
-            footer {
-                text = "Guild creation date: ${guild.timeCreated.format(DateTimeFormatter.RFC_1123_DATE_TIME)}"
-                iconUrl = "http://i.imgur.com/iwwEprG.png"
-            }
-            thumbnail = guild.iconUrl ?: ""
+fun buildServerInfoEmbed(guild: Guild) = embed {
+    title = guild.name
+    color = infoColor
 
-            if(guild.description != null) {
-                field {
-                    name = "**Description**"
-                    value = guild.description
-                }
-            }
+    footer {
+        text = "Guild creation date: ${guild.timeCreated.format(DateTimeFormatter.RFC_1123_DATE_TIME)}"
+        iconUrl = "http://i.imgur.com/iwwEprG.png"
+    }
+    thumbnail = guild.iconUrl ?: ""
 
-            field {
-                name = "**Owner**"
-                value = guild.owner?.fullName() ?: "<None>"
-                inline = true
-            }
-            field {
-                name = "**Users**"
-                value = "${guild.members.filter { it.onlineStatus != OnlineStatus.OFFLINE }.size}/${guild.members.size}"
-                inline = true
-            }
-            field {
-                name = "**Roles**"
-                value = guild.roles.size.toString()
-                inline = true
-            }
-            field {
-                name = "**Text Channels**"
-                value = guild.textChannelCache.size().toString()
-                inline = true
-            }
-            field {
-                name = "**Voice Channels**"
-                value = guild.voiceChannels.size.toString()
-                inline = true
-            }
-            field {
-                name = "**Region**"
-                value = guild.region.toString()
-                inline = true
-            }
-            field {
-                name = "**Verification Level**"
-                value = guild.verificationLevel.toString()
-                inline = true
-            }
-            field {
-                name = "**Emotes**"
-                value = "${guild.emotes.size}/${guild.maxEmotes}"
-                inline = true
-            }
-            field {
-                name = "**Invite URL**"
-                value = guild.vanityCode ?: "Not set"
-                inline = true
-            }
-            field {
-                name = "**Boosts**"
-                value = guild.boostCount.toString()
-                inline = true
-            }
+    if(guild.description != null) {
+        field {
+            name = "**Description**"
+            value = guild.description
         }
+    }
+
+    field {
+        name = "**Owner**"
+        value = guild.owner?.fullName() ?: "<None>"
+        inline = true
+    }
+    field {
+        name = "**Users**"
+        value = "${guild.members.filter { it.onlineStatus != OnlineStatus.OFFLINE }.size}/${guild.members.size}"
+        inline = true
+    }
+    field {
+        name = "**Roles**"
+        value = guild.roles.size.toString()
+        inline = true
+    }
+    field {
+        name = "**Text Channels**"
+        value = guild.textChannelCache.size().toString()
+        inline = true
+    }
+    field {
+        name = "**Voice Channels**"
+        value = guild.voiceChannels.size.toString()
+        inline = true
+    }
+    field {
+        name = "**Region**"
+        value = guild.region.toString()
+        inline = true
+    }
+    field {
+        name = "**Verification Level**"
+        value = guild.verificationLevel.toString()
+        inline = true
+    }
+    field {
+        name = "**Emotes**"
+        value = "${guild.emotes.size}/${guild.maxEmotes}"
+        inline = true
+    }
+    field {
+        name = "**Invite URL**"
+        value = guild.vanityCode ?: "Not set"
+        inline = true
+    }
+    field {
+        name = "**Boosts**"
+        value = guild.boostCount.toString()
+        inline = true
+    }
+}
 
 fun buildSelfMuteEmbed(member: Member, duration: Long) = embed {
     title = "You have been muted"
     description = "You have been muted as a result of invoking the selfmute command. " +
             "This mute will be automatically removed when the time expires."
+    color = infoColor
+
     field {
         inline = true
         name = "Duration"
@@ -225,7 +227,7 @@ fun buildHelpEmbed(prefix: String, container: CommandsContainer) = embed {
 
     title = "Help information"
     description = "Use `${prefix}help <command>` for more information"
-    color = Color.green
+    color = infoColor
 
     fun joinNames(value: List<Command>) =
             value.sortedBy { it.names.joinToString() }.joinToString("\n") { it.names.joinToString() }
@@ -278,7 +280,7 @@ private fun generateExample(event: CommandEvent<*>, command: Command) =
 fun buildHelpEmbedForCommand(event: CommandEvent<*>, prefix: String, command: Command) = embed {
     title = command.names.joinToString()
     description = command.description
-    color = Color.green
+    color = infoColor
 
     val commandInvocation = "${prefix}${command.names.first()}"
 
@@ -295,6 +297,7 @@ fun buildHelpEmbedForCommand(event: CommandEvent<*>, prefix: String, command: Co
 
 fun buildBotStatsEmbed(guild: Guild) = embed {
     title = "Stats"
+    color = infoColor
 
     field {
         name = "Commands executed"
