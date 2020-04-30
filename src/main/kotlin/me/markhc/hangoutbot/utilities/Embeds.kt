@@ -4,6 +4,7 @@ import me.aberrantfox.kjdautils.api.dsl.command.Command
 import me.aberrantfox.kjdautils.api.dsl.command.CommandsContainer
 import me.aberrantfox.kjdautils.api.dsl.embed
 import me.aberrantfox.kjdautils.extensions.jda.fullName
+import me.aberrantfox.kjdautils.extensions.jda.getHighestRole
 import net.dv8tion.jda.api.OnlineStatus
 import net.dv8tion.jda.api.entities.Guild
 import net.dv8tion.jda.api.entities.Member
@@ -139,10 +140,16 @@ fun buildRoleInfoEmbed(role: Role) = embed {
         value = role.isManaged.toString()
         inline = true
     }
+    field {
+        name = "**Members**"
+        value = "${role.guild.getMembersWithRoles(role).size} members"
+    }
 }
 
 fun buildUserInfoEmbed(user: User) = embed {
     title = "User information"
+    color = Color.MAGENTA
+    thumbnail = user.effectiveAvatarUrl
 
     val createdTime = DateTime(user.timeCreated.toInstant().toEpochMilli(), DateTimeZone.UTC)
 
@@ -170,6 +177,8 @@ fun buildUserInfoEmbed(user: User) = embed {
 
 fun buildMemberInfoEmbed(member: Member) = embed {
     title = "User information"
+    color = member.color
+    thumbnail = member.user.effectiveAvatarUrl
 
     val createdTime = DateTime(member.timeCreated.toInstant().toEpochMilli(), DateTimeZone.UTC)
     val joinedTime = DateTime(member.timeJoined.toInstant().toEpochMilli(), DateTimeZone.UTC)
@@ -206,7 +215,7 @@ fun buildMemberInfoEmbed(member: Member) = embed {
     }
     field {
         name = "**Roles**"
-        value = member.roles.joinToString("\n") { it.name }
+        value = member.roles.joinToString(", ") { it.name }
         inline = true
     }
 }
@@ -279,5 +288,20 @@ fun buildHelpEmbedForCommand(prefix: String, command: Command) = embed {
     field {
         name = "Show me an example of someone using the command."
         value = "$commandInvocation ${generateExample(command)}"
+    }
+}
+
+fun buildBotStatsEmbed(guild: Guild) = embed {
+    title = "Stats"
+
+    field {
+        name = "Commands executed"
+        value = "0"
+        inline = true
+    }
+    field {
+        name = "Commands executed"
+        value = "0"
+        inline = true
     }
 }

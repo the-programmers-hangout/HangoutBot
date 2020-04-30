@@ -1,10 +1,7 @@
 package me.markhc.hangoutbot.commands.information
 
 import me.aberrantfox.kjdautils.api.annotation.CommandSet
-import me.aberrantfox.kjdautils.api.dsl.command.Command
-import me.aberrantfox.kjdautils.api.dsl.command.CommandsContainer
 import me.aberrantfox.kjdautils.api.dsl.command.commands
-import me.aberrantfox.kjdautils.api.dsl.embed
 import me.aberrantfox.kjdautils.api.getInjectionObject
 import me.aberrantfox.kjdautils.internal.arguments.CommandArg
 import me.aberrantfox.kjdautils.internal.arguments.RoleArg
@@ -12,15 +9,13 @@ import me.aberrantfox.kjdautils.internal.arguments.UserArg
 import me.markhc.hangoutbot.dataclasses.GuildConfigurations
 import me.markhc.hangoutbot.services.Properties
 import me.markhc.hangoutbot.utilities.*
-import java.awt.Color
 import java.util.*
-import kotlin.math.ceil
 
 val startTime = Date()
 
 @Suppress("unused")
 @CommandSet("Information")
-fun produceInformationCommands(configurations: GuildConfigurations) = commands {
+fun produceInformationCommands() = commands {
     command("help") {
         description = "Display help information."
         execute(CommandArg.makeNullableOptional { null }) {
@@ -70,7 +65,7 @@ fun produceInformationCommands(configurations: GuildConfigurations) = commands {
     }
 
     command("source") {
-        description = "Displays information about the bot's repository."
+        description = "Get the url for the bot source code."
         execute {
             val properties = it.discord.getInjectionObject<Properties>()
 

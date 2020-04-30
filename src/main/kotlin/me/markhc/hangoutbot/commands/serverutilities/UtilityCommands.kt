@@ -188,13 +188,6 @@ fun produceUtilityCommands(config: GuildConfigurations, persistence: Persistence
             it.respond("${cmd.requiredPermissionLevel}")
         }
     }
-
-    command("latex") {
-        description = "Displays information about the given user."
-        execute {
-            it.respond("NotImplementedYet")
-        }
-    }
 }
 
 private fun safeDeleteMessages(channel: TextChannel,

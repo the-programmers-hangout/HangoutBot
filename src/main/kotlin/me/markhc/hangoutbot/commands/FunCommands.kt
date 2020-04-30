@@ -10,6 +10,7 @@ import me.aberrantfox.kjdautils.internal.arguments.SplitterArg
 import me.aberrantfox.kjdautils.internal.arguments.WordArg
 import me.markhc.hangoutbot.locale.Messages
 import me.markhc.hangoutbot.services.Properties
+import me.markhc.hangoutbot.utilities.XKCD
 
 private object CowsayData {
     val validCows = Cowsay.say(arrayOf("-l")).split("\n").filterNot { listOf("sodomized", "head-in", "telebears").contains(it) }
@@ -17,7 +18,7 @@ private object CowsayData {
 
 @Suppress("unused")
 @CommandSet("Fun")
-fun produceFunCommands(properties: Properties) = commands {
+fun produceFunCommands() = commands {
     command("coin") {
         description = "Flip a coin (or coins)."
         execute(IntegerArg("Coins").makeOptional { 1 }) {
@@ -83,4 +84,44 @@ fun produceFunCommands(properties: Properties) = commands {
             })
         }
     }
+
+    command("xkcd") {
+        description = "Returns the XKCD comic number specified, or a random comic if you don't supply a number."
+        execute(IntegerArg("Comic Number").makeNullableOptional{ null }) {
+            val (id) = it.args
+
+            val latest = XKCD.getLatest()
+                    ?: return@execute it.respond("Sorry, failed to get a comic.")
+
+            if(id == null) {
+                it.respond(XKCD.getUrl(Random.nextInt(1, latest)))
+            } else if(id < 1 || id > latest) {
+                it.respond("Please enter a valid comic number between 1 and $latest")
+            } else {
+                it.respond(XKCD.getUrl(id))
+            }
+        }
+    }
+
+    command("xkcd-latest") {
+        description = "Grabs the latest XKCD comic."
+        execute {
+            val latest = XKCD.getLatest()
+                    ?: return@execute it.respond("Sorry, failed to get latest comic.")
+
+            it.respond(XKCD.getUrl(latest))
+        }
+    }
+
+    command("xkcd-search") {
+        description = "Returns a XKCD comic that most closely matches your query."
+        execute(SentenceArg("Query")) {
+            val (what) = it.args
+
+            val result = XKCD.search(what) ?: return@execute it.respond("Sorry, the search failed.")
+
+            it.respond(XKCD.getUrl(result))
+        }
+    }
 }
+
