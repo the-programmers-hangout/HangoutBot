@@ -5,15 +5,15 @@ import me.aberrantfox.kjdautils.discord.Discord
 import me.aberrantfox.kjdautils.extensions.jda.fullName
 import me.aberrantfox.kjdautils.extensions.jda.toMember
 import me.aberrantfox.kjdautils.internal.services.PersistenceService
-import me.markhc.hangoutbot.dataclasses.GuildConfigurations
+import me.markhc.hangoutbot.dataclasses.Configuration
 import me.markhc.hangoutbot.extensions.requiredPermissionLevel
 import me.markhc.hangoutbot.utilities.launchMuteTimers
 import java.awt.Color
 
 @Service
-class StartupService(properties: Properties, guilds: GuildConfigurations, persistenceService: PersistenceService, discord: Discord, permissionsService: PermissionsService) {
+class StartupService(properties: Properties, config: Configuration, persistenceService: PersistenceService, discord: Discord, permissionsService: PermissionsService) {
     init {
-        launchMuteTimers(guilds, persistenceService, discord)
+        launchMuteTimers(config, persistenceService, discord)
 
         with(discord.configuration) {
             mentionEmbed {
@@ -29,7 +29,7 @@ class StartupService(properties: Properties, guilds: GuildConfigurations, persis
                 }
                 field {
                     name = "Prefix"
-                    value = guilds.getGuildConfig(it.guild.id).prefix
+                    value = config.getGuildConfig(it.guild.id).prefix
                     inline = true
                 }
                 field {

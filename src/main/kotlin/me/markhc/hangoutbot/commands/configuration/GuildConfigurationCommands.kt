@@ -7,17 +7,17 @@ import me.aberrantfox.kjdautils.internal.arguments.WordArg
 import me.aberrantfox.kjdautils.internal.arguments.RoleArg
 import me.aberrantfox.kjdautils.internal.arguments.TextChannelArg
 import me.aberrantfox.kjdautils.internal.services.PersistenceService
+import me.markhc.hangoutbot.dataclasses.Configuration
 import me.markhc.hangoutbot.extensions.requiredPermissionLevel
 import me.markhc.hangoutbot.services.Permission
-import me.markhc.hangoutbot.dataclasses.GuildConfigurations
 import net.dv8tion.jda.api.entities.Guild
 import net.dv8tion.jda.api.entities.MessageEmbed
 import java.awt.Color
 
 @Suppress("unused")
 @CommandSet("Guild")
-fun produceGuildConfigurationCommands(config: GuildConfigurations, persistence: PersistenceService) = commands {
-    fun GuildConfigurations.save() {
+fun produceGuildConfigurationCommands(config: Configuration, persistence: PersistenceService) = commands {
+    fun Configuration.save() {
         persistence.save(this)
     }
 
