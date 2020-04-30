@@ -91,7 +91,10 @@ fun produceGuildConfigurationCommands(config: Configuration, persistence: Persis
         description = "Gets the channel used for welcome embeds."
         execute {
             config.getGuildConfig(it.guild!!).apply {
-                it.respond("Welcome channel is ${if(welcomeChannel.isEmpty()) "<None>" else "#${welcomeChannel}"}")
+                if(welcomeChannel.isEmpty())
+                    it.respond("Welcome channel not set")
+                else
+                    it.respond("Welcome channel is #${it.guild!!.getGuildChannelById(welcomeChannel)!!.name}")
             }
         }
     }
