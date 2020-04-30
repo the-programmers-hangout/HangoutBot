@@ -90,7 +90,7 @@ fun produceUtilityCommands(config: GuildConfigurations, persistence: Persistence
                         ?: return@execute it.respond("Sorry, this guild does not have a mute role.")
 
                 val member = guild.getMember(it.author)!!
-
+                
                 if (muteRole in member.roles.map { r -> r.id }.toList()) {
                     return@execute it.respond("Nice try, but you're already muted!")
                 }
