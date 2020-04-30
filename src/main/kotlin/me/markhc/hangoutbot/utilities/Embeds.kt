@@ -232,27 +232,28 @@ fun buildHelpEmbed(prefix: String, container: CommandsContainer) = embed {
     container.commands
             .groupBy { it.category }
             .map {(category, commands) ->
+                val sorted = commands.sortedByDescending { it.names.joinToString() }
                 when {
-                    commands.size >= 6 -> { // Split into 3 columns
-                        val n = ceil(commands.size / 3.0).toInt()
+                    sorted.size >= 6 -> { // Split into 3 columns
+                        val n = sorted.size / 3
                         field {
                             name = "**$category**"
-                            value = joinNames(commands.subList(0, n))
+                            value = joinNames(sorted.subList(n * 2, sorted.size))
                             inline = true
                         }
                         field {
-                            value = joinNames(commands.subList(n, n * 2))
+                            value = joinNames(sorted.subList(n, n * 2))
                             inline = true
                         }
                         field {
-                            value = joinNames(commands.subList(n * 2, commands.size))
+                            value = joinNames(sorted.subList(0, n))
                             inline = true
                         }
                     }
                     else -> {
                         field {
                             name = "**$category**"
-                            value = joinNames(commands)
+                            value = joinNames(sorted)
                             inline = true
                         }
                         field { inline = true }

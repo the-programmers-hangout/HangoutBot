@@ -30,15 +30,15 @@
 | togglewelcome       | <none>         | Toggles the display of welcome messages upon guild user join. |
 
 ## Information
-| Commands                   | Arguments | Description                                        |
-| -------------------------- | --------- | -------------------------------------------------- |
-| help                       | (Command) | Display help information.                          |
-| ping                       | <none>    | pong.                                              |
-| roleinfo                   | Role      | Displays information about the given role.         |
-| serverinfo                 | <none>    | Display a message giving basic server information. |
-| source, github, repository | <none>    | Displays information about the bot's repository.   |
-| uptime                     | <none>    | Displays how long the bot has been running for.    |
-| userinfo                   | User      | Displays information about the given user.         |
+| Commands   | Arguments | Description                                        |
+| ---------- | --------- | -------------------------------------------------- |
+| help       | (Command) | Display help information.                          |
+| ping       | <none>    | pong.                                              |
+| roleinfo   | Role      | Displays information about the given role.         |
+| serverinfo | <none>    | Display a message giving basic server information. |
+| source     | <none>    | Get the url for the bot source code.               |
+| uptime     | <none>    | Displays how long the bot has been running for.    |
+| userinfo   | User      | Displays information about the given user.         |
 
 ## Utility
 | Commands         | Arguments               | Description                                                                       |
