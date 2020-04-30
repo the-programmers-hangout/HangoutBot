@@ -6,12 +6,15 @@
 | (Argument) | This argument is optional. |
 
 ## Fun
-| Commands | Arguments                   | Description                                                                                |
-| -------- | --------------------------- | ------------------------------------------------------------------------------------------ |
-| coin     | (Coins)                     | Flip a coin (or coins).                                                                    |
-| cowsay   | (Cow), (Message)            | Displays a cowsay with a given message. Run with no arguments to get a list of valid cows. |
-| flip     | Choice 1 \| Choice 2 \| ... | Choose one of the given choices.                                                           |
-| roll     | (Min), (Max)                | Rolls a number in a range (default 1-100)                                                  |
+| Commands    | Arguments                   | Description                                                                                |
+| ----------- | --------------------------- | ------------------------------------------------------------------------------------------ |
+| coin        | (Coins)                     | Flip a coin (or coins).                                                                    |
+| cowsay      | (Cow), (Message)            | Displays a cowsay with a given message. Run with no arguments to get a list of valid cows. |
+| flip        | Choice 1 \| Choice 2 \| ... | Choose one of the given choices.                                                           |
+| roll        | (Min), (Max)                | Rolls a number in a range (default 1-100)                                                  |
+| xkcd        | (Comic Number)              | Returns the XKCD comic number specified, or a random comic if you don't supply a number.   |
+| xkcd-latest | <none>                      | Grabs the latest XKCD comic.                                                               |
+| xkcd-search | Query                       | Returns a XKCD comic that most closely matches your query.                                 |
 
 ## Guild
 | Commands            | Arguments      | Description                                                   |
@@ -33,7 +36,7 @@
 | ping       | <none>    | pong.                                              |
 | roleinfo   | Role      | Displays information about the given role.         |
 | serverinfo | <none>    | Display a message giving basic server information. |
-| source     | <none>    | Displays information about the bot's repository.   |
+| source     | <none>    | Get the url for the bot source code.               |
 | uptime     | <none>    | Displays how long the bot has been running for.    |
 | userinfo   | User      | Displays information about the given user.         |
 
@@ -44,7 +47,6 @@
 | echo             | (TextChannel), Text     | Echo a message to a channel.                                                      |
 | getpermission    | Command                 | Returns the required permission level for the given command                       |
 | grant            | (Member), GrantableRole | Grants a role to a lower ranked member or yourself                                |
-| latex            | <none>                  | Displays information about the given user.                                        |
 | nuke             | (TextChannel), Integer  | Delete 2 - 99 past messages in the given channel (default is the invoked channel) |
 | revoke           | (Member), GrantableRole | Revokes a role from a lower ranked member or yourself                             |
 | selfmute         | (Time)                  | Mute yourself for an amout of time. Default is 1 hour. Max is 24 hours.           |
