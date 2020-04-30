@@ -3,14 +3,13 @@ package me.markhc.hangoutbot.listeners
 import com.google.common.eventbus.Subscribe
 import me.aberrantfox.kjdautils.api.dsl.embed
 import me.aberrantfox.kjdautils.extensions.jda.fullName
-import me.markhc.hangoutbot.dataclasses.GuildConfigurations
+import me.markhc.hangoutbot.dataclasses.Configuration
 import me.markhc.hangoutbot.locale.Messages
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent
-import mu.KLogger
 import java.awt.Color
 
 @Suppress("unused")
-class WelcomeListener(private val logger: KLogger, private val guildConfigs: GuildConfigurations) {
+class WelcomeListener(private val guildConfigs: Configuration) {
     @Subscribe
     fun onGuildMemberJoinEvent(event: GuildMemberJoinEvent) {
         val guild = guildConfigs.getGuildConfig(event.guild.id)

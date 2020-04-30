@@ -32,6 +32,7 @@
 ## Information
 | Commands   | Arguments | Description                                        |
 | ---------- | --------- | -------------------------------------------------- |
+| botstats   | <none>    | Displays miscellaneous information about the bot.  |
 | help       | (Command) | Display help information.                          |
 | ping       | <none>    | pong.                                              |
 | roleinfo   | Role      | Displays information about the given role.         |

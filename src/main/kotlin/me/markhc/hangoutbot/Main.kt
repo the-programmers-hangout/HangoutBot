@@ -1,27 +1,28 @@
 package me.markhc.hangoutbot;
 
-import com.beust.klaxon.Klaxon
+import com.google.gson.Gson
 import me.aberrantfox.kjdautils.api.dsl.PrefixDeleteMode
 import me.aberrantfox.kjdautils.api.startBot
 import me.markhc.hangoutbot.services.Properties
 import me.markhc.hangoutbot.services.loadConfig
-import mu.KotlinLogging
+import java.awt.Color
 
 fun main(args: Array<String>) {
     loadConfig {
         val configuration = it ?: throw Exception("Failed to parse configuration");
-        val propFile = Properties::class.java.getResource("/properties.json").readText()
-        val properties = Klaxon().parse<Properties>(propFile) ?: throw Exception("Failed to parse properties");
-
-        System.setProperty(org.slf4j.impl.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, configuration.logLevel);
-
-        val logger = KotlinLogging.logger {}
+        val propFile = Properties::class.java.getResource("/hangoutbot_properties.json").readText()
+        val properties = Gson().fromJson(propFile, Properties::class.java) ?: throw Exception("Failed to parse properties");
 
         startBot(configuration.token) {
-            registerInjectionObject(configuration, logger, properties)
+            registerInjectionObjects(configuration, properties)
 
             configure {
-                prefix = "+"
+                colors {
+                    infoColor = Color.CYAN
+                    failureColor = Color.RED
+                    successColor = Color.GREEN
+                }
+                prefix = "++"
                 deleteMode = PrefixDeleteMode.None
                 allowPrivateMessages = false
             }

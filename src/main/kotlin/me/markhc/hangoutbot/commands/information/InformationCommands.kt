@@ -2,20 +2,20 @@ package me.markhc.hangoutbot.commands.information
 
 import me.aberrantfox.kjdautils.api.annotation.CommandSet
 import me.aberrantfox.kjdautils.api.dsl.command.commands
+import me.aberrantfox.kjdautils.api.dsl.embed
 import me.aberrantfox.kjdautils.api.getInjectionObject
 import me.aberrantfox.kjdautils.internal.arguments.CommandArg
 import me.aberrantfox.kjdautils.internal.arguments.RoleArg
 import me.aberrantfox.kjdautils.internal.arguments.UserArg
-import me.markhc.hangoutbot.dataclasses.GuildConfigurations
+import me.markhc.hangoutbot.dataclasses.Configuration
+import me.markhc.hangoutbot.services.BotStatsService
 import me.markhc.hangoutbot.services.Properties
 import me.markhc.hangoutbot.utilities.*
-import java.util.*
-
-val startTime = Date()
+import java.util.Date
 
 @Suppress("unused")
 @CommandSet("Information")
-fun produceInformationCommands() = commands {
+fun produceInformationCommands(botStats: BotStatsService, config: Configuration) = commands {
     command("help") {
         description = "Display help information."
         execute(CommandArg.makeNullableOptional { null }) {
@@ -24,7 +24,7 @@ fun produceInformationCommands() = commands {
             if(command == null) {
                 it.respond(buildHelpEmbed("+", it.container))
             } else {
-                it.respond(buildHelpEmbedForCommand("+", command))
+                it.respond(buildHelpEmbedForCommand(it, "+", command))
             }
         }
     }
@@ -32,7 +32,7 @@ fun produceInformationCommands() = commands {
     command("ping") {
         description = "pong."
         execute {
-            it.respond("Gateway ping: ${it.discord.jda.gatewayPing}")
+            it.respond("${botStats.ping}")
         }
     }
 
@@ -76,9 +76,57 @@ fun produceInformationCommands() = commands {
     command("uptime") {
         description = "Displays how long the bot has been running for."
         execute {
-            val milliseconds = Date().time - startTime.time
+            it.respond("I have been running for ${botStats.uptime}")
+        }
+    }
 
-            it.respond("I have been running for " + milliseconds.toLongDurationString())
+    command("botstats") {
+        description = "Displays miscellaneous information about the bot."
+        execute {
+            it.respond(embed {
+                title = "Stats"
+                color = infoColor
+
+                field {
+                    name = "# Commands"
+                    value = "${config.totalCommandsExecuted}"
+                    inline = true
+                }
+
+                field {
+                    name = "# Commands this session"
+                    value = "${botStats.totalCommands}"
+                    inline = true
+                }
+
+                field {
+                    name = "# Commands in this guild"
+                    value = "${config.getGuildConfig(it.guild!!).totalCommandsExecuted}"
+                    inline = true
+                }
+
+                field {
+                    name = "Ping"
+                    value = "${botStats.ping}"
+                    inline = true
+                }
+
+                val runtime = Runtime.getRuntime()
+
+                fun Long.toMB() = (this/1024/1024)
+
+                field {
+                    name = "Memory Used"
+                    value = "${(runtime.totalMemory() - runtime.freeMemory()).toMB()}/${runtime.totalMemory().toMB()} MiB"
+                    inline = true
+                }
+
+                field {
+                    name = "Uptime"
+                    value = botStats.uptime
+                    inline = true
+                }
+            })
         }
     }
 }

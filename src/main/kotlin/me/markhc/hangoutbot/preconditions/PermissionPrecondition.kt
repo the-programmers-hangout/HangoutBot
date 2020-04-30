@@ -2,10 +2,12 @@ package me.markhc.hangoutbot.preconditions
 
 import me.aberrantfox.kjdautils.api.annotation.Precondition
 import me.aberrantfox.kjdautils.extensions.jda.toMember
-import me.aberrantfox.kjdautils.internal.command.*
+import me.aberrantfox.kjdautils.internal.command.Fail
+import me.aberrantfox.kjdautils.internal.command.Pass
+import me.aberrantfox.kjdautils.internal.command.precondition
 import me.markhc.hangoutbot.extensions.requiredPermissionLevel
-import me.markhc.hangoutbot.services.*
-import net.dv8tion.jda.api.entities.Emote
+import me.markhc.hangoutbot.services.DEFAULT_REQUIRED_PERMISSION
+import me.markhc.hangoutbot.services.PermissionsService
 
 @Precondition
 fun produceHasPermissionPrecondition(permissionsService: PermissionsService) = precondition {

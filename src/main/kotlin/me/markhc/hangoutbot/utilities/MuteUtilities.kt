@@ -5,9 +5,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import me.aberrantfox.kjdautils.api.dsl.embed
 import me.aberrantfox.kjdautils.discord.Discord
-import me.aberrantfox.kjdautils.internal.di.PersistenceService
+import me.aberrantfox.kjdautils.internal.services.PersistenceService
 import me.markhc.hangoutbot.dataclasses.GuildConfiguration
-import me.markhc.hangoutbot.dataclasses.GuildConfigurations
+import me.markhc.hangoutbot.dataclasses.Configuration
 import me.markhc.hangoutbot.dataclasses.MuteEntry
 import net.dv8tion.jda.api.entities.Member
 import net.dv8tion.jda.api.entities.Role
@@ -38,7 +38,7 @@ fun unmuteMember(member: Member, role: Role) {
     member.guild.removeRoleFromMember(member, role).queue()
 }
 
-fun launchMuteTimers(config: GuildConfigurations, persistence: PersistenceService, discord: Discord) {
+fun launchMuteTimers(config: Configuration, persistence: PersistenceService, discord: Discord) {
     config.guildConfigurations.forEach {
         if(it.mutedUsers.isEmpty()) return@forEach
         if(it.muteRole.isEmpty()) return@forEach

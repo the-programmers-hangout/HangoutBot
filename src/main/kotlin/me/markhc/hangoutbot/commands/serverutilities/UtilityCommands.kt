@@ -5,11 +5,9 @@ import me.aberrantfox.kjdautils.api.dsl.command.commands
 import me.aberrantfox.kjdautils.extensions.jda.fullName
 import me.aberrantfox.kjdautils.extensions.jda.sendPrivateMessage
 import me.aberrantfox.kjdautils.internal.arguments.*
-import me.aberrantfox.kjdautils.internal.di.PersistenceService
+import me.aberrantfox.kjdautils.internal.services.PersistenceService
 import me.markhc.hangoutbot.arguments.LowerRankedMemberArg
-import me.markhc.hangoutbot.arguments.RoleArg
-import me.markhc.hangoutbot.arguments.TextChannelArg
-import me.markhc.hangoutbot.dataclasses.GuildConfigurations
+import me.markhc.hangoutbot.dataclasses.Configuration
 import me.markhc.hangoutbot.extensions.requiredPermissionLevel
 import me.markhc.hangoutbot.services.Permission
 import me.markhc.hangoutbot.utilities.*
@@ -21,8 +19,8 @@ import kotlin.math.roundToLong
 
 @Suppress("unused")
 @CommandSet("Utility")
-fun produceUtilityCommands(config: GuildConfigurations, persistence: PersistenceService) = commands {
-    fun GuildConfigurations.save() {
+fun produceUtilityCommands(config: Configuration, persistence: PersistenceService) = commands {
+    fun Configuration.save() {
         persistence.save(this)
     }
 
@@ -71,7 +69,7 @@ fun produceUtilityCommands(config: GuildConfigurations, persistence: Persistence
 
     command("selfmute") {
         description = "Mute yourself for an amout of time. Default is 1 hour. Max is 24 hours."
-        execute(TimeStringArg.makeOptional { 3600.0 }) {
+        execute(TimeStringArg .makeOptional { 3600.0 }) {
             val (timeInSeconds) = it.args
 
             if(timeInSeconds > 24 * 3600.0) {
