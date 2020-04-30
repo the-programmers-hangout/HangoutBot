@@ -18,7 +18,7 @@ fun main(args: Array<String>) {
 
             configure {
                 colors {
-                    infoColor = Color.RED
+                    infoColor = Color.CYAN
                     failureColor = Color.RED
                     successColor = Color.GREEN
                 }
