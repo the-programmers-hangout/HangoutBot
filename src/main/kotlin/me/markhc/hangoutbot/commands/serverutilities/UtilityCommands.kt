@@ -69,7 +69,7 @@ fun produceUtilityCommands(config: GuildConfigurations, persistence: Persistence
 
     command("selfmute") {
         description = "Mute yourself for an amout of time. Default is 1 hour. Max is 24 hours."
-        execute(TimeStringArg.makeOptional { 3600.0 }) {
+        execute(TimeStringArg .makeOptional { 3600.0 }) {
             val (timeInSeconds) = it.args
 
             if(timeInSeconds > 24 * 3600.0) {

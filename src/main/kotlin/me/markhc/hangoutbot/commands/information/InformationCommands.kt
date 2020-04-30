@@ -6,10 +6,9 @@ import me.aberrantfox.kjdautils.api.getInjectionObject
 import me.aberrantfox.kjdautils.internal.arguments.CommandArg
 import me.aberrantfox.kjdautils.internal.arguments.RoleArg
 import me.aberrantfox.kjdautils.internal.arguments.UserArg
-import me.markhc.hangoutbot.dataclasses.GuildConfigurations
 import me.markhc.hangoutbot.services.Properties
 import me.markhc.hangoutbot.utilities.*
-import java.util.*
+import java.util.Date
 
 val startTime = Date()
 
