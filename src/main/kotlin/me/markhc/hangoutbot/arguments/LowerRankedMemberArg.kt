@@ -12,8 +12,8 @@ open class LowerRankedMemberArg(override val name : String = "Lower Ranked membe
     companion object : LowerRankedMemberArg()
 
     override val consumptionType = ConsumptionType.Single
-    override val examples: ArrayList<String>
-        get() = arrayListOf("@Bob", "197780697866305536", "302134543639511050")
+    override fun generateExamples(event: CommandEvent<*>)
+            = mutableListOf("@Bob", "197780697866305536", "302134543639511050")
 
     override fun convert(arg: String, args: List<String>, event: CommandEvent<*>): ArgumentResult<Member> {
         val permissions = event.discord.getInjectionObject<PermissionsService>()!!

@@ -24,7 +24,7 @@ fun produceInformationCommands() = commands {
             if(command == null) {
                 it.respond(buildHelpEmbed("+", it.container))
             } else {
-                it.respond(buildHelpEmbedForCommand("+", command))
+                it.respond(buildHelpEmbedForCommand(it, "+", command))
             }
         }
     }

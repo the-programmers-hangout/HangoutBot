@@ -5,10 +5,8 @@ import me.aberrantfox.kjdautils.api.dsl.command.commands
 import me.aberrantfox.kjdautils.extensions.jda.fullName
 import me.aberrantfox.kjdautils.extensions.jda.sendPrivateMessage
 import me.aberrantfox.kjdautils.internal.arguments.*
-import me.aberrantfox.kjdautils.internal.di.PersistenceService
+import me.aberrantfox.kjdautils.internal.services.PersistenceService
 import me.markhc.hangoutbot.arguments.LowerRankedMemberArg
-import me.markhc.hangoutbot.arguments.RoleArg
-import me.markhc.hangoutbot.arguments.TextChannelArg
 import me.markhc.hangoutbot.dataclasses.GuildConfigurations
 import me.markhc.hangoutbot.extensions.requiredPermissionLevel
 import me.markhc.hangoutbot.services.Permission

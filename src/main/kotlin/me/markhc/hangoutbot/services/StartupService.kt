@@ -7,12 +7,10 @@ import me.aberrantfox.kjdautils.api.dsl.embed
 import me.aberrantfox.kjdautils.discord.Discord
 import me.aberrantfox.kjdautils.extensions.jda.fullName
 import me.aberrantfox.kjdautils.extensions.jda.toMember
-import me.aberrantfox.kjdautils.internal.di.PersistenceService
+import me.aberrantfox.kjdautils.internal.services.PersistenceService
 import me.markhc.hangoutbot.dataclasses.GuildConfigurations
 import me.markhc.hangoutbot.extensions.requiredPermissionLevel
 import me.markhc.hangoutbot.utilities.launchMuteTimers
-import me.markhc.hangoutbot.utilities.muteMemberWithTimer
-import me.markhc.hangoutbot.utilities.unmuteMember
 import net.dv8tion.jda.api.entities.Guild
 import net.dv8tion.jda.api.entities.MessageChannel
 import net.dv8tion.jda.api.entities.User
@@ -24,7 +22,7 @@ class StartupService(properties: Properties, guilds: GuildConfigurations, persis
         launchMuteTimers(guilds, persistenceService, discord)
 
         with(discord.configuration) {
-            mentionEmbed = {
+            mentionEmbed {
                 embed {
                     val channel = it.channel
                     val self = channel.jda.selfUser
@@ -63,13 +61,11 @@ class StartupService(properties: Properties, guilds: GuildConfigurations, persis
                     }
                 }
             }
+            visibilityPredicate predicate@{
+                it.guild ?: return@predicate false
 
-
-            visibilityPredicate = predicate@{ command: Command, user: User, _: MessageChannel, guild: Guild? ->
-                guild ?: return@predicate false
-
-                val member = user.toMember(guild)!!
-                val permission = command.requiredPermissionLevel
+                val member = it.user.toMember(it.guild!!)!!
+                val permission = it.command.requiredPermissionLevel
 
                 permissionsService.hasClearance(member, permission)
             }

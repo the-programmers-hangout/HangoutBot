@@ -5,7 +5,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import me.aberrantfox.kjdautils.api.dsl.embed
 import me.aberrantfox.kjdautils.discord.Discord
-import me.aberrantfox.kjdautils.internal.di.PersistenceService
+import me.aberrantfox.kjdautils.internal.services.PersistenceService
 import me.markhc.hangoutbot.dataclasses.GuildConfiguration
 import me.markhc.hangoutbot.dataclasses.GuildConfigurations
 import me.markhc.hangoutbot.dataclasses.MuteEntry

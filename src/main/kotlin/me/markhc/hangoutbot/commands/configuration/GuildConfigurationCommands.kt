@@ -4,11 +4,11 @@ import me.aberrantfox.kjdautils.api.annotation.CommandSet
 import me.aberrantfox.kjdautils.api.dsl.command.commands
 import me.aberrantfox.kjdautils.api.dsl.embed
 import me.aberrantfox.kjdautils.internal.arguments.WordArg
+import me.aberrantfox.kjdautils.internal.arguments.RoleArg
+import me.aberrantfox.kjdautils.internal.arguments.TextChannelArg
+import me.aberrantfox.kjdautils.internal.services.PersistenceService
 import me.markhc.hangoutbot.extensions.requiredPermissionLevel
 import me.markhc.hangoutbot.services.Permission
-import me.aberrantfox.kjdautils.internal.di.PersistenceService
-import me.markhc.hangoutbot.arguments.RoleArg
-import me.markhc.hangoutbot.arguments.TextChannelArg
 import me.markhc.hangoutbot.dataclasses.GuildConfigurations
 import net.dv8tion.jda.api.entities.Guild
 import net.dv8tion.jda.api.entities.MessageEmbed

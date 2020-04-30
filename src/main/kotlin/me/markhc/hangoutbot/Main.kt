@@ -18,7 +18,7 @@ fun main(args: Array<String>) {
         val logger = KotlinLogging.logger {}
 
         startBot(configuration.token) {
-            registerInjectionObject(configuration, logger, properties)
+            registerInjectionObjects(configuration, logger, properties)
 
             configure {
                 prefix = "+"

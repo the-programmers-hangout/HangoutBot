@@ -1,6 +1,7 @@
 package me.markhc.hangoutbot.utilities
 
 import me.aberrantfox.kjdautils.api.dsl.command.Command
+import me.aberrantfox.kjdautils.api.dsl.command.CommandEvent
 import me.aberrantfox.kjdautils.api.dsl.command.CommandsContainer
 import me.aberrantfox.kjdautils.api.dsl.embed
 import me.aberrantfox.kjdautils.extensions.jda.fullName
@@ -269,12 +270,12 @@ private fun generateStructure(command: Command) =
             if (it.isOptional) "($type)" else "[$type]"
         }
 
-private fun generateExample(command: Command) =
+private fun generateExample(event: CommandEvent<*>, command: Command) =
         command.expectedArgs.arguments.joinToString(" ") {
-            it.examples.random()
+            it.generateExamples(event).random()
         }
 
-fun buildHelpEmbedForCommand(prefix: String, command: Command) = embed {
+fun buildHelpEmbedForCommand(event: CommandEvent<*>, prefix: String, command: Command) = embed {
     title = command.names.joinToString()
     description = command.description
     color = Color.green
@@ -288,7 +289,7 @@ fun buildHelpEmbedForCommand(prefix: String, command: Command) = embed {
 
     field {
         name = "Show me an example of someone using the command."
-        value = "$commandInvocation ${generateExample(command)}"
+        value = "$commandInvocation ${generateExample(event, command)}"
     }
 }
 
