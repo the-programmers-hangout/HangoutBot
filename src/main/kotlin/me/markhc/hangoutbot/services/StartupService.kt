@@ -23,6 +23,7 @@ class StartupService(properties: Properties,
         launchMuteTimers(config, persistenceService, discord)
 
         with(discord.configuration) {
+            prefix = config.prefix
             mentionEmbed {
                 val channel = it.channel
                 val self = channel.jda.selfUser
