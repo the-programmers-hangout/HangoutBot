@@ -90,6 +90,7 @@ fun produceInformationCommands(botStats: BotStatsService, config: Configuration)
                 color = infoColor
 
                 field {
+                    name = "Commands"
                     value = """
                         ```
                         Commands executed:      ${String.format("%6d", config.totalCommandsExecuted)}
@@ -116,7 +117,6 @@ fun produceInformationCommands(botStats: BotStatsService, config: Configuration)
                 field {
                     name = "Uptime"
                     value = botStats.uptime
-                    inline = true
                 }
             })
         }
