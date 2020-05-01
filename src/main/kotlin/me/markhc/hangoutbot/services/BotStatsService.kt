@@ -6,9 +6,10 @@ import me.aberrantfox.kjdautils.discord.Discord
 import me.aberrantfox.kjdautils.internal.services.PersistenceService
 import me.markhc.hangoutbot.dataclasses.Configuration
 import me.markhc.hangoutbot.utilities.toLongDurationString
+import org.joda.time.DateTime
 import java.util.*
 
-private val startTime = Date()
+var startTime: Date = Date()
 
 @Service
 class BotStatsService(private val config: Configuration,

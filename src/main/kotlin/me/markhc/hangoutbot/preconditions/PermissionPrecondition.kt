@@ -6,12 +6,16 @@ import me.aberrantfox.kjdautils.internal.command.Fail
 import me.aberrantfox.kjdautils.internal.command.Pass
 import me.aberrantfox.kjdautils.internal.command.precondition
 import me.markhc.hangoutbot.extensions.requiredPermissionLevel
+import me.markhc.hangoutbot.services.BotStatsService
 import me.markhc.hangoutbot.services.DEFAULT_REQUIRED_PERMISSION
 import me.markhc.hangoutbot.services.PermissionsService
 
 @Precondition
-fun produceHasPermissionPrecondition(permissionsService: PermissionsService) = precondition {
+fun produceHasPermissionPrecondition(botStats: BotStatsService, permissionsService: PermissionsService) = precondition {
     val command = it.container[it.commandStruct.commandName]
+
+    botStats.commandExecuted(it)
+
     if(command == null) {
         it.message.addReaction("\u274C").queue()
         return@precondition Fail()

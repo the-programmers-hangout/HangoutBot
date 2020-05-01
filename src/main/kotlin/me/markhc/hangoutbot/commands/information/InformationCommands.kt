@@ -38,6 +38,7 @@ fun produceInformationCommands(botStats: BotStatsService, config: Configuration)
 
     command("serverinfo") {
         description = "Display a message giving basic server information."
+        requiresGuild = true
         execute {
             val guild = it.guild!!
 
@@ -59,6 +60,7 @@ fun produceInformationCommands(botStats: BotStatsService, config: Configuration)
 
     command("roleinfo") {
         description = "Displays information about the given role."
+        requiresGuild = true
         execute(RoleArg) {
             it.respond(buildRoleInfoEmbed(it.args.first))
         }
@@ -88,36 +90,24 @@ fun produceInformationCommands(botStats: BotStatsService, config: Configuration)
                 color = infoColor
 
                 field {
-                    name = "# Commands"
-                    value = "${config.totalCommandsExecuted}"
-                    inline = true
+                    value = """
+                        Commands executed:              ${String.format("%6d", config.totalCommandsExecuted)}
+                        Commands executed this session: ${String.format("%6d", botStats.totalCommands)}
+                    """.trimIndent()
                 }
 
-                field {
-                    name = "# Commands this session"
-                    value = "${botStats.totalCommands}"
-                    inline = true
-                }
+                val runtime = Runtime.getRuntime()
+                val usedMemory = runtime.totalMemory() - runtime.freeMemory()
 
                 field {
-                    name = "# Commands in this guild"
-                    value = "${config.getGuildConfig(it.guild!!).totalCommandsExecuted}"
+                    name = "Memory"
+                    value = "${usedMemory / 1000000}/${runtime.totalMemory() / 1000000} MiB"
                     inline = true
                 }
 
                 field {
                     name = "Ping"
-                    value = "${botStats.ping}"
-                    inline = true
-                }
-
-                val runtime = Runtime.getRuntime()
-
-                fun Long.toMB() = (this/1024/1024)
-
-                field {
-                    name = "Memory Used"
-                    value = "${(runtime.totalMemory() - runtime.freeMemory()).toMB()}/${runtime.totalMemory().toMB()} MiB"
+                    value = "${botStats.ping} ms"
                     inline = true
                 }
 

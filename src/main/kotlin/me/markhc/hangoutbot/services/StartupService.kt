@@ -9,6 +9,7 @@ import me.markhc.hangoutbot.dataclasses.Configuration
 import me.markhc.hangoutbot.extensions.requiredPermissionLevel
 import me.markhc.hangoutbot.utilities.launchMuteTimers
 import java.awt.Color
+import java.util.*
 
 @Service
 class StartupService(properties: Properties,
@@ -17,6 +18,8 @@ class StartupService(properties: Properties,
                      discord: Discord,
                      permissionsService: PermissionsService) {
     init {
+        startTime = Date()
+
         launchMuteTimers(config, persistenceService, discord)
 
         with(discord.configuration) {

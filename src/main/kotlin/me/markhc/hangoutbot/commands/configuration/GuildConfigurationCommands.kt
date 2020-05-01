@@ -6,6 +6,7 @@ import me.aberrantfox.kjdautils.api.dsl.embed
 import me.aberrantfox.kjdautils.internal.arguments.WordArg
 import me.aberrantfox.kjdautils.internal.arguments.RoleArg
 import me.aberrantfox.kjdautils.internal.arguments.TextChannelArg
+import me.aberrantfox.kjdautils.internal.services.ConversationService
 import me.aberrantfox.kjdautils.internal.services.PersistenceService
 import me.markhc.hangoutbot.dataclasses.Configuration
 import me.markhc.hangoutbot.extensions.requiredPermissionLevel
@@ -16,14 +17,15 @@ import java.awt.Color
 
 @Suppress("unused")
 @CommandSet("Guild")
-fun produceGuildConfigurationCommands(config: Configuration, persistence: PersistenceService) = commands {
+fun produceGuildConfigurationCommands(config: Configuration, persistence: PersistenceService, conversationService: ConversationService) = commands {
     fun Configuration.save() {
         persistence.save(this)
     }
 
     command("setadminrole") {
-        requiredPermissionLevel = Permission.GuildOwner
         description = "Sets the role that distinguishes an Administrator"
+        requiredPermissionLevel = Permission.GuildOwner
+        requiresGuild = true
         execute(RoleArg) {
             val (role) = it.args
 
@@ -35,8 +37,9 @@ fun produceGuildConfigurationCommands(config: Configuration, persistence: Persis
     }
 
     command("setstaffrole") {
-        requiredPermissionLevel = Permission.GuildOwner
         description = "Sets the role that distinguishes an Administrator"
+        requiredPermissionLevel = Permission.GuildOwner
+        requiresGuild = true
         execute(RoleArg) {
             val (role) = it.args
 
@@ -48,8 +51,9 @@ fun produceGuildConfigurationCommands(config: Configuration, persistence: Persis
     }
 
     command("setmuterole") {
-        requiredPermissionLevel = Permission.GuildOwner
         description = "Sets the role used to mute an user"
+        requiredPermissionLevel = Permission.GuildOwner
+        requiresGuild = true
         execute(RoleArg) {
             val (role) = it.args
 
@@ -61,8 +65,9 @@ fun produceGuildConfigurationCommands(config: Configuration, persistence: Persis
     }
 
     command("togglewelcome") {
-        requiredPermissionLevel = Permission.Administrator
         description = "Toggles the display of welcome messages upon guild user join."
+        requiredPermissionLevel = Permission.Administrator
+        requiresGuild = true
         execute {
             val guild = config.getGuildConfig(it.guild!!.id)
 
@@ -74,11 +79,10 @@ fun produceGuildConfigurationCommands(config: Configuration, persistence: Persis
     }
 
     command("setwelcomechannel") {
-        requiredPermissionLevel = Permission.Administrator
         description = "Sets the channel used for welcome embeds."
+        requiredPermissionLevel = Permission.Administrator
+        requiresGuild = true
         execute(TextChannelArg("Channel")) {
-            val guild = config.getGuildConfig(it.guild!!.id)
-
             config.getGuildConfig(it.guild!!).apply { welcomeChannel = it.args.first.id }
             config.save()
 
@@ -87,8 +91,9 @@ fun produceGuildConfigurationCommands(config: Configuration, persistence: Persis
     }
 
     command("getwelcomechannel") {
-        requiredPermissionLevel = Permission.Administrator
         description = "Gets the channel used for welcome embeds."
+        requiredPermissionLevel = Permission.Administrator
+        requiresGuild = true
         execute {
             config.getGuildConfig(it.guild!!).apply {
                 if(welcomeChannel.isEmpty())
@@ -100,8 +105,9 @@ fun produceGuildConfigurationCommands(config: Configuration, persistence: Persis
     }
 
     command("makerolegrantable") {
-        requiredPermissionLevel = Permission.Administrator
         description = "Adds a role to the list of grantable roles."
+        requiredPermissionLevel = Permission.Administrator
+        requiresGuild = true
         execute(RoleArg, WordArg("Category")) { event ->
             val (role, category) = event.args
 
@@ -127,8 +133,9 @@ fun produceGuildConfigurationCommands(config: Configuration, persistence: Persis
     }
 
     command("removegrantablerole") {
-        requiredPermissionLevel = Permission.Administrator
         description = "Removes a role to the list of grantable roles."
+        requiredPermissionLevel = Permission.Administrator
+        requiresGuild = true
         execute(RoleArg) { event ->
             val (role) = event.args
 
@@ -151,8 +158,9 @@ fun produceGuildConfigurationCommands(config: Configuration, persistence: Persis
     }
 
     command("listgrantableroles") {
-        requiredPermissionLevel = Permission.Staff
         description = "Lists the available grantable roles."
+        requiredPermissionLevel = Permission.Staff
+        requiresGuild = true
         execute { event ->
             val guildConfig = config.getGuildConfig(event.guild!!.id)
 
