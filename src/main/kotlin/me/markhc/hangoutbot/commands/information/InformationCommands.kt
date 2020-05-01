@@ -12,6 +12,7 @@ import me.markhc.hangoutbot.services.BotStatsService
 import me.markhc.hangoutbot.services.HelpService
 import me.markhc.hangoutbot.services.Properties
 import me.markhc.hangoutbot.utilities.*
+import net.dv8tion.jda.api.exceptions.InsufficientPermissionException
 import java.util.Date
 
 @Suppress("unused")
@@ -26,6 +27,22 @@ fun produceInformationCommands(botStats: BotStatsService, config: Configuration,
                 it.respond(helpService.buildHelpEmbed(it))
             } else {
                 it.respond(helpService.buildHelpEmbedForCommand(it, command))
+            }
+        }
+    }
+
+    command("invite") {
+        description = "Generates an invite link to this server."
+        requiresGuild = true
+        execute {
+            val guild = it.guild!!
+
+            if(guild.vanityUrl != null) {
+                it.respond(guild.vanityUrl!!)
+            } else {
+                val guildChannel = guild.getGuildChannelById(it.channel.id)!!
+
+                it.respond(guildChannel.createInvite().complete().url)
             }
         }
     }
