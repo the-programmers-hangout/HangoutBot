@@ -86,7 +86,7 @@ fun produceGuildConfigurationCommands(config: Configuration, persistence: Persis
             config.getGuildConfig(it.guild!!).apply { loggingChannel = channel.id }
             config.save()
 
-            return@execute it.respond("Logging channel set to #\"${channel.name}\"")
+            return@execute it.respond("Logging channel set to #${channel.name}")
         }
     }
 

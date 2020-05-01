@@ -26,8 +26,8 @@ fun produceCommandLoggerPrecondition(botStats: BotStatsService, config: Configur
                 val args = it.commandStruct.commandArgs
                 val message =
                         "${it.author.fullName()} :: ${it.author.id} :: " +
-                        "Invoked ${it.commandStruct.commandName} in #${it.channel.name}." +
-                        if(args.isEmpty()) "" else " Args: ${args.joinToString { ", " }}"
+                        "Invoked `${it.commandStruct.commandName}` in #${it.channel.name}." +
+                        if(args.isEmpty()) "" else " Args: ${args.joinToString(", ")}"
 
                 guild.getTextChannelById(loggingChannel)
                         ?.sendMessage(message)?.queue()
