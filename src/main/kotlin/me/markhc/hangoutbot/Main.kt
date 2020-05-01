@@ -22,7 +22,6 @@ fun main(args: Array<String>) {
                     failureColor = Color.RED
                     successColor = Color.GREEN
                 }
-                prefix = "++"
                 deleteMode = PrefixDeleteMode.None
                 allowPrivateMessages = false
                 allowMentionPrefix = true
