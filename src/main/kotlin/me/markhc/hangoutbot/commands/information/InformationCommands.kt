@@ -91,8 +91,10 @@ fun produceInformationCommands(botStats: BotStatsService, config: Configuration)
 
                 field {
                     value = """
-                        Commands executed:              ${String.format("%6d", config.totalCommandsExecuted)}
-                        Commands executed this session: ${String.format("%6d", botStats.totalCommands)}
+                        ```
+                        Commands executed:      ${String.format("%6d", config.totalCommandsExecuted)}
+                        Commands since restart: ${String.format("%6d", botStats.totalCommands)}
+                        ```
                     """.trimIndent()
                 }
 
