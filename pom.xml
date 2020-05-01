@@ -13,7 +13,7 @@
         <main.class>me.markhc.hangoutbot.MainKt</main.class>
         <project.repository>https://github.com/the-programmers-hangout/HangoutBot/</project.repository>
         <kotlin.version>1.3.72</kotlin.version>
-        <kutils.version>91a61aca</kutils.version>
+        <kutils.version>0.15.0</kutils.version>
         <mavenjar.version>3.1.0</mavenjar.version>
         <mavenassembly.version>2.6</mavenassembly.version>
         <cowsay.version>1.0.3</cowsay.version>
