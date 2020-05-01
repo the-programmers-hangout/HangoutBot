@@ -24,9 +24,11 @@
 | makerolegrantable   | Role, Category | Adds a role to the list of grantable roles.                   |
 | removegrantablerole | Role           | Removes a role to the list of grantable roles.                |
 | setadminrole        | Role           | Sets the role that distinguishes an Administrator             |
+| setlogchannel       | TextChannel    | Sets the channel used to log executed commands                |
 | setmuterole         | Role           | Sets the role used to mute an user                            |
+| setprefix           | Prefix         | Sets the bot prefix. THIS AFFECTS ALL GUILDS                  |
 | setstaffrole        | Role           | Sets the role that distinguishes an Administrator             |
-| setwelcomechannel   | Channel        | Sets the channel used for welcome embeds.                     |
+| setwelcomechannel   | TextChannel    | Sets the channel used for welcome embeds.                     |
 | togglewelcome       | <none>         | Toggles the display of welcome messages upon guild user join. |
 
 ## Information

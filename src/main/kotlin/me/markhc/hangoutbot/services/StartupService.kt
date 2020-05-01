@@ -16,7 +16,8 @@ class StartupService(properties: Properties,
                      config: Configuration,
                      persistenceService: PersistenceService,
                      discord: Discord,
-                     permissionsService: PermissionsService) {
+                     permissionsService: PermissionsService,
+                     helpService: HelpService) {
     init {
         startTime = Date()
 
@@ -62,12 +63,7 @@ class StartupService(properties: Properties,
                 }
             }
             visibilityPredicate predicate@{
-                it.guild ?: return@predicate false
-
-                val member = it.user.toMember(it.guild!!)!!
-                val permission = it.command.requiredPermissionLevel
-
-                permissionsService.hasClearance(member, permission)
+                return@predicate helpService.isCommandVisible(it)
             }
         }
     }

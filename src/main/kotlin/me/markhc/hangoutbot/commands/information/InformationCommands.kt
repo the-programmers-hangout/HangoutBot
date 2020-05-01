@@ -9,22 +9,23 @@ import me.aberrantfox.kjdautils.internal.arguments.RoleArg
 import me.aberrantfox.kjdautils.internal.arguments.UserArg
 import me.markhc.hangoutbot.dataclasses.Configuration
 import me.markhc.hangoutbot.services.BotStatsService
+import me.markhc.hangoutbot.services.HelpService
 import me.markhc.hangoutbot.services.Properties
 import me.markhc.hangoutbot.utilities.*
 import java.util.Date
 
 @Suppress("unused")
 @CommandSet("Information")
-fun produceInformationCommands(botStats: BotStatsService, config: Configuration) = commands {
+fun produceInformationCommands(botStats: BotStatsService, config: Configuration, helpService: HelpService) = commands {
     command("help") {
         description = "Display help information."
         execute(CommandArg.makeNullableOptional { null }) {
             val (command) = it.args
 
             if(command == null) {
-                it.respond(buildHelpEmbed("+", it.container))
+                it.respond(helpService.buildHelpEmbed(it))
             } else {
-                it.respond(buildHelpEmbedForCommand(it, "+", command))
+                it.respond(helpService.buildHelpEmbedForCommand(it, command))
             }
         }
     }
