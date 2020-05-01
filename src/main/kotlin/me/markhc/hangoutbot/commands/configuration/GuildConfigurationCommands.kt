@@ -23,12 +23,14 @@ fun produceGuildConfigurationCommands(config: Configuration, persistence: Persis
     }
 
     command("setprefix") {
-        description = "Sets the bot prefix. THIS AFFECTS ALL GUILDS BECAUSE JAKE CANT FIX BOT"
+        description = "Sets the bot prefix. THIS AFFECTS ALL GUILDS"
         requiredPermissionLevel = Permission.BotOwner
         execute(WordArg("Prefix")) {
             config.prefix = it.args.first
             it.discord.configuration.prefix = config.prefix
             config.save()
+
+            return@execute it.respond("Bot prefix setto \"${config.prefix}\"")
         }
     }
 
@@ -74,6 +76,20 @@ fun produceGuildConfigurationCommands(config: Configuration, persistence: Persis
         }
     }
 
+    command("setlogchannel") {
+        description = "Sets the channel used to log executed commands"
+        requiredPermissionLevel = Permission.GuildOwner
+        requiresGuild = true
+        execute(TextChannelArg) {
+            val (channel) = it.args
+
+            config.getGuildConfig(it.guild!!).apply { loggingChannel = channel.id }
+            config.save()
+
+            return@execute it.respond("Logging channel set to #\"${channel.name}\"")
+        }
+    }
+
     command("togglewelcome") {
         description = "Toggles the display of welcome messages upon guild user join."
         requiredPermissionLevel = Permission.Administrator
@@ -92,11 +108,13 @@ fun produceGuildConfigurationCommands(config: Configuration, persistence: Persis
         description = "Sets the channel used for welcome embeds."
         requiredPermissionLevel = Permission.Administrator
         requiresGuild = true
-        execute(TextChannelArg("Channel")) {
-            config.getGuildConfig(it.guild!!).apply { welcomeChannel = it.args.first.id }
+        execute(TextChannelArg()) {
+            val (channel) = it.args
+
+            config.getGuildConfig(it.guild!!).apply { welcomeChannel = channel.id }
             config.save()
 
-            it.respond("Welcome channel set to #${it.args.first.name}")
+            it.respond("Welcome channel set to #${channel.name}")
         }
     }
 

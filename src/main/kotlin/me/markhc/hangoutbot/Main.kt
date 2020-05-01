@@ -25,6 +25,7 @@ fun main(args: Array<String>) {
                 prefix = "++"
                 deleteMode = PrefixDeleteMode.None
                 allowPrivateMessages = false
+                allowMentionPrefix = true
             }
         }
     }
