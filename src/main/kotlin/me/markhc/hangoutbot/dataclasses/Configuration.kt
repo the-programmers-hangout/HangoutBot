@@ -5,7 +5,8 @@ import net.dv8tion.jda.api.entities.Guild
 
 @Data("data/guilds.json")
 data class Configuration(val guildConfigurations: MutableList<GuildConfiguration> = mutableListOf(),
-                         var totalCommandsExecuted: Int = 0) {
+                         var totalCommandsExecuted: Int = 0,
+                         var prefix: String = "++") {
     fun getGuildConfig(guildId: String): GuildConfiguration {
         val guild = guildConfigurations.find { it.guildId == guildId }
 
@@ -13,7 +14,7 @@ data class Configuration(val guildConfigurations: MutableList<GuildConfiguration
             return guild
         }
 
-        guildConfigurations.add(GuildConfiguration(guildId, "+"))
+        guildConfigurations.add(GuildConfiguration(guildId))
 
         return guildConfigurations.first { it.guildId == guildId }
     }
@@ -21,7 +22,6 @@ data class Configuration(val guildConfigurations: MutableList<GuildConfiguration
 }
 
 data class GuildConfiguration(val guildId: String = "",
-                              var prefix: String = "",
                               var reactToCommands: Boolean = false,
                               var welcomeEmbeds: Boolean = false,
                               var welcomeChannel: String = "",

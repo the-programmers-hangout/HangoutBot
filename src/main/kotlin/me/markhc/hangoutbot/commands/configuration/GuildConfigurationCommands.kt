@@ -22,6 +22,16 @@ fun produceGuildConfigurationCommands(config: Configuration, persistence: Persis
         persistence.save(this)
     }
 
+    command("setprefix") {
+        description = "Sets the bot prefix. THIS AFFECTS ALL GUILDS BECAUSE JAKE CANT FIX BOT"
+        requiredPermissionLevel = Permission.BotOwner
+        execute(WordArg("Prefix")) {
+            config.prefix = it.args.first
+            it.discord.configuration.prefix = config.prefix
+            config.save()
+        }
+    }
+
     command("setadminrole") {
         description = "Sets the role that distinguishes an Administrator"
         requiredPermissionLevel = Permission.GuildOwner

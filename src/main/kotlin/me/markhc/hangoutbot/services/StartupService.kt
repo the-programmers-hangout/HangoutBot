@@ -36,7 +36,7 @@ class StartupService(properties: Properties,
                 }
                 field {
                     name = "Prefix"
-                    value = config.getGuildConfig(it.guild.id).prefix
+                    value = config.prefix
                     inline = true
                 }
                 field {
