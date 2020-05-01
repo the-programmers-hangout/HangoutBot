@@ -3,6 +3,7 @@ package me.markhc.hangoutbot.preconditions
 import me.aberrantfox.kjdautils.api.annotation.Precondition
 import me.aberrantfox.kjdautils.extensions.jda.fullName
 import me.aberrantfox.kjdautils.extensions.jda.toMember
+import me.aberrantfox.kjdautils.extensions.stdlib.sanitiseMentions
 import me.aberrantfox.kjdautils.internal.command.Fail
 import me.aberrantfox.kjdautils.internal.command.Pass
 import me.aberrantfox.kjdautils.internal.command.precondition
@@ -15,7 +16,7 @@ import me.markhc.hangoutbot.services.PermissionsService
 
 @Precondition
 fun produceCommandLoggerPrecondition(botStats: BotStatsService, config: Configuration, persistenceService: PersistenceService) = precondition {
-    val command = it.container[it.commandStruct.commandName] ?: return@precondition Fail()
+    it.container[it.commandStruct.commandName] ?: return@precondition Fail()
 
     botStats.commandExecuted(it)
 
@@ -27,15 +28,13 @@ fun produceCommandLoggerPrecondition(botStats: BotStatsService, config: Configur
                 val message =
                         "${it.author.fullName()} :: ${it.author.id} :: " +
                         "Invoked `${it.commandStruct.commandName}` in #${it.channel.name}." +
-                        if(args.isEmpty()) "" else " Args: ${args.joinToString(", ")}"
+                        if(args.isEmpty()) "" else " Args: ${args.joinToString(", ").sanitiseMentions()}"
 
                 guild.getTextChannelById(loggingChannel)
                         ?.sendMessage(message)?.queue()
             }
         }
     }
-
-
 
     return@precondition Pass
 }
