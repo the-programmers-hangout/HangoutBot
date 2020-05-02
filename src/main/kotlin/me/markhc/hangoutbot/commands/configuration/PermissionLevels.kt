@@ -74,7 +74,7 @@ fun producePermissionCommands(config: Configuration, persistence: PersistenceSer
             val (role) = it.args
 
             config.getGuildConfig(it.guild!!).apply {
-                it.respond("The permission level for ${role.name} is ${rolePermissions[role.id]}")
+                it.respond("The permission level for ${role.name} is ${rolePermissions[role.id] ?: "not set"}")
             }
         }
     }
