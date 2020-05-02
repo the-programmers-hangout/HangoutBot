@@ -40,9 +40,12 @@ fun produceInformationCommands(botStats: BotStatsService, config: Configuration,
             if(guild.vanityUrl != null) {
                 it.respond(guild.vanityUrl!!)
             } else {
-                val guildChannel = guild.getGuildChannelById(it.channel.id)!!
+                val guildChannel = guild.getGuildChannelById(guild.defaultChannel!!.id)!!
 
-                it.respond(guildChannel.createInvite().complete().url)
+                // TODO: Cache these invites so we don't generate a new one every time
+                guildChannel.createInvite().setMaxAge(86400).queue { invite ->
+                    it.respond("Here's your invite! It will expire in 24 hours!\n${invite.url}")
+                }
             }
         }
     }
