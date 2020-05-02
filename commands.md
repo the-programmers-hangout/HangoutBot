@@ -23,11 +23,9 @@
 | listgrantableroles  | <none>         | Lists the available grantable roles.                          |
 | makerolegrantable   | Role, Category | Adds a role to the list of grantable roles.                   |
 | removegrantablerole | Role           | Removes a role to the list of grantable roles.                |
-| setadminrole        | Role           | Sets the role that distinguishes an Administrator             |
 | setlogchannel       | TextChannel    | Sets the channel used to log executed commands                |
 | setmuterole         | Role           | Sets the role used to mute an user                            |
 | setprefix           | Prefix         | Sets the bot prefix. THIS AFFECTS ALL GUILDS                  |
-| setstaffrole        | Role           | Sets the role that distinguishes an Administrator             |
 | setwelcomechannel   | TextChannel    | Sets the channel used for welcome embeds.                     |
 | togglewelcome       | <none>         | Toggles the display of welcome messages upon guild user join. |
 
@@ -36,6 +34,7 @@
 | ---------- | --------- | -------------------------------------------------- |
 | botstats   | <none>    | Displays miscellaneous information about the bot.  |
 | help       | (Command) | Display help information.                          |
+| invite     | <none>    | Generates an invite link to this server.           |
 | ping       | <none>    | pong.                                              |
 | roleinfo   | Role      | Displays information about the given role.         |
 | serverinfo | <none>    | Display a message giving basic server information. |
@@ -43,12 +42,19 @@
 | uptime     | <none>    | Displays how long the bot has been running for.    |
 | userinfo   | User      | Displays information about the given user.         |
 
+## Permissions
+| Commands           | Arguments                     | Description                                                 |
+| ------------------ | ----------------------------- | ----------------------------------------------------------- |
+| getpermission      | Command                       | Returns the required permission level for the given command |
+| getrolepermissions | Role                          | Gets the permission level of the given role                 |
+| setpermission      | Permission Level, Commands... | Sets the required permission level for the given commands   |
+| setrolepermissions | Role, Permission Level        | Sets the permission level of the given role                 |
+
 ## Utility
 | Commands         | Arguments               | Description                                                                       |
 | ---------------- | ----------------------- | --------------------------------------------------------------------------------- |
 | avatar           | User                    | Gets the avatar from the given user                                               |
 | echo             | (TextChannel), Text     | Echo a message to a channel.                                                      |
-| getpermission    | Command                 | Returns the required permission level for the given command                       |
 | grant            | (Member), GrantableRole | Grants a role to a lower ranked member or yourself                                |
 | nuke             | (TextChannel), Integer  | Delete 2 - 99 past messages in the given channel (default is the invoked channel) |
 | revoke           | (Member), GrantableRole | Revokes a role from a lower ranked member or yourself                             |

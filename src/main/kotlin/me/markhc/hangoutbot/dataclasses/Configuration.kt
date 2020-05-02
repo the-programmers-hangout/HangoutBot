@@ -1,12 +1,14 @@
 package me.markhc.hangoutbot.dataclasses
 
 import me.aberrantfox.kjdautils.api.annotation.Data
+import me.markhc.hangoutbot.services.PermissionLevel
 import net.dv8tion.jda.api.entities.Guild
 
-@Data("data/guilds.json")
+@Data("data/guilds.json", killIfGenerated = false)
 data class Configuration(val guildConfigurations: MutableList<GuildConfiguration> = mutableListOf(),
                          var totalCommandsExecuted: Int = 0,
-                         var prefix: String = "++") {
+                         var prefix: String = "++",
+                         val commandPermission: MutableMap<String, PermissionLevel> = mutableMapOf()) {
     fun getGuildConfig(guildId: String): GuildConfiguration {
         val guild = guildConfigurations.find { it.guildId == guildId }
 
@@ -22,15 +24,14 @@ data class Configuration(val guildConfigurations: MutableList<GuildConfiguration
 }
 
 data class GuildConfiguration(val guildId: String = "",
-                              var reactToCommands: Boolean = false,
                               var welcomeEmbeds: Boolean = false,
                               var welcomeChannel: String = "",
                               var loggingChannel: String = "",
-                              var staffRole: String = "",
-                              var adminRole: String = "",
                               var muteRole: String = "",
                               var totalCommandsExecuted: Int = 0,
-                              var grantableRoles: MutableMap<String, MutableList<String>> = mutableMapOf(),
-                              var mutedUsers: MutableList<MuteEntry> = mutableListOf())
+                              val grantableRoles: MutableMap<String, MutableList<String>> = mutableMapOf(),
+                              val mutedUsers: MutableList<MuteEntry> = mutableListOf(),
+                              val rolePermissions: MutableMap<String, PermissionLevel> = mutableMapOf(),
+                              val commandPermission: MutableMap<String, PermissionLevel> = mutableMapOf())
 
 data class MuteEntry(val user: String = "", val timeUntil: String = "")

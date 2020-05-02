@@ -10,21 +10,21 @@ import me.aberrantfox.kjdautils.internal.services.ConversationService
 import me.aberrantfox.kjdautils.internal.services.PersistenceService
 import me.markhc.hangoutbot.dataclasses.Configuration
 import me.markhc.hangoutbot.extensions.requiredPermissionLevel
-import me.markhc.hangoutbot.services.Permission
+import me.markhc.hangoutbot.services.PermissionLevel
 import net.dv8tion.jda.api.entities.Guild
 import net.dv8tion.jda.api.entities.MessageEmbed
 import java.awt.Color
 
 @Suppress("unused")
 @CommandSet("Guild")
-fun produceGuildConfigurationCommands(config: Configuration, persistence: PersistenceService, conversationService: ConversationService) = commands {
+fun produceGuildConfigurationCommands(config: Configuration, persistence: PersistenceService) = commands {
     fun Configuration.save() {
         persistence.save(this)
     }
 
     command("setprefix") {
         description = "Sets the bot prefix. THIS AFFECTS ALL GUILDS"
-        requiredPermissionLevel = Permission.BotOwner
+        requiredPermissionLevel = PermissionLevel.BotOwner
         execute(WordArg("Prefix")) {
             config.prefix = it.args.first
             it.discord.configuration.prefix = config.prefix
@@ -34,37 +34,9 @@ fun produceGuildConfigurationCommands(config: Configuration, persistence: Persis
         }
     }
 
-    command("setadminrole") {
-        description = "Sets the role that distinguishes an Administrator"
-        requiredPermissionLevel = Permission.GuildOwner
-        requiresGuild = true
-        execute(RoleArg) {
-            val (role) = it.args
-
-            config.getGuildConfig(it.guild!!).apply { adminRole = role.id }
-            config.save()
-
-            return@execute it.respond("Administrator role set to \"${role.name}\"")
-        }
-    }
-
-    command("setstaffrole") {
-        description = "Sets the role that distinguishes an Administrator"
-        requiredPermissionLevel = Permission.GuildOwner
-        requiresGuild = true
-        execute(RoleArg) {
-            val (role) = it.args
-
-            config.getGuildConfig(it.guild!!).apply { staffRole = role.id }
-            config.save()
-
-            return@execute it.respond("Staff role set to \"${role.name}\"")
-        }
-    }
-
     command("setmuterole") {
         description = "Sets the role used to mute an user"
-        requiredPermissionLevel = Permission.GuildOwner
+        requiredPermissionLevel = PermissionLevel.GuildOwner
         requiresGuild = true
         execute(RoleArg) {
             val (role) = it.args
@@ -78,7 +50,7 @@ fun produceGuildConfigurationCommands(config: Configuration, persistence: Persis
 
     command("setlogchannel") {
         description = "Sets the channel used to log executed commands"
-        requiredPermissionLevel = Permission.GuildOwner
+        requiredPermissionLevel = PermissionLevel.GuildOwner
         requiresGuild = true
         execute(TextChannelArg) {
             val (channel) = it.args
@@ -92,7 +64,7 @@ fun produceGuildConfigurationCommands(config: Configuration, persistence: Persis
 
     command("togglewelcome") {
         description = "Toggles the display of welcome messages upon guild user join."
-        requiredPermissionLevel = Permission.Administrator
+        requiredPermissionLevel = PermissionLevel.Administrator
         requiresGuild = true
         execute {
             val guild = config.getGuildConfig(it.guild!!.id)
@@ -106,7 +78,7 @@ fun produceGuildConfigurationCommands(config: Configuration, persistence: Persis
 
     command("setwelcomechannel") {
         description = "Sets the channel used for welcome embeds."
-        requiredPermissionLevel = Permission.Administrator
+        requiredPermissionLevel = PermissionLevel.Administrator
         requiresGuild = true
         execute(TextChannelArg()) {
             val (channel) = it.args
@@ -120,7 +92,7 @@ fun produceGuildConfigurationCommands(config: Configuration, persistence: Persis
 
     command("getwelcomechannel") {
         description = "Gets the channel used for welcome embeds."
-        requiredPermissionLevel = Permission.Administrator
+        requiredPermissionLevel = PermissionLevel.Administrator
         requiresGuild = true
         execute {
             config.getGuildConfig(it.guild!!).apply {
@@ -134,7 +106,7 @@ fun produceGuildConfigurationCommands(config: Configuration, persistence: Persis
 
     command("makerolegrantable") {
         description = "Adds a role to the list of grantable roles."
-        requiredPermissionLevel = Permission.Administrator
+        requiredPermissionLevel = PermissionLevel.Administrator
         requiresGuild = true
         execute(RoleArg, WordArg("Category")) { event ->
             val (role, category) = event.args
@@ -162,7 +134,7 @@ fun produceGuildConfigurationCommands(config: Configuration, persistence: Persis
 
     command("removegrantablerole") {
         description = "Removes a role to the list of grantable roles."
-        requiredPermissionLevel = Permission.Administrator
+        requiredPermissionLevel = PermissionLevel.Administrator
         requiresGuild = true
         execute(RoleArg) { event ->
             val (role) = event.args
@@ -187,7 +159,7 @@ fun produceGuildConfigurationCommands(config: Configuration, persistence: Persis
 
     command("listgrantableroles") {
         description = "Lists the available grantable roles."
-        requiredPermissionLevel = Permission.Staff
+        requiredPermissionLevel = PermissionLevel.Staff
         requiresGuild = true
         execute { event ->
             val guildConfig = config.getGuildConfig(event.guild!!.id)

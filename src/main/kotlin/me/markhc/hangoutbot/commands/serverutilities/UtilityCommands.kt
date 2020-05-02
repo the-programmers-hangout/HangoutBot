@@ -9,7 +9,7 @@ import me.aberrantfox.kjdautils.internal.services.PersistenceService
 import me.markhc.hangoutbot.arguments.LowerRankedMemberArg
 import me.markhc.hangoutbot.dataclasses.Configuration
 import me.markhc.hangoutbot.extensions.requiredPermissionLevel
-import me.markhc.hangoutbot.services.Permission
+import me.markhc.hangoutbot.services.PermissionLevel
 import me.markhc.hangoutbot.utilities.*
 import net.dv8tion.jda.api.entities.*
 import org.joda.time.DateTime
@@ -27,7 +27,7 @@ fun produceUtilityCommands(config: Configuration, persistence: PersistenceServic
     val dateFormatter = DateTimeFormat.fullDateTime()
 
     command("echo") {
-        requiredPermissionLevel = Permission.Staff
+        requiredPermissionLevel = PermissionLevel.Staff
         description = "Echo a message to a channel."
         execute(TextChannelArg.makeOptional { it.channel as TextChannel }, SentenceArg) {
             val (target, message) = it.args
@@ -112,7 +112,7 @@ fun produceUtilityCommands(config: Configuration, persistence: PersistenceServic
     }
 
     command("nuke") {
-        requiredPermissionLevel = Permission.Staff
+        requiredPermissionLevel = PermissionLevel.Staff
         description = "Delete 2 - 99 past messages in the given channel (default is the invoked channel)"
         execute(TextChannelArg.makeOptional { it.channel as TextChannel },
                 IntegerArg) {
@@ -138,7 +138,7 @@ fun produceUtilityCommands(config: Configuration, persistence: PersistenceServic
     }
 
     command("grant") {
-        requiredPermissionLevel = Permission.Staff
+        requiredPermissionLevel = PermissionLevel.Staff
         description = "Grants a role to a lower ranked member or yourself"
         execute(LowerRankedMemberArg("Member").makeOptional { it.guild!!.getMember(it.author)!! }, RoleArg("GrantableRole")) { event ->
             val (member, role) = event.args
@@ -159,7 +159,7 @@ fun produceUtilityCommands(config: Configuration, persistence: PersistenceServic
     }
 
     command("revoke") {
-        requiredPermissionLevel = Permission.Staff
+        requiredPermissionLevel = PermissionLevel.Staff
         description = "Revokes a role from a lower ranked member or yourself"
         execute(LowerRankedMemberArg("Member").makeOptional { it.guild!!.getMember(it.author)!! }, RoleArg("GrantableRole")) { event ->
             val (member, role) = event.args
@@ -174,16 +174,6 @@ fun produceUtilityCommands(config: Configuration, persistence: PersistenceServic
             }
 
             event.respond("\"${role.name}\" is not a grantable role")
-        }
-    }
-
-    command("getpermission") {
-        requiredPermissionLevel = Permission.Staff
-        description = "Returns the required permission level for the given command"
-        execute(CommandArg) {
-            val (cmd) = it.args
-
-            it.respond("${cmd.requiredPermissionLevel}")
         }
     }
 }
