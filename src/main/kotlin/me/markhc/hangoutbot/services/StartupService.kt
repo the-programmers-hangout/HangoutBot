@@ -63,7 +63,7 @@ class StartupService(properties: Properties,
                 }
             }
             visibilityPredicate predicate@{
-                return@predicate helpService.isCommandVisible(it)
+                return@predicate permissionsService.isCommandVisible(it.guild, it.user, it.command)
             }
         }
     }

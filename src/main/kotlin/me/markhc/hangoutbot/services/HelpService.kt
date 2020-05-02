@@ -12,17 +12,8 @@ import net.dv8tion.jda.api.entities.User
 
 @Service
 class HelpService(private val permissionsService: PermissionsService) {
-    fun isCommandVisible(visibilityContext: VisibilityContext) =
-        visibilityContext.command.isVisible(visibilityContext.guild, visibilityContext.user)
-
-    private fun Command.isVisible(guild: Guild?, user: User): Boolean {
-        guild ?: return false
-
-        val member = user.toMember(guild)!!
-        val permission = requiredPermissionLevel
-
-        return permissionsService.hasClearance(member, permission)
-    }
+    private fun Command.isVisible(guild: Guild?, user: User) =
+            permissionsService.isCommandVisible(guild, user, this)
 
     fun buildHelpEmbed(event: CommandEvent<*>) = embed {
         val discord = event.discord

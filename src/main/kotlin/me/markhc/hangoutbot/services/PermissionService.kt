@@ -1,8 +1,13 @@
 package me.markhc.hangoutbot.services
 
 import me.aberrantfox.kjdautils.api.annotation.Service
+import me.aberrantfox.kjdautils.api.dsl.command.Command
+import me.aberrantfox.kjdautils.extensions.jda.toMember
 import me.markhc.hangoutbot.dataclasses.Configuration
+import me.markhc.hangoutbot.extensions.requiredPermissionLevel
+import net.dv8tion.jda.api.entities.Guild
 import net.dv8tion.jda.api.entities.Member
+import net.dv8tion.jda.api.entities.User
 
 enum class Permission {
     BotOwner,
@@ -16,10 +21,19 @@ val DEFAULT_REQUIRED_PERMISSION = Permission.Everyone
 
 @Service
 class PermissionsService(private val botConfig: BotConfiguration, private val config: Configuration) {
-    fun hasClearance(member: Member, requiredPermissionLevel: Permission): Boolean {
-        return member.getPermissionLevel().ordinal <= requiredPermissionLevel.ordinal
+    fun hasClearance(member: Member, requiredPermissionLevel: Permission) =
+            member.getPermissionLevel().ordinal <= requiredPermissionLevel.ordinal
+    fun getPermissionLevel(member: Member) =
+            member.getPermissionLevel().ordinal
+
+    fun isCommandVisible(guild: Guild?, user: User, command: Command): Boolean {
+        guild ?: return false
+
+        val member = user.toMember(guild)!!
+        val permission = command.requiredPermissionLevel
+
+        return hasClearance(member, permission)
     }
-    fun getPermissionLevel(member: Member) = member.getPermissionLevel().ordinal
 
     private fun Member.getPermissionLevel() =
             when {
