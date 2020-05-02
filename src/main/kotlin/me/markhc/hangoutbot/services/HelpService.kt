@@ -24,43 +24,48 @@ class HelpService(private val permissionsService: PermissionsService) {
         color = infoColor
 
         fun joinNames(value: List<Command>) =
-                value.sortedBy { it.names.joinToString() }.joinToString("\n") { it.names.joinToString() }
+                value.joinToString("\n") { it.names.joinToString() }
 
-        container.commands
+        val commands = container.commands
                 .filter { it.isVisible(event.guild, event.author) }
-                .takeIf { it.isNotEmpty() }
-                ?.groupBy { it.category }
-                ?.map {(category, commands) ->
-                    val sorted = commands
-                            .sortedByDescending { it.names.joinToString() }
-                    when {
-                        sorted.size >= 6 -> { // Split into 3 columns
-                            val n = sorted.size / 3
-                            field {
-                                name = "**$category**"
-                                value = joinNames(sorted.subList(n * 2, sorted.size))
-                                inline = true
+                .groupBy { it.category }
+
+        if(commands.isNotEmpty()) {
+            commands.map { (category, commands) ->
+                        val sorted = commands
+                                .sortedBy { it.names.joinToString() }
+                        when {
+                            sorted.size >= 6 -> { // Split into 3 columns
+                                val cols = 3
+                                val n1 = (sorted.size + cols - 1) / cols
+                                val n2 = (sorted.size + cols - 2) / cols
+                                val n3 = (sorted.size + cols - 3) / cols
+                                field {
+                                    name = "**$category**"
+                                    value = joinNames(sorted.subList(0, n1))
+                                    inline = true
+                                }
+                                field {
+                                    value = joinNames(sorted.subList(n1, n1+n2))
+                                    inline = true
+                                }
+                                field {
+                                    value = joinNames(sorted.subList(n1+n2, sorted.size))
+                                    inline = true
+                                }
                             }
-                            field {
-                                value = joinNames(sorted.subList(n, n * 2))
-                                inline = true
+                            else -> {
+                                field {
+                                    name = "**$category**"
+                                    value = joinNames(sorted)
+                                    inline = true
+                                }
+                                field { inline = true }
+                                field { inline = true }
                             }
-                            field {
-                                value = joinNames(sorted.subList(0, n))
-                                inline = true
-                            }
-                        }
-                        else -> {
-                            field {
-                                name = "**$category**"
-                                value = joinNames(sorted)
-                                inline = true
-                            }
-                            field { inline = true }
-                            field { inline = true }
                         }
                     }
-                }
+        }
     }
 
     private fun generateStructure(command: Command) =
