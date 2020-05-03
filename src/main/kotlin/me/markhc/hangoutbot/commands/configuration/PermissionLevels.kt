@@ -13,7 +13,6 @@ import me.markhc.hangoutbot.services.PermissionLevel
 import me.markhc.hangoutbot.services.PermissionsService
 import java.util.concurrent.TimeUnit
 
-
 @CommandSet("Permissions")
 fun producePermissionCommands(config: Configuration, persistence: PersistenceService, permissionsService: PermissionsService) = commands {
     fun Configuration.save() {

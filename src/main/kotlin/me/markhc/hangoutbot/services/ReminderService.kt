@@ -13,13 +13,14 @@ import org.joda.time.format.DateTimeFormat
 import com.github.kittinunf.result.Result
 import me.aberrantfox.kjdautils.api.dsl.embed
 import me.aberrantfox.kjdautils.extensions.jda.sendPrivateMessage
+import me.markhc.hangoutbot.utilities.toLongDurationString
 import net.dv8tion.jda.api.entities.*
 
 @Service
 class ReminderService(private val configuration: Configuration,
                       private val persistenceService: PersistenceService,
                       private val discord: Discord) {
-    private val dateFormatter = DateTimeFormat.forPattern("MMMMM dd, yyyy HH:mm:ss z")
+    private val dateFormatter = DateTimeFormat.fullDateTime()
 
     fun addReminder(member: Member, ms: Long, what: String): Result<String, Exception> {
         val guild       = member.guild
@@ -35,7 +36,7 @@ class ReminderService(private val configuration: Configuration,
 
         launchReminder(guild, member.user, ms, what)
 
-        return Result.Success("Got it, I'll remind you in ${until.toString(dateFormatter)} about \"${what}\"")
+        return Result.Success("Got it, I'll remind you in ${ms.toLongDurationString()} about \"${what}\"")
     }
 
     fun launchTimers() {
