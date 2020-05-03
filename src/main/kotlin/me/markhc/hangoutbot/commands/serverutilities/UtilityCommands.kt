@@ -5,33 +5,24 @@ import me.aberrantfox.kjdautils.api.dsl.command.commands
 import me.aberrantfox.kjdautils.extensions.jda.fullName
 import me.aberrantfox.kjdautils.extensions.jda.sendPrivateMessage
 import me.aberrantfox.kjdautils.internal.arguments.*
-import me.aberrantfox.kjdautils.internal.services.PersistenceService
 import me.markhc.hangoutbot.arguments.LowerRankedMemberArg
-import me.markhc.hangoutbot.dataclasses.Configuration
 import me.markhc.hangoutbot.extensions.requiredPermissionLevel
 import me.markhc.hangoutbot.services.MuteService
 import me.markhc.hangoutbot.services.PermissionLevel
+import me.markhc.hangoutbot.services.PersistentData
 import me.markhc.hangoutbot.services.ReminderService
-import me.markhc.hangoutbot.utilities.*
 import net.dv8tion.jda.api.entities.*
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
-import org.joda.time.Days
 import org.joda.time.format.DateTimeFormat
-import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.math.roundToLong
 
 @Suppress("unused")
 @CommandSet("Utility")
-fun produceUtilityCommands(config: Configuration,
-                           persistence: PersistenceService,
+fun produceUtilityCommands(persistentData: PersistentData,
                            muteService: MuteService,
                            reminderService: ReminderService) = commands {
-    fun Configuration.save() {
-        persistence.save(this)
-    }
-
     val dateFormatter = DateTimeFormat.fullDateTime()
 
     command("echo") {
@@ -127,18 +118,14 @@ fun produceUtilityCommands(config: Configuration,
         execute(LowerRankedMemberArg("Member").makeOptional { it.guild!!.getMember(it.author)!! }, RoleArg("GrantableRole")) { event ->
             val (member, role) = event.args
             val guild = event.guild!!
-            val guildConfig = config.getGuildConfig(guild.id)
 
-            guildConfig.grantableRoles.forEach { category ->
-                if (category.value.any { it.equals(role.id, true) }) {
-                    return@execute removeRoles(guild, member, category.value).also {
-                        grantRole(guild, member, role)
-                        event.respond("Granted \"${role.name}\" to ${member.fullName()}")
-                    }
-                }
-            }
+            val roles = persistentData.getGuildProperty(guild) { grantableRoles }
+            val category = roles.asIterable().find { it.value.any { r -> r.equals(role.id, true) } }
 
-            event.respond("\"${role.name}\" is not a grantable role")
+            category?.also { removeRoles(guild, member, *it.value.toTypedArray()) }
+                    ?.also { grantRole(guild, member, role) }
+                    ?.also { event.respond("Granted \"${role.name}\" to ${member.fullName()}") }
+                    ?: event.respond("\"${role.name}\" is not a grantable role")
         }
     }
 
@@ -148,16 +135,17 @@ fun produceUtilityCommands(config: Configuration,
         execute(LowerRankedMemberArg("Member").makeOptional { it.guild!!.getMember(it.author)!! }, RoleArg("GrantableRole")) { event ->
             val (member, role) = event.args
             val guild = event.guild!!
-            val guildConfig = config.getGuildConfig(guild.id)
 
-            guildConfig.grantableRoles.forEach { category ->
-                if (category.value.any { it.equals(role.id, true) }) {
-                    removeRoles(guild, member, category.value)
-                    return@execute event.respond("Revoked \"${role.name}\" from ${member.fullName()}")
-                }
+            val roles = persistentData.getGuildProperty(guild) { grantableRoles }
+
+            val isGrantable = roles.any { it.value.any { r -> r.equals(role.id, true) } }
+
+            if(isGrantable) {
+                removeRoles(guild, member, role.id)
+                event.respond("Revoked \"${role.name}\" from ${member.fullName()}")
+            } else {
+                event.respond("\"${role.name}\" is not a grantable role")
             }
-
-            event.respond("\"${role.name}\" is not a grantable role")
         }
     }
 
@@ -190,7 +178,7 @@ private fun safeDeleteMessages(channel: TextChannel,
         messages.forEach { it.delete().queue() }
     }
 }
-private fun removeRoles(guild: Guild, member: Member, roles: List<String>) {
+private fun removeRoles(guild: Guild, member: Member, vararg roles: String) {
     // TODO: Perhaps we should check if the user has more than 1 color role
     //       and remove all of them instead of just 1
     member.roles.find { it.id in roles }?.let {

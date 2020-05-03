@@ -5,20 +5,16 @@ import me.aberrantfox.kjdautils.api.dsl.command.commands
 import me.aberrantfox.kjdautils.internal.arguments.CommandArg
 import me.aberrantfox.kjdautils.internal.arguments.MultipleArg
 import me.aberrantfox.kjdautils.internal.arguments.RoleArg
-import me.aberrantfox.kjdautils.internal.services.PersistenceService
 import me.markhc.hangoutbot.arguments.PermissionLevelArg
-import me.markhc.hangoutbot.dataclasses.Configuration
 import me.markhc.hangoutbot.extensions.requiredPermissionLevel
 import me.markhc.hangoutbot.services.PermissionLevel
 import me.markhc.hangoutbot.services.PermissionsService
+import me.markhc.hangoutbot.services.PersistentData
 import java.util.concurrent.TimeUnit
 
 @CommandSet("Permissions")
-fun producePermissionCommands(config: Configuration, persistence: PersistenceService, permissionsService: PermissionsService) = commands {
-    fun Configuration.save() {
-        persistence.save(this)
-    }
-
+fun producePermissionCommands(persistentData: PersistentData,
+                              permissionsService: PermissionsService) = commands {
     command("getpermission") {
         requiredPermissionLevel = PermissionLevel.Staff
         description = "Returns the required permission level for the given command"
@@ -73,10 +69,9 @@ fun producePermissionCommands(config: Configuration, persistence: PersistenceSer
                 return@execute it.respondTimed("Sorry, cannot set permission level to $level.", TimeUnit.SECONDS.toMillis(10))
             }
 
-            config.getGuildConfig(it.guild!!).apply {
+            persistentData.setGuildProperty(it.guild!!) {
                 rolePermissions[role.id] = level
             }
-            config.save()
 
             it.respond("${role.name} permission level set to $level")
         }
@@ -89,7 +84,7 @@ fun producePermissionCommands(config: Configuration, persistence: PersistenceSer
         execute(RoleArg) {
             val (role) = it.args
 
-            config.getGuildConfig(it.guild!!).apply {
+            persistentData.getGuildProperty(it.guild!!) {
                 it.respond("The permission level for ${role.name} is ${rolePermissions[role.id] ?: "not set"}")
             }
         }

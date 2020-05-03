@@ -20,18 +20,17 @@ enum class PermissionLevel {
 val DEFAULT_REQUIRED_PERMISSION = PermissionLevel.Everyone
 
 @Service
-class PermissionsService(private val config: Configuration, private val botConfig: BotConfiguration, private val persistenceService: PersistenceService) {
+class PermissionsService(private val persistentData: PersistentData, private val botConfig: BotConfiguration, private val persistenceService: PersistenceService) {
     fun getCommandPermissionLevel(guild: Guild, command: Command): PermissionLevel {
-        config.getGuildConfig(guild).let {
-            return it.commandPermission[command.names.first()] ?: command.requiredPermissionLevel
+        return persistentData.getGuildProperty(guild) {
+            commandPermission[command.names.first()] ?: command.requiredPermissionLevel
         }
     }
 
     fun setCommandPermissionLevel(guild: Guild, command: Command, permissionLevel: PermissionLevel) {
-        config.getGuildConfig(guild).apply {
+        persistentData.setGuildProperty(guild) {
             commandPermission[command.names.first()] = permissionLevel
         }
-        persistenceService.save(config)
     }
 
     fun hasClearance(guild: Guild, user: User, requiredPermissionLevel: PermissionLevel): Boolean {
@@ -59,8 +58,8 @@ class PermissionsService(private val config: Configuration, private val botConfi
     private fun Member.isBotOwner() = user.id == botConfig.ownerId
     private fun Member.isGuildOwner() = isOwner
     private fun Member.isAdministrator() : Boolean {
-        val guildConfig = config.getGuildConfig(this.guild.id)
-        val adminRoles = guildConfig.rolePermissions
+        val roles = persistentData.getGuildProperty(guild) { rolePermissions }
+        val adminRoles = roles
                 .filter { it.value == PermissionLevel.Administrator }
                 .map { it.key }
         val userRoles = this.roles.map { it.id }
@@ -68,12 +67,12 @@ class PermissionsService(private val config: Configuration, private val botConfi
         return adminRoles.intersect(userRoles).isNotEmpty()
     }
     private fun Member.isStaff(): Boolean {
-        val guildConfig = config.getGuildConfig(this.guild.id)
-        val adminRoles = guildConfig.rolePermissions
+        val roles = persistentData.getGuildProperty(guild) { rolePermissions }
+        val staffRoles = roles
                 .filter { it.value == PermissionLevel.Staff }
                 .map { it.key }
         val userRoles = this.roles.map { it.id }
 
-        return adminRoles.intersect(userRoles).isNotEmpty()
+        return staffRoles.intersect(userRoles).isNotEmpty()
     }
 }

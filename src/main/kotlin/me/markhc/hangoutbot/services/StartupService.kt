@@ -8,7 +8,7 @@ import java.awt.Color
 
 @Service
 class StartupService(properties: Properties,
-                     config: Configuration,
+                     config: BotConfiguration,
                      discord: Discord,
                      permissionsService: PermissionsService,
                      muteService: MuteService,

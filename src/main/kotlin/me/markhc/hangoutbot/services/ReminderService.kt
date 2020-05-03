@@ -13,26 +13,30 @@ import org.joda.time.format.DateTimeFormat
 import com.github.kittinunf.result.Result
 import me.aberrantfox.kjdautils.api.dsl.embed
 import me.aberrantfox.kjdautils.extensions.jda.sendPrivateMessage
+import me.markhc.hangoutbot.dataclasses.MuteEntry
+import me.markhc.hangoutbot.dataclasses.Reminder
 import me.markhc.hangoutbot.utilities.toLongDurationString
 import net.dv8tion.jda.api.entities.*
 
 @Service
-class ReminderService(private val configuration: Configuration,
+class ReminderService(private val persistentData: PersistentData,
                       private val persistenceService: PersistenceService,
                       private val discord: Discord) {
     private val dateFormatter = DateTimeFormat.fullDateTime()
 
     fun addReminder(member: Member, ms: Long, what: String): Result<String, Exception> {
         val guild       = member.guild
-        val guildConfig = configuration.getGuildConfig(guild)
+        val reminders = persistentData.getGuildProperty(guild) { reminders }
 
-        if (guildConfig.reminders.any { it.user == member.id }) {
+        if (reminders.any { it.user == member.id }) {
             return Result.Failure(Exception("Sorry, you already have an active reminder!"))
         }
 
         val until = DateTime.now(DateTimeZone.UTC).plus(ms)
-        guildConfig.addReminder(member.id, until.toString(dateFormatter), what)
-        persistenceService.save(configuration)
+
+        persistentData.setGuildProperty(guild) {
+            reminders.add(Reminder(member.id, until.toString(dateFormatter), what))
+        }
 
         launchReminder(guild, member.user, ms, what)
 
@@ -40,7 +44,7 @@ class ReminderService(private val configuration: Configuration,
     }
 
     fun launchTimers() {
-        configuration.guildConfigurations.forEach {
+        persistentData.getGuilds().forEach {
             if(it.reminders.isEmpty()) return@forEach
 
             val guild = discord.jda.getGuildById(it.guildId)
@@ -64,10 +68,9 @@ class ReminderService(private val configuration: Configuration,
                 description = what
                 color = infoColor
             })
-            configuration.getGuildConfig(guild).apply {
+            persistentData.setGuildProperty(guild) {
                 reminders.removeIf { user.id == it.user }
             }
-            persistenceService.save(configuration)
         }
     }
 }

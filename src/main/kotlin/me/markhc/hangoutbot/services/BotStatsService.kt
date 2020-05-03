@@ -10,8 +10,7 @@ import org.joda.time.DateTime
 import java.util.*
 
 @Service
-class BotStatsService(private val config: Configuration,
-                      private val persistenceService: PersistenceService,
+class BotStatsService(private val persistentData: PersistentData,
                       private val discord: Discord) {
 
     var startTime: Date = Date()
@@ -19,14 +18,15 @@ class BotStatsService(private val config: Configuration,
 
     fun commandExecuted(event: CommandEvent<*>) {
         totalCommands++
-        config.totalCommandsExecuted++
+        persistentData.setProperty {
+            totalCommandsExecuted++
+        }
 
         if(event.guild != null) {
-            config.getGuildConfig(event.guild!!).apply {
+            persistentData.setGuildProperty(event.guild!!) {
                 totalCommandsExecuted++
             }
         }
-        persistenceService.save(config)
     }
 
     val uptime: String

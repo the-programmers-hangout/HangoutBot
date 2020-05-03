@@ -1,11 +1,13 @@
 package me.markhc.hangoutbot.services
 
 import com.google.gson.Gson
+import me.aberrantfox.kjdautils.api.annotation.Data
 import java.io.File
 
+@Data("config/config.json")
 data class BotConfiguration(val token: String = "",
-                         val ownerId: String = "",
-                         val logLevel: String = "WARN");
+                            var prefix: String = "++",
+                            val ownerId: String = "");
 
 data class Properties(val version: String = "",
                       val kutils: String = "",

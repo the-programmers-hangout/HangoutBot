@@ -10,12 +10,10 @@ import me.aberrantfox.kjdautils.internal.command.precondition
 import me.aberrantfox.kjdautils.internal.services.PersistenceService
 import me.markhc.hangoutbot.dataclasses.Configuration
 import me.markhc.hangoutbot.extensions.requiredPermissionLevel
-import me.markhc.hangoutbot.services.BotStatsService
-import me.markhc.hangoutbot.services.DEFAULT_REQUIRED_PERMISSION
-import me.markhc.hangoutbot.services.PermissionsService
+import me.markhc.hangoutbot.services.*
 
 @Precondition
-fun produceCommandLoggerPrecondition(botStats: BotStatsService, config: Configuration, persistenceService: PersistenceService) = precondition {
+fun produceCommandLoggerPrecondition(botStats: BotStatsService, persistentData: PersistentData) = precondition {
     it.container[it.commandStruct.commandName] ?: return@precondition Fail()
 
     botStats.commandExecuted(it)
@@ -28,16 +26,16 @@ fun produceCommandLoggerPrecondition(botStats: BotStatsService, config: Configur
 
     if(it.guild != null) {
         val guild = it.guild!!
-        config.getGuildConfig(guild).apply {
-            if(loggingChannel.isNotEmpty()) {
-                val message =
-                        "${it.author.fullName()} :: ${it.author.id} :: " +
-                        "Invoked `${it.commandStruct.commandName}` in #${it.channel.name}." +
-                        if(args.isEmpty()) "" else " Args: ${args.sanitiseMentions()}"
+        val loggingChannel = persistentData.getGuildProperty(guild) { loggingChannel }
 
-                guild.getTextChannelById(loggingChannel)
-                        ?.sendMessage(message)?.queue()
-            }
+        if(loggingChannel.isNotEmpty()) {
+            val message =
+                    "${it.author.fullName()} :: ${it.author.id} :: " +
+                    "Invoked `${it.commandStruct.commandName}` in #${it.channel.name}." +
+                    if(args.isEmpty()) "" else " Args: ${args.sanitiseMentions()}"
+
+            guild.getTextChannelById(loggingChannel)
+                    ?.sendMessage(message)?.queue()
         }
     }
 

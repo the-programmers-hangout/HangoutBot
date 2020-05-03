@@ -15,35 +15,39 @@ import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
 import org.joda.time.format.DateTimeFormat
 import com.github.kittinunf.result.Result
+import me.markhc.hangoutbot.dataclasses.MuteEntry
 
 @Service
-class MuteService(private val configuration: Configuration,
-                  private val persistenceService: PersistenceService,
+class MuteService(private val persistentData: PersistentData,
                   private val discord: Discord) {
     private val dateFormatter = DateTimeFormat.shortDateTime()
 
     fun addMutedMember(member: Member, ms: Long): Result<MessageEmbed, Exception> {
-        val guild       = member.guild
-        val guildConfig = configuration.getGuildConfig(guild)
+        val guild      = member.guild
+        val muteRoleId = persistentData.getGuildProperty(guild) { muteRole }
 
-        if (guildConfig.muteRole.isEmpty()) {
+        if (muteRoleId.isEmpty()) {
             return Result.Failure(Exception("Sorry, this guild does not have a mute role."))
         }
 
-        val muteRole = guild.getRoleById(guildConfig.muteRole)
+        val muteRole = guild.getRoleById(muteRoleId)
                 ?: return Result.Failure(Exception("Sorry, this guild does not have a mute role."))
 
         if (muteRole.id in member.roles.map { it.id }) {
             return Result.Failure(Exception("Nice try, but you're already muted!"))
         }
 
-        if (guildConfig.mutedUsers.any { muted -> muted.user == member.id }) {
+        val mutedUsers = persistentData.getGuildProperty(guild) { mutedUsers }
+
+        if (mutedUsers.any { muted -> muted.user == member.id }) {
             return Result.Failure(Exception("Sorry, you already have an active mute!"))
         }
 
         val until = DateTime.now(DateTimeZone.UTC).plus(ms)
-        guildConfig.addMutedUser(member.id, until.toString(dateFormatter))
-        persistenceService.save(configuration)
+
+        persistentData.setGuildProperty(guild) {
+            mutedUsers.add(MuteEntry(member.id, until.toString(dateFormatter)))
+        }
 
         applyMute(member, muteRole, ms)
 
@@ -51,7 +55,7 @@ class MuteService(private val configuration: Configuration,
     }
 
     fun launchTimers() {
-        configuration.guildConfigurations.forEach {
+        persistentData.getGuilds().forEach {
             if(it.mutedUsers.isEmpty()) return@forEach
             if(it.muteRole.isEmpty()) return@forEach
 
@@ -72,10 +76,9 @@ class MuteService(private val configuration: Configuration,
 
     private fun applyMute(member: Member, role: Role, ms: Long) {
         muteMemberWithTimer(member, role, ms) {
-            configuration.getGuildConfig(guild).apply {
+            persistentData.setGuildProperty(guild) {
                 mutedUsers.removeIf { member.id == it.user }
             }
-            persistenceService.save(configuration)
             member.guild.removeRoleFromMember(member, role).queue()
         }
     }
