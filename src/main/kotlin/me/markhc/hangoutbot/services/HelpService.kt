@@ -35,7 +35,7 @@ class HelpService(private val permissionsService: PermissionsService) {
                         val sorted = commands
                                 .sortedBy { it.names.joinToString() }
                         when {
-                            sorted.size >= 6 -> { // Split into 3 columns
+                            sorted.size >= 5 -> { // Split into 3 columns
                                 val cols = 3
                                 val n1 = (sorted.size + cols - 1) / cols
                                 val n2 = (sorted.size + cols - 2) / cols

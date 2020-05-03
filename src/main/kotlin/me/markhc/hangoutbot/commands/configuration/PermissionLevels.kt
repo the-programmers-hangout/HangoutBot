@@ -2,6 +2,7 @@ package me.markhc.hangoutbot.commands.configuration
 
 import me.aberrantfox.kjdautils.api.annotation.CommandSet
 import me.aberrantfox.kjdautils.api.dsl.command.commands
+import me.aberrantfox.kjdautils.api.dsl.embed
 import me.aberrantfox.kjdautils.internal.arguments.CommandArg
 import me.aberrantfox.kjdautils.internal.arguments.MultipleArg
 import me.aberrantfox.kjdautils.internal.arguments.RoleArg
@@ -51,9 +52,9 @@ fun producePermissionCommands(persistentData: PersistentData,
             }
 
             event.respond("${
-                commands.joinToString(", ") {
-                    cmd -> cmd.names.joinToString()
-                }} ${if(commands.size > 1) "are" else "is"} now available to ${level}.")
+            commands.joinToString(", ") {
+                cmd -> cmd.names.joinToString()
+            }} ${if(commands.size > 1) "are" else "is"} now available to ${level}.")
         }
     }
 
@@ -87,6 +88,57 @@ fun producePermissionCommands(persistentData: PersistentData,
             persistentData.getGuildProperty(it.guild!!) {
                 it.respond("The permission level for ${role.name} is ${rolePermissions[role.id] ?: "not set"}")
             }
+        }
+    }
+
+    command("listpermissionslevels") {
+        description = "Lists each permission level and the roles assigned to it"
+        requiredPermissionLevel = PermissionLevel.Administrator
+        requiresGuild = true
+        execute { event ->
+            val perms = persistentData.getGuildProperty(event.guild!!) {
+                rolePermissions
+            }
+
+            event.respond(embed{
+                title = "Permission Levels"
+                PermissionLevel.values().forEach {
+                    if(it != PermissionLevel.BotOwner && it != PermissionLevel.GuildOwner) {
+                        val roles = perms.filter { p -> p.value == it }.map { it.key }
+                        field {
+                            name = "**${it.name}**"
+                            value = if (roles.isNotEmpty())
+                                roles.joinToString(", ") { id -> event.guild!!.getRoleById(id)!!.name }
+                            else
+                                "Not set"
+                            inline = true
+                        }
+                    }
+                }
+            })
+        }
+    }
+
+    command("listpermissions") {
+        description = "Lists each command and their required permission level"
+        requiredPermissionLevel = PermissionLevel.Staff
+        requiresGuild = true
+        execute { event ->
+            val commands = event.container.commands
+                    .sortedBy { it.names.joinToString() }
+                    .groupBy { it.category }
+
+            event.respond(embed{
+                title = "Required permissions"
+                commands.forEach {
+                    field {
+                        name = it.key
+                        value = it.value.joinToString("\n") {
+                            "${it.names.joinToString(",")}: ${permissionsService.getCommandPermissionLevel(event.guild!!, it)} "
+                        }
+                    }
+                }
+            })
         }
     }
 }
