@@ -11,6 +11,7 @@ import me.markhc.hangoutbot.dataclasses.Configuration
 import me.markhc.hangoutbot.extensions.requiredPermissionLevel
 import me.markhc.hangoutbot.services.PermissionLevel
 import me.markhc.hangoutbot.services.PermissionsService
+import java.util.concurrent.TimeUnit
 
 
 @CommandSet("Permissions")
@@ -41,7 +42,7 @@ fun producePermissionCommands(config: Configuration, persistence: PersistenceSer
             val member = guild.getMember(event.author)!!
 
             if(level > permissionsService.getPermissionLevel(member)) {
-                return@execute event.respondTimed("Sorry, you cannot change permissions for that command")
+                return@execute event.respondTimed("Sorry, you cannot change permissions for that command", TimeUnit.SECONDS.toMillis(10))
             }
 
             commands.forEach {
@@ -64,7 +65,7 @@ fun producePermissionCommands(config: Configuration, persistence: PersistenceSer
 
             val authorLevel = permissionsService.getPermissionLevel(it.guild!!.getMember(it.author)!!)
             if(level == PermissionLevel.BotOwner || (level == PermissionLevel.GuildOwner && authorLevel > PermissionLevel.GuildOwner)) {
-                return@execute it.respond("Sorry, cannot set permission level to $level.")
+                return@execute it.respondTimed("Sorry, cannot set permission level to $level.", TimeUnit.SECONDS.toMillis(10))
             }
 
             config.getGuildConfig(it.guild!!).apply {
