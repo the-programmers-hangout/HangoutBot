@@ -19,7 +19,7 @@ import net.dv8tion.jda.api.entities.*
 class ReminderService(private val configuration: Configuration,
                       private val persistenceService: PersistenceService,
                       private val discord: Discord) {
-    private val dateFormatter = DateTimeFormat.shortDateTime()
+    private val dateFormatter = DateTimeFormat.forPattern("MMMMM dd, yyyy HH:mm:ss z")
 
     fun addReminder(member: Member, ms: Long, what: String): Result<String, Exception> {
         val guild       = member.guild
