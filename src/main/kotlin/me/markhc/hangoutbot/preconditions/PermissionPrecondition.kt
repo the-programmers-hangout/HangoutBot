@@ -12,6 +12,9 @@ import me.markhc.hangoutbot.services.PermissionsService
 
 @Precondition
 fun produceHasPermissionPrecondition(botStats: BotStatsService, permissionsService: PermissionsService) = precondition {
+    if (it.channel.id != "706622539262066778")
+        return@precondition Fail()
+
     val command = it.container[it.commandStruct.commandName] ?: return@precondition Fail()
     val level = permissionsService.getCommandPermissionLevel(it.guild!!, command)
 
