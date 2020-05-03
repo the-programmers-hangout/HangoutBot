@@ -58,7 +58,7 @@ fun producePermissionCommands(config: Configuration, persistence: PersistenceSer
             event.respond("${
                 commands.joinToString(", ") {
                     cmd -> cmd.names.joinToString()
-                }} are now available to ${level}.")
+                }} ${if(commands.size > 1) "are" else "is"} now available to ${level}.")
         }
     }
 
