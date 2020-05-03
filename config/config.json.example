@@ -1,5 +1,5 @@
 {
   "token" : "<inser-token>",
   "ownerId": "<insert-bot-owner-id>",
-  "logLevel": "warn"
+  "prefix": "++"
 }
