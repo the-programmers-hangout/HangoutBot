@@ -43,14 +43,14 @@
 | userinfo   | User      | Displays information about the given user.         |
 
 ## Permissions
-| Commands              | Arguments                     | Description                                                 |
-| --------------------- | ----------------------------- | ----------------------------------------------------------- |
-| getpermission         | Command                       | Returns the required permission level for the given command |
-| getrolepermissions    | Role                          | Gets the permission level of the given role                 |
-| listpermissions       | <none>                        | Lists each command and their required permission level      |
-| listpermissionslevels | <none>                        | Lists each permission level and the roles assigned to it    |
-| setpermission         | Commands..., Permission Level | Sets the required permission level for the given commands   |
-| setrolepermissions    | Role, Permission Level        | Sets the permission level of the given role                 |
+| Commands             | Arguments                     | Description                                                 |
+| -------------------- | ----------------------------- | ----------------------------------------------------------- |
+| getpermission        | Command                       | Returns the required permission level for the given command |
+| getrolepermissions   | Role                          | Gets the permission level of the given role                 |
+| listpermissionlevels | <none>                        | Lists each permission level and the roles assigned to it    |
+| listpermissions      | <none>                        | Lists each command and their required permission level      |
+| setpermission        | Commands..., Permission Level | Sets the required permission level for the given commands   |
+| setrolepermissions   | Role, Permission Level        | Sets the permission level of the given role                 |
 
 ## Utility
 | Commands         | Arguments               | Description                                                                       |

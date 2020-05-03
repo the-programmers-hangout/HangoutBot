@@ -91,7 +91,7 @@ fun producePermissionCommands(persistentData: PersistentData,
         }
     }
 
-    command("listpermissionslevels") {
+    command("listpermissionlevels") {
         description = "Lists each permission level and the roles assigned to it"
         requiredPermissionLevel = PermissionLevel.Administrator
         requiresGuild = true
