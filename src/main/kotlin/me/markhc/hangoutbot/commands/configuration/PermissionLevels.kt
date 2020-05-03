@@ -102,17 +102,15 @@ fun producePermissionCommands(persistentData: PersistentData,
 
             event.respond(embed{
                 title = "Permission Levels"
-                PermissionLevel.values().forEach {
-                    if(it != PermissionLevel.BotOwner && it != PermissionLevel.GuildOwner) {
-                        val roles = perms.filter { p -> p.value == it }.map { it.key }
-                        field {
-                            name = "**${it.name}**"
-                            value = if (roles.isNotEmpty())
-                                roles.joinToString(", ") { id -> event.guild!!.getRoleById(id)!!.name }
-                            else
-                                "Not set"
-                            inline = true
-                        }
+                listOf(PermissionLevel.Administrator, PermissionLevel.Staff).forEach {
+                    val roles = perms.filter { p -> p.value == it }.map { it.key }
+                    field {
+                        name = "**${it.name}**"
+                        value = if (roles.isNotEmpty())
+                            roles.joinToString(", ") { id -> event.guild!!.getRoleById(id)!!.name }
+                        else
+                            "Not set"
+                        inline = true
                     }
                 }
             })
