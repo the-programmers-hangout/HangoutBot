@@ -198,7 +198,7 @@ fun buildMemberInfoEmbed(member: Member) = embed {
     }
     field {
         name = "**Avatar**"
-        value = "[Link](${member.user.effectiveAvatarUrl}?size=512)"
+        value = "[[Link]](${member.user.effectiveAvatarUrl}?size=512) [[Image Search]](https://www.google.com/searchbyimage?&image_url=${member.user.effectiveAvatarUrl})"
         inline = true
     }
     field {

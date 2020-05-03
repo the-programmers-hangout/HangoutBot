@@ -106,10 +106,7 @@ fun producePermissionCommands(persistentData: PersistentData,
                     val roles = perms.filter { p -> p.value == it }.map { it.key }
                     field {
                         name = "**${it.name}**"
-                        value = if (roles.isNotEmpty())
-                            roles.joinToString(", ") { id -> event.guild!!.getRoleById(id)!!.name }
-                        else
-                            "Not set"
+                        value = roles.joinToString() { id -> event.guild!!.getRoleById(id)!!.name }.ifBlank { "Not set" }
                         inline = true
                     }
                 }
