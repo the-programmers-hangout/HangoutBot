@@ -22,21 +22,30 @@ fun producePermissionCommands(config: Configuration, persistence: PersistenceSer
     command("getpermission") {
         requiredPermissionLevel = PermissionLevel.Staff
         description = "Returns the required permission level for the given command"
+        requiresGuild = true
         execute(CommandArg) {
             val (cmd) = it.args
 
-            it.respond("${permissionsService.getCommandPermissionLevel(it.guild, cmd)}")
+            it.respond("${permissionsService.getCommandPermissionLevel(it.guild!!, cmd)}")
         }
     }
 
     command("setpermission") {
         requiredPermissionLevel = PermissionLevel.Administrator
         description = "Sets the required permission level for the given commands"
-        execute(PermissionLevelArg, MultipleArg(CommandArg, "Commands...")) { event ->
-            val(level, commands) = event.args
+        requiresGuild = true
+        execute(MultipleArg(CommandArg, "Commands..."), PermissionLevelArg) { event ->
+            val (commands, level) = event.args
+
+            val guild = event.guild!!
+            val member = guild.getMember(event.author)!!
+
+            if(level > permissionsService.getPermissionLevel(member)) {
+                return@execute event.respondTimed("Sorry, you cannot change permissions for that command")
+            }
 
             commands.forEach {
-                permissionsService.setCommandPermissionLevel(event.guild, it, level)
+                permissionsService.setCommandPermissionLevel(guild, it, level)
             }
 
             event.respond("${
@@ -53,7 +62,8 @@ fun producePermissionCommands(config: Configuration, persistence: PersistenceSer
         execute(RoleArg, PermissionLevelArg) {
             val (role, level) = it.args
 
-            if(level == PermissionLevel.BotOwner || level == PermissionLevel.GuildOwner) {
+            val authorLevel = permissionsService.getPermissionLevel(it.guild!!.getMember(it.author)!!)
+            if(level == PermissionLevel.BotOwner || (level == PermissionLevel.GuildOwner && authorLevel > PermissionLevel.GuildOwner)) {
                 return@execute it.respond("Sorry, cannot set permission level to $level.")
             }
 

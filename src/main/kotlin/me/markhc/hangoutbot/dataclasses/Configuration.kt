@@ -30,8 +30,17 @@ data class GuildConfiguration(val guildId: String = "",
                               var muteRole: String = "",
                               var totalCommandsExecuted: Int = 0,
                               val grantableRoles: MutableMap<String, MutableList<String>> = mutableMapOf(),
-                              val mutedUsers: MutableList<MuteEntry> = mutableListOf(),
                               val rolePermissions: MutableMap<String, PermissionLevel> = mutableMapOf(),
-                              val commandPermission: MutableMap<String, PermissionLevel> = mutableMapOf())
+                              val commandPermission: MutableMap<String, PermissionLevel> = mutableMapOf(),
+                              val mutedUsers: MutableList<MuteEntry> = mutableListOf(),
+                              val reminders: MutableList<Reminder> = mutableListOf()) {
+    fun addMutedUser(user: String, timeUntil: String) {
+        mutedUsers.add(MuteEntry(user, timeUntil))
+    }
+    fun addReminder(user: String, timeUntil: String, what: String) {
+        reminders.add(Reminder(user, timeUntil, what))
+    }
+}
 
 data class MuteEntry(val user: String = "", val timeUntil: String = "")
+data class Reminder(val user: String = "", val timeUntil: String = "", val what: String = "")

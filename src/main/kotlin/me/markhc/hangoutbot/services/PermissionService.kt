@@ -2,7 +2,6 @@ package me.markhc.hangoutbot.services
 
 import me.aberrantfox.kjdautils.api.annotation.Service
 import me.aberrantfox.kjdautils.api.dsl.command.Command
-import me.aberrantfox.kjdautils.extensions.jda.toMember
 import me.aberrantfox.kjdautils.internal.services.PersistenceService
 import me.markhc.hangoutbot.dataclasses.Configuration
 import me.markhc.hangoutbot.extensions.requiredPermissionLevel
@@ -22,31 +21,21 @@ val DEFAULT_REQUIRED_PERMISSION = PermissionLevel.Everyone
 
 @Service
 class PermissionsService(private val config: Configuration, private val botConfig: BotConfiguration, private val persistenceService: PersistenceService) {
-    fun getCommandPermissionLevel(guild: Guild?, command: Command): PermissionLevel {
-        if(guild != null) {
-            config.getGuildConfig(guild).let {
-                return it.commandPermission[command.names.first()] ?: command.requiredPermissionLevel
-            }
-        } else {
-            return config.commandPermission[command.names.first()] ?: command.requiredPermissionLevel
+    fun getCommandPermissionLevel(guild: Guild, command: Command): PermissionLevel {
+        config.getGuildConfig(guild).let {
+            return it.commandPermission[command.names.first()] ?: command.requiredPermissionLevel
         }
     }
 
-    fun setCommandPermissionLevel(guild: Guild?, command: Command, permissionLevel: PermissionLevel) {
-        if(guild != null) {
-            config.getGuildConfig(guild).apply {
-                commandPermission[command.names.first()] = permissionLevel
-            }
-        } else {
-            config.commandPermission[command.names.first()] = permissionLevel
+    fun setCommandPermissionLevel(guild: Guild, command: Command, permissionLevel: PermissionLevel) {
+        config.getGuildConfig(guild).apply {
+            commandPermission[command.names.first()] = permissionLevel
         }
         persistenceService.save(config)
     }
 
-    fun hasClearance(guild: Guild?, user: User, requiredPermissionLevel: PermissionLevel): Boolean {
-        val permissionLevel = guild?.getMember(user)?.let {
-            it.getPermissionLevel()
-        }
+    fun hasClearance(guild: Guild, user: User, requiredPermissionLevel: PermissionLevel): Boolean {
+        val permissionLevel = guild.getMember(user)?.let { getPermissionLevel(it) }
 
         return if(permissionLevel == null) {
             requiredPermissionLevel == PermissionLevel.Everyone
@@ -55,18 +44,15 @@ class PermissionsService(private val config: Configuration, private val botConfi
         }
     }
 
-    fun getPermissionLevel(member: Member) =
-            member.getPermissionLevel().ordinal
-
-    fun isCommandVisible(guild: Guild?, user: User, command: Command) =
+    fun isCommandVisible(guild: Guild, user: User, command: Command) =
             hasClearance(guild, user, getCommandPermissionLevel(guild, command))
 
-    private fun Member.getPermissionLevel() =
+    fun getPermissionLevel(member: Member) =
             when {
-                isBotOwner() -> PermissionLevel.BotOwner
-                isGuildOwner() -> PermissionLevel.GuildOwner
-                isAdministrator() -> PermissionLevel.Administrator
-                isStaff() -> PermissionLevel.Staff
+                member.isBotOwner() -> PermissionLevel.BotOwner
+                member.isGuildOwner() -> PermissionLevel.GuildOwner
+                member.isAdministrator() -> PermissionLevel.Administrator
+                member.isStaff() -> PermissionLevel.Staff
                 else -> PermissionLevel.Everyone
             }
 

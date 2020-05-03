@@ -20,6 +20,7 @@ import java.util.Date
 fun produceInformationCommands(botStats: BotStatsService, config: Configuration, helpService: HelpService) = commands {
     command("help") {
         description = "Display help information."
+        requiresGuild = true
         execute(CommandArg.makeNullableOptional { null }) {
             val (command) = it.args
 

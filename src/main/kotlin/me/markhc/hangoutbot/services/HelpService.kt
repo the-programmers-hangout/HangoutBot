@@ -12,7 +12,7 @@ import net.dv8tion.jda.api.entities.User
 
 @Service
 class HelpService(private val permissionsService: PermissionsService) {
-    private fun Command.isVisible(guild: Guild?, user: User) =
+    private fun Command.isVisible(guild: Guild, user: User) =
             permissionsService.isCommandVisible(guild, user, this)
 
     fun buildHelpEmbed(event: CommandEvent<*>) = embed {
@@ -27,7 +27,7 @@ class HelpService(private val permissionsService: PermissionsService) {
                 value.joinToString("\n") { it.names.joinToString() }
 
         val commands = container.commands
-                .filter { it.isVisible(event.guild, event.author) }
+                .filter { it.isVisible(event.guild!!, event.author) }
                 .groupBy { it.category }
 
         if(commands.isNotEmpty()) {

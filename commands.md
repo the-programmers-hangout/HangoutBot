@@ -47,7 +47,7 @@
 | ------------------ | ----------------------------- | ----------------------------------------------------------- |
 | getpermission      | Command                       | Returns the required permission level for the given command |
 | getrolepermissions | Role                          | Gets the permission level of the given role                 |
-| setpermission      | Permission Level, Commands... | Sets the required permission level for the given commands   |
+| setpermission      | Commands..., Permission Level | Sets the required permission level for the given commands   |
 | setrolepermissions | Role, Permission Level        | Sets the permission level of the given role                 |
 
 ## Utility
@@ -57,6 +57,7 @@
 | echo             | (TextChannel), Text     | Echo a message to a channel.                                                      |
 | grant            | (Member), GrantableRole | Grants a role to a lower ranked member or yourself                                |
 | nuke             | (TextChannel), Integer  | Delete 2 - 99 past messages in the given channel (default is the invoked channel) |
+| remindme         | Time, Text              | A command that'll remind you about something after the specified time.            |
 | revoke           | (Member), GrantableRole | Revokes a role from a lower ranked member or yourself                             |
 | selfmute         | (Time)                  | Mute yourself for an amout of time. Default is 1 hour. Max is 24 hours.           |
 | viewcreationdate | User                    | Displays when a user was created                                                  |

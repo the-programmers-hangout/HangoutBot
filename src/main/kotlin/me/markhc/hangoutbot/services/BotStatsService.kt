@@ -9,13 +9,12 @@ import me.markhc.hangoutbot.utilities.toLongDurationString
 import org.joda.time.DateTime
 import java.util.*
 
-var startTime: Date = Date()
-
 @Service
 class BotStatsService(private val config: Configuration,
                       private val persistenceService: PersistenceService,
                       private val discord: Discord) {
 
+    var startTime: Date = Date()
     var totalCommands: Int = 0
 
     fun commandExecuted(event: CommandEvent<*>) {
