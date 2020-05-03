@@ -20,15 +20,20 @@ fun produceCommandLoggerPrecondition(botStats: BotStatsService, config: Configur
 
     botStats.commandExecuted(it)
 
+    val args = it.commandStruct.commandArgs.joinToString(", ")
+
+    if (args.length > 1500) {
+        return@precondition Fail("Command is too long (${args.length} chars, max: 1500)")
+    }
+
     if(it.guild != null) {
         val guild = it.guild!!
         config.getGuildConfig(guild).apply {
             if(loggingChannel.isNotEmpty()) {
-                val args = it.commandStruct.commandArgs
                 val message =
                         "${it.author.fullName()} :: ${it.author.id} :: " +
                         "Invoked `${it.commandStruct.commandName}` in #${it.channel.name}." +
-                        if(args.isEmpty()) "" else " Args: ${args.joinToString(", ").sanitiseMentions()}"
+                        if(args.isEmpty()) "" else " Args: ${args.sanitiseMentions()}"
 
                 guild.getTextChannelById(loggingChannel)
                         ?.sendMessage(message)?.queue()
