@@ -12,19 +12,10 @@ import me.markhc.hangoutbot.services.PermissionsService
 
 @Precondition
 fun produceHasPermissionPrecondition(botStats: BotStatsService, permissionsService: PermissionsService) = precondition {
-    val command = it.container[it.commandStruct.commandName]
+    val command = it.container[it.commandStruct.commandName] ?: return@precondition Fail()
+    val level = permissionsService.getCommandPermissionLevel(it.guild!!, command)
 
-    botStats.commandExecuted(it)
-
-    if(command == null) {
-        it.message.addReaction("\u274C").queue()
-        return@precondition Fail()
-    }
-    val requiredPermissionLevel = command.requiredPermissionLevel ?: DEFAULT_REQUIRED_PERMISSION
-    val guild = it.guild!!
-    val member = it.author.toMember(guild)!!
-
-    if (!permissionsService.hasClearance(member, requiredPermissionLevel))
+    if (!permissionsService.hasClearance(it.guild!!, it.author, level))
         return@precondition Fail("You do not have the required permissions to perform this action.")
 
     return@precondition Pass

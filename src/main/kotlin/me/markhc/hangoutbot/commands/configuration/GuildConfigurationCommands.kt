@@ -6,106 +6,93 @@ import me.aberrantfox.kjdautils.api.dsl.embed
 import me.aberrantfox.kjdautils.internal.arguments.WordArg
 import me.aberrantfox.kjdautils.internal.arguments.RoleArg
 import me.aberrantfox.kjdautils.internal.arguments.TextChannelArg
-import me.aberrantfox.kjdautils.internal.services.ConversationService
 import me.aberrantfox.kjdautils.internal.services.PersistenceService
-import me.markhc.hangoutbot.dataclasses.Configuration
 import me.markhc.hangoutbot.extensions.requiredPermissionLevel
-import me.markhc.hangoutbot.services.Permission
+import me.markhc.hangoutbot.services.BotConfiguration
+import me.markhc.hangoutbot.services.PermissionLevel
+import me.markhc.hangoutbot.services.PersistentData
 import net.dv8tion.jda.api.entities.Guild
 import net.dv8tion.jda.api.entities.MessageEmbed
 import java.awt.Color
 
 @Suppress("unused")
 @CommandSet("Guild")
-fun produceGuildConfigurationCommands(config: Configuration, persistence: PersistenceService, conversationService: ConversationService) = commands {
-    fun Configuration.save() {
-        persistence.save(this)
-    }
-
+fun produceGuildConfigurationCommands(botConfiguration: BotConfiguration,
+                                      persistentData: PersistentData,
+                                      persistenceService: PersistenceService) = commands {
     command("setprefix") {
-        description = "Sets the bot prefix. THIS AFFECTS ALL GUILDS BECAUSE JAKE CANT FIX BOT"
-        requiredPermissionLevel = Permission.BotOwner
+        description = "Sets the bot prefix. THIS AFFECTS ALL GUILDS"
+        requiredPermissionLevel = PermissionLevel.BotOwner
         execute(WordArg("Prefix")) {
-            config.prefix = it.args.first
-            it.discord.configuration.prefix = config.prefix
-            config.save()
-        }
-    }
+            val (prefix) = it.args
 
-    command("setadminrole") {
-        description = "Sets the role that distinguishes an Administrator"
-        requiredPermissionLevel = Permission.GuildOwner
-        requiresGuild = true
-        execute(RoleArg) {
-            val (role) = it.args
+            it.discord.configuration.prefix = prefix
+            botConfiguration.prefix = prefix
+            persistenceService.save(botConfiguration)
 
-            config.getGuildConfig(it.guild!!).apply { adminRole = role.id }
-            config.save()
-
-            return@execute it.respond("Administrator role set to \"${role.name}\"")
-        }
-    }
-
-    command("setstaffrole") {
-        description = "Sets the role that distinguishes an Administrator"
-        requiredPermissionLevel = Permission.GuildOwner
-        requiresGuild = true
-        execute(RoleArg) {
-            val (role) = it.args
-
-            config.getGuildConfig(it.guild!!).apply { staffRole = role.id }
-            config.save()
-
-            return@execute it.respond("Staff role set to \"${role.name}\"")
+            return@execute it.respond("Bot prefix set to \"${prefix}\"")
         }
     }
 
     command("setmuterole") {
         description = "Sets the role used to mute an user"
-        requiredPermissionLevel = Permission.GuildOwner
+        requiredPermissionLevel = PermissionLevel.GuildOwner
         requiresGuild = true
         execute(RoleArg) {
             val (role) = it.args
 
-            config.getGuildConfig(it.guild!!).apply { muteRole = role.id }
-            config.save()
+            persistentData.setGuildProperty(it.guild!!) { muteRole = role.id }
 
             return@execute it.respond("Mute role set to \"${role.name}\"")
         }
     }
 
+    command("setlogchannel") {
+        description = "Sets the channel used to log executed commands"
+        requiredPermissionLevel = PermissionLevel.GuildOwner
+        requiresGuild = true
+        execute(TextChannelArg) {
+            val (channel) = it.args
+
+            persistentData.setGuildProperty(it.guild!!) { loggingChannel = channel.id }
+
+            return@execute it.respond("Logging channel set to #${channel.name}")
+        }
+    }
+
     command("togglewelcome") {
         description = "Toggles the display of welcome messages upon guild user join."
-        requiredPermissionLevel = Permission.Administrator
+        requiredPermissionLevel = PermissionLevel.Administrator
         requiresGuild = true
         execute {
-            val guild = config.getGuildConfig(it.guild!!.id)
+            val enabled = persistentData.setGuildProperty(it.guild!!) {
+                welcomeEmbeds = !welcomeEmbeds
+                welcomeEmbeds
+            }
 
-            config.getGuildConfig(it.guild!!).apply { welcomeEmbeds = !welcomeEmbeds }
-            config.save()
-
-            it.respond("Welcome embeds are now \"${if(guild.welcomeEmbeds) "enabled" else "disabled"}\"")
+            it.respond("Welcome embeds are now \"${if(enabled) "enabled" else "disabled"}\"")
         }
     }
 
     command("setwelcomechannel") {
         description = "Sets the channel used for welcome embeds."
-        requiredPermissionLevel = Permission.Administrator
+        requiredPermissionLevel = PermissionLevel.Administrator
         requiresGuild = true
-        execute(TextChannelArg("Channel")) {
-            config.getGuildConfig(it.guild!!).apply { welcomeChannel = it.args.first.id }
-            config.save()
+        execute(TextChannelArg()) {
+            val (channel) = it.args
 
-            it.respond("Welcome channel set to #${it.args.first.name}")
+            persistentData.setGuildProperty(it.guild!!) { welcomeChannel = channel.id }
+
+            it.respond("Welcome channel set to #${channel.name}")
         }
     }
 
     command("getwelcomechannel") {
         description = "Gets the channel used for welcome embeds."
-        requiredPermissionLevel = Permission.Administrator
+        requiredPermissionLevel = PermissionLevel.Administrator
         requiresGuild = true
         execute {
-            config.getGuildConfig(it.guild!!).apply {
+            persistentData.getGuildProperty(it.guild!!) {
                 if(welcomeChannel.isEmpty())
                     it.respond("Welcome channel not set")
                 else
@@ -116,14 +103,14 @@ fun produceGuildConfigurationCommands(config: Configuration, persistence: Persis
 
     command("makerolegrantable") {
         description = "Adds a role to the list of grantable roles."
-        requiredPermissionLevel = Permission.Administrator
+        requiredPermissionLevel = PermissionLevel.Administrator
         requiresGuild = true
         execute(RoleArg, WordArg("Category")) { event ->
             val (role, category) = event.args
 
-            config.getGuildConfig(event.guild!!).apply {
+            persistentData.setGuildProperty(event.guild!!) {
                 if (grantableRoles.any { it.value.contains(role.id) }) {
-                    return@execute event.respond("Role is already grantable")
+                    event.respond("Role is already grantable")
                 } else {
                     val key = grantableRoles.keys.find {
                         it.compareTo(category, true) == 0
@@ -136,7 +123,6 @@ fun produceGuildConfigurationCommands(config: Configuration, persistence: Persis
                     }
 
                     event.respond("Added \"${role.name}\" to the category \"${key ?: category}\".")
-                    config.save()
                 }
             }
         }
@@ -144,23 +130,21 @@ fun produceGuildConfigurationCommands(config: Configuration, persistence: Persis
 
     command("removegrantablerole") {
         description = "Removes a role to the list of grantable roles."
-        requiredPermissionLevel = Permission.Administrator
+        requiredPermissionLevel = PermissionLevel.Administrator
         requiresGuild = true
         execute(RoleArg) { event ->
             val (role) = event.args
 
-            config.getGuildConfig(event.guild!!).apply {
+            persistentData.setGuildProperty(event.guild!!) {
                 val entry = grantableRoles.entries.find {
                     it.value.contains(role.id)
-                } ?: return@execute event.respond("Role ${role.name} is not a grantable role.")
+                } ?: return@setGuildProperty event.respond("Role ${role.name} is not a grantable role.")
 
                 entry.value.remove(role.id)
 
                 if (entry.value.isEmpty()) {
                     grantableRoles.remove(entry.key)
                 }
-
-                config.save()
 
                 event.respond("Removed \"${role.name}\" from the list of grantable roles.")
             }
@@ -169,14 +153,16 @@ fun produceGuildConfigurationCommands(config: Configuration, persistence: Persis
 
     command("listgrantableroles") {
         description = "Lists the available grantable roles."
-        requiredPermissionLevel = Permission.Staff
+        requiredPermissionLevel = PermissionLevel.Staff
         requiresGuild = true
-        execute { event ->
-            val guildConfig = config.getGuildConfig(event.guild!!.id)
-
-            if (guildConfig.grantableRoles.isEmpty()) return@execute event.respond("No roles set")
-
-            event.respond(buildRolesEmbed(event.guild!!, guildConfig.grantableRoles))
+        execute {
+            persistentData.getGuildProperty(it.guild!!) {
+                if (grantableRoles.isEmpty()) {
+                    it.respond("No roles set")
+                } else {
+                    it.respond(buildRolesEmbed(it.guild!!, grantableRoles))
+                }
+            }
         }
     }
 }

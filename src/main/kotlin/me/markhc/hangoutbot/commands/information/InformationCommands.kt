@@ -9,22 +9,44 @@ import me.aberrantfox.kjdautils.internal.arguments.RoleArg
 import me.aberrantfox.kjdautils.internal.arguments.UserArg
 import me.markhc.hangoutbot.dataclasses.Configuration
 import me.markhc.hangoutbot.services.BotStatsService
+import me.markhc.hangoutbot.services.HelpService
 import me.markhc.hangoutbot.services.Properties
 import me.markhc.hangoutbot.utilities.*
+import net.dv8tion.jda.api.exceptions.InsufficientPermissionException
 import java.util.Date
 
 @Suppress("unused")
 @CommandSet("Information")
-fun produceInformationCommands(botStats: BotStatsService, config: Configuration) = commands {
+fun produceInformationCommands(botStats: BotStatsService, config: Configuration, helpService: HelpService) = commands {
     command("help") {
         description = "Display help information."
+        requiresGuild = true
         execute(CommandArg.makeNullableOptional { null }) {
             val (command) = it.args
 
             if(command == null) {
-                it.respond(buildHelpEmbed("+", it.container))
+                it.respond(helpService.buildHelpEmbed(it))
             } else {
-                it.respond(buildHelpEmbedForCommand(it, "+", command))
+                it.respond(helpService.buildHelpEmbedForCommand(it, command))
+            }
+        }
+    }
+
+    command("invite") {
+        description = "Generates an invite link to this server."
+        requiresGuild = true
+        execute {
+            val guild = it.guild!!
+
+            if(guild.vanityUrl != null) {
+                it.respond(guild.vanityUrl!!)
+            } else {
+                val guildChannel = guild.getGuildChannelById(guild.defaultChannel!!.id)!!
+
+                // TODO: Cache these invites so we don't generate a new one every time
+                guildChannel.createInvite().setMaxAge(86400).queue { invite ->
+                    it.respond("Here's your invite! It will expire in 24 hours!\n${invite.url}")
+                }
             }
         }
     }

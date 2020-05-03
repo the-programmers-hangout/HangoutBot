@@ -3,26 +3,22 @@ package me.markhc.hangoutbot.services
 import me.aberrantfox.kjdautils.api.annotation.Service
 import me.aberrantfox.kjdautils.discord.Discord
 import me.aberrantfox.kjdautils.extensions.jda.fullName
-import me.aberrantfox.kjdautils.extensions.jda.toMember
-import me.aberrantfox.kjdautils.internal.services.PersistenceService
 import me.markhc.hangoutbot.dataclasses.Configuration
-import me.markhc.hangoutbot.extensions.requiredPermissionLevel
-import me.markhc.hangoutbot.utilities.launchMuteTimers
 import java.awt.Color
-import java.util.*
 
 @Service
 class StartupService(properties: Properties,
-                     config: Configuration,
-                     persistenceService: PersistenceService,
+                     config: BotConfiguration,
                      discord: Discord,
-                     permissionsService: PermissionsService) {
+                     permissionsService: PermissionsService,
+                     muteService: MuteService,
+                     reminderService: ReminderService) {
     init {
-        startTime = Date()
-
-        launchMuteTimers(config, persistenceService, discord)
+        muteService.launchTimers()
+        reminderService.launchTimers()
 
         with(discord.configuration) {
+            prefix = config.prefix
             mentionEmbed {
                 val channel = it.channel
                 val self = channel.jda.selfUser
@@ -46,7 +42,7 @@ class StartupService(properties: Properties,
                 }
 
                 with (properties) {
-                    val kotlinVersion = kotlin.KotlinVersion.CURRENT
+                    val kotlinVersion = KotlinVersion.CURRENT
 
                     field {
                         name = "Build Info"
@@ -61,12 +57,7 @@ class StartupService(properties: Properties,
                 }
             }
             visibilityPredicate predicate@{
-                it.guild ?: return@predicate false
-
-                val member = it.user.toMember(it.guild!!)!!
-                val permission = it.command.requiredPermissionLevel
-
-                permissionsService.hasClearance(member, permission)
+                return@predicate permissionsService.isCommandVisible(it.guild!!, it.user, it.command)
             }
         }
     }

@@ -35,8 +35,7 @@ object Messages {
             "Here\u0027s your sword, shield, helmet, now go %name%, and vanquish those bugs!"
     )
 
-    val welcomeDescription: String = "Take a read of #faq, alongside #rules-and-info. When you are done, " +
-            "scan up and down the channel list. Don\u0027t forget to say hi ;)."
+    const val welcomeDescription: String = "Hey there, be sure to check out the info section at the top!"
 
     fun getRandomFlipMessage(choice: String) =
             FLIP_RESPONSE_CHOICES[Random.nextInt(FLIP_RESPONSE_CHOICES.size)].replace("%choice%", choice)

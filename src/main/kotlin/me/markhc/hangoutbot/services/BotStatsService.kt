@@ -9,25 +9,24 @@ import me.markhc.hangoutbot.utilities.toLongDurationString
 import org.joda.time.DateTime
 import java.util.*
 
-var startTime: Date = Date()
-
 @Service
-class BotStatsService(private val config: Configuration,
-                      private val persistenceService: PersistenceService,
+class BotStatsService(private val persistentData: PersistentData,
                       private val discord: Discord) {
 
+    var startTime: Date = Date()
     var totalCommands: Int = 0
 
     fun commandExecuted(event: CommandEvent<*>) {
         totalCommands++
-        config.totalCommandsExecuted++
+        persistentData.setProperty {
+            totalCommandsExecuted++
+        }
 
         if(event.guild != null) {
-            config.getGuildConfig(event.guild!!).apply {
+            persistentData.setGuildProperty(event.guild!!) {
                 totalCommandsExecuted++
             }
         }
-        persistenceService.save(config)
     }
 
     val uptime: String

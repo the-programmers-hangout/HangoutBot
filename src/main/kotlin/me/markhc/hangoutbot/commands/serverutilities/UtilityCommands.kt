@@ -5,29 +5,28 @@ import me.aberrantfox.kjdautils.api.dsl.command.commands
 import me.aberrantfox.kjdautils.extensions.jda.fullName
 import me.aberrantfox.kjdautils.extensions.jda.sendPrivateMessage
 import me.aberrantfox.kjdautils.internal.arguments.*
-import me.aberrantfox.kjdautils.internal.services.PersistenceService
 import me.markhc.hangoutbot.arguments.LowerRankedMemberArg
-import me.markhc.hangoutbot.dataclasses.Configuration
 import me.markhc.hangoutbot.extensions.requiredPermissionLevel
-import me.markhc.hangoutbot.services.Permission
-import me.markhc.hangoutbot.utilities.*
+import me.markhc.hangoutbot.services.MuteService
+import me.markhc.hangoutbot.services.PermissionLevel
+import me.markhc.hangoutbot.services.PersistentData
+import me.markhc.hangoutbot.services.ReminderService
 import net.dv8tion.jda.api.entities.*
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
 import org.joda.time.format.DateTimeFormat
+import java.util.concurrent.TimeUnit
 import kotlin.math.roundToLong
 
 @Suppress("unused")
 @CommandSet("Utility")
-fun produceUtilityCommands(config: Configuration, persistence: PersistenceService) = commands {
-    fun Configuration.save() {
-        persistence.save(this)
-    }
-
+fun produceUtilityCommands(persistentData: PersistentData,
+                           muteService: MuteService,
+                           reminderService: ReminderService) = commands {
     val dateFormatter = DateTimeFormat.fullDateTime()
 
     command("echo") {
-        requiredPermissionLevel = Permission.Staff
+        requiredPermissionLevel = PermissionLevel.Staff
         description = "Echo a message to a channel."
         execute(TextChannelArg.makeOptional { it.channel as TextChannel }, SentenceArg) {
             val (target, message) = it.args
@@ -69,50 +68,26 @@ fun produceUtilityCommands(config: Configuration, persistence: PersistenceServic
 
     command("selfmute") {
         description = "Mute yourself for an amout of time. Default is 1 hour. Max is 24 hours."
-        execute(TimeStringArg .makeOptional { 3600.0 }) {
+        execute(TimeStringArg.makeOptional { 3600.0 }) {
             val (timeInSeconds) = it.args
 
-            if(timeInSeconds > 24 * 3600.0) {
+            if(timeInSeconds > TimeUnit.HOURS.toSeconds(24)) {
                 return@execute it.respond("You cannot mute yourself for that long.")
             }
 
             val guild = it.guild!!
+            val member = guild.getMember(it.author)!!
             val millis = timeInSeconds.roundToLong() * 1000
 
-            config.getGuildConfig(guild).apply {
-                if (muteRole.isEmpty()) {
-                    return@execute it.respond("Sorry, this guild does not have a mute role.")
-                }
-
-                val role = guild.getRoleById(muteRole)
-                        ?: return@execute it.respond("Sorry, this guild does not have a mute role.")
-
-                val member = guild.getMember(it.author)!!
-                
-                if (muteRole in member.roles.map { r -> r.id }.toList()) {
-                    return@execute it.respond("Nice try, but you're already muted!")
-                }
-
-                if (mutedUsers.any { muted -> muted.user == member.id }) {
-                    return@execute it.respond("Sorry, you already have an active mute!")
-                }
-
-                addMutedMember(member, millis)
-                config.save()
-
-                muteMemberWithTimer(member, role, millis) {
-                    removeMutedMember(this)
-                    config.save()
-                    unmuteMember(this, role)
-                }
-
-                it.author.sendPrivateMessage(buildSelfMuteEmbed(member, millis))
-            }
+            muteService.addMutedMember(member, millis).fold(
+                    success = { embed -> it.author.sendPrivateMessage(embed) },
+                    failure = { ex -> it.respond(ex.message!!) }
+            )
         }
     }
 
     command("nuke") {
-        requiredPermissionLevel = Permission.Staff
+        requiredPermissionLevel = PermissionLevel.Staff
         description = "Delete 2 - 99 past messages in the given channel (default is the invoked channel)"
         execute(TextChannelArg.makeOptional { it.channel as TextChannel },
                 IntegerArg) {
@@ -138,52 +113,59 @@ fun produceUtilityCommands(config: Configuration, persistence: PersistenceServic
     }
 
     command("grant") {
-        requiredPermissionLevel = Permission.Staff
+        requiredPermissionLevel = PermissionLevel.Staff
         description = "Grants a role to a lower ranked member or yourself"
         execute(LowerRankedMemberArg("Member").makeOptional { it.guild!!.getMember(it.author)!! }, RoleArg("GrantableRole")) { event ->
             val (member, role) = event.args
             val guild = event.guild!!
-            val guildConfig = config.getGuildConfig(guild.id)
 
-            guildConfig.grantableRoles.forEach { category ->
-                if (containsIgnoreCase(category.value, role.id)) {
-                    return@execute removeRoles(guild, member, category.value).also {
-                        grantRole(guild, member, role)
-                        event.respond("Granted \"${role.name}\" to ${member.fullName()}")
-                    }
-                }
-            }
+            val roles = persistentData.getGuildProperty(guild) { grantableRoles }
+            val category = roles.asIterable().find { it.value.any { r -> r.equals(role.id, true) } }
 
-            event.respond("\"${role.name}\" is not a grantable role")
+            category?.also { removeRoles(guild, member, *it.value.toTypedArray()) }
+                    ?.also { grantRole(guild, member, role) }
+                    ?.also { event.respond("Granted \"${role.name}\" to ${member.fullName()}") }
+                    ?: event.respond("\"${role.name}\" is not a grantable role")
         }
     }
 
     command("revoke") {
-        requiredPermissionLevel = Permission.Staff
+        requiredPermissionLevel = PermissionLevel.Staff
         description = "Revokes a role from a lower ranked member or yourself"
         execute(LowerRankedMemberArg("Member").makeOptional { it.guild!!.getMember(it.author)!! }, RoleArg("GrantableRole")) { event ->
             val (member, role) = event.args
             val guild = event.guild!!
-            val guildConfig = config.getGuildConfig(guild.id)
 
-            guildConfig.grantableRoles.forEach { category ->
-                if (containsIgnoreCase(category.value, role.id)) {
-                    removeRoles(guild, member, category.value)
-                    return@execute event.respond("Revoked \"${role.name}\" from ${member.fullName()}")
-                }
+            val roles = persistentData.getGuildProperty(guild) { grantableRoles }
+
+            val isGrantable = roles.any { it.value.any { r -> r.equals(role.id, true) } }
+
+            if(isGrantable) {
+                removeRoles(guild, member, role.id)
+                event.respond("Revoked \"${role.name}\" from ${member.fullName()}")
+            } else {
+                event.respond("\"${role.name}\" is not a grantable role")
             }
-
-            event.respond("\"${role.name}\" is not a grantable role")
         }
     }
 
-    command("getpermission") {
-        requiredPermissionLevel = Permission.Staff
-        description = "Returns the required permission level for the given command"
-        execute(CommandArg) {
-            val (cmd) = it.args
+    command("remindme") {
+        description = "A command that'll remind you about something after the specified time."
+        execute(TimeStringArg, SentenceArg) {
+            val (timeInSeconds, sentence) = it.args
 
-            it.respond("${cmd.requiredPermissionLevel}")
+            if(timeInSeconds > TimeUnit.DAYS.toSeconds(30)) {
+                return@execute it.respond("You cannot set a reminder that far into the future.")
+            }
+
+            val guild = it.guild!!
+            val member = guild.getMember(it.author)!!
+            val millis = timeInSeconds.roundToLong() * 1000
+
+            reminderService.addReminder(member, millis, sentence).fold(
+                    success = { msg -> it.respond(msg) },
+                    failure = { ex -> it.respond(ex.message!!) }
+            )
         }
     }
 }
@@ -196,7 +178,7 @@ private fun safeDeleteMessages(channel: TextChannel,
         messages.forEach { it.delete().queue() }
     }
 }
-private fun removeRoles(guild: Guild, member: Member, roles: List<String>) {
+private fun removeRoles(guild: Guild, member: Member, vararg roles: String) {
     // TODO: Perhaps we should check if the user has more than 1 color role
     //       and remove all of them instead of just 1
     member.roles.find { it.id in roles }?.let {
@@ -207,14 +189,3 @@ private fun removeRoles(guild: Guild, member: Member, roles: List<String>) {
 private fun grantRole(guild: Guild, member: Member, role: Role) {
     guild.addRoleToMember(member, role).queue()
 }
-
-
-private fun containsIgnoreCase(list: List<String>, value: String): Boolean {
-    list.forEach { item ->
-        if(item.compareTo(value, true) == 0) {
-            return true
-        }
-    }
-    return false
-}
-
