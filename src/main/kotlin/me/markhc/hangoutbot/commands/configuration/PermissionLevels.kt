@@ -41,8 +41,14 @@ fun producePermissionCommands(config: Configuration, persistence: PersistenceSer
             val guild = event.guild!!
             val member = guild.getMember(event.author)!!
 
-            if(level > permissionsService.getPermissionLevel(member)) {
-                return@execute event.respondTimed("Sorry, you cannot change permissions for that command", TimeUnit.SECONDS.toMillis(10))
+            val higherPerms = commands.find {
+                permissionsService.getCommandPermissionLevel(event.guild!!, it) < permissionsService.getPermissionLevel(member)
+            }
+
+            if(higherPerms != null) {
+                return@execute event.respondTimed(
+                        "Sorry, you cannot change permissions for ${higherPerms.names.first()}",
+                        TimeUnit.SECONDS.toMillis(10))
             }
 
             commands.forEach {
