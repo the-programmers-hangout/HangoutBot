@@ -174,7 +174,7 @@ fun buildUserInfoEmbed(user: User) = embed {
     }
     field {
         name = "**Created**"
-        value = "${TimeUnit.MILLISECONDS.toDays(DateTime.now().millis - createdTime.millis)} days ago\n${createdTime.toString(DateTimeFormat.shortDate())}"
+        value = "${TimeUnit.MILLISECONDS.toDays(DateTime.now().millis - createdTime.millis)} days ago\n${createdTime.toString(DateTimeFormat.forPattern("yyyy-MM-dd"))}"
         inline = true
     }
 }
@@ -217,12 +217,12 @@ fun buildMemberInfoEmbed(member: Member) = embed {
     }
     field {
         name = "**Created**"
-        value = "${TimeUnit.MILLISECONDS.toDays(DateTime.now().millis - createdTime.millis)} days ago\n${createdTime.toString(DateTimeFormat.shortDate())}"
+        value = "${TimeUnit.MILLISECONDS.toDays(DateTime.now().millis - createdTime.millis)} days ago\n${createdTime.toString(DateTimeFormat.forPattern("yyyy-MM-dd"))}"
         inline = true
     }
     field {
         name = "**Joined**"
-        value = "${TimeUnit.MILLISECONDS.toDays(DateTime.now().millis - joinedTime.millis)} days ago\n${joinedTime.toString(DateTimeFormat.shortDate())}"
+        value = "${TimeUnit.MILLISECONDS.toDays(DateTime.now().millis - joinedTime.millis)} days ago\n${joinedTime.toString(DateTimeFormat.forPattern("yyyy-MM-dd"))}"
         inline = true
     }
     field {
