@@ -173,7 +173,7 @@ fun buildUserInfoEmbed(user: User) = embed {
         inline = true
     }
     field {
-        name = "**Created at**"
+        name = "**Created**"
         value = "${TimeUnit.MILLISECONDS.toDays(DateTime.now().millis - createdTime.millis)} days ago\n${createdTime.toString(DateTimeFormat.shortDate())}"
         inline = true
     }
@@ -216,7 +216,7 @@ fun buildMemberInfoEmbed(member: Member) = embed {
         inline = true
     }
     field {
-        name = "**Created at**"
+        name = "**Created**"
         value = "${TimeUnit.MILLISECONDS.toDays(DateTime.now().millis - createdTime.millis)} days ago\n${createdTime.toString(DateTimeFormat.shortDate())}"
         inline = true
     }
