@@ -30,17 +30,18 @@
 | togglewelcome       | <none>         | Toggles the display of welcome messages upon guild user join. |
 
 ## Information
-| Commands   | Arguments | Description                                        |
-| ---------- | --------- | -------------------------------------------------- |
-| botstats   | <none>    | Displays miscellaneous information about the bot.  |
-| help       | (Command) | Display help information.                          |
-| invite     | <none>    | Generates an invite link to this server.           |
-| ping       | <none>    | pong.                                              |
-| roleinfo   | Role      | Displays information about the given role.         |
-| serverinfo | <none>    | Display a message giving basic server information. |
-| source     | <none>    | Get the url for the bot source code.               |
-| uptime     | <none>    | Displays how long the bot has been running for.    |
-| userinfo   | User      | Displays information about the given user.         |
+| Commands   | Arguments | Description                                                       |
+| ---------- | --------- | ----------------------------------------------------------------- |
+| botstats   | <none>    | Displays miscellaneous information about the bot.                 |
+| help       | (Command) | Display help information.                                         |
+| invite     | <none>    | Generates an invite link to this server.                          |
+| mhelp      | (Command) | Display help information with a better layout for mobile devices. |
+| ping       | <none>    | pong.                                                             |
+| roleinfo   | Role      | Displays information about the given role.                        |
+| serverinfo | <none>    | Display a message giving basic server information.                |
+| source     | <none>    | Get the url for the bot source code.                              |
+| uptime     | <none>    | Displays how long the bot has been running for.                   |
+| userinfo   | User      | Displays information about the given user.                        |
 
 ## Permissions
 | Commands             | Arguments                     | Description                                                 |
@@ -62,7 +63,6 @@
 | remindme         | Time, Text              | A command that'll remind you about something after the specified time.            |
 | revoke           | (Member), GrantableRole | Revokes a role from a lower ranked member or yourself                             |
 | selfmute         | (Time)                  | Mute yourself for an amout of time. Default is 1 hour. Max is 24 hours.           |
-| setcolor         | Name, Hex Color         | Sets                                                                              |
 | viewcreationdate | User                    | Displays when a user was created                                                  |
 | viewjoindate     | Member                  | Displays when a user joined the guild                                             |
 

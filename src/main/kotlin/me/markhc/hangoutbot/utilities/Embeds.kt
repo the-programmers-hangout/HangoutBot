@@ -16,6 +16,7 @@ import org.joda.time.DateTimeZone
 import org.joda.time.format.DateTimeFormat
 import java.awt.Color
 import java.time.format.DateTimeFormatter
+import java.util.concurrent.TimeUnit
 import kotlin.math.ceil
 
 fun buildServerInfoEmbed(guild: Guild) = embed {
@@ -77,7 +78,7 @@ fun buildServerInfoEmbed(guild: Guild) = embed {
     }
     field {
         name = "**Invite URL**"
-        value = guild.vanityCode ?: "Not set"
+        value = if(guild.vanityUrl != null) "[Link](${guild.vanityUrl})" else "Not set"
         inline = true
     }
     field {
@@ -163,7 +164,7 @@ fun buildUserInfoEmbed(user: User) = embed {
     }
     field {
         name = "**Avatar**"
-        value = "[[Link]](${user.effectiveAvatarUrl}?size=512) [[Image Search]](https://www.google.com/searchbyimage?&image_url=${user.effectiveAvatarUrl})"
+        value = "[[Link]](${user.effectiveAvatarUrl}?size=512)\n[[Search]](https://www.google.com/searchbyimage?&image_url=${user.effectiveAvatarUrl})"
         inline = true
     }
     field {
@@ -172,10 +173,18 @@ fun buildUserInfoEmbed(user: User) = embed {
         inline = true
     }
     field {
-        name = "**Creation Time**"
-        value = createdTime.toString(DateTimeFormat.shortDateTime())
+        name = "**Created at**"
+        value = "${TimeUnit.MILLISECONDS.toDays(DateTime.now().millis - createdTime.millis)} days ago\n${createdTime.toString(DateTimeFormat.shortDate())}"
         inline = true
     }
+}
+
+fun getSafeNickname(member: Member): String {
+    if(member.nickname == null) return "Not set"
+
+    if(member.nickname!!.length <= 20) return member.nickname!!
+
+    return "${member.nickname!!.take(17)}..."
 }
 
 fun buildMemberInfoEmbed(member: Member) = embed {
@@ -193,12 +202,7 @@ fun buildMemberInfoEmbed(member: Member) = embed {
     }
     field {
         name = "**Nickname**"
-        value = member.nickname ?: "Not set"
-        inline = true
-    }
-    field {
-        name = "**Avatar**"
-        value = "[[Link]](${member.user.effectiveAvatarUrl}?size=512) [[Image Search]](https://www.google.com/searchbyimage?&image_url=${member.user.effectiveAvatarUrl})"
+        value =  getSafeNickname(member)
         inline = true
     }
     field {
@@ -207,13 +211,18 @@ fun buildMemberInfoEmbed(member: Member) = embed {
         inline = true
     }
     field {
-        name = "**Creation Time**"
-        value = createdTime.toString(DateTimeFormat.shortDateTime())
+        name = "**Avatar**"
+        value = "[[Link]](${member.user.effectiveAvatarUrl}?size=512)\n[[Search]](https://www.google.com/searchbyimage?&image_url=${member.user.effectiveAvatarUrl})"
         inline = true
     }
     field {
-        name = "**Join Time**"
-        value = joinedTime.toString(DateTimeFormat.shortDateTime())
+        name = "**Created at**"
+        value = "${TimeUnit.MILLISECONDS.toDays(DateTime.now().millis - createdTime.millis)} days ago\n${createdTime.toString(DateTimeFormat.shortDate())}"
+        inline = true
+    }
+    field {
+        name = "**Joined**"
+        value = "${TimeUnit.MILLISECONDS.toDays(DateTime.now().millis - joinedTime.millis)} days ago\n${joinedTime.toString(DateTimeFormat.shortDate())}"
         inline = true
     }
     field {

@@ -168,29 +168,6 @@ fun produceUtilityCommands(persistentData: PersistentData,
             )
         }
     }
-<<<<<<< Updated upstream
-=======
-
-    fun createRole(guild: Guild, name: String, color: Color) =
-            guild.createRole()
-                    .setName(name)
-                    .setColor(color)
-                    .setHoisted(false)
-                    .setMentionable(false)
-                    .complete()
-
-    fun Role.placeBelow(other: Role) {
-        val position = guild
-                .modifyRolePositions()
-                .selectPosition(other)
-                .selectedPosition
-
-        guild.modifyRolePositions()
-                .selectPosition(this)
-                .moveTo(position - 1)
-                .queue()
-    }
->>>>>>> Stashed changes
 }
 
 private fun safeDeleteMessages(channel: TextChannel,
