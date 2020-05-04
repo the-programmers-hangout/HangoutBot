@@ -62,6 +62,7 @@
 | remindme         | Time, Text              | A command that'll remind you about something after the specified time.            |
 | revoke           | (Member), GrantableRole | Revokes a role from a lower ranked member or yourself                             |
 | selfmute         | (Time)                  | Mute yourself for an amout of time. Default is 1 hour. Max is 24 hours.           |
+| setcolor         | Name, Hex Color         | Sets                                                                              |
 | viewcreationdate | User                    | Displays when a user was created                                                  |
 | viewjoindate     | Member                  | Displays when a user joined the guild                                             |
 

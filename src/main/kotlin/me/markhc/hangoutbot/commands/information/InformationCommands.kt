@@ -25,7 +25,20 @@ fun produceInformationCommands(botStats: BotStatsService, config: Configuration,
             val (command) = it.args
 
             if(command == null) {
-                it.respond(helpService.buildHelpEmbed(it))
+                it.respond(helpService.buildHelpEmbed(it, false))
+            } else {
+                it.respond(helpService.buildHelpEmbedForCommand(it, command))
+            }
+        }
+    }
+    command("mhelp") {
+        description = "Display help information with a better layout for mobile devices."
+        requiresGuild = true
+        execute(CommandArg.makeNullableOptional { null }) {
+            val (command) = it.args
+
+            if(command == null) {
+                it.respond(helpService.buildHelpEmbed(it, true))
             } else {
                 it.respond(helpService.buildHelpEmbedForCommand(it, command))
             }

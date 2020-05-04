@@ -15,7 +15,7 @@ class HelpService(private val permissionsService: PermissionsService) {
     private fun Command.isVisible(guild: Guild, user: User) =
             permissionsService.isCommandVisible(guild, user, this)
 
-    fun buildHelpEmbed(event: CommandEvent<*>) = embed {
+    fun buildHelpEmbed(event: CommandEvent<*>, mobile: Boolean) = embed {
         val discord = event.discord
         val container = event.container
 
@@ -35,7 +35,7 @@ class HelpService(private val permissionsService: PermissionsService) {
                         val sorted = commands
                                 .sortedBy { it.names.joinToString() }
                         when {
-                            sorted.size >= 5 -> { // Split into 3 columns
+                            !mobile && sorted.size >= 5 -> { // Split into 3 columns
                                 val cols = 3
                                 val n1 = (sorted.size + cols - 1) / cols
                                 val n2 = (sorted.size + cols - 2) / cols
@@ -54,7 +54,7 @@ class HelpService(private val permissionsService: PermissionsService) {
                                     inline = true
                                 }
                             }
-                            else -> {
+                            !mobile -> {
                                 field {
                                     name = "**$category**"
                                     value = joinNames(sorted)
@@ -62,6 +62,11 @@ class HelpService(private val permissionsService: PermissionsService) {
                                 }
                                 field { inline = true }
                                 field { inline = true }
+                            }
+                            else -> field {
+                                name = "**$category**"
+                                value = joinNames(sorted)
+                                inline = true
                             }
                         }
                     }
