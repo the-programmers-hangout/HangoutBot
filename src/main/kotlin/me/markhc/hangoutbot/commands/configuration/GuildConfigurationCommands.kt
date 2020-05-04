@@ -36,7 +36,7 @@ fun produceGuildConfigurationCommands(botConfiguration: BotConfiguration,
 
     command("setmuterole") {
         description = "Sets the role used to mute an user"
-        requiredPermissionLevel = PermissionLevel.GuildOwner
+        requiredPermissionLevel = PermissionLevel.Administrator
         requiresGuild = true
         execute(RoleArg) {
             val (role) = it.args
@@ -49,7 +49,7 @@ fun produceGuildConfigurationCommands(botConfiguration: BotConfiguration,
 
     command("setlogchannel") {
         description = "Sets the channel used to log executed commands"
-        requiredPermissionLevel = PermissionLevel.GuildOwner
+        requiredPermissionLevel = PermissionLevel.Administrator
         requiresGuild = true
         execute(TextChannelArg) {
             val (channel) = it.args
@@ -163,6 +163,24 @@ fun produceGuildConfigurationCommands(botConfiguration: BotConfiguration,
                     it.respond(buildRolesEmbed(it.guild!!, grantableRoles))
                 }
             }
+        }
+    }
+
+    command("setbotchannel") {
+        description = "Sets the bot channel. If set, the bot channel will be the only channel where the bot will accept commands from."
+        requiresGuild = true
+        requiredPermissionLevel = PermissionLevel.Administrator
+        execute(TextChannelArg.makeNullableOptional(null)) {
+            val channel = it.args.first
+
+            persistentData.setGuildProperty(it.guild!!) {
+                botChannel = channel?.id ?: ""
+            }
+
+            if(channel != null)
+                it.respond("Bot channel set to #${channel.name}. The bot will now ignore commands from anywhere else.")
+            else
+                it.respond("Bot channel cleared. Now accepting commands in any channel.")
         }
     }
 }

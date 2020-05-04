@@ -9,11 +9,14 @@ import me.markhc.hangoutbot.extensions.requiredPermissionLevel
 import me.markhc.hangoutbot.services.BotStatsService
 import me.markhc.hangoutbot.services.DEFAULT_REQUIRED_PERMISSION
 import me.markhc.hangoutbot.services.PermissionsService
+import me.markhc.hangoutbot.services.PersistentData
 
 @Precondition
-fun produceHasPermissionPrecondition(botStats: BotStatsService, permissionsService: PermissionsService) = precondition {
-//    if (it.guild!!.id != "699595207720566824" && it.channel.id != "706622539262066778")
-//        return@precondition Fail()
+fun produceHasPermissionPrecondition(persistentData: PersistentData, permissionsService: PermissionsService) = precondition {
+    val guild = it.guild ?: return@precondition Fail()
+    val botChannel = persistentData.getGuildProperty(guild) { botChannel }
+    if (botChannel.isNotEmpty() && it.channel.id != botChannel)
+        return@precondition Fail()
 
     val command = it.container[it.commandStruct.commandName] ?: return@precondition Fail()
     val level = permissionsService.getCommandPermissionLevel(it.guild!!, command)

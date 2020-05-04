@@ -12,6 +12,7 @@ data class Configuration(val guildConfigurations: MutableList<GuildConfiguration
 data class GuildConfiguration(val guildId: String = "",
                               var welcomeEmbeds: Boolean = false,
                               var welcomeChannel: String = "",
+                              var botChannel: String = "",
                               var loggingChannel: String = "",
                               var muteRole: String = "",
                               var totalCommandsExecuted: Int = 0,
