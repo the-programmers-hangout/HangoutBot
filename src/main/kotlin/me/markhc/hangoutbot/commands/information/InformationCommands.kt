@@ -4,47 +4,16 @@ import me.aberrantfox.kjdautils.api.annotation.CommandSet
 import me.aberrantfox.kjdautils.api.dsl.command.commands
 import me.aberrantfox.kjdautils.api.dsl.embed
 import me.aberrantfox.kjdautils.api.getInjectionObject
-import me.aberrantfox.kjdautils.internal.arguments.CommandArg
 import me.aberrantfox.kjdautils.internal.arguments.RoleArg
 import me.aberrantfox.kjdautils.internal.arguments.UserArg
 import me.markhc.hangoutbot.dataclasses.Configuration
 import me.markhc.hangoutbot.services.BotStatsService
-import me.markhc.hangoutbot.services.HelpService
 import me.markhc.hangoutbot.services.Properties
 import me.markhc.hangoutbot.utilities.*
-import net.dv8tion.jda.api.exceptions.InsufficientPermissionException
-import java.util.Date
 
 @Suppress("unused")
 @CommandSet("Information")
-fun produceInformationCommands(botStats: BotStatsService, config: Configuration, helpService: HelpService) = commands {
-    command("help") {
-        description = "Display help information."
-        requiresGuild = true
-        execute(CommandArg.makeNullableOptional { null }) {
-            val (command) = it.args
-
-            if(command == null) {
-                it.respond(helpService.buildHelpEmbed(it, false))
-            } else {
-                it.respond(helpService.buildHelpEmbedForCommand(it, command))
-            }
-        }
-    }
-    command("mhelp") {
-        description = "Display help information with a better layout for mobile devices."
-        requiresGuild = true
-        execute(CommandArg.makeNullableOptional { null }) {
-            val (command) = it.args
-
-            if(command == null) {
-                it.respond(helpService.buildHelpEmbed(it, true))
-            } else {
-                it.respond(helpService.buildHelpEmbedForCommand(it, command))
-            }
-        }
-    }
-
+fun produceInformationCommands(botStats: BotStatsService, config: Configuration) = commands {
     command("invite") {
         description = "Generates an invite link to this server."
         requiresGuild = true

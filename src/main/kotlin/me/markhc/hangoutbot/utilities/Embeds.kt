@@ -1,5 +1,6 @@
 package me.markhc.hangoutbot.utilities
 
+import com.sun.scenario.effect.Offset
 import me.aberrantfox.kjdautils.api.dsl.*
 import me.aberrantfox.kjdautils.api.dsl.command.*
 import me.aberrantfox.kjdautils.api.dsl.embed
@@ -15,6 +16,7 @@ import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
 import org.joda.time.format.DateTimeFormat
 import java.awt.Color
+import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 import java.util.concurrent.TimeUnit
 import kotlin.math.ceil
@@ -25,7 +27,6 @@ fun buildServerInfoEmbed(guild: Guild) = embed {
 
     footer {
         text = "Guild creation date: ${guild.timeCreated.format(DateTimeFormatter.RFC_1123_DATE_TIME)}"
-        iconUrl = "http://i.imgur.com/iwwEprG.png"
     }
     thumbnail = guild.iconUrl ?: ""
 
@@ -150,12 +151,15 @@ fun buildRoleInfoEmbed(role: Role) = embed {
     }
 }
 
+private fun formatOffsetTime(time: OffsetDateTime): String {
+    val days = TimeUnit.MILLISECONDS.toDays(DateTime.now().millis - time.toInstant().toEpochMilli())
+    return "$days days ago\n${time.format(DateTimeFormatter.ISO_LOCAL_DATE)}"
+}
+
 fun buildUserInfoEmbed(user: User) = embed {
     title = "User information"
     color = Color.MAGENTA
     thumbnail = user.effectiveAvatarUrl
-
-    val createdTime = DateTime(user.timeCreated.toInstant().toEpochMilli(), DateTimeZone.UTC)
 
     field {
         name = "**Username**"
@@ -174,7 +178,7 @@ fun buildUserInfoEmbed(user: User) = embed {
     }
     field {
         name = "**Created**"
-        value = "${TimeUnit.MILLISECONDS.toDays(DateTime.now().millis - createdTime.millis)} days ago\n${createdTime.toString(DateTimeFormat.forPattern("yyyy-MM-dd"))}"
+        value = formatOffsetTime(user.timeCreated)
         inline = true
     }
 }
@@ -191,9 +195,6 @@ fun buildMemberInfoEmbed(member: Member) = embed {
     title = "User information"
     color = member.color
     thumbnail = member.user.effectiveAvatarUrl
-
-    val createdTime = DateTime(member.timeCreated.toInstant().toEpochMilli(), DateTimeZone.UTC)
-    val joinedTime = DateTime(member.timeJoined.toInstant().toEpochMilli(), DateTimeZone.UTC)
 
     field {
         name = "**Username**"
@@ -217,12 +218,12 @@ fun buildMemberInfoEmbed(member: Member) = embed {
     }
     field {
         name = "**Created**"
-        value = "${TimeUnit.MILLISECONDS.toDays(DateTime.now().millis - createdTime.millis)} days ago\n${createdTime.toString(DateTimeFormat.forPattern("yyyy-MM-dd"))}"
+        value = formatOffsetTime(member.timeCreated)
         inline = true
     }
     field {
         name = "**Joined**"
-        value = "${TimeUnit.MILLISECONDS.toDays(DateTime.now().millis - joinedTime.millis)} days ago\n${joinedTime.toString(DateTimeFormat.forPattern("yyyy-MM-dd"))}"
+        value = formatOffsetTime(member.timeJoined)
         inline = true
     }
     field {

@@ -30,18 +30,16 @@
 | togglewelcome       | <none>         | Toggles the display of welcome messages upon guild user join. |
 
 ## Information
-| Commands   | Arguments | Description                                                       |
-| ---------- | --------- | ----------------------------------------------------------------- |
-| botstats   | <none>    | Displays miscellaneous information about the bot.                 |
-| help       | (Command) | Display help information.                                         |
-| invite     | <none>    | Generates an invite link to this server.                          |
-| mhelp      | (Command) | Display help information with a better layout for mobile devices. |
-| ping       | <none>    | pong.                                                             |
-| roleinfo   | Role      | Displays information about the given role.                        |
-| serverinfo | <none>    | Display a message giving basic server information.                |
-| source     | <none>    | Get the url for the bot source code.                              |
-| uptime     | <none>    | Displays how long the bot has been running for.                   |
-| userinfo   | User      | Displays information about the given user.                        |
+| Commands   | Arguments | Description                                        |
+| ---------- | --------- | -------------------------------------------------- |
+| botstats   | <none>    | Displays miscellaneous information about the bot.  |
+| invite     | <none>    | Generates an invite link to this server.           |
+| ping       | <none>    | pong.                                              |
+| roleinfo   | Role      | Displays information about the given role.         |
+| serverinfo | <none>    | Display a message giving basic server information. |
+| source     | <none>    | Get the url for the bot source code.               |
+| uptime     | <none>    | Displays how long the bot has been running for.    |
+| userinfo   | User      | Displays information about the given user.         |
 
 ## Permissions
 | Commands             | Arguments                     | Description                                                 |
@@ -56,6 +54,7 @@
 ## Utility
 | Commands         | Arguments               | Description                                                                       |
 | ---------------- | ----------------------- | --------------------------------------------------------------------------------- |
+| Help             | (Command)               | Display a help menu.                                                              |
 | avatar           | User                    | Gets the avatar from the given user                                               |
 | echo             | (TextChannel), Text     | Echo a message to a channel.                                                      |
 | grant            | (Member), GrantableRole | Grants a role to a lower ranked member or yourself                                |
