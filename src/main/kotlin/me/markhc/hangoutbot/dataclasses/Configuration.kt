@@ -2,7 +2,6 @@ package me.markhc.hangoutbot.dataclasses
 
 import me.aberrantfox.kjdautils.api.annotation.Data
 import me.markhc.hangoutbot.services.PermissionLevel
-import net.dv8tion.jda.api.entities.Guild
 
 @Data("data/guilds.json", killIfGenerated = false)
 data class Configuration(val guildConfigurations: MutableList<GuildConfiguration> = mutableListOf(),

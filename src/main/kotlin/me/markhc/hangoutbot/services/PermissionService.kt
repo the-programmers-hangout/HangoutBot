@@ -3,7 +3,6 @@ package me.markhc.hangoutbot.services
 import me.aberrantfox.kjdautils.api.annotation.Service
 import me.aberrantfox.kjdautils.api.dsl.command.Command
 import me.aberrantfox.kjdautils.internal.services.PersistenceService
-import me.markhc.hangoutbot.dataclasses.Configuration
 import me.markhc.hangoutbot.extensions.requiredPermissionLevel
 import net.dv8tion.jda.api.entities.Guild
 import net.dv8tion.jda.api.entities.Member

@@ -5,9 +5,7 @@ import me.aberrantfox.kjdautils.api.dsl.embed
 import me.aberrantfox.kjdautils.extensions.jda.fullName
 import me.markhc.hangoutbot.locale.Messages
 import me.markhc.hangoutbot.services.PersistentData
-import net.dv8tion.jda.api.events.channel.category.CategoryDeleteEvent
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent
-import java.awt.Color
 
 @Suppress("unused")
 class WelcomeListener(private val persistentData: PersistentData) {

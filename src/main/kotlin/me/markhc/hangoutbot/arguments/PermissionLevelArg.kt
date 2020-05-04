@@ -1,15 +1,10 @@
 package me.markhc.hangoutbot.arguments
 
 import me.aberrantfox.kjdautils.api.dsl.command.CommandEvent
-import me.aberrantfox.kjdautils.api.getInjectionObject
-import me.aberrantfox.kjdautils.extensions.stdlib.trimToID
 import me.aberrantfox.kjdautils.internal.command.ArgumentResult
 import me.aberrantfox.kjdautils.internal.command.ArgumentType
 import me.aberrantfox.kjdautils.internal.command.ConsumptionType
-import me.aberrantfox.kjdautils.internal.command.tryRetrieveSnowflake
 import me.markhc.hangoutbot.services.PermissionLevel
-import me.markhc.hangoutbot.services.PermissionsService
-import net.dv8tion.jda.api.entities.Member
 
 open class PermissionLevelArg(override val name : String = "Permission Level") : ArgumentType<PermissionLevel>() {
     companion object : PermissionLevelArg()

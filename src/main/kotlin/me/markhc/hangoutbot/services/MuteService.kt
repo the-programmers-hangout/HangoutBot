@@ -1,12 +1,12 @@
 package me.markhc.hangoutbot.services
 
+import com.github.kittinunf.result.Result
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import me.aberrantfox.kjdautils.api.annotation.Service
 import me.aberrantfox.kjdautils.discord.Discord
-import me.aberrantfox.kjdautils.internal.services.PersistenceService
-import me.markhc.hangoutbot.dataclasses.Configuration
+import me.markhc.hangoutbot.dataclasses.MuteEntry
 import me.markhc.hangoutbot.utilities.buildSelfMuteEmbed
 import net.dv8tion.jda.api.entities.Member
 import net.dv8tion.jda.api.entities.MessageEmbed
@@ -14,8 +14,6 @@ import net.dv8tion.jda.api.entities.Role
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
 import org.joda.time.format.DateTimeFormat
-import com.github.kittinunf.result.Result
-import me.markhc.hangoutbot.dataclasses.MuteEntry
 
 @Service
 class MuteService(private val persistentData: PersistentData,

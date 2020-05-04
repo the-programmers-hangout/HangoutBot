@@ -1,12 +1,7 @@
 package me.markhc.hangoutbot.utilities
 
-import com.sun.scenario.effect.Offset
-import me.aberrantfox.kjdautils.api.dsl.*
-import me.aberrantfox.kjdautils.api.dsl.command.*
 import me.aberrantfox.kjdautils.api.dsl.embed
 import me.aberrantfox.kjdautils.extensions.jda.fullName
-import me.aberrantfox.kjdautils.extensions.jda.toMember
-import me.markhc.hangoutbot.extensions.requiredPermissionLevel
 import net.dv8tion.jda.api.OnlineStatus
 import net.dv8tion.jda.api.entities.Guild
 import net.dv8tion.jda.api.entities.Member
@@ -19,7 +14,6 @@ import java.awt.Color
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 import java.util.concurrent.TimeUnit
-import kotlin.math.ceil
 
 fun buildServerInfoEmbed(guild: Guild) = embed {
     title = guild.name
