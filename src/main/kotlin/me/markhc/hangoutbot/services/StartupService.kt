@@ -4,6 +4,7 @@ import me.aberrantfox.kjdautils.api.annotation.Service
 import me.aberrantfox.kjdautils.discord.Discord
 import me.aberrantfox.kjdautils.extensions.jda.fullName
 import me.markhc.hangoutbot.dataclasses.Configuration
+import net.dv8tion.jda.api.entities.Activity
 import java.awt.Color
 
 @Service
@@ -17,13 +18,15 @@ class StartupService(properties: Properties,
         muteService.launchTimers()
         reminderService.launchTimers()
 
+        discord.jda.presence.activity = Activity.playing("${config.prefix}help for more information")
+
         with(discord.configuration) {
             prefix = config.prefix
             mentionEmbed {
                 val channel = it.channel
                 val self = channel.jda.selfUser
 
-                color = Color(0x00bfff)
+                color = infoColor
                 thumbnail = self.effectiveAvatarUrl
 
                 field {

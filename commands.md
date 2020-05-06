@@ -20,7 +20,6 @@
 | Commands            | Arguments      | Description                                                                                                     |
 | ------------------- | -------------- | --------------------------------------------------------------------------------------------------------------- |
 | getwelcomechannel   | <none>         | Gets the channel used for welcome embeds.                                                                       |
-| listgrantableroles  | <none>         | Lists the available grantable roles.                                                                            |
 | makerolegrantable   | Role, Category | Adds a role to the list of grantable roles.                                                                     |
 | removegrantablerole | Role           | Removes a role to the list of grantable roles.                                                                  |
 | setbotchannel       | (TextChannel)  | Sets the bot channel. If set, the bot channel will be the only channel where the bot will accept commands from. |
@@ -53,15 +52,16 @@
 | setrolepermissions   | Role, Permission Level        | Sets the permission level of the given role                 |
 
 ## StaffUtility
-| Commands   | Arguments               | Description                                                                       |
-| ---------- | ----------------------- | --------------------------------------------------------------------------------- |
-| clearcolor | <none>                  | Clears the current color role.                                                    |
-| echo       | (TextChannel), Text     | Echo a message to a channel.                                                      |
-| grant      | (Member), GrantableRole | Grants a role to a lower ranked member or yourself                                |
-| listcolors | <none>                  | Creates a role with the given name and color and assigns it to the user.          |
-| nuke       | (TextChannel), Integer  | Delete 2 - 99 past messages in the given channel (default is the invoked channel) |
-| revoke     | (Member), GrantableRole | Revokes a role from a lower ranked member or yourself                             |
-| setcolor   | RoleName, (HexColor)    | Creates a role with the given name and color and assigns it to the user.          |
+| Commands           | Arguments               | Description                                                                       |
+| ------------------ | ----------------------- | --------------------------------------------------------------------------------- |
+| clearcolor         | <none>                  | Clears the current color role.                                                    |
+| echo               | (TextChannel), Text     | Echo a message to a channel.                                                      |
+| grant              | (Member), GrantableRole | Grants a role to a lower ranked member or yourself                                |
+| listcolors         | <none>                  | Creates a role with the given name and color and assigns it to the user.          |
+| listgrantableroles | <none>                  | Lists the available grantable roles.                                              |
+| nuke               | (TextChannel), Integer  | Delete 2 - 99 past messages in the given channel (default is the invoked channel) |
+| revoke             | (Member), GrantableRole | Revokes a role from a lower ranked member or yourself                             |
+| setcolor           | RoleName, (HexColor)    | Creates a role with the given name and color and assigns it to the user.          |
 
 ## Utility
 | Commands         | Arguments  | Description                                                             |

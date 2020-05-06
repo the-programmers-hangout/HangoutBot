@@ -11,6 +11,7 @@ import me.markhc.hangoutbot.extensions.requiredPermissionLevel
 import me.markhc.hangoutbot.services.BotConfiguration
 import me.markhc.hangoutbot.services.PermissionLevel
 import me.markhc.hangoutbot.services.PersistentData
+import net.dv8tion.jda.api.entities.Activity
 import net.dv8tion.jda.api.entities.Guild
 import net.dv8tion.jda.api.entities.MessageEmbed
 import java.awt.Color
@@ -26,6 +27,7 @@ fun produceGuildConfigurationCommands(botConfiguration: BotConfiguration,
         execute(WordArg("Prefix")) {
             val (prefix) = it.args
 
+            it.discord.jda.presence.activity = Activity.playing("${prefix}help for more information")
             it.discord.configuration.prefix = prefix
             botConfiguration.prefix = prefix
             persistenceService.save(botConfiguration)
@@ -151,21 +153,6 @@ fun produceGuildConfigurationCommands(botConfiguration: BotConfiguration,
         }
     }
 
-    command("listgrantableroles") {
-        description = "Lists the available grantable roles."
-        requiredPermissionLevel = PermissionLevel.Staff
-        requiresGuild = true
-        execute {
-            persistentData.getGuildProperty(it.guild!!) {
-                if (grantableRoles.isEmpty()) {
-                    it.respond("No roles set")
-                } else {
-                    it.respond(buildRolesEmbed(it.guild!!, grantableRoles))
-                }
-            }
-        }
-    }
-
     command("setbotchannel") {
         description = "Sets the bot channel. If set, the bot channel will be the only channel where the bot will accept commands from."
         requiresGuild = true
@@ -182,19 +169,5 @@ fun produceGuildConfigurationCommands(botConfiguration: BotConfiguration,
             else
                 it.respond("Bot channel cleared. Now accepting commands in any channel.")
         }
-    }
-}
-
-private fun buildRolesEmbed(guild: Guild, roles: Map<String, List<String>>): MessageEmbed {
-    return embed {
-        title = "Grantable roles"
-        color = Color.CYAN
-
-        roles.iterator().forEach {
-            addInlineField(
-                    name = it.key,
-                    value = it.value.joinToString("\n") { id -> guild.getRoleById(id)?.name ?: id })
-        }
-
     }
 }

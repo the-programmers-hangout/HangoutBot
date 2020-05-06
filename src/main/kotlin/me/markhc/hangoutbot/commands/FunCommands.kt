@@ -12,7 +12,7 @@ import me.markhc.hangoutbot.utilities.XKCD
 import kotlin.random.Random
 
 private object CowsayData {
-    val validCows = Cowsay.say(arrayOf("-l")).split("\n").filterNot { listOf("sodomized", "head-in", "telebears").contains(it) }
+    val validCows = Cowsay.say(arrayOf("-l")).split(System.lineSeparator()).filterNot { listOf("sodomized", "head-in", "telebears").contains(it) }
 }
 
 @Suppress("unused")

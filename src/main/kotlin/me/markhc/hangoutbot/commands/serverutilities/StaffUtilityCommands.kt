@@ -50,6 +50,21 @@ fun produceStaffUtilityCommands(persistentData: PersistentData,
         }
     }
 
+    command("listgrantableroles") {
+        description = "Lists the available grantable roles."
+        requiredPermissionLevel = PermissionLevel.Staff
+        requiresGuild = true
+        execute {
+            persistentData.getGuildProperty(it.guild!!) {
+                if (grantableRoles.isEmpty()) {
+                    it.respond("No roles set")
+                } else {
+                    it.respond(buildRolesEmbed(it.guild!!, grantableRoles))
+                }
+            }
+        }
+    }
+
     command("grant") {
         requiredPermissionLevel = PermissionLevel.Staff
         description = "Grants a role to a lower ranked member or yourself"
@@ -166,4 +181,18 @@ private fun removeRoles(guild: Guild, member: Member, vararg roles: String) {
 
 private fun grantRole(guild: Guild, member: Member, role: Role) {
     guild.addRoleToMember(member, role).queue()
+}
+
+private fun buildRolesEmbed(guild: Guild, roles: Map<String, List<String>>): MessageEmbed {
+    return embed {
+        title = "Grantable roles"
+        color = infoColor
+
+        roles.iterator().forEach {
+            addInlineField(
+                    name = it.key,
+                    value = it.value.joinToString("\n") { id -> guild.getRoleById(id)?.name ?: id })
+        }
+
+    }
 }

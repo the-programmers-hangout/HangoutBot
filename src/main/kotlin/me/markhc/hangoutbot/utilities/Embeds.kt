@@ -152,7 +152,7 @@ private fun formatOffsetTime(time: OffsetDateTime): String {
 
 fun buildUserInfoEmbed(user: User) = embed {
     title = "User information"
-    color = Color.MAGENTA
+    color = infoColor
     thumbnail = user.effectiveAvatarUrl
 
     field {
