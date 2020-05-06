@@ -52,20 +52,24 @@
 | setpermission        | Commands..., Permission Level | Sets the required permission level for the given commands   |
 | setrolepermissions   | Role, Permission Level        | Sets the permission level of the given role                 |
 
+## StaffUtility
+| Commands   | Arguments               | Description                                                                       |
+| ---------- | ----------------------- | --------------------------------------------------------------------------------- |
+| clearcolor | <none>                  | Clears the current color role.                                                    |
+| echo       | (TextChannel), Text     | Echo a message to a channel.                                                      |
+| grant      | (Member), GrantableRole | Grants a role to a lower ranked member or yourself                                |
+| listcolors | <none>                  | Creates a role with the given name and color and assigns it to the user.          |
+| nuke       | (TextChannel), Integer  | Delete 2 - 99 past messages in the given channel (default is the invoked channel) |
+| revoke     | (Member), GrantableRole | Revokes a role from a lower ranked member or yourself                             |
+| setcolor   | RoleName, (HexColor)    | Creates a role with the given name and color and assigns it to the user.          |
+
 ## Utility
-| Commands         | Arguments               | Description                                                                       |
-| ---------------- | ----------------------- | --------------------------------------------------------------------------------- |
-| Help             | (Command)               | Display a help menu.                                                              |
-| avatar           | User                    | Gets the avatar from the given user                                               |
-| clearcolor       | <none>                  | Clears the current color role.                                                    |
-| echo             | (TextChannel), Text     | Echo a message to a channel.                                                      |
-| grant            | (Member), GrantableRole | Grants a role to a lower ranked member or yourself                                |
-| listcolors       | <none>                  | Creates a role with the given name and color and assigns it to the user.          |
-| nuke             | (TextChannel), Integer  | Delete 2 - 99 past messages in the given channel (default is the invoked channel) |
-| remindme         | Time, Text              | A command that'll remind you about something after the specified time.            |
-| revoke           | (Member), GrantableRole | Revokes a role from a lower ranked member or yourself                             |
-| selfmute         | (Time)                  | Mute yourself for an amout of time. Default is 1 hour. Max is 24 hours.           |
-| setcolor         | RoleName, (HexColor)    | Creates a role with the given name and color and assigns it to the user.          |
-| viewcreationdate | User                    | Displays when a user was created                                                  |
-| viewjoindate     | Member                  | Displays when a user joined the guild                                             |
+| Commands         | Arguments  | Description                                                             |
+| ---------------- | ---------- | ----------------------------------------------------------------------- |
+| Help             | (Command)  | Display a help menu.                                                    |
+| avatar           | User       | Gets the avatar from the given user                                     |
+| remindme         | Time, Text | A command that'll remind you about something after the specified time.  |
+| selfmute         | (Time)     | Mute yourself for an amout of time. Default is 1 hour. Max is 24 hours. |
+| viewcreationdate | User       | Displays when a user was created                                        |
+| viewjoindate     | Member     | Displays when a user joined the guild                                   |
 
