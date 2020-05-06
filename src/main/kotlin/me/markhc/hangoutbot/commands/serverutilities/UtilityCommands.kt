@@ -2,15 +2,13 @@ package me.markhc.hangoutbot.commands.serverutilities
 
 import me.aberrantfox.kjdautils.api.annotation.CommandSet
 import me.aberrantfox.kjdautils.api.dsl.command.commands
+import me.aberrantfox.kjdautils.api.dsl.embed
 import me.aberrantfox.kjdautils.extensions.jda.fullName
 import me.aberrantfox.kjdautils.extensions.jda.sendPrivateMessage
 import me.aberrantfox.kjdautils.internal.arguments.*
 import me.markhc.hangoutbot.arguments.LowerRankedMemberArg
 import me.markhc.hangoutbot.extensions.requiredPermissionLevel
-import me.markhc.hangoutbot.services.MuteService
-import me.markhc.hangoutbot.services.PermissionLevel
-import me.markhc.hangoutbot.services.PersistentData
-import me.markhc.hangoutbot.services.ReminderService
+import me.markhc.hangoutbot.services.*
 import net.dv8tion.jda.api.entities.*
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
@@ -22,7 +20,8 @@ import kotlin.math.roundToLong
 @CommandSet("Utility")
 fun produceUtilityCommands(persistentData: PersistentData,
                            muteService: MuteService,
-                           reminderService: ReminderService) = commands {
+                           reminderService: ReminderService,
+                           colorService: ColorService) = commands {
     val dateFormatter = DateTimeFormat.fullDateTime()
 
     command("echo") {
@@ -68,7 +67,7 @@ fun produceUtilityCommands(persistentData: PersistentData,
 
     command("selfmute") {
         description = "Mute yourself for an amout of time. Default is 1 hour. Max is 24 hours."
-        execute(TimeStringArg.makeOptional { 3600.0 }) {
+        execute(TimeStringArg.makeOptional(3600.0)) {
             val (timeInSeconds) = it.args
 
             if(timeInSeconds > TimeUnit.HOURS.toSeconds(24)) {
@@ -166,6 +165,56 @@ fun produceUtilityCommands(persistentData: PersistentData,
                     success = { msg -> it.respond(msg) },
                     failure = { ex -> it.respond(ex.message!!) }
             )
+        }
+    }
+
+    command("setcolor") {
+        description = "Creates a role with the given name and color and assigns it to the user."
+        requiredPermissionLevel = PermissionLevel.Administrator
+        requiresGuild = true
+        execute(EitherArg(QuoteArg, WordArg, "RoleName"), HexColorArg("HexColor").makeNullableOptional()) { event ->
+            val (roleName, color) = event.args
+
+            val member = event.guild!!.getMember(event.author)!!
+
+            when(roleName) {
+                is Either.Left -> colorService.setMemberColor(member, roleName.left, color)
+                is Either.Right -> colorService.setMemberColor(member, roleName.right, color)
+            }.fold(success = { event.respond(it) }, failure = { event.respond(it.message!!) })
+        }
+    }
+
+    command("clearcolor") {
+        description = "Clears the current color role."
+        requiredPermissionLevel = PermissionLevel.Administrator
+        requiresGuild = true
+        execute { event ->
+            val member = event.guild!!.getMember(event.author)!!
+
+            colorService.clearMemberColor(member).fold(
+                    success = { event.respond(it) },
+                    failure = { event.respond(it.message!!) }
+            )
+        }
+    }
+
+    command("listcolors") {
+        description = "Creates a role with the given name and color and assigns it to the user."
+        requiredPermissionLevel = PermissionLevel.Administrator
+        requiresGuild = true
+        execute { event ->
+            event.respond(embed {
+                title = "Currently used colors"
+                description = "You can use one of these by running `setcolor <name>`.\n" +
+                              "If you want a new color, use `setcolor <name> <hexcolor>`"
+
+                field {
+                    name = "Colors"
+                    value = persistentData.getGuildProperty(event.guild!!) {
+                        assignedColorRoles.map { event.guild!!.getRoleById(it.key)?.asMention ?: "--" }
+                    }.joinToString("\n")
+                }
+            })
         }
     }
 }

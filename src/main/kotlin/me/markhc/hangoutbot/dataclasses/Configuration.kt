@@ -18,6 +18,7 @@ data class GuildConfiguration(val guildId: String = "",
                               val grantableRoles: MutableMap<String, MutableList<String>> = mutableMapOf(),
                               val rolePermissions: MutableMap<String, PermissionLevel> = mutableMapOf(),
                               val commandPermission: MutableMap<String, PermissionLevel> = mutableMapOf(),
+                              val assignedColorRoles: MutableMap<String, MutableList<String>> = mutableMapOf(),
                               val mutedUsers: MutableList<MuteEntry> = mutableListOf(),
                               val reminders: MutableList<Reminder> = mutableListOf())
 

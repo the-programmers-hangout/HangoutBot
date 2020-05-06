@@ -20,33 +20,18 @@ private object CowsayData {
 fun produceFunCommands() = commands {
     command("coin") {
         description = "Flip a coin (or coins)."
-        execute(IntegerArg("Coins").makeOptional { 1 }) {
-            val (coins) = it.args
-
-            if (coins <= 0 || coins > 100000) {
-                return@execute it.respond("Sorry, cannot flip that many coins")
-            }
-
-            if (coins == 1) {
-                if (Random.nextDouble() > 0.5) {
-                    return@execute it.respond("Heads!")
-                } else {
-                    return@execute it.respond("Tails!")
+        execute(IntegerArg("Coins").makeOptional(1)) {
+            val response = when (val coins = it.args.first) {
+                1 -> if (Random.nextDouble() > 0.5) "Heads!" else "Tails!"
+                in 2..100000 -> {
+                    val heads = (0..coins).sumBy { if (Random.nextDouble() > 0.5) 1 else 0 }
+                    val tails = coins - heads
+                    "Flipped $coins coins. Result: $heads heads, $tails tails!"
                 }
+                else -> "Sorry, cannot flip that many coins"
             }
 
-            var heads = 0
-            var tails = 0
-
-            for (i in 0..coins) {
-                if (Random.nextDouble() > 0.5) {
-                    heads++
-                } else {
-                    tails++
-                }
-            }
-
-            it.respond("Fliiped $coins coins. Result: $heads heads, $tails tails!")
+            it.respond(response)
         }
     }
 
@@ -61,7 +46,7 @@ fun produceFunCommands() = commands {
 
     command("roll") {
         description = "Rolls a number in a range (default 1-100)"
-        execute(IntegerArg("Min").makeOptional { 1 }, IntegerArg("Max").makeOptional { 100 }) {
+        execute(IntegerArg("Min").makeOptional(1), IntegerArg("Max").makeOptional(100)) {
             val (a, b) = it.args
             if (a == b) return@execute it.respond("$a")
             val result = if (a > b) Random.nextInt(b, a) else Random.nextInt(a, b)
@@ -72,7 +57,7 @@ fun produceFunCommands() = commands {
 
     command("cowsay") {
         description = "Displays a cowsay with a given message. Run with no arguments to get a list of valid cows."
-        execute(WordArg("Cow").makeOptional { "" }, SentenceArg("Message").makeOptional { "" }) {
+        execute(WordArg("Cow").makeOptional(""), SentenceArg("Message").makeOptional("")) {
             val (arg0, arg1) = it.args
 
             it.respond(when {
@@ -86,7 +71,7 @@ fun produceFunCommands() = commands {
 
     command("xkcd") {
         description = "Returns the XKCD comic number specified, or a random comic if you don't supply a number."
-        execute(IntegerArg("Comic Number").makeNullableOptional{ null }) {
+        execute(IntegerArg("Comic Number").makeNullableOptional()) {
             val (id) = it.args
 
             val latest = XKCD.getLatest()

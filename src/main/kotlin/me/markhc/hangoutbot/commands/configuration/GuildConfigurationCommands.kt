@@ -193,7 +193,7 @@ private fun buildRolesEmbed(guild: Guild, roles: Map<String, List<String>>): Mes
         roles.iterator().forEach {
             addInlineField(
                     name = it.key,
-                    value = (it.value as List<*>).filterIsInstance<String>().map {id -> guild.getRoleById(id)?.name }.joinToString("\n"))
+                    value = it.value.joinToString("\n") { id -> guild.getRoleById(id)?.name ?: id })
         }
 
     }
