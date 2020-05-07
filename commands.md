@@ -39,7 +39,7 @@
 | serverinfo | <none>    | Display a message giving basic server information. |
 | source     | <none>    | Get the url for the bot source code.               |
 | uptime     | <none>    | Displays how long the bot has been running for.    |
-| userinfo   | User      | Displays information about the given user.         |
+| userinfo   | (User)    | Displays information about the given user.         |
 
 ## Permissions
 | Commands             | Arguments                     | Description                                                 |

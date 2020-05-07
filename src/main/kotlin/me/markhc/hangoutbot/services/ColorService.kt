@@ -13,7 +13,7 @@ import java.awt.Color
 class ColorService(private val persistentData: PersistentData, private val permissionsService: PermissionsService) {
     fun setMemberColor(member: Member, roleName: String, roleColor: Color?): Result<String, Exception> {
         if (!isValidName(member, roleName)) {
-            return Result.Failure(Exception("The role name for regular users is only allowed to have the following set of characters:  [ a-zA-Z_0-9]"))
+            return Result.Failure(Exception("The role name for regular users is only allowed ASCII characters ([\\x20-\\x7F])"))
         }
 
         return Result.of {
@@ -126,7 +126,7 @@ class ColorService(private val persistentData: PersistentData, private val permi
         // If user permissions are lower than Administrator, only allow
         // role names with ASCII characters
         if (permissionsService.getPermissionLevel(member) > PermissionLevel.Administrator) {
-            if (!Regex("^[ a-zA-Z_0-9]+$").matches(roleName)) {
+            if (!Regex("^[\\x20-\\x7F]+$").matches(roleName)) {
                 return false
             }
         }
