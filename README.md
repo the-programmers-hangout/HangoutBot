@@ -1,3 +1,5 @@
+![CI](https://github.com/the-programmers-hangout/HangoutBot/workflows/CI/badge.svg)
+
 # HangoutBot
 
 A bot to manage utility commands and funcionaility that does not warrant its own bot in the TheProgrammersHangout Discord Server.
