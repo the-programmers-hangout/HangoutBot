@@ -10,6 +10,7 @@ import java.awt.Color
 @Service
 class StartupService(properties: Properties,
                      config: BotConfiguration,
+                     botStats: BotStatsService,
                      discord: Discord,
                      permissionsService: PermissionsService,
                      muteService: MuteService,
@@ -31,7 +32,7 @@ class StartupService(properties: Properties,
 
                 field {
                     name = self.fullName()
-                    value = "A bot to manage utility commands and funcionaility that does not warrant its own bot"
+                    value = "A bot to manage utility commands and functionality that does not warrant its own bot"
                 }
                 field {
                     name = "Prefix"
@@ -56,7 +57,15 @@ class StartupService(properties: Properties,
                                 "```"
                     }
 
-                    addField("Source", repository)
+                    field {
+                        name = "Uptime"
+                        value = botStats.uptime
+                    }
+
+                    field {
+                        name = "Source"
+                        value = "[[GitHub]](${repository})"
+                    }
                 }
             }
             visibilityPredicate predicate@{
