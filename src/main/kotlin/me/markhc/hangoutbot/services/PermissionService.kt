@@ -32,7 +32,13 @@ class PermissionsService(private val persistentData: PersistentData, private val
         }
     }
 
-    fun hasClearance(guild: Guild, user: User, requiredPermissionLevel: PermissionLevel): Boolean {
+    fun hasClearance(member: Member, requiredPermissionLevel: PermissionLevel): Boolean {
+        val permissionLevel = getPermissionLevel(member)
+
+        return permissionLevel <= requiredPermissionLevel
+    }
+
+    private fun hasClearance(guild: Guild, user: User, requiredPermissionLevel: PermissionLevel): Boolean {
         val permissionLevel = guild.getMember(user)?.let { getPermissionLevel(it) }
 
         return if(permissionLevel == null) {

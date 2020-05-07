@@ -32,6 +32,6 @@ class BotStatsService(private val persistentData: PersistentData,
     val uptime: String
         get() = (Date().time - startTime.time).toLongDurationString()
 
-    val ping: Long
-        get() = discord.jda.gatewayPing
+    val ping: String
+        get() = "${discord.jda.gatewayPing} ms"
 }

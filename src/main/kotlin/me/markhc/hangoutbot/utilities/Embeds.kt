@@ -220,9 +220,12 @@ fun buildMemberInfoEmbed(member: Member) = embed {
         value = formatOffsetTime(member.timeJoined)
         inline = true
     }
-    field {
-        name = "**Roles**"
-        value = member.roles.joinToString(", ") { it.name }
-        inline = true
+
+    if(member.roles.isNotEmpty()) {
+        field {
+            name = "**Roles**"
+            value = member.roles.joinToString(", ") { it.name }
+            inline = true
+        }
     }
 }
