@@ -102,6 +102,7 @@ fun produceStaffUtilityCommands(persistentData: PersistentData,
         }
     }
 
+    val isChangingColor: MutableList<Long> = mutableListOf()
     command("setcolor") {
         description = "Creates a role with the given name and color and assigns it to the user."
         requiredPermissionLevel = PermissionLevel.Administrator
@@ -111,14 +112,22 @@ fun produceStaffUtilityCommands(persistentData: PersistentData,
 
             val member = event.guild!!.getMember(event.author)!!
 
-            if(member.id == "412540774694256640") {
-                return@execute event.respond("<:69:593774451250823188>")
+            if(isChangingColor.contains(member.idLong)) {
+                return@execute event.respond("Cannot do that right now")
             }
 
-            when(roleName) {
+            isChangingColor.add(member.idLong)
+
+            val response = when(roleName) {
                 is Either.Left -> colorService.setMemberColor(member, roleName.left, color)
                 is Either.Right -> colorService.setMemberColor(member, roleName.right, color)
-            }.fold(success = { event.respond(it) }, failure = { event.respond(it.message!!) })
+            }.fold(
+                    success = { it },
+                    failure = { it.message!! })
+
+            isChangingColor.remove(member.idLong)
+
+            event.respond(response)
         }
     }
 

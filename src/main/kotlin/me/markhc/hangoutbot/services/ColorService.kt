@@ -111,7 +111,7 @@ class ColorService(private val persistentData: PersistentData, private val permi
             guild.modifyRolePositions()
                     .selectPosition(role)
                     .moveTo(separator.position - 1)
-                    .queue()
+                    .complete()
             return role
         } catch (ex: Exception) {
             role.delete().complete()
