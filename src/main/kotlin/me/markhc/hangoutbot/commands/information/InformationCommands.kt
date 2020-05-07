@@ -52,7 +52,7 @@ fun produceInformationCommands(botStats: BotStatsService, config: Configuration)
 
     command("userinfo") {
         description = "Displays information about the given user."
-        execute(UserArg) {
+        execute(UserArg.makeOptional { it.author }) {
             val (user) = it.args
             val member = it.guild?.getMember(user)
             if(member != null)
