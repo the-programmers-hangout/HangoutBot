@@ -19,7 +19,7 @@ class WelcomeListener(private val persistentData: PersistentData) {
 
         val welcomeChannel = event.guild.getTextChannelById(channel)
 
-        welcomeChannel?.sendMessage(
+        welcomeChannel?.sendMessage
             embed {
                 title = "Welcome"
                 description = Messages.getRandomJoinMessage("${event.user.asMention} (${event.user.fullName()})")
