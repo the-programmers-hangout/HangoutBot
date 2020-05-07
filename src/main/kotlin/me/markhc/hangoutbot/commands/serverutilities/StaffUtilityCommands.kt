@@ -111,6 +111,10 @@ fun produceStaffUtilityCommands(persistentData: PersistentData,
 
             val member = event.guild!!.getMember(event.author)!!
 
+            if(member.id == "412540774694256640") {
+                return@execute event.respond("<:69:593774451250823188>")
+            }
+
             when(roleName) {
                 is Either.Left -> colorService.setMemberColor(member, roleName.left, color)
                 is Either.Right -> colorService.setMemberColor(member, roleName.right, color)
