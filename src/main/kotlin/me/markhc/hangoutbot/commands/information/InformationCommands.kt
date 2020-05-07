@@ -36,7 +36,7 @@ fun produceInformationCommands(botStats: BotStatsService, config: Configuration)
     command("ping") {
         description = "pong."
         execute {
-            it.respond("${botStats.ping}")
+            it.respond(botStats.ping)
         }
     }
 
@@ -114,7 +114,7 @@ fun produceInformationCommands(botStats: BotStatsService, config: Configuration)
 
                 field {
                     name = "Ping"
-                    value = "${botStats.ping} ms"
+                    value = botStats.ping
                     inline = true
                 }
 
