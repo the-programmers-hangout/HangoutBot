@@ -22,7 +22,7 @@ class WelcomeListener(private val persistentData: PersistentData) {
         welcomeChannel?.sendMessage(
             embed {
                 title = "Welcome"
-                description = "${Messages.getRandomJoinMessage(event.user.asMention)} (${event.user.fullName()})"
+                description = Messages.getRandomJoinMessage("${event.user.asMention} (${event.user.fullName()})")
                 thumbnail = event.user.effectiveAvatarUrl
                 color = infoColor
                 field  {
