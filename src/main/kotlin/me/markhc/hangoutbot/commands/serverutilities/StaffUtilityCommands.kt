@@ -180,23 +180,33 @@ fun produceStaffUtilityCommands(persistentData: PersistentData,
         execute { event ->
             val guild = event.guild!!
 
-            val list = guild.roles.map {
-                "${it.id} - ${it.name}: ${guild.getMembersWithRoles(it).size} users"
-            }
-            val response = list.joinToString("\n")
-            if(response.length < 1990) {
-                event.respond("```\n$response\n```")
-            } else {
-                var message = ""
-                for(i in 0..list.size) {
-                    if(message.length + list[i].length < 1990) {
-                        message += list[i] + '\n'
-                    } else {
-                        event.respond("```\n$message\n```")
-                        message = list[i] + '\n'
-                    }
+            val message = event.channel.sendMessage("Working...").complete()
+
+            guild.retrieveMembers().thenApply {
+                val list = guild.roles.map {
+                    "${it.id} - ${it.name}: ${guild.getMembersWithRoles(it).size} users"
                 }
-                event.respond("```\n$message\n```")
+
+                val response = list.joinToString("\n")
+                if(response.length < 1990) {
+                    message.editMessage("```\n$response\n```").queue()
+                } else {
+                    var data = ""
+                    var edited = false
+                    for(i in 0..list.size) {
+                        if(data.length + list[i].length < 1990) {
+                            data += list[i] + '\n'
+                        } else {
+                            if(!edited) {
+                                message.editMessage("```\n$data\n```").queue()
+                            } else {
+                                event.channel.sendMessage("```\n$data\n```").queue()
+                            }
+                            data = list[i] + '\n'
+                        }
+                    }
+                    event.channel.sendMessage("```\n$data\n```").queue()
+                }
             }
         }
     }
