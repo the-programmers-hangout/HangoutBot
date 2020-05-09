@@ -52,16 +52,18 @@
 | setrolepermissions   | Role, Permission Level        | Sets the permission level of the given role                 |
 
 ## StaffUtility
-| Commands           | Arguments               | Description                                                                       |
-| ------------------ | ----------------------- | --------------------------------------------------------------------------------- |
-| clearcolor         | <none>                  | Clears the current color role.                                                    |
-| echo               | (TextChannel), Text     | Echo a message to a channel.                                                      |
-| grant              | (Member), GrantableRole | Grants a role to a lower ranked member or yourself                                |
-| listcolors         | <none>                  | Creates a role with the given name and color and assigns it to the user.          |
-| listgrantableroles | <none>                  | Lists the available grantable roles.                                              |
-| nuke               | (TextChannel), Integer  | Delete 2 - 99 past messages in the given channel (default is the invoked channel) |
-| revoke             | (Member), GrantableRole | Revokes a role from a lower ranked member or yourself                             |
-| setcolor           | RoleName, (HexColor)    | Creates a role with the given name and color and assigns it to the user.          |
+| Commands           | Arguments               | Description                                                                                                        |
+| ------------------ | ----------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| clearcolor         | <none>                  | Clears the current color role.                                                                                     |
+| deleterole         | Role...                 | Deletes the given role or roles. HERE BE DRAGONS.                                                                  |
+| echo               | (TextChannel), Text     | Echo a message to a channel.                                                                                       |
+| grant              | (Member), GrantableRole | Grants a role to a lower ranked member or yourself                                                                 |
+| listcolors         | <none>                  | Creates a role with the given name and color and assigns it to the user.                                           |
+| listgrantableroles | <none>                  | Lists the available grantable roles.                                                                               |
+| listroles          | <none>                  | List all the roles available in the guild. Number of users might not be accurate as it only includes cached users. |
+| nuke               | (TextChannel), Integer  | Delete 2 - 99 past messages in the given channel (default is the invoked channel)                                  |
+| revoke             | (Member), GrantableRole | Revokes a role from a lower ranked member or yourself                                                              |
+| setcolor           | (HexColor), RoleName    | Creates a role with the given name and color and assigns it to the user.                                           |
 
 ## Utility
 | Commands         | Arguments  | Description                                                             |
