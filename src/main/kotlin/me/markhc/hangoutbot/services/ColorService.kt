@@ -31,8 +31,8 @@ class ColorService(private val persistentData: PersistentData, private val permi
         "Successfully cleared color roles from user."
     }
 
-    private fun Member.addRole(role: Role) = this.guild.addRoleToMember(this, role).complete()
-    private fun Member.removeRole(role: Role) = this.guild.removeRoleFromMember(this, role).complete()
+    private fun Member.addRole(role: Role) = this.guild.addRoleToMember(this, role).queue()
+    private fun Member.removeRole(role: Role) = this.guild.removeRoleFromMember(this, role).queue()
 
     private fun assignExistingRole(member: Member, roleName: String) {
         val role = findExistingRole(member, roleName)
@@ -84,7 +84,7 @@ class ColorService(private val persistentData: PersistentData, private val permi
         member.roles.find { it.id == roleId }?.let {
             member.removeRole(it)
             if(isEmpty)
-                it.delete().complete()
+                it.delete().queue()
         }
     }
 
@@ -114,7 +114,7 @@ class ColorService(private val persistentData: PersistentData, private val permi
                     .complete()
             return role
         } catch (ex: Exception) {
-            role.delete().complete()
+            role.delete().queue()
             throw Exception("Failed to reorder roles. This is likely due to hierarchy issues, try moving the bot role higher.")
         }
     }
