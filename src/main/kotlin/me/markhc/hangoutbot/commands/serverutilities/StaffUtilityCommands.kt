@@ -199,6 +199,7 @@ fun produceStaffUtilityCommands(persistentData: PersistentData,
                         } else {
                             if(!edited) {
                                 message.editMessage("```\n$data\n```").queue()
+                                edited = true
                             } else {
                                 event.channel.sendMessage("```\n$data\n```").queue()
                             }
