@@ -22,9 +22,6 @@ class RoleDeleteListener(private val persistentData: PersistentData) {
             if(this.muteRole == roleId) {
                 this.muteRole = ""
             }
-            if(this.muteRole == roleId) {
-                this.muteRole = ""
-            }
         }
     }
 }
