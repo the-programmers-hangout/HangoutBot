@@ -118,16 +118,18 @@ fun produceStaffUtilityCommands(persistentData: PersistentData,
 
             isChangingColor.add(member.idLong)
 
-            val response = when(roleName) {
-                is Either.Left -> colorService.setMemberColor(member, roleName.left, color)
-                is Either.Right -> colorService.setMemberColor(member, roleName.right, color)
-            }.fold(
-                    success = { it },
-                    failure = { it.message!! })
+            kotlin.runCatching {
+                when (roleName) {
+                    is Either.Left -> colorService.setMemberColor(member, roleName.left, color)
+                    is Either.Right -> colorService.setMemberColor(member, roleName.right, color)
+                }
+            }.onSuccess {
+                event.respond("Successfully assigned color")
+            }.onFailure {
+                event.respond(it.message!!)
+            }
 
             isChangingColor.remove(member.idLong)
-
-            event.respond(response)
         }
     }
 
@@ -138,10 +140,9 @@ fun produceStaffUtilityCommands(persistentData: PersistentData,
         execute { event ->
             val member = event.guild!!.getMember(event.author)!!
 
-            colorService.clearMemberColor(member).fold(
-                    success = { event.respond(it) },
-                    failure = { event.respond(it.message!!) }
-            )
+            colorService.clearMemberColor(member)
+
+            event.respond("Cleared user color")
         }
     }
 

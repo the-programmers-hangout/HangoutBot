@@ -1,8 +1,6 @@
 package me.markhc.hangoutbot.services
 
-import com.github.kittinunf.result.Result
 import me.aberrantfox.kjdautils.api.annotation.Service
-import me.aberrantfox.kjdautils.extensions.jda.fullName
 import me.aberrantfox.kjdautils.extensions.jda.getRoleByName
 import net.dv8tion.jda.api.entities.Guild
 import net.dv8tion.jda.api.entities.Member
@@ -11,28 +9,22 @@ import java.awt.Color
 
 @Service
 class ColorService(private val persistentData: PersistentData, private val permissionsService: PermissionsService) {
-    fun setMemberColor(member: Member, roleName: String, roleColor: Color?): Result<String, Exception> {
+    fun setMemberColor(member: Member, roleName: String, roleColor: Color?) {
         if (!isValidName(member, roleName)) {
-            return Result.Failure(Exception("The role name for regular users is only allowed ASCII characters ([\\x20-\\x7F])"))
+            throw Exception("The role name for regular users is only allowed ASCII characters ([\\x20-\\x7F])")
         }
 
-        return Result.of {
-            if (roleColor == null) {
-                assignExistingRole(member, roleName)
-            } else {
-                createAndAssignRole(member, roleName, roleColor)
-            }
-            "Successfully assigned role to user."
+        if (roleColor == null) {
+            assignExistingRole(member, roleName)
+        } else {
+            createAndAssignRole(member, roleName, roleColor)
         }
     }
 
-    fun clearMemberColor(member: Member) = Result.of<String, Exception> {
-        removeColorRole(member)
-        "Successfully cleared color roles from user."
-    }
+    fun clearMemberColor(member: Member) = removeColorRole(member)
 
-    private fun Member.addRole(role: Role) = this.guild.addRoleToMember(this, role).queue()
-    private fun Member.removeRole(role: Role) = this.guild.removeRoleFromMember(this, role).queue()
+    private fun Member.addRole(role: Role) = this.guild.addRoleToMember(this, role)
+    private fun Member.removeRole(role: Role) = this.guild.removeRoleFromMember(this, role)
 
     private fun assignExistingRole(member: Member, roleName: String) {
         val role = findExistingRole(member, roleName)
@@ -61,30 +53,35 @@ class ColorService(private val persistentData: PersistentData, private val permi
     }
 
     private fun addColorRole(member: Member, role: Role) {
-        persistentData.setGuildProperty(member.guild) {
-            if(assignedColorRoles[role.id] != null) {
-                assignedColorRoles[role.id]!!.add(member.id)
-            } else {
-                assignedColorRoles[role.id] = mutableListOf(member.id)
+        member.addRole(role).queue {
+            persistentData.setGuildProperty(member.guild) {
+                if (assignedColorRoles[role.id] != null) {
+                    assignedColorRoles[role.id]!!.add(member.id)
+                } else {
+                    assignedColorRoles[role.id] = mutableListOf(member.id)
+                }
             }
         }
-
-        member.addRole(role)
     }
 
     private fun removeColorRole(member: Member) {
-        val (roleId, isEmpty) = persistentData.setGuildProperty(member.guild) {
-            val result = assignedColorRoles.entries.find { it.value.remove(member.id) }?.let {
-                it.key to it.value.isEmpty()
-            }
-            assignedColorRoles.entries.removeIf { it.value.isEmpty() }
-            result
-        } ?: return
+        val assignedRoles = persistentData.getGuildProperty(member.guild) {
+            assignedColorRoles.entries.filter { it.value.contains(member.id) }.map { it.key to it.value.size }
+        }
 
-        member.roles.find { it.id == roleId }?.let {
-            member.removeRole(it)
-            if(isEmpty)
-                it.delete().queue()
+        assignedRoles.forEach { role ->
+            member.roles.find { it.id == role.first }?.let {
+                member.removeRole(it).queue()
+                // If this was the only user with the role, delete it
+                if(role.second == 1) {
+                    it.delete().queue()
+                }
+            }
+        }
+
+        persistentData.setGuildProperty(member.guild) {
+            assignedColorRoles.values.forEach { it.remove(member.id) }
+            assignedColorRoles.entries.removeIf { it.value.isEmpty() }
         }
     }
 
