@@ -6,6 +6,8 @@ import me.aberrantfox.kjdautils.api.dsl.embed
 import me.aberrantfox.kjdautils.extensions.jda.fullName
 import me.aberrantfox.kjdautils.internal.arguments.*
 import me.markhc.hangoutbot.arguments.LowerRankedMemberArg
+import me.markhc.hangoutbot.extensions.addRole
+import me.markhc.hangoutbot.extensions.removeRole
 import me.markhc.hangoutbot.extensions.requiredPermissionLevel
 import me.markhc.hangoutbot.services.*
 import net.dv8tion.jda.api.entities.*
@@ -54,12 +56,24 @@ fun produceStaffUtilityCommands(persistentData: PersistentData,
         description = "Lists the available grantable roles."
         requiredPermissionLevel = PermissionLevel.Staff
         requiresGuild = true
-        execute {
-            persistentData.getGuildProperty(it.guild!!) {
+        execute { event ->
+            persistentData.getGuildProperty(event.guild!!) {
                 if (grantableRoles.isEmpty()) {
-                    it.respond("No roles set")
+                    event.respond("No roles set")
                 } else {
-                    it.respond(buildRolesEmbed(it.guild!!, grantableRoles))
+                    val responseEmbed = embed {
+                        title = "Grantable roles"
+                        color = infoColor
+
+                        grantableRoles.entries.forEach {
+                            field {
+                                name = it.key
+                                value = it.value.joinToString("\n") { id -> event.guild!!.getRoleById(id)?.name ?: id }
+                            }
+                        }
+                    }
+
+                    event.respond(responseEmbed)
                 }
             }
         }
@@ -73,12 +87,14 @@ fun produceStaffUtilityCommands(persistentData: PersistentData,
             val guild = event.guild!!
 
             val roles = persistentData.getGuildProperty(guild) { grantableRoles }
-            val category = roles.asIterable().find { it.value.any { r -> r.equals(role.id, true) } }
 
-            category?.also { removeRoles(guild, member, *it.value.toTypedArray()) }
-                    ?.also { grantRole(guild, member, role) }
-                    ?.also { event.respond("Granted \"${role.name}\" to ${member.fullName()}") }
-                    ?: event.respond("\"${role.name}\" is not a grantable role")
+            if(roles.values.any { r -> r.contains(role.id) }) {
+                member.addRole(role).queue {
+                    event.respond("Granted ${role.name} to ${member.fullName()}")
+                }
+            } else {
+                event.respond("${role.name} is not a grantable role")
+            }
         }
     }
 
@@ -94,10 +110,11 @@ fun produceStaffUtilityCommands(persistentData: PersistentData,
             val isGrantable = roles.any { it.value.any { r -> r.equals(role.id, true) } }
 
             if(isGrantable) {
-                removeRoles(guild, member, role.id)
-                event.respond("Revoked \"${role.name}\" from ${member.fullName()}")
+                member.removeRole(role).queue {
+                    event.respond("Revoked ${role.name} from ${member.fullName()}")
+                }
             } else {
-                event.respond("\"${role.name}\" is not a grantable role")
+                event.respond("${role.name} is not a grantable role")
             }
         }
     }
@@ -174,7 +191,7 @@ fun produceStaffUtilityCommands(persistentData: PersistentData,
     }
 
     command("listroles") {
-        description = "List all the roles available in the guild. Number of users might not be accurate as it only includes cached users."
+        description = "List all the roles available in the guild."
         requiredPermissionLevel = PermissionLevel.Staff
         requiresGuild = true
         execute { event ->
@@ -194,7 +211,7 @@ fun produceStaffUtilityCommands(persistentData: PersistentData,
     }
 
     command("deleterole") {
-        description = "Deletes the given role or roles. HERE BE DRAGONS."
+        description = "Deletes the given role or roles."
         requiredPermissionLevel = PermissionLevel.GuildOwner
         requiresGuild = true
         execute(MultipleArg(RoleArg)) { event ->
@@ -214,31 +231,6 @@ private fun safeDeleteMessages(channel: TextChannel,
         channel.deleteMessages(messages).queue()
     } catch (e: IllegalArgumentException) { // some messages older than 2 weeks => can't mass delete
         messages.forEach { it.delete().queue() }
-    }
-}
-
-private fun removeRoles(guild: Guild, member: Member, vararg roles: String) {
-    // TODO: Perhaps we should check if the user has more than 1 color role
-    //       and remove all of them instead of just 1
-    member.roles.find { it.id in roles }?.let {
-        guild.removeRoleFromMember(member, it).queue()
-    }
-}
-
-private fun grantRole(guild: Guild, member: Member, role: Role) =
-        guild.addRoleToMember(member, role).queue()
-
-private fun buildRolesEmbed(guild: Guild, roles: Map<String, List<String>>): MessageEmbed {
-    return embed {
-        title = "Grantable roles"
-        color = infoColor
-
-        roles.iterator().forEach {
-            addInlineField(
-                    name = it.key,
-                    value = it.value.joinToString("\n") { id -> guild.getRoleById(id)?.name ?: id })
-        }
-
     }
 }
 

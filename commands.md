@@ -9,11 +9,18 @@
 | Commands    | Arguments                   | Description                                                                                |
 | ----------- | --------------------------- | ------------------------------------------------------------------------------------------ |
 | coin        | (Coins)                     | Flip a coin (or coins).                                                                    |
+| coin        | (Coins)                     | Flip a coin (or coins).                                                                    |
+| cowsay      | (Cow), (Message)            | Displays a cowsay with a given message. Run with no arguments to get a list of valid cows. |
 | cowsay      | (Cow), (Message)            | Displays a cowsay with a given message. Run with no arguments to get a list of valid cows. |
 | flip        | Choice 1 \| Choice 2 \| ... | Choose one of the given choices.                                                           |
+| flip        | Choice 1 \| Choice 2 \| ... | Choose one of the given choices.                                                           |
+| roll        | (Min), (Max)                | Rolls a number in a range (default 1-100)                                                  |
 | roll        | (Min), (Max)                | Rolls a number in a range (default 1-100)                                                  |
 | xkcd        | (Comic Number)              | Returns the XKCD comic number specified, or a random comic if you don't supply a number.   |
+| xkcd        | (Comic Number)              | Returns the XKCD comic number specified, or a random comic if you don't supply a number.   |
 | xkcd-latest | <none>                      | Grabs the latest XKCD comic.                                                               |
+| xkcd-latest | <none>                      | Grabs the latest XKCD comic.                                                               |
+| xkcd-search | Query                       | Returns a XKCD comic that most closely matches your query.                                 |
 | xkcd-search | Query                       | Returns a XKCD comic that most closely matches your query.                                 |
 
 ## Guild
@@ -52,18 +59,18 @@
 | setrolepermissions   | Role, Permission Level        | Sets the permission level of the given role                 |
 
 ## StaffUtility
-| Commands           | Arguments               | Description                                                                                                        |
-| ------------------ | ----------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| clearcolor         | <none>                  | Clears the current color role.                                                                                     |
-| deleterole         | Role...                 | Deletes the given role or roles. HERE BE DRAGONS.                                                                  |
-| echo               | (TextChannel), Text     | Echo a message to a channel.                                                                                       |
-| grant              | (Member), GrantableRole | Grants a role to a lower ranked member or yourself                                                                 |
-| listcolors         | <none>                  | Creates a role with the given name and color and assigns it to the user.                                           |
-| listgrantableroles | <none>                  | Lists the available grantable roles.                                                                               |
-| listroles          | <none>                  | List all the roles available in the guild. Number of users might not be accurate as it only includes cached users. |
-| nuke               | (TextChannel), Integer  | Delete 2 - 99 past messages in the given channel (default is the invoked channel)                                  |
-| revoke             | (Member), GrantableRole | Revokes a role from a lower ranked member or yourself                                                              |
-| setcolor           | (HexColor), RoleName    | Creates a role with the given name and color and assigns it to the user.                                           |
+| Commands           | Arguments               | Description                                                                       |
+| ------------------ | ----------------------- | --------------------------------------------------------------------------------- |
+| clearcolor         | <none>                  | Clears the current color role.                                                    |
+| deleterole         | Role...                 | Deletes the given role or roles.                                                  |
+| echo               | (TextChannel), Text     | Echo a message to a channel.                                                      |
+| grant              | (Member), GrantableRole | Grants a role to a lower ranked member or yourself                                |
+| listcolors         | <none>                  | Creates a role with the given name and color and assigns it to the user.          |
+| listgrantableroles | <none>                  | Lists the available grantable roles.                                              |
+| listroles          | <none>                  | List all the roles available in the guild.                                        |
+| nuke               | (TextChannel), Integer  | Delete 2 - 99 past messages in the given channel (default is the invoked channel) |
+| revoke             | (Member), GrantableRole | Revokes a role from a lower ranked member or yourself                             |
+| setcolor           | (HexColor), RoleName    | Creates a role with the given name and color and assigns it to the user.          |
 
 ## Utility
 | Commands         | Arguments  | Description                                                             |

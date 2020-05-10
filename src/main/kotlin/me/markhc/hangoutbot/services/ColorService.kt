@@ -2,6 +2,8 @@ package me.markhc.hangoutbot.services
 
 import me.aberrantfox.kjdautils.api.annotation.Service
 import me.aberrantfox.kjdautils.extensions.jda.getRoleByName
+import me.markhc.hangoutbot.extensions.addRole
+import me.markhc.hangoutbot.extensions.removeRole
 import net.dv8tion.jda.api.entities.Guild
 import net.dv8tion.jda.api.entities.Member
 import net.dv8tion.jda.api.entities.Role
@@ -22,9 +24,6 @@ class ColorService(private val persistentData: PersistentData, private val permi
     }
 
     fun clearMemberColor(member: Member) = removeColorRole(member)
-
-    private fun Member.addRole(role: Role) = this.guild.addRoleToMember(this, role)
-    private fun Member.removeRole(role: Role) = this.guild.removeRoleFromMember(this, role)
 
     private fun assignExistingRole(member: Member, roleName: String) {
         val role = findExistingRole(member, roleName)
@@ -96,6 +95,9 @@ class ColorService(private val persistentData: PersistentData, private val permi
     private fun createNewColorRole(guild: Guild, roleName: String, roleColor: Color): Role {
         val separator = getSeparatorRole(guild)
                 ?: throw Exception("Could not find separator role. The guild needs a role named \"Colors\" that marks where the new roles should be placed.")
+
+        if(guild.roles.any { it.name.equals(roleName, true) })
+            throw Exception("This guild already has a role by that name.")
 
         val role = guild.createCopyOfRole(separator)
                 .setName(roleName)
