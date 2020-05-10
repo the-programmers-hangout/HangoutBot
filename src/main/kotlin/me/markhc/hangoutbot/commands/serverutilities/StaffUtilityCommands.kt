@@ -138,7 +138,7 @@ fun produceStaffUtilityCommands(persistentData: PersistentData,
             commandsInExecution[guild.idLong] = true
 
             val message = event.channel.sendMessage("Working...").complete()
-            
+
             runCatching {
                 colorService.setMemberColor(member, roleName, color)
             }.onSuccess {
@@ -224,7 +224,7 @@ fun produceStaffUtilityCommands(persistentData: PersistentData,
         requiredPermissionLevel = PermissionLevel.GuildOwner
         requiresGuild = true
         execute(MultipleArg(RoleArg)) { event ->
-            event.args.first.forEach { role ->
+            event.args.first.distinct().forEach { role ->
                 role.delete().queue(
                         { event.respond("Deleted role ${role.name}") },
                         { event.respond("Failed to delete role ${role.name}") }
