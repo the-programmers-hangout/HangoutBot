@@ -11,6 +11,7 @@ import me.markhc.hangoutbot.extensions.removeRole
 import me.markhc.hangoutbot.extensions.requiredPermissionLevel
 import me.markhc.hangoutbot.services.*
 import net.dv8tion.jda.api.entities.*
+import java.awt.Color
 
 @Suppress("unused")
 @CommandSet("StaffUtility")
@@ -174,8 +175,15 @@ fun produceStaffUtilityCommands(persistentData: PersistentData,
             }
 
             val colorInfo = colorRoles.map {
-                event.guild!!.getRoleById(it.key)?.asMention ?: it.key
-            }.sortedBy { it.length }.joinToString("\n")
+                event.guild!!.getRoleById(it.key)
+            }.filterNotNull().sortedBy {
+                val rgb = it.color!!
+
+                val hsv = Color.RGBtoHSB(rgb.red, rgb.green, rgb.blue, null)
+
+                hsv[0]
+            }.joinToString("\n") { it.asMention }
+
 
             event.respond(embed {
                 title = "Currently used colors"
