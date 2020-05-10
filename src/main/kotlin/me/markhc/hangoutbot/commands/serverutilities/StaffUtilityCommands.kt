@@ -182,30 +182,13 @@ fun produceStaffUtilityCommands(persistentData: PersistentData,
 
             val message = event.channel.sendMessage("Working...").complete()
 
-            val list = guild.roles.map {
-                "${it.id} - ${it.name}: ${guild.getMembersWithRoles(it).size} users"
-            }
+            guild.retrieveMembers().thenRun {
+                val messages = buildRolelistMessages(guild)
 
-            val response = list.joinToString("\n")
-            if(response.length < 1990) {
-                message.editMessage("```\n$response\n```").queue()
-            } else {
-                var data = ""
-                var edited = false
-                for(i in 0..list.size) {
-                    if(data.length + list[i].length < 1990) {
-                        data += list[i] + '\n'
-                    } else {
-                        if(!edited) {
-                            message.editMessage("```\n$data\n```").queue()
-                            edited = true
-                        } else {
-                            event.channel.sendMessage("```\n$data\n```").queue()
-                        }
-                        data = list[i] + '\n'
-                    }
+                message.editMessage(messages.first()).queue()
+                for(i in 1 until messages.size) {
+                    event.channel.sendMessage(messages[i]).queue()
                 }
-                event.channel.sendMessage("```\n$data\n```").queue()
             }
         }
     }
@@ -256,5 +239,42 @@ private fun buildRolesEmbed(guild: Guild, roles: Map<String, List<String>>): Mes
                     value = it.value.joinToString("\n") { id -> guild.getRoleById(id)?.name ?: id })
         }
 
+    }
+}
+
+/**
+ *  @brief Builds the list of messages required to display the roles
+ *
+ *  The role list may be too big to send in a single message.
+ *  This function returns a list of messages that should be sent.
+ *
+ *  @param guild The target guild
+ *
+ *  @return The list of messages to send
+ */
+private fun buildRolelistMessages(guild: Guild): List<String> {
+    val list = guild.roles.map {
+        "${it.id} - ${it.name}: ${guild.getMembersWithRoles(it).size} users"
+    }
+
+    // Try joining them in a single message
+    val response = list.joinToString("\n")
+    return if(response.length < 1990) {
+        // If the length is less than the max, we good.
+        listOf("```\n$response\n```")
+    } else {
+        // Otherwise, break it into multiple messages
+        val result = mutableListOf<String>()
+        var data = "```\n"
+        for(i in list.indices) {
+            if(data.length + list[i].length < 1990) {
+                data += list[i] + '\n'
+            } else {
+                result.add("$data```")
+                data = "```\n${list[i]}\n"
+            }
+        }
+        result.add("$data```")
+        result
     }
 }
