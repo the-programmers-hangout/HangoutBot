@@ -136,15 +136,16 @@ fun produceStaffUtilityCommands(persistentData: PersistentData,
 
             commandsInExecution[guild.idLong] = true
 
-            runCatching {
-                colorService.setMemberColor(member, roleName, color)
-            }.onSuccess {
-                event.respond("Successfully assigned color $roleName")
-            }.onFailure {
-                event.respond(it.message!!)
+            event.channel.sendMessage("Working...").queue { message ->
+                runCatching {
+                    colorService.setMemberColor(member, roleName, color)
+                }.onSuccess {
+                    message.editMessage("Successfully assigned color $roleName").queue()
+                }.onFailure {
+                    message.editMessage(it.message!!).queue()
+                }
+                commandsInExecution[guild.idLong] = false
             }
-
-            commandsInExecution[guild.idLong] = false
         }
     }
 
