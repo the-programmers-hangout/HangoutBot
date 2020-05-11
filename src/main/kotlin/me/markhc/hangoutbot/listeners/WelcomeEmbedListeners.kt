@@ -16,7 +16,7 @@ import java.util.*
 
 @Suppress("unused")
 class WelcomeEmbedListeners(private val persistentData: PersistentData) {
-    private val welcomeMessages: MutableMap<Guild, Queue<Pair<Long, Long>>> = mutableMapOf()
+    private val welcomeMessages: MutableMap<Long, Queue<Pair<Long, Long>>> = mutableMapOf()
 
     @Subscribe
     fun onGuildMemberJoin(event: GuildMemberJoinEvent) {
@@ -64,14 +64,14 @@ class WelcomeEmbedListeners(private val persistentData: PersistentData) {
     }
 
     private fun addMessageToCache(user: User, msg: Message) {
-        if(welcomeMessages.containsKey(msg.guild)) {
-            welcomeMessages[msg.guild]!!.add(user.idLong to msg.idLong)
+        if(welcomeMessages.containsKey(msg.guild.idLong)) {
+            welcomeMessages[msg.guild.idLong]!!.add(user.idLong to msg.idLong)
         } else {
-            welcomeMessages[msg.guild] = EvictingQueue.create(200)
-            welcomeMessages[msg.guild]!!.add(user.idLong to msg.idLong)
+            welcomeMessages[msg.guild.idLong] = EvictingQueue.create(200)
+            welcomeMessages[msg.guild.idLong]!!.add(user.idLong to msg.idLong)
         }
     }
 
     private fun getCachedMessage(guild: Guild, user: User) =
-        welcomeMessages[guild]?.find { it.first == user.idLong }?.second
+        welcomeMessages[guild.idLong]?.find { it.first == user.idLong }?.second
 }
