@@ -52,8 +52,8 @@ fun producePermissionCommands(persistentData: PersistentData,
             }
 
             event.respond("${
-            commands.joinToString(", ") {
-                cmd -> cmd.names.joinToString()
+            commands.joinToString { 
+                it.names.first()
             }} ${if(commands.size > 1) "are" else "is"} now available to ${level}.")
         }
     }
@@ -65,8 +65,7 @@ fun producePermissionCommands(persistentData: PersistentData,
         execute(RoleArg, PermissionLevelArg) {
             val (role, level) = it.args
 
-            val authorLevel = permissionsService.getPermissionLevel(it.guild!!.getMember(it.author)!!)
-            if(level == PermissionLevel.BotOwner || (level == PermissionLevel.GuildOwner && authorLevel > PermissionLevel.GuildOwner)) {
+            if(level == PermissionLevel.BotOwner || level == PermissionLevel.GuildOwner) {
                 return@execute it.respondTimed("Sorry, cannot set permission level to $level.", TimeUnit.SECONDS.toMillis(10))
             }
 
@@ -100,7 +99,7 @@ fun producePermissionCommands(persistentData: PersistentData,
                 rolePermissions
             }
 
-            event.respond(embed{
+            event.respond(embed {
                 title = "Permission Levels"
                 listOf(PermissionLevel.Administrator, PermissionLevel.Staff).forEach {
                     val roles = perms.filter { p -> p.value == it }.map { it.key }
@@ -129,7 +128,7 @@ fun producePermissionCommands(persistentData: PersistentData,
                     field {
                         name = it.key
                         value = it.value.joinToString("\n") {
-                            "${it.names.joinToString(",")}: ${permissionsService.getCommandPermissionLevel(event.guild!!, it)} "
+                            "${it.names.first()}: ${permissionsService.getCommandPermissionLevel(event.guild!!, it)} "
                         }
                     }
                 }

@@ -9,11 +9,11 @@ import net.dv8tion.jda.api.entities.Member
 import net.dv8tion.jda.api.entities.User
 
 enum class PermissionLevel {
-    BotOwner,
-    GuildOwner,
-    Administrator,
+    Everyone,
     Staff,
-    Everyone
+    Administrator,
+    GuildOwner,
+    BotOwner
 }
 
 val DEFAULT_REQUIRED_PERMISSION = PermissionLevel.Everyone
@@ -35,7 +35,7 @@ class PermissionsService(private val persistentData: PersistentData, private val
     fun hasClearance(member: Member, requiredPermissionLevel: PermissionLevel): Boolean {
         val permissionLevel = getPermissionLevel(member)
 
-        return permissionLevel <= requiredPermissionLevel
+        return permissionLevel >= requiredPermissionLevel
     }
 
     private fun hasClearance(guild: Guild, user: User, requiredPermissionLevel: PermissionLevel): Boolean {
@@ -44,12 +44,15 @@ class PermissionsService(private val persistentData: PersistentData, private val
         return if(permissionLevel == null) {
             requiredPermissionLevel == PermissionLevel.Everyone
         } else {
-            permissionLevel <= requiredPermissionLevel
+            permissionLevel >= requiredPermissionLevel
         }
     }
 
     fun isCommandVisible(guild: Guild, user: User, command: Command) =
             hasClearance(guild, user, getCommandPermissionLevel(guild, command))
+
+    fun hasPermission(member: Member, level: PermissionLevel)
+            = getPermissionLevel(member) >= level
 
     fun getPermissionLevel(member: Member) =
             when {

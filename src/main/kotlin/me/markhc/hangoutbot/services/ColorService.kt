@@ -124,7 +124,7 @@ class ColorService(private val persistentData: PersistentData, private val permi
     private fun isValidName(member: Member, roleName: String): Boolean {
         // If user permissions are lower than Administrator, only allow
         // role names with ASCII characters
-        if (permissionsService.getPermissionLevel(member) > PermissionLevel.Administrator) {
+        if (!permissionsService.hasPermission(member, PermissionLevel.Administrator)) {
             if (!Regex("^[\\x20-\\x7F]+$").matches(roleName)) {
                 return false
             }

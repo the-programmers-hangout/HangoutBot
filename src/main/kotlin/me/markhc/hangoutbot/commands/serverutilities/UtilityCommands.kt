@@ -33,7 +33,7 @@ fun produceUtilityCommands(muteService: MuteService,
         description = "Displays when a user joined the guild"
         execute(MemberArg) {
             val member = it.args.first
-            
+
             it.respond("${member.fullName()} joined ${formatOffsetTime(member.timeJoined)}")
         }
     }
