@@ -38,7 +38,7 @@ fun producePermissionCommands(persistentData: PersistentData,
             val member = guild.getMember(event.author)!!
 
             val higherPerms = commands.find {
-                permissionsService.getCommandPermissionLevel(event.guild!!, it) < permissionsService.getPermissionLevel(member)
+                permissionsService.getCommandPermissionLevel(event.guild!!, it) > permissionsService.getPermissionLevel(member)
             }
 
             if(higherPerms != null) {

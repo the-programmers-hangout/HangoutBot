@@ -9,18 +9,11 @@
 | Commands    | Arguments                   | Description                                                                                |
 | ----------- | --------------------------- | ------------------------------------------------------------------------------------------ |
 | coin        | (Coins)                     | Flip a coin (or coins).                                                                    |
-| coin        | (Coins)                     | Flip a coin (or coins).                                                                    |
-| cowsay      | (Cow), (Message)            | Displays a cowsay with a given message. Run with no arguments to get a list of valid cows. |
 | cowsay      | (Cow), (Message)            | Displays a cowsay with a given message. Run with no arguments to get a list of valid cows. |
 | flip        | Choice 1 \| Choice 2 \| ... | Choose one of the given choices.                                                           |
-| flip        | Choice 1 \| Choice 2 \| ... | Choose one of the given choices.                                                           |
-| roll        | (Min), (Max)                | Rolls a number in a range (default 1-100)                                                  |
 | roll        | (Min), (Max)                | Rolls a number in a range (default 1-100)                                                  |
 | xkcd        | (Comic Number)              | Returns the XKCD comic number specified, or a random comic if you don't supply a number.   |
-| xkcd        | (Comic Number)              | Returns the XKCD comic number specified, or a random comic if you don't supply a number.   |
 | xkcd-latest | <none>                      | Grabs the latest XKCD comic.                                                               |
-| xkcd-latest | <none>                      | Grabs the latest XKCD comic.                                                               |
-| xkcd-search | Query                       | Returns a XKCD comic that most closely matches your query.                                 |
 | xkcd-search | Query                       | Returns a XKCD comic that most closely matches your query.                                 |
 
 ## Guild
