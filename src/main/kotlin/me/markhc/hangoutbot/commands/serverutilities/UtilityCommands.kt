@@ -13,6 +13,8 @@ import net.dv8tion.jda.api.entities.*
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
 import org.joda.time.format.DateTimeFormat
+import java.time.OffsetDateTime
+import java.time.format.DateTimeFormatter
 import java.util.concurrent.TimeUnit
 import kotlin.math.roundToLong
 
@@ -22,14 +24,17 @@ fun produceUtilityCommands(muteService: MuteService,
                            reminderService: ReminderService) = commands {
     val dateFormatter = DateTimeFormat.fullDateTime()
 
+    fun formatOffsetTime(time: OffsetDateTime): String {
+        val days = TimeUnit.MILLISECONDS.toDays(DateTime.now().millis - time.toInstant().toEpochMilli())
+        return "$days days ago. ${time.format(DateTimeFormatter.ISO_LOCAL_DATE)}"
+    }
+
     command("viewjoindate") {
         description = "Displays when a user joined the guild"
         execute(MemberArg) {
             val member = it.args.first
-
-            val joinTime = DateTime(member.timeJoined.toInstant().toEpochMilli(), DateTimeZone.UTC)
-
-            it.respond("${member.fullName()}'s join date: ${joinTime.toString(dateFormatter)}")
+            
+            it.respond("${member.fullName()} joined ${formatOffsetTime(member.timeJoined)}")
         }
     }
 
@@ -38,9 +43,7 @@ fun produceUtilityCommands(muteService: MuteService,
         execute(UserArg) {
             val user = it.args.first
 
-            val createdTime = DateTime(user.timeCreated.toInstant().toEpochMilli(), DateTimeZone.UTC)
-
-            it.respond("${user.fullName()}'s creation date: ${createdTime.toString(dateFormatter)}")
+            it.respond("${user.fullName()} created ${formatOffsetTime(user.timeCreated)}")
         }
     }
 
