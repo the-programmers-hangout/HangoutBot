@@ -58,6 +58,6 @@ class WelcomeEmbedListeners(private val persistentData: PersistentData) {
 
         val message = welcomeMessages.find { it.first == member.idLong }?.second ?: return
 
-        welcomeChannel.deleteMessageById(message)
+        welcomeChannel.deleteMessageById(message).queue()
     }
 }
