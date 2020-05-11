@@ -6,14 +6,17 @@ import me.aberrantfox.kjdautils.api.dsl.embed
 import me.aberrantfox.kjdautils.extensions.jda.fullName
 import me.markhc.hangoutbot.locale.Messages
 import me.markhc.hangoutbot.services.PersistentData
+import net.dv8tion.jda.api.entities.Guild
+import net.dv8tion.jda.api.entities.Member
 import net.dv8tion.jda.api.entities.Message
+import net.dv8tion.jda.api.entities.User
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent
 import java.util.*
 
 @Suppress("unused")
 class WelcomeEmbedListeners(private val persistentData: PersistentData) {
-    private val welcomeMessages: Queue<Pair<Long, Long>> = EvictingQueue.create(200)
+    private val welcomeMessages: MutableMap<Guild, Queue<Pair<Long, Long>>> = mutableMapOf()
 
     @Subscribe
     fun onGuildMemberJoin(event: GuildMemberJoinEvent) {
@@ -37,7 +40,7 @@ class WelcomeEmbedListeners(private val persistentData: PersistentData) {
 
         try {
             welcomeChannel?.sendMessage(welcomeEmbed)?.queue { message ->
-                welcomeMessages.add(event.user.idLong to message.idLong)
+                addMessageToCache(event.user, message)
                 message.addReaction("\uD83D\uDC4B").queue()
             }
         } catch (ex: Exception) {
@@ -47,17 +50,28 @@ class WelcomeEmbedListeners(private val persistentData: PersistentData) {
 
     @Subscribe
     fun onGuildMemberLeave(event: GuildMemberRemoveEvent) {
-        val (embeds, channel) = persistentData.getGuildProperty(event.guild) {
-            welcomeEmbeds to welcomeChannel
+        val channel = persistentData.getGuildProperty(event.guild) {
+            welcomeChannel
         }
 
-        if(!embeds || channel.isEmpty()) return;
+        if(channel.isEmpty()) return;
 
         val welcomeChannel = event.guild.getTextChannelById(channel) ?: return
-        val member = event.member ?: return
 
-        val message = welcomeMessages.find { it.first == member.idLong }?.second ?: return
+        val message = getCachedMessage(event.guild, event.user) ?: return
 
         welcomeChannel.deleteMessageById(message).queue()
     }
+
+    private fun addMessageToCache(user: User, msg: Message) {
+        if(welcomeMessages.containsKey(msg.guild)) {
+            welcomeMessages[msg.guild]!!.add(user.idLong to msg.idLong)
+        } else {
+            welcomeMessages[msg.guild] = EvictingQueue.create(200)
+            welcomeMessages[msg.guild]!!.add(user.idLong to msg.idLong)
+        }
+    }
+
+    private fun getCachedMessage(guild: Guild, user: User) =
+        welcomeMessages[guild]?.find { it.first == user.idLong }?.second
 }
