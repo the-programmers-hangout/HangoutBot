@@ -30,6 +30,7 @@ fun produceUtilityCommands(muteService: MuteService,
     }
 
     command("viewjoindate") {
+        requiresGuild = true
         description = "Displays when a user joined the guild"
         execute(MemberArg) {
             val member = it.args.first
@@ -57,7 +58,8 @@ fun produceUtilityCommands(muteService: MuteService,
     }
 
     command("selfmute") {
-        description = "Mute yourself for an amout of time. Default is 1 hour. Max is 24 hours."
+        requiresGuild = true
+        description = "Mute yourself for the given amount of time. A mute will stop you from talking in any channel. Default is 1 hour. Max is 24 hours."
         execute(TimeStringArg.makeOptional(3600.0)) {
             val (timeInSeconds) = it.args
 
@@ -70,13 +72,43 @@ fun produceUtilityCommands(muteService: MuteService,
             val millis = timeInSeconds.roundToLong() * 1000
 
             muteService.addMutedMember(member, millis).fold(
-                    success = { embed -> it.author.sendPrivateMessage(embed) },
+                    success = { embed ->
+                        it.message.addReaction("\uD83D\uDD07").queue()
+                        it.author.sendPrivateMessage(embed)
+                    },
+                    failure = { ex -> it.respond(ex.message!!) }
+            )
+        }
+    }
+
+    command("productivemute") {
+        requiresGuild = true
+        description = "Trying to be productive? Mute yourself for the specified amount of time. " +
+                "A productive mute will prevent you from talking in the social channels while still allowing " +
+                "the use of the language channels. Default is 1 hour. Max is 24 hours."
+        execute(TimeStringArg.makeOptional(3600.0)) {
+            val (timeInSeconds) = it.args
+
+            if(timeInSeconds > TimeUnit.HOURS.toSeconds(24)) {
+                return@execute it.respond("You cannot mute yourself for that long.")
+            }
+
+            val guild = it.guild!!
+            val member = guild.getMember(it.author)!!
+            val millis = timeInSeconds.roundToLong() * 1000
+
+            muteService.addSoftMutedMember(member, millis).fold(
+                    success = { embed ->
+                        it.message.addReaction("\uD83D\uDD07").queue()
+                        it.author.sendPrivateMessage(embed)
+                    },
                     failure = { ex -> it.respond(ex.message!!) }
             )
         }
     }
 
     command("remindme") {
+        requiresGuild = true
         description = "A command that'll remind you about something after the specified time."
         execute(TimeStringArg, SentenceArg) {
             val (timeInSeconds, sentence) = it.args

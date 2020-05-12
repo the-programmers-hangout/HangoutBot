@@ -83,27 +83,6 @@ fun buildServerInfoEmbed(guild: Guild) = embed {
     }
 }
 
-fun buildSelfMuteEmbed(member: Member, duration: Long) = embed {
-    title = "You have been muted"
-    description = "You have been muted as a result of invoking the selfmute command. " +
-            "This mute will be automatically removed when the time expires."
-    color = infoColor
-
-    field {
-        inline = true
-        name = "Duration"
-        value = duration.toShortDurationString()
-    }
-
-    field {
-        inline = true
-        name = "You will be unmuted on"
-        value = DateTime.now(DateTimeZone.UTC).plus(duration).toString(DateTimeFormat.fullDateTime())
-    }
-
-    thumbnail = member.user.avatarUrl
-}
-
 fun buildRoleInfoEmbed(role: Role) = embed {
     title = "Role information"
     color = role.color

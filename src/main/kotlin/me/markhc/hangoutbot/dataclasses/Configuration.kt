@@ -14,12 +14,14 @@ data class GuildConfiguration(val guildId: String = "",
                               var botChannel: String = "",
                               var loggingChannel: String = "",
                               var muteRole: String = "",
+                              var softMuteRole: String = "",
                               var totalCommandsExecuted: Int = 0,
                               val grantableRoles: MutableMap<String, MutableList<String>> = mutableMapOf(),
                               val rolePermissions: MutableMap<String, PermissionLevel> = mutableMapOf(),
                               val commandPermission: MutableMap<String, PermissionLevel> = mutableMapOf(),
                               val assignedColorRoles: MutableMap<String, MutableList<String>> = mutableMapOf(),
                               val mutedUsers: MutableList<MuteEntry> = mutableListOf(),
+                              val softMutedUsers: MutableList<MuteEntry> = mutableListOf(),
                               val reminders: MutableList<Reminder> = mutableListOf())
 
 data class MuteEntry(val user: String = "", val timeUntil: String = "")

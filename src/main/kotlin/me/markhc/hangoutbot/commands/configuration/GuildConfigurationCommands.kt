@@ -45,7 +45,20 @@ fun produceGuildConfigurationCommands(botConfiguration: BotConfiguration,
 
             persistentData.setGuildProperty(it.guild!!) { muteRole = role.id }
 
-            return@execute it.respond("Mute role set to \"${role.name}\"")
+            return@execute it.respond("Mute role set to ${role.name}")
+        }
+    }
+
+    command("setsoftmuterole") {
+        description = "Sets the role used to soft mute an user"
+        requiredPermissionLevel = PermissionLevel.Administrator
+        requiresGuild = true
+        execute(RoleArg) {
+            val (role) = it.args
+
+            persistentData.setGuildProperty(it.guild!!) { softMuteRole = role.id }
+
+            return@execute it.respond("Soft mute role set to ${role.name}")
         }
     }
 
@@ -72,7 +85,7 @@ fun produceGuildConfigurationCommands(botConfiguration: BotConfiguration,
                 welcomeEmbeds
             }
 
-            it.respond("Welcome embeds are now \"${if(enabled) "enabled" else "disabled"}\"")
+            it.respond("Welcome embeds are now ${if(enabled) "enabled" else "disabled"}")
         }
     }
 
