@@ -5,6 +5,7 @@ import me.aberrantfox.kjdautils.api.dsl.command.commands
 import me.aberrantfox.kjdautils.api.dsl.embed
 import me.aberrantfox.kjdautils.extensions.jda.fullName
 import me.aberrantfox.kjdautils.internal.arguments.*
+import me.markhc.hangoutbot.arguments.GuildRoleArg
 import me.markhc.hangoutbot.arguments.GuildTextChannelArg
 import me.markhc.hangoutbot.arguments.LowerRankedMemberArg
 import me.markhc.hangoutbot.extensions.addRole
@@ -224,7 +225,7 @@ fun produceStaffUtilityCommands(persistentData: PersistentData,
         description = "Deletes the given role or roles."
         requiredPermissionLevel = PermissionLevel.GuildOwner
         requiresGuild = true
-        execute(MultipleArg(RoleArg)) { event ->
+        execute(MultipleArg(GuildRoleArg)) { event ->
             event.args.first.distinct().forEach { role ->
                 role.delete().queue(
                         { event.respond("Deleted role ${role.name}") },

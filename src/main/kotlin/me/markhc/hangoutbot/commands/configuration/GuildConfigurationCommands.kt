@@ -2,19 +2,15 @@ package me.markhc.hangoutbot.commands.configuration
 
 import me.aberrantfox.kjdautils.api.annotation.CommandSet
 import me.aberrantfox.kjdautils.api.dsl.command.commands
-import me.aberrantfox.kjdautils.api.dsl.embed
 import me.aberrantfox.kjdautils.internal.arguments.WordArg
-import me.aberrantfox.kjdautils.internal.arguments.RoleArg
 import me.aberrantfox.kjdautils.internal.services.PersistenceService
+import me.markhc.hangoutbot.arguments.GuildRoleArg
 import me.markhc.hangoutbot.arguments.GuildTextChannelArg
 import me.markhc.hangoutbot.extensions.requiredPermissionLevel
 import me.markhc.hangoutbot.services.BotConfiguration
 import me.markhc.hangoutbot.services.PermissionLevel
 import me.markhc.hangoutbot.services.PersistentData
 import net.dv8tion.jda.api.entities.Activity
-import net.dv8tion.jda.api.entities.Guild
-import net.dv8tion.jda.api.entities.MessageEmbed
-import java.awt.Color
 
 @Suppress("unused")
 @CommandSet("Guild")
@@ -40,7 +36,7 @@ fun produceGuildConfigurationCommands(botConfiguration: BotConfiguration,
         description = "Sets the role used to mute an user"
         requiredPermissionLevel = PermissionLevel.Administrator
         requiresGuild = true
-        execute(RoleArg) {
+        execute(GuildRoleArg) {
             val (role) = it.args
 
             persistentData.setGuildProperty(it.guild!!) { muteRole = role.id }
@@ -53,7 +49,7 @@ fun produceGuildConfigurationCommands(botConfiguration: BotConfiguration,
         description = "Sets the role used to soft mute an user"
         requiredPermissionLevel = PermissionLevel.Administrator
         requiresGuild = true
-        execute(RoleArg) {
+        execute(GuildRoleArg) {
             val (role) = it.args
 
             persistentData.setGuildProperty(it.guild!!) { softMuteRole = role.id }
@@ -120,7 +116,7 @@ fun produceGuildConfigurationCommands(botConfiguration: BotConfiguration,
         description = "Adds a role to the list of grantable roles."
         requiredPermissionLevel = PermissionLevel.Administrator
         requiresGuild = true
-        execute(RoleArg, WordArg("Category")) { event ->
+        execute(GuildRoleArg, WordArg("Category")) { event ->
             val (role, category) = event.args
 
             persistentData.setGuildProperty(event.guild!!) {
@@ -147,7 +143,7 @@ fun produceGuildConfigurationCommands(botConfiguration: BotConfiguration,
         description = "Removes a role to the list of grantable roles."
         requiredPermissionLevel = PermissionLevel.Administrator
         requiresGuild = true
-        execute(RoleArg) { event ->
+        execute(GuildRoleArg) { event ->
             val (role) = event.args
 
             persistentData.setGuildProperty(event.guild!!) {
