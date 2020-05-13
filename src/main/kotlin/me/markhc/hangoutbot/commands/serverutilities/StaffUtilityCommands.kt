@@ -5,6 +5,7 @@ import me.aberrantfox.kjdautils.api.dsl.command.commands
 import me.aberrantfox.kjdautils.api.dsl.embed
 import me.aberrantfox.kjdautils.extensions.jda.fullName
 import me.aberrantfox.kjdautils.internal.arguments.*
+import me.markhc.hangoutbot.arguments.GuildTextChannelArg
 import me.markhc.hangoutbot.arguments.LowerRankedMemberArg
 import me.markhc.hangoutbot.extensions.addRole
 import me.markhc.hangoutbot.extensions.removeRole
@@ -20,7 +21,7 @@ fun produceStaffUtilityCommands(persistentData: PersistentData,
     command("echo") {
         requiredPermissionLevel = PermissionLevel.Staff
         description = "Echo a message to a channel."
-        execute(TextChannelArg.makeOptional { it.channel as TextChannel }, SentenceArg) {
+        execute(GuildTextChannelArg.makeOptional { it.channel as TextChannel }, SentenceArg) {
             val (target, message) = it.args
 
             target.sendMessage(message).queue()
@@ -30,7 +31,7 @@ fun produceStaffUtilityCommands(persistentData: PersistentData,
     command("nuke") {
         requiredPermissionLevel = PermissionLevel.Staff
         description = "Delete 2 - 99 past messages in the given channel (default is the invoked channel)"
-        execute(TextChannelArg.makeOptional { it.channel as TextChannel },
+        execute(GuildTextChannelArg.makeOptional { it.channel as TextChannel },
                 IntegerArg) {
             val (channel, amount) = it.args
 
@@ -232,12 +233,12 @@ fun produceStaffUtilityCommands(persistentData: PersistentData,
             }
         }
     }
-  
-  command("setslowmode") {
+
+    command("setslowmode") {
         description = "Set slowmode in a channel."
         requiredPermissionLevel = PermissionLevel.Staff
         requiresGuild = true
-        execute(TextChannelArg, TimeStringArg) {
+        execute(GuildTextChannelArg, TimeStringArg) {
             val (channel, interval) = it.args
 
             if (interval > 21600 || interval < 0) {
@@ -248,7 +249,7 @@ fun produceStaffUtilityCommands(persistentData: PersistentData,
 
             channel.manager.setSlowmode(interval.toInt()).queue {
                 res.respond("Successfully set slow-mode in channel ${channel
-                    .asMention} to ${interval.toInt()} seconds.")
+                        .asMention} to ${interval.toInt()} seconds.")
             }
         }
     }

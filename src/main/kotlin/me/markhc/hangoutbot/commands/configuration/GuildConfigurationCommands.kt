@@ -5,8 +5,8 @@ import me.aberrantfox.kjdautils.api.dsl.command.commands
 import me.aberrantfox.kjdautils.api.dsl.embed
 import me.aberrantfox.kjdautils.internal.arguments.WordArg
 import me.aberrantfox.kjdautils.internal.arguments.RoleArg
-import me.aberrantfox.kjdautils.internal.arguments.TextChannelArg
 import me.aberrantfox.kjdautils.internal.services.PersistenceService
+import me.markhc.hangoutbot.arguments.GuildTextChannelArg
 import me.markhc.hangoutbot.extensions.requiredPermissionLevel
 import me.markhc.hangoutbot.services.BotConfiguration
 import me.markhc.hangoutbot.services.PermissionLevel
@@ -45,7 +45,20 @@ fun produceGuildConfigurationCommands(botConfiguration: BotConfiguration,
 
             persistentData.setGuildProperty(it.guild!!) { muteRole = role.id }
 
-            return@execute it.respond("Mute role set to \"${role.name}\"")
+            return@execute it.respond("Mute role set to ${role.name}")
+        }
+    }
+
+    command("setsoftmuterole") {
+        description = "Sets the role used to soft mute an user"
+        requiredPermissionLevel = PermissionLevel.Administrator
+        requiresGuild = true
+        execute(RoleArg) {
+            val (role) = it.args
+
+            persistentData.setGuildProperty(it.guild!!) { softMuteRole = role.id }
+
+            return@execute it.respond("Soft mute role set to ${role.name}")
         }
     }
 
@@ -53,7 +66,7 @@ fun produceGuildConfigurationCommands(botConfiguration: BotConfiguration,
         description = "Sets the channel used to log executed commands"
         requiredPermissionLevel = PermissionLevel.Administrator
         requiresGuild = true
-        execute(TextChannelArg) {
+        execute(GuildTextChannelArg) {
             val (channel) = it.args
 
             persistentData.setGuildProperty(it.guild!!) { loggingChannel = channel.id }
@@ -72,7 +85,7 @@ fun produceGuildConfigurationCommands(botConfiguration: BotConfiguration,
                 welcomeEmbeds
             }
 
-            it.respond("Welcome embeds are now \"${if(enabled) "enabled" else "disabled"}\"")
+            it.respond("Welcome embeds are now ${if(enabled) "enabled" else "disabled"}")
         }
     }
 
@@ -80,7 +93,7 @@ fun produceGuildConfigurationCommands(botConfiguration: BotConfiguration,
         description = "Sets the channel used for welcome embeds."
         requiredPermissionLevel = PermissionLevel.Administrator
         requiresGuild = true
-        execute(TextChannelArg()) {
+        execute(GuildTextChannelArg) {
             val (channel) = it.args
 
             persistentData.setGuildProperty(it.guild!!) { welcomeChannel = channel.id }
@@ -157,7 +170,7 @@ fun produceGuildConfigurationCommands(botConfiguration: BotConfiguration,
         description = "Sets the bot channel. If set, the bot channel will be the only channel where the bot will accept commands from."
         requiresGuild = true
         requiredPermissionLevel = PermissionLevel.Administrator
-        execute(TextChannelArg.makeNullableOptional(null)) {
+        execute(GuildTextChannelArg.makeNullableOptional(null)) {
             val channel = it.args.first
 
             persistentData.setGuildProperty(it.guild!!) {

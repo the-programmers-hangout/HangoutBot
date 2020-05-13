@@ -26,6 +26,7 @@
 | setlogchannel       | TextChannel    | Sets the channel used to log executed commands                                                                  |
 | setmuterole         | Role           | Sets the role used to mute an user                                                                              |
 | setprefix           | Prefix         | Sets the bot prefix. THIS AFFECTS ALL GUILDS                                                                    |
+| setsoftmuterole     | Role           | Sets the role used to soft mute an user                                                                         |
 | setwelcomechannel   | TextChannel    | Sets the channel used for welcome embeds.                                                                       |
 | togglewelcome       | <none>         | Toggles the display of welcome messages upon guild user join.                                                   |
 
@@ -66,12 +67,13 @@
 | setcolor           | (HexColor), RoleName    | Creates a role with the given name and color and assigns it to the user.          |
 
 ## Utility
-| Commands         | Arguments  | Description                                                             |
-| ---------------- | ---------- | ----------------------------------------------------------------------- |
-| Help             | (Command)  | Display a help menu.                                                    |
-| avatar           | User       | Gets the avatar from the given user                                     |
-| remindme         | Time, Text | A command that'll remind you about something after the specified time.  |
-| selfmute         | (Time)     | Mute yourself for an amout of time. Default is 1 hour. Max is 24 hours. |
-| viewcreationdate | User       | Displays when a user was created                                        |
-| viewjoindate     | Member     | Displays when a user joined the guild                                   |
+| Commands         | Arguments  | Description                                                                                                                                                                                                                                |
+| ---------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Help             | (Command)  | Display a help menu.                                                                                                                                                                                                                       |
+| avatar           | User       | Gets the avatar from the given user                                                                                                                                                                                                        |
+| productivemute   | (Time)     | Trying to be productive? Mute yourself for the specified amount of time. A productive mute will prevent you from talking in the social channels while still allowing the use of the language channels. Default is 1 hour. Max is 24 hours. |
+| remindme         | Time, Text | A command that'll remind you about something after the specified time.                                                                                                                                                                     |
+| selfmute         | (Time)     | Mute yourself for the given amount of time. A mute will stop you from talking in any channel. Default is 1 hour. Max is 24 hours.                                                                                                          |
+| viewcreationdate | User       | Displays when a user was created                                                                                                                                                                                                           |
+| viewjoindate     | Member     | Displays when a user joined the guild                                                                                                                                                                                                      |
 
