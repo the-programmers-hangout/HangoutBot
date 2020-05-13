@@ -232,6 +232,26 @@ fun produceStaffUtilityCommands(persistentData: PersistentData,
             }
         }
     }
+  
+  command("setslowmode") {
+        description = "Set slowmode in a channel."
+        requiredPermissionLevel = PermissionLevel.Staff
+        requiresGuild = true
+        execute(TextChannelArg, TimeStringArg) {
+            val (channel, interval) = it.args
+
+            if (interval > 21600 || interval < 0) {
+                return@execute it.respond("Invalid time element passed.")
+            }
+
+            val res = it
+
+            channel.manager.setSlowmode(interval.toInt()).queue {
+                res.respond("Successfully set slow-mode in channel ${channel
+                    .asMention} to ${interval.toInt()} seconds.")
+            }
+        }
+    }
 }
 
 private fun safeDeleteMessages(channel: TextChannel,
