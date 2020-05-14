@@ -65,6 +65,7 @@
 | nuke               | (TextChannel), Integer  | Delete 2 - 99 past messages in the given channel (default is the invoked channel) |
 | revoke             | (Member), GrantableRole | Revokes a role from a lower ranked member or yourself                             |
 | setcolor           | (HexColor), RoleName    | Creates a role with the given name and color and assigns it to the user.          |
+| setslowmode        | TextChannel, Time       | Set slowmode in a channel.                                                        |
 
 ## Utility
 | Commands         | Arguments  | Description                                                                                                                                                                                                                                |

@@ -49,7 +49,7 @@ class MuteService(private val persistentData: PersistentData,
             this.softMutedUsers.add(MuteEntry(member.id, until.toString(dateFormatter)))
         }
 
-        applyMute(member, muteRole, ms)
+        applySoftMute(member, muteRole, ms)
 
         return@of buildSoftMuteEmbed(member, ms)
     }

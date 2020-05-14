@@ -63,7 +63,7 @@ fun produceUtilityCommands(muteService: MuteService,
         execute(TimeStringArg.makeOptional(3600.0)) {
             val (timeInSeconds) = it.args
 
-            if(timeInSeconds > TimeUnit.HOURS.toSeconds(24)) {
+            if(timeInSeconds < 10 || timeInSeconds > TimeUnit.HOURS.toSeconds(24)) {
                 return@execute it.respond("You cannot mute yourself for that long.")
             }
 
@@ -89,7 +89,7 @@ fun produceUtilityCommands(muteService: MuteService,
         execute(TimeStringArg.makeOptional(3600.0)) {
             val (timeInSeconds) = it.args
 
-            if(timeInSeconds > TimeUnit.HOURS.toSeconds(24)) {
+            if(timeInSeconds < 10 || timeInSeconds > TimeUnit.HOURS.toSeconds(24)) {
                 return@execute it.respond("You cannot mute yourself for that long.")
             }
 
@@ -113,7 +113,7 @@ fun produceUtilityCommands(muteService: MuteService,
         execute(TimeStringArg, SentenceArg) {
             val (timeInSeconds, sentence) = it.args
 
-            if(timeInSeconds > TimeUnit.DAYS.toSeconds(30)) {
+            if(timeInSeconds < 10 || timeInSeconds > TimeUnit.DAYS.toSeconds(30)) {
                 return@execute it.respond("You cannot set a reminder that far into the future.")
             }
 
