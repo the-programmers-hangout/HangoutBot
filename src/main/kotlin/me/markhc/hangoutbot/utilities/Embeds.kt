@@ -99,7 +99,7 @@ fun buildRoleInfoEmbed(role: Role) = embed {
     }
     field {
         name = "**Color**"
-        value = if(role.color != null) "**rgba(${role.color!!.red}, ${role.color!!.green}, ${role.color!!.blue}, ${role.color!!.alpha})**" else "None"
+        value = if(role.color != null) "**rgb(${role.color!!.red}, ${role.color!!.green}, ${role.color!!.blue})**" else "None"
         inline = true
     }
 
