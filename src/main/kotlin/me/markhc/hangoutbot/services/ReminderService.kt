@@ -25,11 +25,11 @@ class ReminderService(private val persistentData: PersistentData,
     private val dateFormatter = DateTimeFormat.fullDateTime()
 
     fun addReminder(member: Member, ms: Long, what: String): Result<String, Exception> {
-        val guild       = member.guild
+        val guild     = member.guild
         val reminders = persistentData.getGuildProperty(guild) { reminders }
 
-        if (reminders.any { it.user == member.id }) {
-            return Result.Failure(Exception("Sorry, you already have an active reminder!"))
+        if (reminders.count { it.user == member.id } > 10) {
+            return Result.Failure(Exception("Sorry, you cannot create any more reminders!"))
         }
 
         val until = DateTime.now(DateTimeZone.UTC).plus(ms)
@@ -41,6 +41,17 @@ class ReminderService(private val persistentData: PersistentData,
         launchReminder(guild, member.user, ms, what)
 
         return Result.Success("Got it, I'll remind you in ${ms.toLongDurationString()} about \"${what}\"")
+    }
+
+    fun listReminders(member: Member, fn: (Reminder) -> Unit): Int {
+        val guild     = member.guild
+        val reminders = persistentData.getGuildProperty(guild) { reminders }
+
+        val list = reminders.filter { it.user == member.id }
+
+        list.forEach(fn)
+
+        return list.size
     }
 
     fun launchTimers() {
