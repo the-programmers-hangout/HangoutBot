@@ -43,14 +43,11 @@ class ReminderService(private val persistentData: PersistentData,
     }
 
     fun listReminders(member: Member, fn: (Reminder) -> Unit): Int {
-        val guild     = member.guild
-        val reminders = persistentData.getGuildProperty(guild) { reminders }
+        val reminders = persistentData.getGuildProperty(member.guild) { reminders }
 
-        val list = reminders.filter { it.user == member.id }
-
-        list.forEach(fn)
-
-        return list.size
+        return reminders.filter { it.user == member.id }
+                .also { it.forEach(fn) }
+                .size
     }
 
     fun launchTimers() {

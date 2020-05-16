@@ -68,8 +68,11 @@ fun produceUtilityCommands(muteService: MuteService,
         execute(TimeStringArg.makeOptional(3600.0)) {
             val (timeInSeconds) = it.args
 
-            if(timeInSeconds < 10 || timeInSeconds > TimeUnit.HOURS.toSeconds(24)) {
-                return@execute it.respond("You cannot mute yourself for that long.")
+            if(timeInSeconds < 5) {
+                return@execute it.respond("You cannot mute yourself for less than 5 seconds.")
+            }
+            if(timeInSeconds > TimeUnit.HOURS.toSeconds(24)) {
+                return@execute it.respond("You cannot mute yourself for more than 24 hours.")
             }
 
             val guild = it.guild!!
@@ -94,8 +97,11 @@ fun produceUtilityCommands(muteService: MuteService,
         execute(TimeStringArg.makeOptional(3600.0)) {
             val (timeInSeconds) = it.args
 
-            if(timeInSeconds < 10 || timeInSeconds > TimeUnit.HOURS.toSeconds(24)) {
-                return@execute it.respond("You cannot mute yourself for that long.")
+            if(timeInSeconds < 5) {
+                return@execute it.respond("You cannot mute yourself for less than 5 seconds.")
+            }
+            if(timeInSeconds > TimeUnit.HOURS.toSeconds(24)) {
+                return@execute it.respond("You cannot mute yourself for more than 24 hours.")
             }
 
             val guild = it.guild!!
@@ -118,8 +124,11 @@ fun produceUtilityCommands(muteService: MuteService,
         execute(TimeStringArg, SentenceArg) {
             val (timeInSeconds, sentence) = it.args
 
-            if(timeInSeconds < 10 || timeInSeconds > TimeUnit.DAYS.toSeconds(30)) {
-                return@execute it.respond("You cannot set a reminder that far into the future.")
+            if(timeInSeconds < 5) {
+                return@execute it.respond("You cannot set a reminder for less than 5 seconds.")
+            }
+            if(timeInSeconds > TimeUnit.DAYS.toSeconds(30)) {
+                return@execute it.respond("You cannot set a reminder more than 30 days into the future.")
             }
 
             val guild = it.guild!!
@@ -165,12 +174,15 @@ fun produceUtilityCommands(muteService: MuteService,
 
             val messageEmbed = embed {
                 title = "Active reminders for ${member.fullName()}"
-                if(reminderService.listReminders(member) {
-                            field {
-                                name = it.timeUntil
-                                value = "```\n${if(it.what.length < 100) it.what else "${it.what.take(100)}..."}\n```"
-                            }
-                        } == 0) {
+
+                val count = reminderService.listReminders(member) {
+                    field {
+                        name = it.timeUntil
+                        value = "```\n${if(it.what.length < 100) it.what else "${it.what.take(100)}..."}\n```"
+                    }
+                }
+
+                if(count == 0) {
                     description = "There doesn't seem to be anything here."
                 }
             }
