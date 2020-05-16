@@ -27,11 +27,10 @@ import kotlin.math.roundToLong
 @CommandSet("Utility")
 fun produceUtilityCommands(muteService: MuteService,
                            reminderService: ReminderService) = commands {
-    val dateFormatter = DateTimeFormat.fullDateTime()
 
     fun formatOffsetTime(time: OffsetDateTime): String {
         val days = TimeUnit.MILLISECONDS.toDays(DateTime.now().millis - time.toInstant().toEpochMilli())
-        return "$days days ago. ${time.format(DateTimeFormatter.ISO_LOCAL_DATE)}"
+        return "$days days ago, on ${time.format(DateTimeFormatter.ISO_LOCAL_DATE)}"
     }
 
     command("viewjoindate") {
