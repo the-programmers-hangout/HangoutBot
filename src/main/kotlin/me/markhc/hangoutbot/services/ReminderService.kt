@@ -20,7 +20,6 @@ import net.dv8tion.jda.api.entities.*
 
 @Service
 class ReminderService(private val persistentData: PersistentData,
-                      private val persistenceService: PersistenceService,
                       private val discord: Discord) {
     private val dateFormatter = DateTimeFormat.fullDateTime()
 
@@ -38,7 +37,7 @@ class ReminderService(private val persistentData: PersistentData,
             reminders.add(Reminder(member.id, until.toString(dateFormatter), what))
         }
 
-        launchReminder(guild, member.user, ms, what)
+        launchReminder(guild.id, member.id, ms, what)
 
         return Result.Success("Got it, I'll remind you in ${ms.toLongDurationString()} about \"${what}\"")
     }
@@ -58,29 +57,25 @@ class ReminderService(private val persistentData: PersistentData,
         persistentData.getGuilds().forEach {
             if(it.reminders.isEmpty()) return@forEach
 
-            val guild = discord.jda.getGuildById(it.guildId)
-                    ?: return@forEach
-
             it.reminders.forEach { entry ->
-                val member = guild.getMemberById(entry.user)
-                if(member != null) {
-                    val millis = dateFormatter.parseMillis(entry.timeUntil) - DateTime.now().millis
-                    launchReminder(guild, member.user, millis, entry.what)
-                }
+                val millis = dateFormatter.parseMillis(entry.timeUntil) - DateTime.now().millis
+                launchReminder(it.guildId, entry.user, millis, entry.what)
             }
         }
     }
 
-    private fun launchReminder(guild: Guild, user: User, ms: Long, what: String) {
+    private fun launchReminder(guildId: String, userId: String, ms: Long, what: String) {
         GlobalScope.launch {
             delay(ms)
-            user.sendPrivateMessage(embed {
+
+            discord.getUserById(userId)?.sendPrivateMessage(embed {
                 title = "Reminder"
                 description = what
                 color = infoColor
             })
-            persistentData.setGuildProperty(guild) {
-                reminders.removeIf { user.id == it.user }
+
+            persistentData.setGuildProperty(guildId) {
+                reminders.removeIf { it.user == userId }
             }
         }
     }

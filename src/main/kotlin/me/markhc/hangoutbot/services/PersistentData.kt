@@ -14,10 +14,12 @@ class PersistentData(private val configuration: Configuration, private val persi
         return fn(configuration).also { persistenceService.save(configuration) }
     }
 
-    fun <R> getProperty(fn: Configuration.() -> R) =
-            configuration.let(fn)
-
     fun <R> setGuildProperty(guild: Guild, fn: GuildConfiguration.() -> R): R {
+        val config = getGuildConfig(guild)
+        return fn(config).also { persistenceService.save(configuration) }
+    }
+
+    fun <R> setGuildProperty(guild: String, fn: GuildConfiguration.() -> R): R {
         val config = getGuildConfig(guild)
         return fn(config).also { persistenceService.save(configuration) }
     }
