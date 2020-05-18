@@ -12,7 +12,7 @@ import me.markhc.hangoutbot.services.PersistentData
 fun produceGuildConfigurationCommands(persistentData: PersistentData) = commands {
     command("setprefix") {
         description = "Sets the bot prefix."
-        requiredPermissionLevel = PermissionLevel.BotOwner
+        requiredPermissionLevel = PermissionLevel.GuildOwner
         requiresGuild = true
         execute(AnyArg("Prefix")) {
             persistentData.setGuildProperty(it.guild!!) {
