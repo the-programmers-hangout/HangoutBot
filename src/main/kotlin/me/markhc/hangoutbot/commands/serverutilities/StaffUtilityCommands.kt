@@ -43,9 +43,8 @@ fun produceStaffUtilityCommands(persistentData: PersistentData,
             val sameChannel = it.channel.id == channel.id
 
             channel.history.retrievePast(amount + if (sameChannel) 1 else 0).queue { past ->
-                val noSinglePrefixMsg = past.drop(if (sameChannel) 1 else 0)
 
-                safeDeleteMessages(channel, noSinglePrefixMsg)
+                safeDeleteMessages(channel, past)
 
                 channel.sendMessage("Be nice. No spam.").queue()
 
@@ -214,7 +213,7 @@ fun produceStaffUtilityCommands(persistentData: PersistentData,
 
             guild.retrieveMembers().thenRun {
                 val messages = buildRolelistMessages(guild,
-                        (event.args.first ?: "").toRegex(RegexOption.IGNORE_CASE))
+                        (event.args.first ?: "").toRegex(setOf(RegexOption.IGNORE_CASE, RegexOption.MULTILINE)))
 
                 if(messages.isNotEmpty()) {
                     message.editMessage(messages.first()).queue()
