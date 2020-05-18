@@ -34,7 +34,7 @@ class ReminderService(private val persistentData: PersistentData,
 
         launchReminder(user.id, ms, what)
 
-        return Result.Success("Got it, I'll remind you in ${ms.toLongDurationString()} about \"${what}\"")
+        return Result.Success("Got it, I'll remind you in ${ms.toLongDurationString()} about that.")
     }
 
     fun listReminders(user: User, fn: (Reminder) -> Unit): Int {
