@@ -5,8 +5,6 @@ import me.aberrantfox.kjdautils.api.dsl.command.commands
 import me.aberrantfox.kjdautils.api.dsl.embed
 import me.aberrantfox.kjdautils.extensions.jda.fullName
 import me.aberrantfox.kjdautils.internal.arguments.*
-import me.markhc.hangoutbot.arguments.GuildRoleArg
-import me.markhc.hangoutbot.arguments.GuildTextChannelArg
 import me.markhc.hangoutbot.arguments.LowerRankedMemberArg
 import me.markhc.hangoutbot.extensions.addRole
 import me.markhc.hangoutbot.extensions.removeRole
@@ -20,9 +18,10 @@ import java.awt.Color
 fun produceStaffUtilityCommands(persistentData: PersistentData,
                                 colorService: ColorService) = commands {
     command("echo") {
-        requiredPermissionLevel = PermissionLevel.Staff
         description = "Echo a message to a channel."
-        execute(GuildTextChannelArg.makeOptional { it.channel as TextChannel }, SentenceArg) {
+        requiredPermissionLevel = PermissionLevel.Staff
+        requiresGuild = true
+        execute(TextChannelArg.makeOptional { it.channel as TextChannel }, EveryArg) {
             val (target, message) = it.args
 
             target.sendMessage(message).queue()
@@ -30,9 +29,10 @@ fun produceStaffUtilityCommands(persistentData: PersistentData,
     }
 
     command("nuke") {
-        requiredPermissionLevel = PermissionLevel.Staff
         description = "Delete 2 - 99 past messages in the given channel (default is the invoked channel)"
-        execute(GuildTextChannelArg.makeOptional { it.channel as TextChannel },
+        requiredPermissionLevel = PermissionLevel.Staff
+        requiresGuild = true
+        execute(TextChannelArg.makeOptional { it.channel as TextChannel },
                 IntegerArg) {
             val (channel, amount) = it.args
 
@@ -41,12 +41,9 @@ fun produceStaffUtilityCommands(persistentData: PersistentData,
             }
 
             val sameChannel = it.channel.id == channel.id
-            val singlePrefixInvocationDeleted = it.stealthInvocation
 
             channel.history.retrievePast(amount + if (sameChannel) 1 else 0).queue { past ->
-                val noSinglePrefixMsg = past.drop(if (sameChannel && singlePrefixInvocationDeleted) 1 else 0)
-
-                safeDeleteMessages(channel, noSinglePrefixMsg)
+                safeDeleteMessages(channel, past)
 
                 channel.sendMessage("Be nice. No spam.").queue()
 
@@ -83,10 +80,11 @@ fun produceStaffUtilityCommands(persistentData: PersistentData,
     }
 
     command("grant") {
-        requiredPermissionLevel = PermissionLevel.Staff
         description = "Grants a role to a lower ranked member or yourself"
+        requiredPermissionLevel = PermissionLevel.Staff
+        requiresGuild = true
         execute(LowerRankedMemberArg("Member").makeOptional { it.guild!!.getMember(it.author)!! },
-                GuildRoleArg("GrantableRole")) { event ->
+                RoleArg("GrantableRole")) { event ->
             val (member, role) = event.args
             val guild = event.guild!!
 
@@ -103,9 +101,11 @@ fun produceStaffUtilityCommands(persistentData: PersistentData,
     }
 
     command("revoke") {
-        requiredPermissionLevel = PermissionLevel.Staff
         description = "Revokes a role from a lower ranked member or yourself"
-        execute(LowerRankedMemberArg("Member").makeOptional { it.guild!!.getMember(it.author)!! }, GuildRoleArg("GrantableRole")) { event ->
+        requiredPermissionLevel = PermissionLevel.Staff
+        requiresGuild = true
+        execute(LowerRankedMemberArg("Member").makeOptional { it.guild!!.getMember(it.author)!! },
+                RoleArg("GrantableRole")) { event ->
             val (member, role) = event.args
             val guild = event.guild!!
 
@@ -129,7 +129,7 @@ fun produceStaffUtilityCommands(persistentData: PersistentData,
         description = "Creates a role with the given name and color and assigns it to the user."
         requiredPermissionLevel = PermissionLevel.Staff
         requiresGuild = true
-        execute(HexColorArg("HexColor").makeNullableOptional(), SentenceArg("RoleName")) { event ->
+        execute(HexColorArg("HexColor").makeNullableOptional(), EveryArg("RoleName")) { event ->
             val (color, roleName) = event.args
 
             val guild = event.guild!!
@@ -171,10 +171,10 @@ fun produceStaffUtilityCommands(persistentData: PersistentData,
         requiredPermissionLevel = PermissionLevel.Staff
         requiresGuild = true
         execute { event ->
-            val colorRoles = persistentData.getGuildProperty(event.guild!!) { assignedColorRoles }
+            val (colorRoles, prefix) = persistentData.getGuildProperty(event.guild!!) { assignedColorRoles to prefix }
 
             if (colorRoles.isEmpty()) {
-                return@execute event.respond("No colors set. For more information, see `${event.discord.configuration.prefix}help setcolor`")
+                return@execute event.respond("No colors set. For more information, see `${prefix}help setcolor`")
             }
 
             val colorInfo = colorRoles.map {
@@ -206,17 +206,22 @@ fun produceStaffUtilityCommands(persistentData: PersistentData,
         description = "List all the roles available in the guild."
         requiredPermissionLevel = PermissionLevel.Staff
         requiresGuild = true
-        execute { event ->
+        execute(EveryArg("GrepRegex").makeNullableOptional(null)) { event ->
             val guild = event.guild!!
-
             val message = event.channel.sendMessage("Working...").complete()
 
             guild.retrieveMembers().thenRun {
-                val messages = buildRolelistMessages(guild)
+                val messages = buildRolelistMessages(guild,
+                        (event.args.first ?: "").toRegex(setOf(RegexOption.IGNORE_CASE, RegexOption.MULTILINE)))
 
-                message.editMessage(messages.first()).queue()
-                for(i in 1 until messages.size) {
-                    event.channel.sendMessage(messages[i]).queue()
+                if(messages.isNotEmpty()) {
+                    message.editMessage(messages.first()).queue()
+
+                    for (i in 1 until messages.size) {
+                        event.channel.sendMessage(messages[i]).queue()
+                    }
+                } else {
+                    message.editMessage("No results").queue()
                 }
             }
         }
@@ -226,7 +231,7 @@ fun produceStaffUtilityCommands(persistentData: PersistentData,
         description = "Deletes the given role or roles."
         requiredPermissionLevel = PermissionLevel.GuildOwner
         requiresGuild = true
-        execute(MultipleArg(GuildRoleArg)) { event ->
+        execute(MultipleArg(RoleArg)) { event ->
             event.args.first.distinct().forEach { role ->
                 role.delete().queue(
                         { event.respond("Deleted role ${role.name}") },
@@ -240,7 +245,7 @@ fun produceStaffUtilityCommands(persistentData: PersistentData,
         description = "Set slowmode in a channel."
         requiredPermissionLevel = PermissionLevel.Staff
         requiresGuild = true
-        execute(GuildTextChannelArg, TimeStringArg) {
+        execute(TextChannelArg, TimeArg) {
             val (channel, interval) = it.args
 
             if (interval > 21600 || interval < 0) {
@@ -276,29 +281,36 @@ private fun safeDeleteMessages(channel: TextChannel,
  *
  *  @return The list of messages to send
  */
-private fun buildRolelistMessages(guild: Guild): List<String> {
+private fun buildRolelistMessages(guild: Guild, regex: Regex): List<String> {
     val list = guild.roles.map {
-        "${it.id} - ${it.name}: ${guild.getMembersWithRoles(it).size} users"
-    }
+        "${it.id} (${String.format("#%02x%02x%02x", it.color?.red?:0, it.color?.green?:0, it.color?.blue?:0)}) - ${it.name}: ${guild.getMembersWithRoles(it).size} users"
+    }.filter { regex.containsMatchIn(it) }
 
     // Try joining them in a single message
     val response = list.joinToString("\n")
-    return if(response.length < 1990) {
-        // If the length is less than the max, we good.
-        listOf("```\n$response\n```")
-    } else {
-        // Otherwise, break it into multiple messages
-        val result = mutableListOf<String>()
-        var data = "```\n"
-        for(i in list.indices) {
-            if(data.length + list[i].length < 1990) {
-                data += list[i] + '\n'
-            } else {
-                result.add("$data```")
-                data = "```\n${list[i]}\n"
-            }
+
+    return when {
+        response.isEmpty() -> {
+            listOf()
         }
-        result.add("$data```")
-        result
+        response.length < 1990 -> {
+            // If the length is less than the max, we good.
+            listOf("```\n$response\n```")
+        }
+        else -> {
+            // Otherwise, break it into multiple messages
+            val result = mutableListOf<String>()
+            var data = "```\n"
+            for(i in list.indices) {
+                if(data.length + list[i].length < 1990) {
+                    data += list[i] + '\n'
+                } else {
+                    result.add("$data```")
+                    data = "```\n${list[i]}\n"
+                }
+            }
+            result.add("$data```")
+            result
+        }
     }
 }

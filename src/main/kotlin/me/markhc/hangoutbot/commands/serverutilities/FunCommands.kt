@@ -4,9 +4,9 @@ import com.github.ricksbrown.cowsay.Cowsay
 import me.aberrantfox.kjdautils.api.annotation.CommandSet
 import me.aberrantfox.kjdautils.api.dsl.command.commands
 import me.aberrantfox.kjdautils.internal.arguments.IntegerArg
-import me.aberrantfox.kjdautils.internal.arguments.SentenceArg
+import me.aberrantfox.kjdautils.internal.arguments.EveryArg
 import me.aberrantfox.kjdautils.internal.arguments.SplitterArg
-import me.aberrantfox.kjdautils.internal.arguments.WordArg
+import me.aberrantfox.kjdautils.internal.arguments.AnyArg
 import me.markhc.hangoutbot.locale.Messages
 import me.markhc.hangoutbot.utilities.XKCD
 import kotlin.random.Random
@@ -57,7 +57,7 @@ fun produceFunCommands() = commands {
 
     command("cowsay") {
         description = "Displays a cowsay with a given message. Run with no arguments to get a list of valid cows."
-        execute(WordArg("Cow").makeOptional(""), SentenceArg("Message").makeOptional("")) {
+        execute(AnyArg("Cow").makeOptional(""), EveryArg("Message").makeOptional("")) {
             val (arg0, arg1) = it.args
 
             it.respond(when {
@@ -99,7 +99,7 @@ fun produceFunCommands() = commands {
 
     command("xkcd-search") {
         description = "Returns a XKCD comic that most closely matches your query."
-        execute(SentenceArg("Query")) {
+        execute(EveryArg("Query")) {
             val (what) = it.args
 
             val result = XKCD.search(what) ?: return@execute it.respond("Sorry, the search failed.")

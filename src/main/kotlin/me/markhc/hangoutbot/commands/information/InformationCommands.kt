@@ -4,8 +4,8 @@ import me.aberrantfox.kjdautils.api.annotation.CommandSet
 import me.aberrantfox.kjdautils.api.dsl.command.commands
 import me.aberrantfox.kjdautils.api.dsl.embed
 import me.aberrantfox.kjdautils.api.getInjectionObject
+import me.aberrantfox.kjdautils.internal.arguments.RoleArg
 import me.aberrantfox.kjdautils.internal.arguments.UserArg
-import me.markhc.hangoutbot.arguments.GuildRoleArg
 import me.markhc.hangoutbot.dataclasses.Configuration
 import me.markhc.hangoutbot.services.BotStatsService
 import me.markhc.hangoutbot.services.Properties
@@ -65,7 +65,7 @@ fun produceInformationCommands(botStats: BotStatsService, config: Configuration)
     command("roleinfo") {
         description = "Displays information about the given role."
         requiresGuild = true
-        execute(GuildRoleArg) {
+        execute(RoleArg) {
             it.respond(buildRoleInfoEmbed(it.args.first))
         }
     }

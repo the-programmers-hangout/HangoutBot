@@ -5,7 +5,7 @@ import me.aberrantfox.kjdautils.api.dsl.command.commands
 import me.aberrantfox.kjdautils.api.dsl.embed
 import me.aberrantfox.kjdautils.internal.arguments.CommandArg
 import me.aberrantfox.kjdautils.internal.arguments.MultipleArg
-import me.markhc.hangoutbot.arguments.GuildRoleArg
+import me.aberrantfox.kjdautils.internal.arguments.RoleArg
 import me.markhc.hangoutbot.arguments.PermissionLevelArg
 import me.markhc.hangoutbot.extensions.requiredPermissionLevel
 import me.markhc.hangoutbot.services.PermissionLevel
@@ -17,8 +17,8 @@ import java.util.concurrent.TimeUnit
 fun producePermissionCommands(persistentData: PersistentData,
                               permissionsService: PermissionsService) = commands {
     command("getpermission") {
-        requiredPermissionLevel = PermissionLevel.Staff
         description = "Returns the required permission level for the given command"
+        requiredPermissionLevel = PermissionLevel.Staff
         requiresGuild = true
         execute(CommandArg) {
             val (cmd) = it.args
@@ -28,8 +28,8 @@ fun producePermissionCommands(persistentData: PersistentData,
     }
 
     command("setpermission") {
-        requiredPermissionLevel = PermissionLevel.Administrator
         description = "Sets the required permission level for the given commands"
+        requiredPermissionLevel = PermissionLevel.Administrator
         requiresGuild = true
         execute(MultipleArg(CommandArg, "Commands..."), PermissionLevelArg) { event ->
             val (commands, level) = event.args
@@ -62,7 +62,7 @@ fun producePermissionCommands(persistentData: PersistentData,
         description = "Sets the permission level of the given role"
         requiredPermissionLevel = PermissionLevel.GuildOwner
         requiresGuild = true
-        execute(GuildRoleArg, PermissionLevelArg) {
+        execute(RoleArg, PermissionLevelArg) {
             val (role, level) = it.args
 
             if(level == PermissionLevel.BotOwner || level == PermissionLevel.GuildOwner) {
@@ -81,7 +81,7 @@ fun producePermissionCommands(persistentData: PersistentData,
         description = "Gets the permission level of the given role"
         requiredPermissionLevel = PermissionLevel.GuildOwner
         requiresGuild = true
-        execute(GuildRoleArg) {
+        execute(RoleArg) {
             val (role) = it.args
 
             persistentData.getGuildProperty(it.guild!!) {

@@ -3,9 +3,7 @@ package me.markhc.hangoutbot.services
 import me.aberrantfox.kjdautils.api.annotation.Service
 import me.aberrantfox.kjdautils.discord.Discord
 import me.aberrantfox.kjdautils.extensions.jda.fullName
-import me.markhc.hangoutbot.dataclasses.Configuration
 import net.dv8tion.jda.api.entities.Activity
-import java.awt.Color
 
 @Service
 class StartupService(properties: Properties,
@@ -13,16 +11,20 @@ class StartupService(properties: Properties,
                      botStats: BotStatsService,
                      discord: Discord,
                      permissionsService: PermissionsService,
+                     persistentData: PersistentData,
                      muteService: MuteService,
                      reminderService: ReminderService) {
     init {
         muteService.launchTimers()
         reminderService.launchTimers()
 
-        discord.jda.presence.activity = Activity.playing("${config.prefix}help for more information")
-
         with(discord.configuration) {
-            prefix = config.prefix
+            prefix {
+                if(it.guild == null)
+                    config.prefix
+                else
+                    persistentData.getGuildProperty(it.guild!!) { prefix }
+            }
             mentionEmbed {
                 val channel = it.channel
                 val self = channel.jda.selfUser
@@ -36,7 +38,10 @@ class StartupService(properties: Properties,
                 }
                 field {
                     name = "Prefix"
-                    value = config.prefix
+                    value = if(it.guild == null)
+                        config.prefix
+                    else
+                        persistentData.getGuildProperty(it.guild!!) { prefix }
                     inline = true
                 }
                 field {
@@ -68,8 +73,13 @@ class StartupService(properties: Properties,
                     }
                 }
             }
+
             visibilityPredicate predicate@{
-                return@predicate permissionsService.isCommandVisible(it.guild!!, it.user, it.command)
+                return@predicate if(it.guild == null && it.command.requiresGuild) {
+                    false
+                } else {
+                    permissionsService.isCommandVisible(it.guild, it.user, it.command)
+                }
             }
         }
     }

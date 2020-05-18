@@ -25,7 +25,7 @@
 | setbotchannel       | (TextChannel)  | Sets the bot channel. If set, the bot channel will be the only channel where the bot will accept commands from. |
 | setlogchannel       | TextChannel    | Sets the channel used to log executed commands                                                                  |
 | setmuterole         | Role           | Sets the role used to mute an user                                                                              |
-| setprefix           | Prefix         | Sets the bot prefix. THIS AFFECTS ALL GUILDS                                                                    |
+| setprefix           | Prefix         | Sets the bot prefix.                                                                                            |
 | setsoftmuterole     | Role           | Sets the role used to soft mute an user                                                                         |
 | setwelcomechannel   | TextChannel    | Sets the channel used for welcome embeds.                                                                       |
 | togglewelcome       | <none>         | Toggles the display of welcome messages upon guild user join.                                                   |
@@ -61,7 +61,7 @@
 | grant              | (Member), GrantableRole | Grants a role to a lower ranked member or yourself                                |
 | listcolors         | <none>                  | Creates a role with the given name and color and assigns it to the user.          |
 | listgrantableroles | <none>                  | Lists the available grantable roles.                                              |
-| listroles          | <none>                  | List all the roles available in the guild.                                        |
+| listroles          | (GrepRegex)             | List all the roles available in the guild.                                        |
 | nuke               | (TextChannel), Integer  | Delete 2 - 99 past messages in the given channel (default is the invoked channel) |
 | revoke             | (Member), GrantableRole | Revokes a role from a lower ranked member or yourself                             |
 | setcolor           | (HexColor), RoleName    | Creates a role with the given name and color and assigns it to the user.          |
@@ -71,12 +71,11 @@
 | Commands         | Arguments  | Description                                                                                                                                                                                                                                |
 | ---------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | Help             | (Command)  | Display a help menu.                                                                                                                                                                                                                       |
-| avatar           | User       | Gets the avatar from the given user                                                                                                                                                                                                        |
-| listreminders    | <none>     | List your active reminders                                                                                                                                                                                                                 |
+| avatar           | (User)     | Gets the avatar from the given user                                                                                                                                                                                                        |
 | listreminders    | <none>     | List your active reminders                                                                                                                                                                                                                 |
 | productivemute   | (Time)     | Trying to be productive? Mute yourself for the specified amount of time. A productive mute will prevent you from talking in the social channels while still allowing the use of the language channels. Default is 1 hour. Max is 24 hours. |
 | remindme         | Time, Text | A command that'll remind you about something after the specified time.                                                                                                                                                                     |
 | selfmute         | (Time)     | Mute yourself for the given amount of time. A mute will stop you from talking in any channel. Default is 1 hour. Max is 24 hours.                                                                                                          |
-| viewcreationdate | User       | Displays when a user was created                                                                                                                                                                                                           |
-| viewjoindate     | Member     | Displays when a user joined the guild                                                                                                                                                                                                      |
+| viewcreationdate | (User)     | Displays when a user was created                                                                                                                                                                                                           |
+| viewjoindate     | (Member)   | Displays when a user joined the guild                                                                                                                                                                                                      |
 
