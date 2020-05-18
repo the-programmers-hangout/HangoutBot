@@ -208,17 +208,22 @@ fun produceStaffUtilityCommands(persistentData: PersistentData,
         description = "List all the roles available in the guild."
         requiredPermissionLevel = PermissionLevel.Staff
         requiresGuild = true
-        execute { event ->
+        execute(EveryArg("GrepRegex").makeNullableOptional(null)) { event ->
             val guild = event.guild!!
-
             val message = event.channel.sendMessage("Working...").complete()
 
             guild.retrieveMembers().thenRun {
-                val messages = buildRolelistMessages(guild)
+                val messages = buildRolelistMessages(guild,
+                        (event.args.first ?: "").toRegex(RegexOption.IGNORE_CASE))
 
-                message.editMessage(messages.first()).queue()
-                for(i in 1 until messages.size) {
-                    event.channel.sendMessage(messages[i]).queue()
+                if(messages.isNotEmpty()) {
+                    message.editMessage(messages.first()).queue()
+
+                    for (i in 1 until messages.size) {
+                        event.channel.sendMessage(messages[i]).queue()
+                    }
+                } else {
+                    message.editMessage("No results").queue()
                 }
             }
         }
@@ -278,29 +283,36 @@ private fun safeDeleteMessages(channel: TextChannel,
  *
  *  @return The list of messages to send
  */
-private fun buildRolelistMessages(guild: Guild): List<String> {
+private fun buildRolelistMessages(guild: Guild, regex: Regex): List<String> {
     val list = guild.roles.map {
-        "${it.id} - ${it.name}: ${guild.getMembersWithRoles(it).size} users"
+        "${it.id} (${String.format("#%02x%02x%02x", it.color?.red?:0, it.color?.green?:0, it.color?.blue?:0)}) - ${it.name}: ${guild.getMembersWithRoles(it).size} users"
     }
 
     // Try joining them in a single message
-    val response = list.joinToString("\n")
-    return if(response.length < 1990) {
-        // If the length is less than the max, we good.
-        listOf("```\n$response\n```")
-    } else {
-        // Otherwise, break it into multiple messages
-        val result = mutableListOf<String>()
-        var data = "```\n"
-        for(i in list.indices) {
-            if(data.length + list[i].length < 1990) {
-                data += list[i] + '\n'
-            } else {
-                result.add("$data```")
-                data = "```\n${list[i]}\n"
-            }
+    val response = list.filter { regex.containsMatchIn(it) }.joinToString("\n")
+
+    return when {
+        response.isEmpty() -> {
+            listOf()
         }
-        result.add("$data```")
-        result
+        response.length < 1990 -> {
+            // If the length is less than the max, we good.
+            listOf("```\n$response\n```")
+        }
+        else -> {
+            // Otherwise, break it into multiple messages
+            val result = mutableListOf<String>()
+            var data = "```\n"
+            for(i in list.indices) {
+                if(data.length + list[i].length < 1990) {
+                    data += list[i] + '\n'
+                } else {
+                    result.add("$data```")
+                    data = "```\n${list[i]}\n"
+                }
+            }
+            result.add("$data```")
+            result
+        }
     }
 }
