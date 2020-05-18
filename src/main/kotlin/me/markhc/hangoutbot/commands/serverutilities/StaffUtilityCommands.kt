@@ -43,7 +43,6 @@ fun produceStaffUtilityCommands(persistentData: PersistentData,
             val sameChannel = it.channel.id == channel.id
 
             channel.history.retrievePast(amount + if (sameChannel) 1 else 0).queue { past ->
-
                 safeDeleteMessages(channel, past)
 
                 channel.sendMessage("Be nice. No spam.").queue()
@@ -285,10 +284,10 @@ private fun safeDeleteMessages(channel: TextChannel,
 private fun buildRolelistMessages(guild: Guild, regex: Regex): List<String> {
     val list = guild.roles.map {
         "${it.id} (${String.format("#%02x%02x%02x", it.color?.red?:0, it.color?.green?:0, it.color?.blue?:0)}) - ${it.name}: ${guild.getMembersWithRoles(it).size} users"
-    }
+    }.filter { regex.containsMatchIn(it) }
 
     // Try joining them in a single message
-    val response = list.filter { regex.containsMatchIn(it) }.joinToString("\n")
+    val response = list.joinToString("\n")
 
     return when {
         response.isEmpty() -> {
