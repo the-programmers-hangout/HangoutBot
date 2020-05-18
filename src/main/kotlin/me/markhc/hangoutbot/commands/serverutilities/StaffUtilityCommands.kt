@@ -5,8 +5,6 @@ import me.aberrantfox.kjdautils.api.dsl.command.commands
 import me.aberrantfox.kjdautils.api.dsl.embed
 import me.aberrantfox.kjdautils.extensions.jda.fullName
 import me.aberrantfox.kjdautils.internal.arguments.*
-import me.markhc.hangoutbot.arguments.GuildRoleArg
-import me.markhc.hangoutbot.arguments.GuildTextChannelArg
 import me.markhc.hangoutbot.arguments.LowerRankedMemberArg
 import me.markhc.hangoutbot.extensions.addRole
 import me.markhc.hangoutbot.extensions.removeRole
@@ -23,7 +21,7 @@ fun produceStaffUtilityCommands(persistentData: PersistentData,
         description = "Echo a message to a channel."
         requiredPermissionLevel = PermissionLevel.Staff
         requiresGuild = true
-        execute(GuildTextChannelArg.makeOptional { it.channel as TextChannel }, SentenceArg) {
+        execute(TextChannelArg.makeOptional { it.channel as TextChannel }, EveryArg) {
             val (target, message) = it.args
 
             target.sendMessage(message).queue()
@@ -34,7 +32,7 @@ fun produceStaffUtilityCommands(persistentData: PersistentData,
         description = "Delete 2 - 99 past messages in the given channel (default is the invoked channel)"
         requiredPermissionLevel = PermissionLevel.Staff
         requiresGuild = true
-        execute(GuildTextChannelArg.makeOptional { it.channel as TextChannel },
+        execute(TextChannelArg.makeOptional { it.channel as TextChannel },
                 IntegerArg) {
             val (channel, amount) = it.args
 
@@ -43,10 +41,9 @@ fun produceStaffUtilityCommands(persistentData: PersistentData,
             }
 
             val sameChannel = it.channel.id == channel.id
-            val singlePrefixInvocationDeleted = it.stealthInvocation
 
             channel.history.retrievePast(amount + if (sameChannel) 1 else 0).queue { past ->
-                val noSinglePrefixMsg = past.drop(if (sameChannel && singlePrefixInvocationDeleted) 1 else 0)
+                val noSinglePrefixMsg = past.drop(if (sameChannel) 1 else 0)
 
                 safeDeleteMessages(channel, noSinglePrefixMsg)
 
@@ -89,7 +86,7 @@ fun produceStaffUtilityCommands(persistentData: PersistentData,
         requiredPermissionLevel = PermissionLevel.Staff
         requiresGuild = true
         execute(LowerRankedMemberArg("Member").makeOptional { it.guild!!.getMember(it.author)!! },
-                GuildRoleArg("GrantableRole")) { event ->
+                RoleArg("GrantableRole")) { event ->
             val (member, role) = event.args
             val guild = event.guild!!
 
@@ -109,7 +106,8 @@ fun produceStaffUtilityCommands(persistentData: PersistentData,
         description = "Revokes a role from a lower ranked member or yourself"
         requiredPermissionLevel = PermissionLevel.Staff
         requiresGuild = true
-        execute(LowerRankedMemberArg("Member").makeOptional { it.guild!!.getMember(it.author)!! }, GuildRoleArg("GrantableRole")) { event ->
+        execute(LowerRankedMemberArg("Member").makeOptional { it.guild!!.getMember(it.author)!! },
+                RoleArg("GrantableRole")) { event ->
             val (member, role) = event.args
             val guild = event.guild!!
 
@@ -133,7 +131,7 @@ fun produceStaffUtilityCommands(persistentData: PersistentData,
         description = "Creates a role with the given name and color and assigns it to the user."
         requiredPermissionLevel = PermissionLevel.Staff
         requiresGuild = true
-        execute(HexColorArg("HexColor").makeNullableOptional(), SentenceArg("RoleName")) { event ->
+        execute(HexColorArg("HexColor").makeNullableOptional(), EveryArg("RoleName")) { event ->
             val (color, roleName) = event.args
 
             val guild = event.guild!!
@@ -175,10 +173,10 @@ fun produceStaffUtilityCommands(persistentData: PersistentData,
         requiredPermissionLevel = PermissionLevel.Staff
         requiresGuild = true
         execute { event ->
-            val colorRoles = persistentData.getGuildProperty(event.guild!!) { assignedColorRoles }
+            val (colorRoles, prefix) = persistentData.getGuildProperty(event.guild!!) { assignedColorRoles to prefix }
 
             if (colorRoles.isEmpty()) {
-                return@execute event.respond("No colors set. For more information, see `${event.discord.configuration.prefix}help setcolor`")
+                return@execute event.respond("No colors set. For more information, see `${prefix}help setcolor`")
             }
 
             val colorInfo = colorRoles.map {
@@ -230,7 +228,7 @@ fun produceStaffUtilityCommands(persistentData: PersistentData,
         description = "Deletes the given role or roles."
         requiredPermissionLevel = PermissionLevel.GuildOwner
         requiresGuild = true
-        execute(MultipleArg(GuildRoleArg)) { event ->
+        execute(MultipleArg(RoleArg)) { event ->
             event.args.first.distinct().forEach { role ->
                 role.delete().queue(
                         { event.respond("Deleted role ${role.name}") },
@@ -244,7 +242,7 @@ fun produceStaffUtilityCommands(persistentData: PersistentData,
         description = "Set slowmode in a channel."
         requiredPermissionLevel = PermissionLevel.Staff
         requiresGuild = true
-        execute(GuildTextChannelArg, TimeStringArg) {
+        execute(TextChannelArg, TimeArg) {
             val (channel, interval) = it.args
 
             if (interval > 21600 || interval < 0) {

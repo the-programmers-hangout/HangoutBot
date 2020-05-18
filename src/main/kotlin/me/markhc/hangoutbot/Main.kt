@@ -23,7 +23,6 @@ fun main(args: Array<String>) {
                     successColor = Color.GREEN
                 }
                 commandReaction = null
-                deleteMode = PrefixDeleteMode.None
                 allowMentionPrefix = true
                 allowPrivateMessages = true
             }

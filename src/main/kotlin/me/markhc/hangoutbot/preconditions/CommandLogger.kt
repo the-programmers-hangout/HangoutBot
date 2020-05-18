@@ -11,11 +11,11 @@ import me.markhc.hangoutbot.services.PersistentData
 
 @Precondition
 fun produceCommandLoggerPrecondition(botStats: BotStatsService, persistentData: PersistentData) = precondition {
-    it.container[it.commandStruct.commandName] ?: return@precondition Fail()
+    it.command ?: return@precondition Fail()
 
     botStats.commandExecuted(it)
 
-    val args = it.commandStruct.commandArgs.joinToString(", ")
+    val args = it.rawInputs.commandArgs.joinToString(", ")
 
     if (args.length > 1500) {
         return@precondition Fail("Command is too long (${args.length} chars, max: 1500)")
@@ -28,7 +28,7 @@ fun produceCommandLoggerPrecondition(botStats: BotStatsService, persistentData: 
         if(loggingChannel.isNotEmpty()) {
             val message =
                     "${it.author.fullName()} :: ${it.author.id} :: " +
-                    "Invoked `${it.commandStruct.commandName}` in #${it.channel.name}." +
+                    "Invoked `${it.command!!.names.first()}` in #${it.channel.name}." +
                     if(args.isEmpty()) "" else " Args: ${args.sanitiseMentions()}"
 
             guild.getTextChannelById(loggingChannel)

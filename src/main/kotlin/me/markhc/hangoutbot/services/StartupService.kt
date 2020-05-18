@@ -11,16 +11,20 @@ class StartupService(properties: Properties,
                      botStats: BotStatsService,
                      discord: Discord,
                      permissionsService: PermissionsService,
+                     persistentData: PersistentData,
                      muteService: MuteService,
                      reminderService: ReminderService) {
     init {
         muteService.launchTimers()
         reminderService.launchTimers()
 
-        discord.jda.presence.activity = Activity.playing("${config.prefix}help for more information")
-
         with(discord.configuration) {
-            prefix = config.prefix
+            prefix {
+                if(it.guild == null)
+                    config.prefix
+                else
+                    persistentData.getGuildProperty(it.guild!!) { prefix }
+            }
             mentionEmbed {
                 val channel = it.channel
                 val self = channel.jda.selfUser
@@ -34,7 +38,10 @@ class StartupService(properties: Properties,
                 }
                 field {
                     name = "Prefix"
-                    value = config.prefix
+                    value = if(it.guild == null)
+                        config.prefix
+                    else
+                        persistentData.getGuildProperty(it.guild!!) { prefix }
                     inline = true
                 }
                 field {

@@ -10,6 +10,7 @@ data class Configuration(val guildConfigurations: MutableList<GuildConfiguration
                          val reminders: MutableList<Reminder> = mutableListOf())
 
 data class GuildConfiguration(val guildId: String = "",
+                              var prefix: String = "++",
                               var welcomeEmbeds: Boolean = false,
                               var welcomeChannel: String = "",
                               var botChannel: String = "",

@@ -11,7 +11,7 @@ import me.markhc.hangoutbot.services.PersistentData
 
 @Precondition
 fun produceHasPermissionPrecondition(persistentData: PersistentData, permissionsService: PermissionsService) = precondition {
-    val command = it.container[it.commandStruct.commandName] ?: return@precondition Fail()
+    val command = it.command ?: return@precondition Fail()
 
     if(it.guild == null) {
         return@precondition if (permissionsService.hasClearance(null, it.author, command.requiredPermissionLevel))

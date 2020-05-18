@@ -7,7 +7,7 @@ import me.aberrantfox.kjdautils.internal.command.precondition
 
 @Precondition
 fun produceCommandSanitizerPrecondition() = precondition { event ->
-    if(event.commandStruct.commandArgs.any { it.matches(""".*discord\.gg.*""".toRegex()) })
+    if(event.rawInputs.commandArgs.any { it.matches(""".*discord\.gg.*""".toRegex()) })
         return@precondition Fail()
 
     return@precondition Pass

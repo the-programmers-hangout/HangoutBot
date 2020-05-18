@@ -6,8 +6,8 @@ import me.aberrantfox.kjdautils.api.dsl.embed
 import me.aberrantfox.kjdautils.extensions.jda.fullName
 import me.aberrantfox.kjdautils.extensions.jda.sendPrivateMessage
 import me.aberrantfox.kjdautils.internal.arguments.MemberArg
-import me.aberrantfox.kjdautils.internal.arguments.SentenceArg
-import me.aberrantfox.kjdautils.internal.arguments.TimeStringArg
+import me.aberrantfox.kjdautils.internal.arguments.EveryArg
+import me.aberrantfox.kjdautils.internal.arguments.TimeArg
 import me.aberrantfox.kjdautils.internal.arguments.UserArg
 import me.markhc.hangoutbot.services.MuteService
 import me.markhc.hangoutbot.services.ReminderService
@@ -30,7 +30,7 @@ fun produceUtilityCommands(muteService: MuteService,
     command("viewjoindate") {
         requiresGuild = true
         description = "Displays when a user joined the guild"
-        execute(MemberArg) {
+        execute(MemberArg.makeOptional { it.guild!!.getMember(it.author)!! }) {
             val member = it.args.first
 
             it.respond("${member.fullName()} joined ${formatOffsetTime(member.timeJoined)}")
@@ -39,7 +39,7 @@ fun produceUtilityCommands(muteService: MuteService,
 
     command("viewcreationdate") {
         description = "Displays when a user was created"
-        execute(UserArg) {
+        execute(UserArg.makeOptional {it.author }) {
             val user = it.args.first
 
             it.respond("${user.fullName()} created ${formatOffsetTime(user.timeCreated)}")
@@ -48,7 +48,7 @@ fun produceUtilityCommands(muteService: MuteService,
 
     command("avatar") {
         description = "Gets the avatar from the given user"
-        execute(UserArg) {
+        execute(UserArg.makeOptional { it.author }) {
             val user = it.args.first
 
             it.respond("${user.effectiveAvatarUrl}?size=512")
@@ -58,7 +58,7 @@ fun produceUtilityCommands(muteService: MuteService,
     command("selfmute") {
         requiresGuild = true
         description = "Mute yourself for the given amount of time. A mute will stop you from talking in any channel. Default is 1 hour. Max is 24 hours."
-        execute(TimeStringArg.makeOptional(3600.0)) {
+        execute(TimeArg.makeOptional(3600.0)) {
             val (timeInSeconds) = it.args
 
             if(timeInSeconds < 5) {
@@ -87,7 +87,7 @@ fun produceUtilityCommands(muteService: MuteService,
         description = "Trying to be productive? Mute yourself for the specified amount of time. " +
                 "A productive mute will prevent you from talking in the social channels while still allowing " +
                 "the use of the language channels. Default is 1 hour. Max is 24 hours."
-        execute(TimeStringArg.makeOptional(3600.0)) {
+        execute(TimeArg.makeOptional(3600.0)) {
             val (timeInSeconds) = it.args
 
             if(timeInSeconds < 5) {
@@ -113,7 +113,7 @@ fun produceUtilityCommands(muteService: MuteService,
 
     command("remindme") {
         description = "A command that'll remind you about something after the specified time."
-        execute(TimeStringArg, SentenceArg) {
+        execute(TimeArg, EveryArg) {
             val (timeInSeconds, sentence) = it.args
 
             if(timeInSeconds < 5) {

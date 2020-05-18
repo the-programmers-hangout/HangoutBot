@@ -13,7 +13,7 @@
         <main.class>me.markhc.hangoutbot.MainKt</main.class>
         <project.repository>https://github.com/the-programmers-hangout/HangoutBot/</project.repository>
         <kotlin.version>1.3.72</kotlin.version>
-        <kutils.version>0.15.1</kutils.version>
+        <kutils.version>3121c4a392</kutils.version>
     </properties>
 
     <dependencies>

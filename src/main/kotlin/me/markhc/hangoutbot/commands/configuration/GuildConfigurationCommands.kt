@@ -2,34 +2,24 @@ package me.markhc.hangoutbot.commands.configuration
 
 import me.aberrantfox.kjdautils.api.annotation.CommandSet
 import me.aberrantfox.kjdautils.api.dsl.command.commands
-import me.aberrantfox.kjdautils.internal.arguments.WordArg
-import me.aberrantfox.kjdautils.internal.services.PersistenceService
-import me.markhc.hangoutbot.arguments.GuildRoleArg
-import me.markhc.hangoutbot.arguments.GuildTextChannelArg
+import me.aberrantfox.kjdautils.internal.arguments.*
 import me.markhc.hangoutbot.extensions.requiredPermissionLevel
-import me.markhc.hangoutbot.services.BotConfiguration
 import me.markhc.hangoutbot.services.PermissionLevel
 import me.markhc.hangoutbot.services.PersistentData
-import net.dv8tion.jda.api.entities.Activity
 
 @Suppress("unused")
 @CommandSet("Guild")
-fun produceGuildConfigurationCommands(botConfiguration: BotConfiguration,
-                                      persistentData: PersistentData,
-                                      persistenceService: PersistenceService) = commands {
+fun produceGuildConfigurationCommands(persistentData: PersistentData) = commands {
     command("setprefix") {
         description = "Sets the bot prefix."
         requiredPermissionLevel = PermissionLevel.BotOwner
         requiresGuild = true
-        execute(WordArg("Prefix")) {
-            val (prefix) = it.args
+        execute(AnyArg("Prefix")) {
+            persistentData.setGuildProperty(it.guild!!) {
+                prefix = it.args.first
+            }
 
-            it.discord.jda.presence.activity = Activity.playing("${prefix}help for more information")
-            it.discord.configuration.prefix = prefix
-            botConfiguration.prefix = prefix
-            persistenceService.save(botConfiguration)
-
-            return@execute it.respond("Bot prefix set to \"${prefix}\"")
+            return@execute it.respond("Bot prefix in this guild set to ${it.args.first}")
         }
     }
 
@@ -37,7 +27,7 @@ fun produceGuildConfigurationCommands(botConfiguration: BotConfiguration,
         description = "Sets the role used to mute an user"
         requiredPermissionLevel = PermissionLevel.Administrator
         requiresGuild = true
-        execute(GuildRoleArg) {
+        execute(RoleArg) {
             val (role) = it.args
 
             persistentData.setGuildProperty(it.guild!!) { muteRole = role.id }
@@ -50,7 +40,7 @@ fun produceGuildConfigurationCommands(botConfiguration: BotConfiguration,
         description = "Sets the role used to soft mute an user"
         requiredPermissionLevel = PermissionLevel.Administrator
         requiresGuild = true
-        execute(GuildRoleArg) {
+        execute(RoleArg) {
             val (role) = it.args
 
             persistentData.setGuildProperty(it.guild!!) { softMuteRole = role.id }
@@ -63,7 +53,7 @@ fun produceGuildConfigurationCommands(botConfiguration: BotConfiguration,
         description = "Sets the channel used to log executed commands"
         requiredPermissionLevel = PermissionLevel.Administrator
         requiresGuild = true
-        execute(GuildTextChannelArg) {
+        execute(TextChannelArg) {
             val (channel) = it.args
 
             persistentData.setGuildProperty(it.guild!!) { loggingChannel = channel.id }
@@ -90,7 +80,7 @@ fun produceGuildConfigurationCommands(botConfiguration: BotConfiguration,
         description = "Sets the channel used for welcome embeds."
         requiredPermissionLevel = PermissionLevel.Administrator
         requiresGuild = true
-        execute(GuildTextChannelArg) {
+        execute(TextChannelArg) {
             val (channel) = it.args
 
             persistentData.setGuildProperty(it.guild!!) { welcomeChannel = channel.id }
@@ -117,7 +107,7 @@ fun produceGuildConfigurationCommands(botConfiguration: BotConfiguration,
         description = "Adds a role to the list of grantable roles."
         requiredPermissionLevel = PermissionLevel.Administrator
         requiresGuild = true
-        execute(GuildRoleArg, WordArg("Category")) { event ->
+        execute(RoleArg, AnyArg("Category")) { event ->
             val (role, category) = event.args
 
             persistentData.setGuildProperty(event.guild!!) {
@@ -144,7 +134,7 @@ fun produceGuildConfigurationCommands(botConfiguration: BotConfiguration,
         description = "Removes a role to the list of grantable roles."
         requiredPermissionLevel = PermissionLevel.Administrator
         requiresGuild = true
-        execute(GuildRoleArg) { event ->
+        execute(RoleArg) { event ->
             val (role) = event.args
 
             persistentData.setGuildProperty(event.guild!!) {
@@ -167,7 +157,7 @@ fun produceGuildConfigurationCommands(botConfiguration: BotConfiguration,
         description = "Sets the bot channel. If set, the bot channel will be the only channel where the bot will accept commands from."
         requiredPermissionLevel = PermissionLevel.Administrator
         requiresGuild = true
-        execute(GuildTextChannelArg.makeNullableOptional(null)) {
+        execute(TextChannelArg.makeNullableOptional(null)) {
             val channel = it.args.first
 
             persistentData.setGuildProperty(it.guild!!) {

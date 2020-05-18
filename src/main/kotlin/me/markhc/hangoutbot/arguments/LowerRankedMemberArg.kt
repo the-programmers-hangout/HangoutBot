@@ -5,7 +5,6 @@ import me.aberrantfox.kjdautils.api.getInjectionObject
 import me.aberrantfox.kjdautils.extensions.stdlib.trimToID
 import me.aberrantfox.kjdautils.internal.command.ArgumentResult
 import me.aberrantfox.kjdautils.internal.command.ArgumentType
-import me.aberrantfox.kjdautils.internal.command.ConsumptionType
 import me.aberrantfox.kjdautils.internal.command.tryRetrieveSnowflake
 import me.markhc.hangoutbot.services.PermissionsService
 import net.dv8tion.jda.api.entities.Member
@@ -13,7 +12,6 @@ import net.dv8tion.jda.api.entities.Member
 open class LowerRankedMemberArg(override val name : String = "Lower Ranked member") : ArgumentType<Member>() {
     companion object : LowerRankedMemberArg()
 
-    override val consumptionType = ConsumptionType.Single
     override fun generateExamples(event: CommandEvent<*>)
             = mutableListOf("@Bob", "197780697866305536", "302134543639511050")
 
@@ -28,7 +26,7 @@ open class LowerRankedMemberArg(override val name : String = "Lower Ranked membe
         return when {
             author.isHigherRankedThan(permissions, retrieved)
                 -> ArgumentResult.Error("You don't have the permission to use this command on the target user.")
-            else -> ArgumentResult.Success(retrieved)
+            else -> ArgumentResult.Success(retrieved, 1)
         }
     }
 }
