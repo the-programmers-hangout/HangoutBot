@@ -119,8 +119,8 @@ fun produceUtilityCommands(muteService: MuteService,
             if(timeInSeconds < 5) {
                 return@execute it.respond("You cannot set a reminder for less than 5 seconds.")
             }
-            if(timeInSeconds > TimeUnit.DAYS.toSeconds(30)) {
-                return@execute it.respond("You cannot set a reminder more than 30 days into the future.")
+            if(timeInSeconds > TimeUnit.DAYS.toSeconds(90)) {
+                return@execute it.respond("You cannot set a reminder more than 90 days into the future.")
             }
 
             val millis = timeInSeconds.roundToLong() * 1000
