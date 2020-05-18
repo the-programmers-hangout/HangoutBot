@@ -2,15 +2,12 @@ package me.markhc.hangoutbot.preconditions
 
 import me.aberrantfox.kjdautils.api.annotation.Precondition
 import me.aberrantfox.kjdautils.extensions.jda.fullName
-import me.aberrantfox.kjdautils.extensions.jda.toMember
 import me.aberrantfox.kjdautils.extensions.stdlib.sanitiseMentions
 import me.aberrantfox.kjdautils.internal.command.Fail
 import me.aberrantfox.kjdautils.internal.command.Pass
 import me.aberrantfox.kjdautils.internal.command.precondition
-import me.aberrantfox.kjdautils.internal.services.PersistenceService
-import me.markhc.hangoutbot.dataclasses.Configuration
-import me.markhc.hangoutbot.extensions.requiredPermissionLevel
-import me.markhc.hangoutbot.services.*
+import me.markhc.hangoutbot.services.BotStatsService
+import me.markhc.hangoutbot.services.PersistentData
 
 @Precondition
 fun produceCommandLoggerPrecondition(botStats: BotStatsService, persistentData: PersistentData) = precondition {

@@ -17,8 +17,8 @@ import java.util.concurrent.TimeUnit
 fun producePermissionCommands(persistentData: PersistentData,
                               permissionsService: PermissionsService) = commands {
     command("getpermission") {
-        requiredPermissionLevel = PermissionLevel.Staff
         description = "Returns the required permission level for the given command"
+        requiredPermissionLevel = PermissionLevel.Staff
         requiresGuild = true
         execute(CommandArg) {
             val (cmd) = it.args
@@ -28,8 +28,8 @@ fun producePermissionCommands(persistentData: PersistentData,
     }
 
     command("setpermission") {
-        requiredPermissionLevel = PermissionLevel.Administrator
         description = "Sets the required permission level for the given commands"
+        requiredPermissionLevel = PermissionLevel.Administrator
         requiresGuild = true
         execute(MultipleArg(CommandArg, "Commands..."), PermissionLevelArg) { event ->
             val (commands, level) = event.args

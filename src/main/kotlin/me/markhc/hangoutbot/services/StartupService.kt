@@ -3,9 +3,7 @@ package me.markhc.hangoutbot.services
 import me.aberrantfox.kjdautils.api.annotation.Service
 import me.aberrantfox.kjdautils.discord.Discord
 import me.aberrantfox.kjdautils.extensions.jda.fullName
-import me.markhc.hangoutbot.dataclasses.Configuration
 import net.dv8tion.jda.api.entities.Activity
-import java.awt.Color
 
 @Service
 class StartupService(properties: Properties,
@@ -68,8 +66,13 @@ class StartupService(properties: Properties,
                     }
                 }
             }
+
             visibilityPredicate predicate@{
-                return@predicate permissionsService.isCommandVisible(it.guild!!, it.user, it.command)
+                return@predicate if(it.guild == null && it.command.requiresGuild) {
+                    false
+                } else {
+                    permissionsService.isCommandVisible(it.guild, it.user, it.command)
+                }
             }
         }
     }

@@ -5,15 +5,11 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import me.aberrantfox.kjdautils.api.annotation.Service
 import me.aberrantfox.kjdautils.discord.Discord
-import me.aberrantfox.kjdautils.internal.services.PersistenceService
-import me.markhc.hangoutbot.dataclasses.Configuration
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
 import org.joda.time.format.DateTimeFormat
 import com.github.kittinunf.result.Result
 import me.aberrantfox.kjdautils.api.dsl.embed
-import me.aberrantfox.kjdautils.extensions.jda.sendPrivateMessage
-import me.markhc.hangoutbot.dataclasses.MuteEntry
 import me.markhc.hangoutbot.dataclasses.Reminder
 import me.markhc.hangoutbot.utilities.toLongDurationString
 import net.dv8tion.jda.api.entities.*
@@ -23,45 +19,40 @@ class ReminderService(private val persistentData: PersistentData,
                       private val discord: Discord) {
     private val dateFormatter = DateTimeFormat.fullDateTime()
 
-    fun addReminder(member: Member, ms: Long, what: String): Result<String, Exception> {
-        val guild     = member.guild
-        val reminders = persistentData.getGuildProperty(guild) { reminders }
+    fun addReminder(user: User, ms: Long, what: String): Result<String, Exception> {
+        val reminders = persistentData.getGlobalProperty { reminders }
 
-        if (reminders.count { it.user == member.id } > 10) {
+        if (reminders.count { it.user == user.id } > 10) {
             return Result.Failure(Exception("Sorry, you cannot create any more reminders!"))
         }
 
         val until = DateTime.now(DateTimeZone.UTC).plus(ms)
 
-        persistentData.setGuildProperty(guild) {
-            reminders.add(Reminder(member.id, until.toString(dateFormatter), what))
+        persistentData.setGlobalProperty {
+            reminders.add(Reminder(user.id, until.toString(dateFormatter), what))
         }
 
-        launchReminder(guild.id, member.id, ms, what)
+        launchReminder(user.id, ms, what)
 
         return Result.Success("Got it, I'll remind you in ${ms.toLongDurationString()} about \"${what}\"")
     }
 
-    fun listReminders(member: Member, fn: (Reminder) -> Unit): Int {
-        val reminders = persistentData.getGuildProperty(member.guild) { reminders }
+    fun listReminders(user: User, fn: (Reminder) -> Unit): Int {
+        val reminders = persistentData.getGlobalProperty { reminders }
 
-        return reminders.filter { it.user == member.id }
+        return reminders.filter { it.user == user.id }
                 .also { it.forEach(fn) }
                 .size
     }
 
     fun launchTimers() {
-        persistentData.getGuilds().forEach {
-            if(it.reminders.isEmpty()) return@forEach
-
-            it.reminders.forEach { entry ->
-                val millis = dateFormatter.parseMillis(entry.timeUntil) - DateTime.now().millis
-                launchReminder(it.guildId, entry.user, millis, entry.what)
-            }
+        persistentData.getGlobalProperty { reminders }.forEach {
+            val millis = dateFormatter.parseMillis(it.timeUntil) - DateTime.now().millis
+            launchReminder(it.user, millis, it.what)
         }
     }
 
-    private fun launchReminder(guildId: String, userId: String, ms: Long, what: String) {
+    private fun launchReminder(userId: String, ms: Long, what: String) {
         GlobalScope.launch {
             delay(ms)
 
@@ -71,7 +62,7 @@ class ReminderService(private val persistentData: PersistentData,
                 color = infoColor
             })
 
-            persistentData.setGuildProperty(guildId) {
+            persistentData.setGlobalProperty {
                 reminders.removeIf { it.user == userId }
             }
         }

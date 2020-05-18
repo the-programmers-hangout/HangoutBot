@@ -18,8 +18,9 @@ fun produceGuildConfigurationCommands(botConfiguration: BotConfiguration,
                                       persistentData: PersistentData,
                                       persistenceService: PersistenceService) = commands {
     command("setprefix") {
-        description = "Sets the bot prefix. THIS AFFECTS ALL GUILDS"
+        description = "Sets the bot prefix."
         requiredPermissionLevel = PermissionLevel.BotOwner
+        requiresGuild = true
         execute(WordArg("Prefix")) {
             val (prefix) = it.args
 
@@ -164,8 +165,8 @@ fun produceGuildConfigurationCommands(botConfiguration: BotConfiguration,
 
     command("setbotchannel") {
         description = "Sets the bot channel. If set, the bot channel will be the only channel where the bot will accept commands from."
-        requiresGuild = true
         requiredPermissionLevel = PermissionLevel.Administrator
+        requiresGuild = true
         execute(GuildTextChannelArg.makeNullableOptional(null)) {
             val channel = it.args.first
 

@@ -5,23 +5,17 @@ import me.aberrantfox.kjdautils.api.dsl.command.commands
 import me.aberrantfox.kjdautils.api.dsl.embed
 import me.aberrantfox.kjdautils.extensions.jda.fullName
 import me.aberrantfox.kjdautils.extensions.jda.sendPrivateMessage
-import me.aberrantfox.kjdautils.extensions.stdlib.sanitiseMentions
 import me.aberrantfox.kjdautils.internal.arguments.MemberArg
 import me.aberrantfox.kjdautils.internal.arguments.SentenceArg
 import me.aberrantfox.kjdautils.internal.arguments.TimeStringArg
 import me.aberrantfox.kjdautils.internal.arguments.UserArg
 import me.markhc.hangoutbot.services.MuteService
 import me.markhc.hangoutbot.services.ReminderService
-import org.checkerframework.checker.units.qual.g
 import org.joda.time.DateTime
-import org.joda.time.format.DateTimeFormat
-import java.awt.Color
-import java.awt.image.BufferedImage
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 import java.util.concurrent.TimeUnit
 import kotlin.math.roundToLong
-
 
 @Suppress("unused")
 @CommandSet("Utility")
@@ -78,7 +72,7 @@ fun produceUtilityCommands(muteService: MuteService,
             val member = guild.getMember(it.author)!!
             val millis = timeInSeconds.roundToLong() * 1000
 
-            muteService.addMutedMember(member, millis).fold(
+            muteService.addMutedMember(member, millis, soft = false).fold(
                     success = { embed ->
                         it.message.addReaction("\uD83D\uDD07").queue()
                         it.author.sendPrivateMessage(embed)
@@ -107,7 +101,7 @@ fun produceUtilityCommands(muteService: MuteService,
             val member = guild.getMember(it.author)!!
             val millis = timeInSeconds.roundToLong() * 1000
 
-            muteService.addSoftMutedMember(member, millis).fold(
+            muteService.addMutedMember(member, millis, soft = true).fold(
                     success = { embed ->
                         it.message.addReaction("\uD83D\uDD07").queue()
                         it.author.sendPrivateMessage(embed)
@@ -118,7 +112,6 @@ fun produceUtilityCommands(muteService: MuteService,
     }
 
     command("remindme") {
-        requiresGuild = true
         description = "A command that'll remind you about something after the specified time."
         execute(TimeStringArg, SentenceArg) {
             val (timeInSeconds, sentence) = it.args
@@ -130,11 +123,9 @@ fun produceUtilityCommands(muteService: MuteService,
                 return@execute it.respond("You cannot set a reminder more than 30 days into the future.")
             }
 
-            val guild = it.guild!!
-            val member = guild.getMember(it.author)!!
             val millis = timeInSeconds.roundToLong() * 1000
 
-            reminderService.addReminder(member, millis, sentence).fold(
+            reminderService.addReminder(it.author, millis, sentence).fold(
                     success = { msg -> it.respond(msg) },
                     failure = { ex -> it.respond(ex.message!!) }
             )
@@ -142,39 +133,12 @@ fun produceUtilityCommands(muteService: MuteService,
     }
 
     command("listreminders") {
-        requiresGuild = true
         description = "List your active reminders"
         execute { event ->
-            val guild = event.guild!!
-            val member = guild.getMember(event.author)!!
-
             val messageEmbed = embed {
-                title = "Active reminders for ${member.fullName()}"
-                if(reminderService.listReminders(member) {
-                            field {
-                                name = it.timeUntil
-                                value = "```\n${if(it.what.length < 125) it.what else "${it.what.take(125)}..."}\n```"
-                            }
-                        } == 0) {
-                    description = "There doesn't seem to be anything here."
-                }
-            }
+                title = "Active reminders for ${event.author.fullName()}"
 
-            event.respond(messageEmbed)
-        }
-    }
-
-    command("listreminders") {
-        requiresGuild = true
-        description = "List your active reminders"
-        execute { event ->
-            val guild = event.guild!!
-            val member = guild.getMember(event.author)!!
-
-            val messageEmbed = embed {
-                title = "Active reminders for ${member.fullName()}"
-
-                val count = reminderService.listReminders(member) {
+                val count = reminderService.listReminders(event.author) {
                     field {
                         name = it.timeUntil
                         value = "```\n${if(it.what.length < 100) it.what else "${it.what.take(100)}..."}\n```"

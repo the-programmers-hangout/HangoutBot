@@ -24,8 +24,8 @@ fun main(args: Array<String>) {
                 }
                 commandReaction = null
                 deleteMode = PrefixDeleteMode.None
-                allowPrivateMessages = false
                 allowMentionPrefix = true
+                allowPrivateMessages = true
             }
         }
     }

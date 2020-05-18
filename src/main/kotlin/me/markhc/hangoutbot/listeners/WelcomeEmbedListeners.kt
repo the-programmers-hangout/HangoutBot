@@ -7,7 +7,6 @@ import me.aberrantfox.kjdautils.extensions.jda.fullName
 import me.markhc.hangoutbot.locale.Messages
 import me.markhc.hangoutbot.services.PersistentData
 import net.dv8tion.jda.api.entities.Guild
-import net.dv8tion.jda.api.entities.Member
 import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.entities.User
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent

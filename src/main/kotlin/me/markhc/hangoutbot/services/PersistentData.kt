@@ -10,9 +10,11 @@ import net.dv8tion.jda.api.entities.Guild
 class PersistentData(private val configuration: Configuration, private val persistenceService: PersistenceService) {
     fun getGuilds() = configuration.guildConfigurations
 
-    fun <R> setProperty(fn: Configuration.() -> R): R {
-        return fn(configuration).also { persistenceService.save(configuration) }
-    }
+    fun <R> setGlobalProperty(fn: Configuration.() -> R) =
+            fn(configuration).also { persistenceService.save(configuration) }
+
+    fun <R> getGlobalProperty(fn: Configuration.() -> R) =
+            configuration.let(fn)
 
     fun <R> setGuildProperty(guild: Guild, fn: GuildConfiguration.() -> R): R {
         val config = getGuildConfig(guild)

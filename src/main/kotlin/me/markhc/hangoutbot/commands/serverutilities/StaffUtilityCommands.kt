@@ -20,8 +20,9 @@ import java.awt.Color
 fun produceStaffUtilityCommands(persistentData: PersistentData,
                                 colorService: ColorService) = commands {
     command("echo") {
-        requiredPermissionLevel = PermissionLevel.Staff
         description = "Echo a message to a channel."
+        requiredPermissionLevel = PermissionLevel.Staff
+        requiresGuild = true
         execute(GuildTextChannelArg.makeOptional { it.channel as TextChannel }, SentenceArg) {
             val (target, message) = it.args
 
@@ -30,8 +31,9 @@ fun produceStaffUtilityCommands(persistentData: PersistentData,
     }
 
     command("nuke") {
-        requiredPermissionLevel = PermissionLevel.Staff
         description = "Delete 2 - 99 past messages in the given channel (default is the invoked channel)"
+        requiredPermissionLevel = PermissionLevel.Staff
+        requiresGuild = true
         execute(GuildTextChannelArg.makeOptional { it.channel as TextChannel },
                 IntegerArg) {
             val (channel, amount) = it.args
@@ -83,8 +85,9 @@ fun produceStaffUtilityCommands(persistentData: PersistentData,
     }
 
     command("grant") {
-        requiredPermissionLevel = PermissionLevel.Staff
         description = "Grants a role to a lower ranked member or yourself"
+        requiredPermissionLevel = PermissionLevel.Staff
+        requiresGuild = true
         execute(LowerRankedMemberArg("Member").makeOptional { it.guild!!.getMember(it.author)!! },
                 GuildRoleArg("GrantableRole")) { event ->
             val (member, role) = event.args
@@ -103,8 +106,9 @@ fun produceStaffUtilityCommands(persistentData: PersistentData,
     }
 
     command("revoke") {
-        requiredPermissionLevel = PermissionLevel.Staff
         description = "Revokes a role from a lower ranked member or yourself"
+        requiredPermissionLevel = PermissionLevel.Staff
+        requiresGuild = true
         execute(LowerRankedMemberArg("Member").makeOptional { it.guild!!.getMember(it.author)!! }, GuildRoleArg("GrantableRole")) { event ->
             val (member, role) = event.args
             val guild = event.guild!!

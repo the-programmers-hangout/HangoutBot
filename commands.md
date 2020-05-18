@@ -25,7 +25,7 @@
 | setbotchannel       | (TextChannel)  | Sets the bot channel. If set, the bot channel will be the only channel where the bot will accept commands from. |
 | setlogchannel       | TextChannel    | Sets the channel used to log executed commands                                                                  |
 | setmuterole         | Role           | Sets the role used to mute an user                                                                              |
-| setprefix           | Prefix         | Sets the bot prefix. THIS AFFECTS ALL GUILDS                                                                    |
+| setprefix           | Prefix         | Sets the bot prefix.                                                                                            |
 | setsoftmuterole     | Role           | Sets the role used to soft mute an user                                                                         |
 | setwelcomechannel   | TextChannel    | Sets the channel used for welcome embeds.                                                                       |
 | togglewelcome       | <none>         | Toggles the display of welcome messages upon guild user join.                                                   |
@@ -72,7 +72,6 @@
 | ---------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | Help             | (Command)  | Display a help menu.                                                                                                                                                                                                                       |
 | avatar           | User       | Gets the avatar from the given user                                                                                                                                                                                                        |
-| listreminders    | <none>     | List your active reminders                                                                                                                                                                                                                 |
 | listreminders    | <none>     | List your active reminders                                                                                                                                                                                                                 |
 | productivemute   | (Time)     | Trying to be productive? Mute yourself for the specified amount of time. A productive mute will prevent you from talking in the social channels while still allowing the use of the language channels. Default is 1 hour. Max is 24 hours. |
 | remindme         | Time, Text | A command that'll remind you about something after the specified time.                                                                                                                                                                     |
