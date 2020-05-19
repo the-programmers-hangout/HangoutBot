@@ -10,6 +10,7 @@
 | ----------- | --------------------------- | ------------------------------------------------------------------------------------------ |
 | coin        | (Coins)                     | Flip a coin (or coins).                                                                    |
 | cowsay      | (Cow), (Message)            | Displays a cowsay with a given message. Run with no arguments to get a list of valid cows. |
+| dadjoke     | <none>                      | Returns a random dad joke.                                                                 |
 | flip        | Choice 1 \| Choice 2 \| ... | Choose one of the given choices.                                                           |
 | roll        | (Min), (Max)                | Rolls a number in a range (default 1-100)                                                  |
 | xkcd        | (Comic Number)              | Returns the XKCD comic number specified, or a random comic if you don't supply a number.   |

@@ -1,5 +1,7 @@
 package me.markhc.hangoutbot.commands.`fun`
 
+import com.github.kittinunf.fuel.Fuel
+import com.github.kittinunf.fuel.gson.responseObject
 import com.github.ricksbrown.cowsay.Cowsay
 import me.aberrantfox.kjdautils.api.annotation.CommandSet
 import me.aberrantfox.kjdautils.api.dsl.command.commands
@@ -14,6 +16,8 @@ import kotlin.random.Random
 private object CowsayData {
     val validCows = Cowsay.say(arrayOf("-l")).split(System.lineSeparator()).filterNot { listOf("sodomized", "head-in", "telebears").contains(it) }
 }
+private data class JokeResponse(val id: String = "", val joke: String = "", val status: Int = 500)
+
 
 @Suppress("unused")
 @CommandSet("Fun")
@@ -105,6 +109,29 @@ fun produceFunCommands() = commands {
             val result = XKCD.search(what) ?: return@execute it.respond("Sorry, the search failed.")
 
             it.respond(XKCD.getUrl(result))
+        }
+    }
+
+    command("dadjoke") {
+        description = "Returns a random dad joke."
+        execute { event ->
+            val (_, _, result) = Fuel
+                    .get("https://icanhazdadjoke.com/")
+                    .set("User-Agent", "HangoutBot (https://github.com/the-programmers-hangout/HangoutBot/)")
+                    .set("Accept", "application/json")
+                    .responseObject<JokeResponse>()
+
+            result.fold(
+                    success = {
+                        if(it.status == 200) {
+                          event.respond(it.joke)
+                        } else {
+                            event.respond("Failed to fetch joke. Status: ${it.status}")
+                        }
+                    },
+                    failure = {
+                        event.respond("Error trying to fetch joke")
+                    })
         }
     }
 }
