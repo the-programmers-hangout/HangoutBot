@@ -3,7 +3,8 @@ package me.markhc.hangoutbot.services
 import me.aberrantfox.kjdautils.api.annotation.Service
 import me.aberrantfox.kjdautils.discord.Discord
 import me.aberrantfox.kjdautils.extensions.jda.fullName
-import net.dv8tion.jda.api.entities.Activity
+import me.markhc.hangoutbot.commands.utilities.services.MuteService
+import me.markhc.hangoutbot.commands.utilities.services.ReminderService
 
 @Service
 class StartupService(properties: Properties,

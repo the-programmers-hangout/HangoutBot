@@ -1,4 +1,4 @@
-package me.markhc.hangoutbot.commands.serverutilities
+package me.markhc.hangoutbot.commands.utilities
 
 import me.aberrantfox.kjdautils.api.annotation.CommandSet
 import me.aberrantfox.kjdautils.api.dsl.command.commands
@@ -6,6 +6,7 @@ import me.aberrantfox.kjdautils.api.dsl.embed
 import me.aberrantfox.kjdautils.extensions.jda.fullName
 import me.aberrantfox.kjdautils.internal.arguments.*
 import me.markhc.hangoutbot.arguments.LowerRankedMemberArg
+import me.markhc.hangoutbot.commands.utilities.services.ColorService
 import me.markhc.hangoutbot.extensions.addRole
 import me.markhc.hangoutbot.extensions.removeRole
 import me.markhc.hangoutbot.extensions.requiredPermissionLevel

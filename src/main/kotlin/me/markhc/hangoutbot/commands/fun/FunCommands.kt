@@ -1,4 +1,4 @@
-package me.markhc.hangoutbot.commands.serverutilities
+package me.markhc.hangoutbot.commands.`fun`
 
 import com.github.ricksbrown.cowsay.Cowsay
 import me.aberrantfox.kjdautils.api.annotation.CommandSet

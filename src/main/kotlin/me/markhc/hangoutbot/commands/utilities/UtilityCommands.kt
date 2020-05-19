@@ -1,4 +1,4 @@
-package me.markhc.hangoutbot.commands.serverutilities
+package me.markhc.hangoutbot.commands.utilities
 
 import me.aberrantfox.kjdautils.api.annotation.CommandSet
 import me.aberrantfox.kjdautils.api.dsl.command.commands
@@ -9,8 +9,8 @@ import me.aberrantfox.kjdautils.internal.arguments.MemberArg
 import me.aberrantfox.kjdautils.internal.arguments.EveryArg
 import me.aberrantfox.kjdautils.internal.arguments.TimeArg
 import me.aberrantfox.kjdautils.internal.arguments.UserArg
-import me.markhc.hangoutbot.services.MuteService
-import me.markhc.hangoutbot.services.ReminderService
+import me.markhc.hangoutbot.commands.utilities.services.MuteService
+import me.markhc.hangoutbot.commands.utilities.services.ReminderService
 import org.joda.time.DateTime
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter

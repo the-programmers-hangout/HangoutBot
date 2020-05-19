@@ -3,6 +3,8 @@ config/*
 !config/config.json.example
 .idea/
 
+**.iml
+
 ### Kotlin ###
 # Compiled class file
 *.class
