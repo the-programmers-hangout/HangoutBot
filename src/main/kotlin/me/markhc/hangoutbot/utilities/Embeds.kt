@@ -75,7 +75,7 @@ fun buildServerInfoEmbed(guild: Guild) = embed {
     }
     field {
         name = "**Boosts**"
-        value = guild.boostCount.toString()
+        value = "${guild.boostCount} (Tier: ${guild.boostTier.ordinal})"
         inline = true
     }
 }
