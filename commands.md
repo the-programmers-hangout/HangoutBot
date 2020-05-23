@@ -61,10 +61,10 @@
 | nuke     | (TextChannel), Integer | Delete 2 - 99 past messages in the given channel (default is the invoked channel) |
 
 ## Permissions
-| Commands   | Arguments                                   | Description                                                 |
-| ---------- | ------------------------------------------- | ----------------------------------------------------------- |
-| permission | set/get/list, (Command), (Permission Level) | Returns the required permission level for the given command |
-| roleperms  | Role, (Permission Level)                    | Gets or sets the permission level of the given role         |
+| Commands                | Arguments                                   | Description                                                 |
+| ----------------------- | ------------------------------------------- | ----------------------------------------------------------- |
+| permission, permissions | set/get/list, (Command), (Permission Level) | Returns the required permission level for the given command |
+| roleperms               | Role, (Permission Level)                    | Gets or sets the permission level of the given role         |
 
 ## Prefix
 | Commands  | Arguments | Description          |

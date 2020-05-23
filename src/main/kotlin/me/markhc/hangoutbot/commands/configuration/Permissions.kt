@@ -64,7 +64,7 @@ fun producePermissionCommands(persistentData: PersistentData,
                 field {
                     name = it.first
                     value = "```css\n${it.second.joinToString("\n") {
-                        "[${permissionsService.getCommandPermissionLevel(event.guild!!, it).toString().first()}] ${it.names.first()}"
+                        "[${permissionsService.getCommandPermissionLevel(event.guild!!, it).toString().first()}]\u202F${it.names.first()}"
                     }}\n```"
                     inline = true
                 }
