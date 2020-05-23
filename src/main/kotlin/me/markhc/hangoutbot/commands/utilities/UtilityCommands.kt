@@ -17,44 +17,9 @@ import java.time.format.DateTimeFormatter
 import java.util.concurrent.TimeUnit
 import kotlin.math.roundToLong
 
-@Suppress("unused")
-@CommandSet("Utility")
+@CommandSet("Selfmute")
 fun produceUtilityCommands(muteService: MuteService,
                            reminderService: ReminderService) = commands {
-
-    fun formatOffsetTime(time: OffsetDateTime): String {
-        val days = TimeUnit.MILLISECONDS.toDays(DateTime.now().millis - time.toInstant().toEpochMilli())
-        return "$days days ago, on ${time.format(DateTimeFormatter.ISO_LOCAL_DATE)}"
-    }
-
-    command("viewjoindate") {
-        requiresGuild = true
-        description = "Displays when a user joined the guild"
-        execute(MemberArg.makeOptional { it.guild!!.getMember(it.author)!! }) {
-            val member = it.args.first
-
-            it.respond("${member.fullName()} joined ${formatOffsetTime(member.timeJoined)}")
-        }
-    }
-
-    command("viewcreationdate") {
-        description = "Displays when a user was created"
-        execute(UserArg.makeOptional {it.author }) {
-            val user = it.args.first
-
-            it.respond("${user.fullName()} created ${formatOffsetTime(user.timeCreated)}")
-        }
-    }
-
-    command("avatar") {
-        description = "Gets the avatar from the given user"
-        execute(UserArg.makeOptional { it.author }) {
-            val user = it.args.first
-
-            it.respond("${user.effectiveAvatarUrl}?size=512")
-        }
-    }
-
     command("selfmute") {
         requiresGuild = true
         description = "Mute yourself for the given amount of time. A mute will stop you from talking in any channel. Default is 1 hour. Max is 24 hours."
@@ -110,7 +75,11 @@ fun produceUtilityCommands(muteService: MuteService,
             )
         }
     }
+}
 
+@CommandSet("Reminders")
+fun reminderCommands(muteService: MuteService,
+                           reminderService: ReminderService) = commands {
     command("remindme") {
         description = "A command that'll remind you about something after the specified time."
         execute(TimeArg, EveryArg) {

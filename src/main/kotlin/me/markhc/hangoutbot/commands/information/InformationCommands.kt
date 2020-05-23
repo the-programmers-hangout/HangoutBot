@@ -4,16 +4,42 @@ import me.aberrantfox.kjdautils.api.annotation.CommandSet
 import me.aberrantfox.kjdautils.api.dsl.command.commands
 import me.aberrantfox.kjdautils.api.dsl.embed
 import me.aberrantfox.kjdautils.api.getInjectionObject
+import me.aberrantfox.kjdautils.extensions.jda.fullName
+import me.aberrantfox.kjdautils.internal.arguments.CommandArg
+import me.aberrantfox.kjdautils.internal.arguments.MemberArg
 import me.aberrantfox.kjdautils.internal.arguments.RoleArg
 import me.aberrantfox.kjdautils.internal.arguments.UserArg
 import me.markhc.hangoutbot.dataclasses.Configuration
 import me.markhc.hangoutbot.services.BotStatsService
+import me.markhc.hangoutbot.services.HelpService
 import me.markhc.hangoutbot.services.Properties
 import me.markhc.hangoutbot.utilities.*
+import org.joda.time.DateTime
+import java.time.OffsetDateTime
+import java.time.format.DateTimeFormatter
+import java.util.concurrent.TimeUnit
 
-@Suppress("unused")
+fun formatOffsetTime(time: OffsetDateTime): String {
+    val days = TimeUnit.MILLISECONDS.toDays(DateTime.now().millis - time.toInstant().toEpochMilli())
+    return "$days days ago, on ${time.format(DateTimeFormatter.ISO_LOCAL_DATE)}"
+}
+
 @CommandSet("Information")
-fun produceInformationCommands(botStats: BotStatsService, config: Configuration) = commands {
+fun produceInformationCommands(helpService: HelpService, botStats: BotStatsService, config: Configuration) = commands {
+    command("help") {
+        description = "Display help information."
+        requiresGuild = true
+        execute(CommandArg.makeNullableOptional { null }) {
+            val (command) = it.args
+
+            if(command == null) {
+                it.respond(helpService.buildHelpEmbed(it))
+            } else {
+                it.respond(helpService.buildHelpEmbedForCommand(it, command))
+            }
+        }
+    }
+
     command("invite") {
         description = "Generates an invite link to this server."
         requiresGuild = true
@@ -30,13 +56,6 @@ fun produceInformationCommands(botStats: BotStatsService, config: Configuration)
                     it.respond("Here's your invite! It will expire in 24 hours!\n${invite.url}")
                 }
             }
-        }
-    }
-
-    command("ping") {
-        description = "pong."
-        execute {
-            it.respond(botStats.ping)
         }
     }
 
@@ -70,59 +89,12 @@ fun produceInformationCommands(botStats: BotStatsService, config: Configuration)
         }
     }
 
-    command("source") {
-        description = "Get the url for the bot source code."
-        execute {
-            val properties = it.discord.getInjectionObject<Properties>()
+    command("avatar") {
+        description = "Gets the avatar from the given user"
+        execute(UserArg.makeOptional { it.author }) {
+            val user = it.args.first
 
-            it.respond(properties?.repository ?: "None")
-        }
-    }
-
-    command("uptime") {
-        description = "Displays how long the bot has been running for."
-        execute {
-            it.respond("I have been running for ${botStats.uptime}")
-        }
-    }
-
-    command("botstats") {
-        description = "Displays miscellaneous information about the bot."
-        execute {
-            it.respond(embed {
-                title = "Stats"
-                color = infoColor
-
-                field {
-                    name = "Commands"
-                    value = """
-                        ```
-                        Commands executed:      ${String.format("%6d", config.totalCommandsExecuted)}
-                        Commands since restart: ${String.format("%6d", botStats.totalCommands)}
-                        ```
-                    """.trimIndent()
-                }
-
-                val runtime = Runtime.getRuntime()
-                val usedMemory = runtime.totalMemory() - runtime.freeMemory()
-
-                field {
-                    name = "Memory"
-                    value = "${usedMemory / 1000000}/${runtime.totalMemory() / 1000000} MiB"
-                    inline = true
-                }
-
-                field {
-                    name = "Ping"
-                    value = botStats.ping
-                    inline = true
-                }
-
-                field {
-                    name = "Uptime"
-                    value = botStats.uptime
-                }
-            })
+            it.respond("${user.effectiveAvatarUrl}?size=512")
         }
     }
 }

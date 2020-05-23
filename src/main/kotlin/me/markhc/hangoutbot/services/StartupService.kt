@@ -20,6 +20,7 @@ class StartupService(properties: Properties,
         reminderService.launchTimers()
 
         with(discord.configuration) {
+
             prefix {
                 if(it.guild == null)
                     config.prefix

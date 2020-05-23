@@ -13,7 +13,7 @@
         <main.class>me.markhc.hangoutbot.MainKt</main.class>
         <project.repository>https://github.com/the-programmers-hangout/HangoutBot/</project.repository>
         <kotlin.version>1.3.72</kotlin.version>
-        <kutils.version>3121c4a392</kutils.version>
+        <kutils.version>1e7cdf4659</kutils.version>
     </properties>
 
     <dependencies>
@@ -73,6 +73,11 @@
             <groupId>com.github.ricksbrown</groupId>
             <artifactId>cowsay</artifactId>
             <version>1.0.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.reflections</groupId>
+            <artifactId>reflections</artifactId>
+            <version>0.9.12</version>
         </dependency>
     </dependencies>
 

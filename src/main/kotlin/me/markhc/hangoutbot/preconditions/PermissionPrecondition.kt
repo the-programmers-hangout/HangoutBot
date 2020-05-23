@@ -5,6 +5,7 @@ import me.aberrantfox.kjdautils.internal.command.Fail
 import me.aberrantfox.kjdautils.internal.command.Pass
 import me.aberrantfox.kjdautils.internal.command.precondition
 import me.markhc.hangoutbot.extensions.requiredPermissionLevel
+import me.markhc.hangoutbot.locale.Messages
 import me.markhc.hangoutbot.services.PermissionLevel
 import me.markhc.hangoutbot.services.PermissionsService
 import me.markhc.hangoutbot.services.PersistentData
@@ -17,7 +18,7 @@ fun produceHasPermissionPrecondition(persistentData: PersistentData, permissions
         return@precondition if (permissionsService.hasClearance(null, it.author, command.requiredPermissionLevel))
             Pass
         else
-            Fail("You do not have the required permissions to perform this action.")
+            Fail(Messages.INSUFFICIENT_PERMS)
     } else {
         val guild = it.guild!!
         val member = guild.getMember(it.author)!!
@@ -31,7 +32,7 @@ fun produceHasPermissionPrecondition(persistentData: PersistentData, permissions
         val level = permissionsService.getCommandPermissionLevel(guild, command)
 
         if (!permissionsService.hasClearance(guild, it.author, level))
-            return@precondition Fail("You do not have the required permissions to perform this action.")
+            return@precondition Fail(Messages.INSUFFICIENT_PERMS)
 
         return@precondition Pass
     }
