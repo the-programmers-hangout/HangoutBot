@@ -123,7 +123,7 @@ fun buildRoleInfoEmbed(role: Role) = embed {
 
 private fun formatOffsetTime(time: OffsetDateTime): String {
     val days = TimeUnit.MILLISECONDS.toDays(DateTime.now().millis - time.toInstant().toEpochMilli())
-    return if(days < 4) {
+    return if(days > 4) {
         "$days days ago\n${time.format(DateTimeFormatter.ISO_LOCAL_DATE)}"
     } else {
         val hours = TimeUnit.MILLISECONDS.toHours(DateTime.now().millis - time.toInstant().toEpochMilli())
