@@ -65,7 +65,7 @@ fun buildServerInfoEmbed(guild: Guild) = embed {
     }
     field {
         name = "**Emotes**"
-        value = "${guild.emotes.size}/${guild.maxEmotes}"
+        value = "${guild.emotes.size}/${guild.maxEmotes*2}"
         inline = true
     }
     field {
