@@ -11,6 +11,7 @@ data class Configuration(val guildConfigurations: MutableList<GuildConfiguration
 
 data class GuildConfiguration(val guildId: String = "",
                               var prefix: String = "++",
+                              var cooldown: Int = 5,
                               var welcomeEmbeds: Boolean = false,
                               var welcomeChannel: String = "",
                               var botChannel: String = "",

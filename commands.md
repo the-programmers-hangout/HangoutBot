@@ -11,7 +11,14 @@
 | botstats | <none>    | Displays miscellaneous information about the bot. |
 | source   | <none>    | Get the url for the bot source code.              |
 
-## BotConfiguration
+## Colors
+| Commands   | Arguments            | Description                                                              |
+| ---------- | -------------------- | ------------------------------------------------------------------------ |
+| clearcolor | <none>               | Clears the current color role.                                           |
+| listcolors | <none>               | Creates a role with the given name and color and assigns it to the user. |
+| setcolor   | (HexColor), RoleName | Creates a role with the given name and color and assigns it to the user. |
+
+## Configuration
 | Commands     | Arguments     | Description                                                                                                     |
 | ------------ | ------------- | --------------------------------------------------------------------------------------------------------------- |
 | botchannel   | (TextChannel) | Sets the bot channel. If set, the bot channel will be the only channel where the bot will accept commands from. |
@@ -19,13 +26,6 @@
 | logchannel   | (TextChannel) | Sets the channel used to log executed commands                                                                  |
 | muterole     | (Role)        | Gets or sets the role used to mute an user.                                                                     |
 | softmuterole | (Role)        | Gets or sets the role used to soft mute an user                                                                 |
-
-## Colors
-| Commands   | Arguments            | Description                                                              |
-| ---------- | -------------------- | ------------------------------------------------------------------------ |
-| clearcolor | <none>               | Clears the current color role.                                           |
-| listcolors | <none>               | Creates a role with the given name and color and assigns it to the user. |
-| setcolor   | (HexColor), RoleName | Creates a role with the given name and color and assigns it to the user. |
 
 ## Fun
 | Commands | Arguments                                  | Description                                                                                |
@@ -60,16 +60,17 @@
 | echo     | (TextChannel), Text    | Echo a message to a channel.                                                      |
 | nuke     | (TextChannel), Integer | Delete 2 - 99 past messages in the given channel (default is the invoked channel) |
 
+## Owner Commands
+| Commands  | Arguments | Description                                                                                                  |
+| --------- | --------- | ------------------------------------------------------------------------------------------------------------ |
+| cooldown  | (Integer) | Gets or sets the cooldown (in seconds) after a user executes a command before he is able to execute another. |
+| setprefix | Prefix    | Sets the bot prefix.                                                                                         |
+
 ## Permissions
 | Commands                | Arguments                                   | Description                                                 |
 | ----------------------- | ------------------------------------------- | ----------------------------------------------------------- |
 | permission, permissions | set/get/list, (Command), (Permission Level) | Returns the required permission level for the given command |
 | roleperms               | Role, (Permission Level)                    | Gets or sets the permission level of the given role         |
-
-## Prefix
-| Commands  | Arguments | Description          |
-| --------- | --------- | -------------------- |
-| setprefix | Prefix    | Sets the bot prefix. |
 
 ## Reminders
 | Commands      | Arguments  | Description                                                            |

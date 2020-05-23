@@ -9,8 +9,8 @@ import me.markhc.hangoutbot.services.PermissionLevel
 import me.markhc.hangoutbot.services.PersistentData
 import net.dv8tion.jda.api.entities.TextChannel
 
-@CommandSet("BotConfiguration")
-fun roleCommands(persistentData: PersistentData) = commands {
+@CommandSet("Configuration")
+fun botConfigCommands(persistentData: PersistentData) = commands {
     command("muterole") {
         description = "Gets or sets the role used to mute an user."
         requiredPermissionLevel = PermissionLevel.Administrator
@@ -108,13 +108,13 @@ fun roleCommands(persistentData: PersistentData) = commands {
         execute(TextChannelArg.makeNullableOptional(null)) {
             val (textChannel) = it.args
 
-            if(textChannel != null) {
+            if (textChannel != null) {
                 persistentData.setGuildProperty(it.guild!!) { welcomeChannel = textChannel.id }
 
                 it.respond("Greeting channel set to **#${textChannel.name}**")
             } else {
                 val channelId = persistentData.getGuildProperty(it.guild!!) { welcomeChannel }
-                if(channelId.isNotEmpty()) {
+                if (channelId.isNotEmpty()) {
                     val channel = it.guild!!.getGuildChannelById(channelId) as TextChannel?
 
                     it.respond("Greeting channel is ${channel?.asMention}")
