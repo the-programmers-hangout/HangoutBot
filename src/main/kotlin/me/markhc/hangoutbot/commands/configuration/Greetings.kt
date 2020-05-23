@@ -36,7 +36,7 @@ fun greetingCommands(persistentData: PersistentData, conversationService: Conver
         }
     }
 
-    command("dmgreetings") {
+    command("greetdms") {
         description = "Whether to send  greetings through DMs"
         requiredPermissionLevel = PermissionLevel.Administrator
         requiresGuild = true
@@ -45,7 +45,7 @@ fun greetingCommands(persistentData: PersistentData, conversationService: Conver
         }
     }
 
-    command("chnlgreetings") {
+    command("greetchnl") {
         description = "Whether to send  greetings in the configured greeting channel"
         requiredPermissionLevel = PermissionLevel.Administrator
         requiresGuild = true
@@ -54,7 +54,7 @@ fun greetingCommands(persistentData: PersistentData, conversationService: Conver
         }
     }
 
-    command("greetingcontents") {
+    command("greetcontents") {
         description = "Configure the contents of the greeting message"
         requiredPermissionLevel = PermissionLevel.Administrator
         requiresGuild = true

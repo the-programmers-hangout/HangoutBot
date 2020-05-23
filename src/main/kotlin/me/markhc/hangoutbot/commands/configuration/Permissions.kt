@@ -54,14 +54,17 @@ fun producePermissionCommands(persistentData: PersistentData,
 
         event.respond(embed{
             title = "Required permissions"
-            description= "[B] Bot Owner\n[G] Guild Owner\n" +
-                    "[A] Administrator\n[S] Staff\n" +
-                    "[E] Everyone"
+            description= "```css\n" +
+                    "[B] → Bot Owner\n" +
+                    "[G] → Guild Owner\n" +
+                    "[A] → Administrator\n" +
+                    "[S] → Staff\n" +
+                    "[E] → Everyone```"
             commands.forEach {
                 field {
                     name = it.first
                     value = "```css\n${it.second.joinToString("\n") {
-                        "${it.names.first().padEnd(14)} [${permissionsService.getCommandPermissionLevel(event.guild!!, it).toString().first()}]"
+                        "[${permissionsService.getCommandPermissionLevel(event.guild!!, it).toString().first()}] ${it.names.first()}"
                     }}\n```"
                     inline = true
                 }
@@ -69,7 +72,7 @@ fun producePermissionCommands(persistentData: PersistentData,
         })
     }
 
-    command("permission") {
+    command("permission", "permissions") {
         description = "Returns the required permission level for the given command"
         requiredPermissionLevel = PermissionLevel.Staff
         requiresGuild = true

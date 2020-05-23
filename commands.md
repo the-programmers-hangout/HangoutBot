@@ -37,12 +37,12 @@
 | roll     | (Min), (Max)                               | Rolls a number in a range (default 1-100)                                                  |
 
 ## Greetings
-| Commands         | Arguments        | Description                                                   |
-| ---------------- | ---------------- | ------------------------------------------------------------- |
-| chnlgreetings    | enable/disable   | Whether to send  greetings in the configured greeting channel |
-| dmgreetings      | enable/disable   | Whether to send  greetings through DMs                        |
-| greetingcontents | <none>           | Configure the contents of the greeting message                |
-| greetings        | (enable/disable) | Enables or disables the greetings on member join.             |
+| Commands      | Arguments        | Description                                                   |
+| ------------- | ---------------- | ------------------------------------------------------------- |
+| greetchnl     | enable/disable   | Whether to send  greetings in the configured greeting channel |
+| greetcontents | <none>           | Configure the contents of the greeting message                |
+| greetdms      | enable/disable   | Whether to send  greetings through DMs                        |
+| greetings     | (enable/disable) | Enables or disables the greetings on member join.             |
 
 ## Information
 | Commands   | Arguments | Description                                        |
