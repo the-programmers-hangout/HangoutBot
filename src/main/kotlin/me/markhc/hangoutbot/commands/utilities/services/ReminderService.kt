@@ -18,7 +18,7 @@ import net.dv8tion.jda.api.entities.*
 @Service
 class ReminderService(private val persistentData: PersistentData,
                       private val discord: Discord) {
-    private val dateFormatter = DateTimeFormat.fullDateTime()
+    private val dateFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ssZ")
 
     fun addReminder(user: User, ms: Long, what: String): Result<String, Exception> {
         val reminders = persistentData.getGlobalProperty { reminders }
@@ -48,7 +48,7 @@ class ReminderService(private val persistentData: PersistentData,
 
     fun launchTimers() {
         persistentData.getGlobalProperty { reminders }.forEach {
-            val millis = dateFormatter.parseMillis(it.timeUntil) - DateTime.now().millis
+            val millis = dateFormatter.parseDateTime(it.timeUntil).millis - DateTime.now().millis
             launchReminder(it.user, millis, it.what)
         }
     }
@@ -64,7 +64,9 @@ class ReminderService(private val persistentData: PersistentData,
             })
 
             persistentData.setGlobalProperty {
-                reminders.removeIf { it.user == userId }
+                reminders.removeIf {
+                    dateFormatter.parseDateTime(it.timeUntil).millis < DateTime.now().millis
+                }
             }
         }
     }
