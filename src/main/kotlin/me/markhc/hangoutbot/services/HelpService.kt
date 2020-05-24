@@ -20,7 +20,7 @@ class HelpService(private val permissionsService: PermissionsService) {
         color = infoColor
 
         fun joinNames(value: List<Command>) =
-                value.joinToString("\n") { it.names.joinToString() }
+                value.joinToString("\n") { it.names.first() }
 
         val commands = container.commands
                 .filter { it.isVisible(event.guild!!, event.author) }
@@ -31,7 +31,7 @@ class HelpService(private val permissionsService: PermissionsService) {
         if(commands.isNotEmpty()) {
             commands.map { (category, commands) ->
                 val sorted = commands
-                        .sortedBy { it.names.joinToString() }
+                        .sortedBy { it.names.first() }
 
                 field {
                     name = "**$category**"
