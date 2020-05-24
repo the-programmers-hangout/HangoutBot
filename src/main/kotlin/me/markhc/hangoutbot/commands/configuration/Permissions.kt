@@ -76,7 +76,7 @@ fun producePermissionCommands(persistentData: PersistentData,
         description = "Returns the required permission level for the given command"
         requiredPermissionLevel = PermissionLevel.Staff
         requiresGuild = true
-        execute(ChoiceArg("set/get/list", "set", "get", "list"),
+        execute(ChoiceArg("set/get/list", "set", "get", "list").makeOptional("get"),
                 CommandArg.makeNullableOptional(null),
                 PermissionLevelArg.makeNullableOptional(null)) {
             val (choice, command, level) = it.args

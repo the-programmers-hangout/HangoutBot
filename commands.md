@@ -67,10 +67,10 @@
 | setprefix | Prefix    | Sets the bot prefix.                                                                                         |
 
 ## Permissions
-| Commands                | Arguments                                   | Description                                                 |
-| ----------------------- | ------------------------------------------- | ----------------------------------------------------------- |
-| permission, permissions | set/get/list, (Command), (Permission Level) | Returns the required permission level for the given command |
-| roleperms               | Role, (Permission Level)                    | Gets or sets the permission level of the given role         |
+| Commands                | Arguments                                     | Description                                                 |
+| ----------------------- | --------------------------------------------- | ----------------------------------------------------------- |
+| permission, permissions | (set/get/list), (Command), (Permission Level) | Returns the required permission level for the given command |
+| roleperms               | Role, (Permission Level)                      | Gets or sets the permission level of the given role         |
 
 ## Reminders
 | Commands      | Arguments  | Description                                                            |
