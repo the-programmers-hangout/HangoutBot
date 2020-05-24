@@ -39,7 +39,7 @@ fun produceFunCommands() = commands {
 
     command("flip") {
         description = "Choose one of the given choices."
-        execute(SplitterArg("Choice 1 | Choice 2 | ...")) {
+        execute(SplitterArg("|", "Choice 1 | Choice 2 | ...")) {
             val (args) = it.args
             val choice = args[Random.nextInt(args.size)]
             it.respond(Messages.getRandomFlipMessage(choice))

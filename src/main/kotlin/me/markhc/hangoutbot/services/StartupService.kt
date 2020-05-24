@@ -77,7 +77,7 @@ class StartupService(properties: Properties,
             }
 
             visibilityPredicate predicate@{
-                return@predicate if(it.guild == null && it.command.requiresGuild) {
+                return@predicate if(it.guild == null && it.command.requiresGuild ?: discord.configuration.requiresGuild) {
                     false
                 } else {
                     permissionsService.isCommandVisible(it.guild, it.user, it.command)

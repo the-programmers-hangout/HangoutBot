@@ -28,13 +28,13 @@
 | softmuterole | (Role)        | Gets or sets the role used to soft mute an user                                                                 |
 
 ## Fun
-| Commands | Arguments                                  | Description                                                                                |
-| -------- | ------------------------------------------ | ------------------------------------------------------------------------------------------ |
-| coin     | (Coins)                                    | Flip a coin (or coins).                                                                    |
-| cowsay   | (Cow), (Message)                           | Displays a cowsay with a given message. Run with no arguments to get a list of valid cows. |
-| dadjoke  | <none>                                     | Returns a random dad joke.                                                                 |
-| flip     | (SeparatedChoice 1 \| Choice 2 \| ...Text) | Choose one of the given choices.                                                           |
-| roll     | (Min), (Max)                               | Rolls a number in a range (default 1-100)                                                  |
+| Commands | Arguments                   | Description                                                                                |
+| -------- | --------------------------- | ------------------------------------------------------------------------------------------ |
+| coin     | (Coins)                     | Flip a coin (or coins).                                                                    |
+| cowsay   | (Cow), (Message)            | Displays a cowsay with a given message. Run with no arguments to get a list of valid cows. |
+| dadjoke  | <none>                      | Returns a random dad joke.                                                                 |
+| flip     | Choice 1 \| Choice 2 \| ... | Choose one of the given choices.                                                           |
+| roll     | (Min), (Max)                | Rolls a number in a range (default 1-100)                                                  |
 
 ## Greetings
 | Commands      | Arguments        | Description                                                   |

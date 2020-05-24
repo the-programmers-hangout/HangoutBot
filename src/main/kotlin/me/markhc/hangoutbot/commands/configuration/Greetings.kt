@@ -63,12 +63,3 @@ fun greetingCommands(persistentData: PersistentData, conversationService: Conver
         }
     }
 }
-
-private fun evaluateConversationResult(conversationResult: ConversationResult) =
-        when (conversationResult) {
-            ConversationResult.COMPLETE -> "Conversation Completed!"
-            ConversationResult.EXITED -> "The conversation was exited by the user."
-            ConversationResult.INVALID_USER -> "User must share a guild and cannot be a bot."
-            ConversationResult.CANNOT_DM -> "User has DM's off or has blocked the bot."
-            ConversationResult.HAS_CONVO -> "This user already has a conversation."
-        }

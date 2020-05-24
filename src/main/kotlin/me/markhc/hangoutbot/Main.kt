@@ -24,7 +24,7 @@ fun main(args: Array<String>) {
                 }
                 commandReaction = null
                 allowMentionPrefix = true
-                allowPrivateMessages = true
+                requiresGuild = false
             }
         }
     }
