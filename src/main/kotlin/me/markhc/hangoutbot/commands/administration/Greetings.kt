@@ -1,17 +1,12 @@
-package me.markhc.hangoutbot.commands.configuration
+package me.markhc.hangoutbot.commands.administration
 
 import me.aberrantfox.kjdautils.api.annotation.CommandSet
 import me.aberrantfox.kjdautils.api.dsl.command.commands
 import me.aberrantfox.kjdautils.internal.arguments.BooleanArg
-import me.aberrantfox.kjdautils.internal.arguments.ChoiceArg
-import me.aberrantfox.kjdautils.internal.arguments.TextChannelArg
-import me.aberrantfox.kjdautils.internal.services.ConversationResult
 import me.aberrantfox.kjdautils.internal.services.ConversationService
-import me.markhc.hangoutbot.commands.configuration.conversations.GreetingSetContents
 import me.markhc.hangoutbot.extensions.requiredPermissionLevel
 import me.markhc.hangoutbot.services.PermissionLevel
 import me.markhc.hangoutbot.services.PersistentData
-import net.dv8tion.jda.api.entities.TextChannel
 
 @CommandSet("Greetings")
 fun greetingCommands(persistentData: PersistentData, conversationService: ConversationService) = commands {

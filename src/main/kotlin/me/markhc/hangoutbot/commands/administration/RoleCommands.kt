@@ -1,4 +1,4 @@
-package me.markhc.hangoutbot.commands.configuration
+package me.markhc.hangoutbot.commands.administration
 
 import me.aberrantfox.kjdautils.api.annotation.CommandSet
 import me.aberrantfox.kjdautils.api.dsl.command.commands
@@ -15,7 +15,7 @@ import me.markhc.hangoutbot.services.PersistentData
 import net.dv8tion.jda.api.entities.Guild
 
 @CommandSet("Roles")
-fun memberRoles(persistentData: PersistentData) = commands {
+fun roleCommands(persistentData: PersistentData) = commands {
     command("grantablerole") {
         description = "Adds, removes or lists grantble roles."
         requiredPermissionLevel = PermissionLevel.Staff
@@ -169,29 +169,6 @@ fun memberRoles(persistentData: PersistentData) = commands {
                 } else {
                     message.editMessage("No results").queue()
                 }
-            }
-        }
-    }
-
-    command("createrole") {
-        description = "Creates a role."
-        requiredPermissionLevel = PermissionLevel.GuildOwner
-        requiresGuild = true
-        execute { event ->
-            event.respond("Not implemented yet!")
-        }
-    }
-
-    command("deleterole") {
-        description = "Deletes the given role or roles."
-        requiredPermissionLevel = PermissionLevel.GuildOwner
-        requiresGuild = true
-        execute(MultipleArg(RoleArg)) { event ->
-            event.args.first.distinct().forEach { role ->
-                role.delete().queue(
-                        { event.respond("Deleted role ${role.name}") },
-                        { event.respond("Failed to delete role ${role.name}") }
-                )
             }
         }
     }

@@ -1,4 +1,4 @@
-package me.markhc.hangoutbot.commands.configuration
+package me.markhc.hangoutbot.commands.administration
 
 import me.aberrantfox.kjdautils.api.annotation.CommandSet
 import me.aberrantfox.kjdautils.api.dsl.command.Command
@@ -7,7 +7,6 @@ import me.aberrantfox.kjdautils.api.dsl.command.commands
 import me.aberrantfox.kjdautils.api.dsl.embed
 import me.aberrantfox.kjdautils.internal.arguments.ChoiceArg
 import me.aberrantfox.kjdautils.internal.arguments.CommandArg
-import me.aberrantfox.kjdautils.internal.arguments.MultipleArg
 import me.aberrantfox.kjdautils.internal.arguments.RoleArg
 import me.markhc.hangoutbot.arguments.PermissionLevelArg
 import me.markhc.hangoutbot.extensions.requiredPermissionLevel
@@ -15,7 +14,6 @@ import me.markhc.hangoutbot.extensions.requiresPermission
 import me.markhc.hangoutbot.services.PermissionLevel
 import me.markhc.hangoutbot.services.PermissionsService
 import me.markhc.hangoutbot.services.PersistentData
-import java.util.concurrent.TimeUnit
 
 @CommandSet("Permissions")
 fun producePermissionCommands(persistentData: PersistentData,

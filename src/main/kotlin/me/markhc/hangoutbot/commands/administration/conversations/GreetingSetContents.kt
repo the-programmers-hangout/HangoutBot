@@ -1,10 +1,8 @@
-package me.markhc.hangoutbot.commands.configuration.conversations
+package me.markhc.hangoutbot.commands.administration.conversations
 
 import me.aberrantfox.kjdautils.api.dsl.*
-import me.aberrantfox.kjdautils.api.dsl.command.CommandEvent
 import me.aberrantfox.kjdautils.extensions.jda.fullName
 import me.aberrantfox.kjdautils.internal.arguments.*
-import net.dv8tion.jda.api.entities.TextChannel
 import java.awt.Color
 
 class GreetingSetContents : Conversation() {

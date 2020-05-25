@@ -1,10 +1,9 @@
-package me.markhc.hangoutbot.commands.configuration
+package me.markhc.hangoutbot.commands.administration
 
 import me.aberrantfox.kjdautils.api.annotation.CommandSet
 import me.aberrantfox.kjdautils.api.dsl.command.commands
 import me.aberrantfox.kjdautils.internal.arguments.AnyArg
 import me.aberrantfox.kjdautils.internal.arguments.IntegerArg
-import me.aberrantfox.kjdautils.internal.arguments.TimeArg
 import me.markhc.hangoutbot.extensions.requiredPermissionLevel
 import me.markhc.hangoutbot.services.PermissionLevel
 import me.markhc.hangoutbot.services.PersistentData
