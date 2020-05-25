@@ -53,29 +53,6 @@ fun moderationCommands(persistentData: PersistentData,
     }
 }
 
-@CommandSet("Slowmode")
-fun slowModeCommands() = commands {
-    command("setslowmode") {
-        description = "Set slowmode in a channel."
-        requiredPermissionLevel = PermissionLevel.Staff
-        requiresGuild = true
-        execute(TextChannelArg, TimeArg) {
-            val (channel, interval) = it.args
-
-            if (interval > 21600 || interval < 0) {
-                return@execute it.respond("Invalid time element passed.")
-            }
-
-            val res = it
-
-            channel.manager.setSlowmode(interval.toInt()).queue {
-                res.respond("Successfully set slow-mode in channel ${channel
-                        .asMention} to ${interval.toInt()} seconds.")
-            }
-        }
-    }
-}
-
 private fun safeDeleteMessages(channel: TextChannel,
                                messages: List<Message>) {
     try {
