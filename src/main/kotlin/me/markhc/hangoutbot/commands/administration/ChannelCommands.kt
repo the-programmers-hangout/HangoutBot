@@ -6,6 +6,8 @@ import me.aberrantfox.kjdautils.internal.arguments.*
 import me.markhc.hangoutbot.extensions.requiredPermissionLevel
 import me.markhc.hangoutbot.services.PermissionLevel
 import me.markhc.hangoutbot.services.PersistentData
+import net.dv8tion.jda.api.exceptions.InsufficientPermissionException
+import net.dv8tion.jda.api.exceptions.PermissionException
 
 @CommandSet("Channel")
 fun channelCommands(persistentData: PersistentData) = commands {
@@ -24,10 +26,11 @@ fun channelCommands(persistentData: PersistentData) = commands {
                     event.respond("${channel.asMention} does not have a set topic!")
                 }
             } else {
-                channel.manager.setTopic(topic).queue(
-                        { event.respond("Success!") },
-                        { event.respond("Error while trying to set topic. ${it.message}") }
-                )
+                try {
+                    channel.manager.setTopic(topic).queue { event.respond("Success!") }
+                } catch(e: InsufficientPermissionException) {
+                    event.respond(e.message!!)
+                }
             }
         }
     }
@@ -43,9 +46,12 @@ fun channelCommands(persistentData: PersistentData) = commands {
                 if (interval > 21600 || interval < 0) {
                     return@execute event.respond("Invalid time element passed.")
                 }
-
-                channel.manager.setSlowmode(interval.toInt()).queue {
-                    event.respond("Successfully set slow-mode in channel ${channel.asMention} to ${interval.toInt()} seconds.")
+                try {
+                    channel.manager.setSlowmode(interval.toInt()).queue {
+                        event.respond("Successfully set slow-mode in channel ${channel.asMention} to ${interval.toInt()} seconds.")
+                    }
+                } catch(e: InsufficientPermissionException) {
+                    event.respond(e.message!!)
                 }
             } else {
                 event.respond("The slowmode internal for ${channel.asMention} is ${channel.slowmode} seconds")

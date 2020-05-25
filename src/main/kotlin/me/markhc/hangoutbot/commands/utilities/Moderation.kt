@@ -12,6 +12,7 @@ import me.markhc.hangoutbot.extensions.removeRole
 import me.markhc.hangoutbot.extensions.requiredPermissionLevel
 import me.markhc.hangoutbot.services.*
 import net.dv8tion.jda.api.entities.*
+import net.dv8tion.jda.api.exceptions.InsufficientPermissionException
 import java.awt.Color
 
 @CommandSet("Moderation")
@@ -42,12 +43,16 @@ fun moderationCommands(persistentData: PersistentData,
 
             val sameChannel = it.channel.id == channel.id
 
-            channel.history.retrievePast(amount + if (sameChannel) 1 else 0).queue { past ->
-                safeDeleteMessages(channel, past)
+            try {
+                channel.history.retrievePast(amount + if (sameChannel) 1 else 0).queue { past ->
+                    safeDeleteMessages(channel, past)
 
-                channel.sendMessage("Be nice. No spam.").queue()
+                    channel.sendMessage("Be nice. No spam.").queue()
 
-                if (!sameChannel) it.respond("$amount messages deleted.")
+                    if (!sameChannel) it.respond("$amount messages deleted.")
+                }
+            } catch(e: InsufficientPermissionException) {
+                it.respond(e.message!!)
             }
         }
     }

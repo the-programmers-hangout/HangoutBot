@@ -47,7 +47,6 @@ fun botConfigCommands(persistentData: PersistentData) = commands {
             } else {
                 val roleId = persistentData.getGuildProperty(it.guild!!) { softMuteRole }
 
-
                 if(roleId.isNotEmpty()) {
                     it.respond("Soft mute role is **${it.guild!!.getRoleById(roleId)?.name}**")
                 } else {
