@@ -4,11 +4,11 @@ import me.aberrantfox.kjdautils.api.annotation.Precondition
 import me.aberrantfox.kjdautils.internal.command.Fail
 import me.aberrantfox.kjdautils.internal.command.Pass
 import me.aberrantfox.kjdautils.internal.command.precondition
-import me.markhc.hangoutbot.extensions.requiredPermissionLevel
 import me.markhc.hangoutbot.locale.Messages
 import me.markhc.hangoutbot.services.PermissionLevel
 import me.markhc.hangoutbot.services.PermissionsService
 import me.markhc.hangoutbot.services.PersistentData
+import me.markhc.hangoutbot.services.requiredPermissionLevel
 
 @Precondition
 fun produceHasPermissionPrecondition(persistentData: PersistentData, permissionsService: PermissionsService) = precondition {

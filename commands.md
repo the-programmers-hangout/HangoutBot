@@ -5,11 +5,23 @@
 | ---------- | -------------------------- |
 | (Argument) | This argument is optional. |
 
+## Anime
+| Commands | Arguments    | Description                                                |
+| -------- | ------------ | ---------------------------------------------------------- |
+| anime    | Search terms | Searches for an anime on Anilist based on the given terms. |
+| manga    | Search terms | Searches for a manga on Anilist based on the given terms.  |
+
 ## Bot Information
 | Commands | Arguments | Description                                       |
 | -------- | --------- | ------------------------------------------------- |
 | botstats | <none>    | Displays miscellaneous information about the bot. |
 | source   | <none>    | Get the url for the bot source code.              |
+
+## Channel
+| Commands  | Arguments           | Description                          |
+| --------- | ------------------- | ------------------------------------ |
+| chnltopic | TextChannel, (Text) | Gets or sets the topic of a channel. |
+| slowmode  | TextChannel, Time   | Set the slowmode in a channel.       |
 
 ## Colors
 | Commands   | Arguments            | Description                                                              |
@@ -37,12 +49,9 @@
 | roll     | (Min), (Max)                | Rolls a number in a range (default 1-100)                                                  |
 
 ## Greetings
-| Commands      | Arguments        | Description                                                   |
-| ------------- | ---------------- | ------------------------------------------------------------- |
-| greetchnl     | enable/disable   | Whether to send  greetings in the configured greeting channel |
-| greetcontents | <none>           | Configure the contents of the greeting message                |
-| greetdms      | enable/disable   | Whether to send  greetings through DMs                        |
-| greetings     | (enable/disable) | Enables or disables the greetings on member join.             |
+| Commands  | Arguments        | Description                                       |
+| --------- | ---------------- | ------------------------------------------------- |
+| greetings | (enable/disable) | Enables or disables the greetings on member join. |
 
 ## Information
 | Commands   | Arguments | Description                                        |
@@ -81,8 +90,6 @@
 ## Roles
 | Commands      | Arguments                        | Description                                           |
 | ------------- | -------------------------------- | ----------------------------------------------------- |
-| createrole    | <none>                           | Creates a role.                                       |
-| deleterole    | Role...                          | Deletes the given role or roles.                      |
 | grant         | (Member), GrantableRole          | Grants a role to a lower ranked member or yourself    |
 | grantablerole | add/rem/list, (Role), (Category) | Adds, removes or lists grantble roles.                |
 | listroles     | (GrepRegex)                      | List all the roles available in the guild.            |
@@ -93,11 +100,6 @@
 | -------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | productivemute | (Time)    | Trying to be productive? Mute yourself for the specified amount of time. A productive mute will prevent you from talking in the social channels while still allowing the use of the language channels. Default is 1 hour. Max is 24 hours. |
 | selfmute       | (Time)    | Mute yourself for the given amount of time. A mute will stop you from talking in any channel. Default is 1 hour. Max is 24 hours.                                                                                                          |
-
-## Slowmode
-| Commands    | Arguments         | Description                |
-| ----------- | ----------------- | -------------------------- |
-| setslowmode | TextChannel, Time | Set slowmode in a channel. |
 
 ## XKCD
 | Commands    | Arguments      | Description                                                                              |

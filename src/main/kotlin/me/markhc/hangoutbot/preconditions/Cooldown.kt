@@ -4,10 +4,9 @@ import me.aberrantfox.kjdautils.api.annotation.Precondition
 import me.aberrantfox.kjdautils.internal.command.Fail
 import me.aberrantfox.kjdautils.internal.command.Pass
 import me.aberrantfox.kjdautils.internal.command.precondition
-import me.markhc.hangoutbot.services.BotConfiguration
+import me.markhc.hangoutbot.configuration.BotConfiguration
 import me.markhc.hangoutbot.services.PersistentData
 import org.joda.time.DateTime
-import java.sql.Timestamp
 
 val cooldownMap = mutableMapOf<Long, Long>()
 
