@@ -14,31 +14,6 @@ import me.markhc.hangoutbot.services.*
 @CommandSet("Permissions")
 fun producePermissionCommands(persistentData: PersistentData,
                               permissionsService: PermissionsService) = commands {
-    fun getPermissions(event: CommandEvent<*>, cmd: Command) {
-        event.respond("${
-            permissionsService.getCommandPermissionLevel(event.guild!!, cmd)
-        }")
-    }
-
-    fun setPermission(event: CommandEvent<*>,
-                      command: Command,
-                      level: PermissionLevel) {
-        val guild = event.guild!!
-        val member = guild.getMember(event.author)!!
-
-        val cmdPerms = permissionsService.getCommandPermissionLevel(event.guild!!, command)
-        val authorPerms = permissionsService.getPermissionLevel(member)
-
-        if (cmdPerms > authorPerms) {
-            event.respond(
-                    "Sorry, you cannot change permissions for ${command.names.first()}")
-        } else {
-                permissionsService.setCommandPermissionLevel(guild, command, level)
-
-            event.respond("${command.names.first()} is now available to ${level}.")
-        }
-    }
-
     fun listPermissions(event: CommandEvent<*>) {
         val commands = event.container.commands
                 .sortedBy { it.names.joinToString() }
@@ -80,7 +55,9 @@ fun producePermissionCommands(persistentData: PersistentData,
                     if(command == null) {
                         it.respond("Received less arguments than expected. Expected: `(Command)`")
                     } else {
-                        getPermissions(it, command)
+                        it.respond("${
+                            permissionsService.getCommandPermissionLevel(it.guild!!, it.command!!)
+                        }")
                     }
                 }
                 "set" -> {
@@ -88,7 +65,11 @@ fun producePermissionCommands(persistentData: PersistentData,
                         if (command == null || level == null) {
                             it.respond("Received less arguments than expected. Expected: `(Command) (Level)`")
                         } else {
-                            setPermission(it, command, level)
+                            if (permissionsService.trySetCommandPermission(it.guild!!, it.author, command, level)) {
+                                it.respond("${command.names.first()} is now available to ${level}.")
+                            } else {
+                                it.respond("Sorry, you cannot change permissions for ${command.names.first()}")
+                            }
                         }
                     }
                 }

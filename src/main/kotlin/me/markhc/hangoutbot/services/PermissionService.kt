@@ -30,9 +30,20 @@ class PermissionsService(private val persistentData: PersistentData, private val
         } ?: command.requiredPermissionLevel
     }
 
-    fun setCommandPermissionLevel(guild: Guild, command: Command, permissionLevel: PermissionLevel) {
-        persistentData.setGuildProperty(guild) {
-            commandPermission[command.names.first()] = permissionLevel
+    fun trySetCommandPermission(guild: Guild, invokingUser: User, command: Command, level: PermissionLevel): Boolean {
+        val member = guild.getMember(invokingUser)!!
+
+        val cmdPerms = getCommandPermissionLevel(guild, command)
+        val authorPerms = getPermissionLevel(member)
+
+        return if (cmdPerms > authorPerms) {
+            false
+        } else {
+            persistentData.setGuildProperty(guild) {
+                commandPermission[command.names.first()] = level
+            }
+
+            true
         }
     }
 

@@ -11,6 +11,7 @@ import me.markhc.hangoutbot.services.PersistentData
 import net.dv8tion.jda.api.entities.Guild
 import net.dv8tion.jda.api.entities.Member
 import net.dv8tion.jda.api.entities.Role
+import net.dv8tion.jda.api.events.guild.member.GuildMemberRoleRemoveEvent
 import net.dv8tion.jda.api.events.role.RoleDeleteEvent
 import java.awt.Color
 
@@ -70,23 +71,17 @@ class ColorService(private val persistentData: PersistentData, private val permi
 
     private fun removeColorRole(member: Member) {
         val assignedRoles = persistentData.getGuildProperty(member.guild) {
-            assignedColorRoles.entries.filter { it.value.contains(member.id) }.map { it.key to it.value.size }
+            assignedColorRoles.entries
+                    .filter { it.value.contains(member.id) }
+                    .map { it.key }
         }
 
         assignedRoles.forEach { role ->
-            member.roles.find { it.id == role.first }?.let {
+            member.roles.find { it.id == role }?.let {
                 member.removeRole(it).queue()
-                // If this was the only user with the role, delete it
-                if(role.second == 1) {
-                    it.delete().queue()
-                }
             }
         }
 
-        persistentData.setGuildProperty(member.guild) {
-            assignedColorRoles.values.forEach { it.remove(member.id) }
-            assignedColorRoles.entries.removeIf { it.value.isEmpty() }
-        }
     }
 
     private fun findExistingRole(member: Member, roleName: String): Role? {
@@ -151,6 +146,42 @@ class ColorService(private val persistentData: PersistentData, private val permi
             }
             if(this.muteRole == roleId) {
                 this.muteRole = ""
+            }
+        }
+    }
+
+    @Subscribe
+    fun onRoleRemoveEvent(roleRemoveEvent: GuildMemberRoleRemoveEvent) {
+        val colors = persistentData.getGuildProperty(roleRemoveEvent.guild) {
+            assignedColorRoles.map { it.key }
+        }
+
+        val roles = roleRemoveEvent.roles.map { it.id }.intersect(colors)
+
+        if(roles.isNotEmpty()) {
+            persistentData.setGuildProperty(roleRemoveEvent.guild) {
+                roles.forEach { roleId ->
+                    // Remove member from the users of this color
+                    assignedColorRoles[roleId]?.remove(roleRemoveEvent.member.id)
+                }
+
+                // Find any roles without users and delete them
+                assignedColorRoles.entries.filter {
+                    it.value.isEmpty()
+                }.forEach {
+                    try {
+                        roleRemoveEvent.jda.getRoleById(it.key)?.delete()?.queue()
+                    } catch (ex: Exception) {
+                        // A GuildMemberRoleRemoveEvent is also triggered when roles are deleted.
+                        // When that happens, getRoleById might fail to find a role and throw.
+                        // We catch it here to simply suppress the console clutter.
+                    }
+                }
+
+                // and then remove them from the list
+                assignedColorRoles.entries.removeIf {
+                    it.value.isEmpty()
+                }
             }
         }
     }
