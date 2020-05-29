@@ -65,7 +65,7 @@ fun buildServerInfoEmbed(guild: Guild) = embed {
     }
     field {
         name = "**Emotes**"
-        value = "${guild.emotes.size}/${guild.maxEmotes}"
+        value = "${guild.emotes.size}/${guild.maxEmotes*2}"
         inline = true
     }
     field {
@@ -75,7 +75,7 @@ fun buildServerInfoEmbed(guild: Guild) = embed {
     }
     field {
         name = "**Boosts**"
-        value = guild.boostCount.toString()
+        value = "${guild.boostCount} (Tier: ${guild.boostTier.ordinal})"
         inline = true
     }
 }
@@ -123,7 +123,12 @@ fun buildRoleInfoEmbed(role: Role) = embed {
 
 private fun formatOffsetTime(time: OffsetDateTime): String {
     val days = TimeUnit.MILLISECONDS.toDays(DateTime.now().millis - time.toInstant().toEpochMilli())
-    return "$days days ago\n${time.format(DateTimeFormatter.ISO_LOCAL_DATE)}"
+    return if(days > 4) {
+        "$days days ago\n${time.format(DateTimeFormatter.ISO_LOCAL_DATE)}"
+    } else {
+        val hours = TimeUnit.MILLISECONDS.toHours(DateTime.now().millis - time.toInstant().toEpochMilli())
+        "$hours hours ago\n${time.format(DateTimeFormatter.ISO_LOCAL_DATE)}"
+    }
 }
 
 fun buildUserInfoEmbed(user: User) = embed {
@@ -156,9 +161,9 @@ fun buildUserInfoEmbed(user: User) = embed {
 fun getSafeNickname(member: Member): String {
     if(member.nickname == null) return "Not set"
 
-    if(member.nickname!!.length <= 20) return member.nickname!!
+    if(member.nickname!!.length <= 16) return member.nickname!!
 
-    return "${member.nickname!!.take(17)}..."
+    return "${member.nickname!!.take(12)}..."
 }
 
 fun buildMemberInfoEmbed(member: Member) = embed {

@@ -1,4 +1,4 @@
-package me.markhc.hangoutbot.services
+package me.markhc.hangoutbot.configuration
 
 import com.google.gson.Gson
 import me.aberrantfox.kjdautils.api.annotation.Data

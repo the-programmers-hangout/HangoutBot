@@ -1,7 +1,7 @@
 #
 # Build stage
 #
-FROM maven:3-jdk-8-slim AS build
+FROM maven:3-jdk-14 AS build
 
 ENV HOME=/home/app
 RUN mkdir -p $HOME
@@ -16,7 +16,7 @@ RUN mvn package
 #
 # Package stage
 #
-FROM openjdk:8-alpine
+FROM openjdk:14-alpine
 
 ENV HOME=/home/app
 WORKDIR $HOME

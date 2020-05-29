@@ -1,4 +1,4 @@
-package me.markhc.hangoutbot.commands.`fun`
+package me.markhc.hangoutbot.modules.`fun`
 
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.gson.responseObject
@@ -10,7 +10,6 @@ import me.aberrantfox.kjdautils.internal.arguments.EveryArg
 import me.aberrantfox.kjdautils.internal.arguments.SplitterArg
 import me.aberrantfox.kjdautils.internal.arguments.AnyArg
 import me.markhc.hangoutbot.locale.Messages
-import me.markhc.hangoutbot.utilities.XKCD
 import kotlin.random.Random
 
 private object CowsayData {
@@ -18,8 +17,6 @@ private object CowsayData {
 }
 private data class JokeResponse(val id: String = "", val joke: String = "", val status: Int = 500)
 
-
-@Suppress("unused")
 @CommandSet("Fun")
 fun produceFunCommands() = commands {
     command("coin") {
@@ -41,7 +38,7 @@ fun produceFunCommands() = commands {
 
     command("flip") {
         description = "Choose one of the given choices."
-        execute(SplitterArg("Choice 1 | Choice 2 | ...")) {
+        execute(SplitterArg("|", "Choice 1 | Choice 2 | ...")) {
             val (args) = it.args
             val choice = args[Random.nextInt(args.size)]
             it.respond(Messages.getRandomFlipMessage(choice))
@@ -70,45 +67,6 @@ fun produceFunCommands() = commands {
                 CowsayData.validCows.contains(arg0) -> "```${Cowsay.say(arrayOf("-f $arg0", arg1))}```"
                 else -> "```${Cowsay.say(arrayOf("$arg0 $arg1"))}```"
             })
-        }
-    }
-
-    command("xkcd") {
-        description = "Returns the XKCD comic number specified, or a random comic if you don't supply a number."
-        execute(IntegerArg("Comic Number").makeNullableOptional()) {
-            val (id) = it.args
-
-            val latest = XKCD.getLatest()
-                    ?: return@execute it.respond("Sorry, failed to get a comic.")
-
-            if(id == null) {
-                it.respond(XKCD.getUrl(Random.nextInt(1, latest)))
-            } else if(id < 1 || id > latest) {
-                it.respond("Please enter a valid comic number between 1 and $latest")
-            } else {
-                it.respond(XKCD.getUrl(id))
-            }
-        }
-    }
-
-    command("xkcd-latest") {
-        description = "Grabs the latest XKCD comic."
-        execute {
-            val latest = XKCD.getLatest()
-                    ?: return@execute it.respond("Sorry, failed to get latest comic.")
-
-            it.respond(XKCD.getUrl(latest))
-        }
-    }
-
-    command("xkcd-search") {
-        description = "Returns a XKCD comic that most closely matches your query."
-        execute(EveryArg("Query")) {
-            val (what) = it.args
-
-            val result = XKCD.search(what) ?: return@execute it.respond("Sorry, the search failed.")
-
-            it.respond(XKCD.getUrl(result))
         }
     }
 

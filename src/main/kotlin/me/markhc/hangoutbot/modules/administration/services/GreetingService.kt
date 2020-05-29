@@ -1,21 +1,25 @@
-package me.markhc.hangoutbot.listeners
+package me.markhc.hangoutbot.modules.administration.services
 
 import com.google.common.collect.EvictingQueue
 import com.google.common.eventbus.Subscribe
+import me.aberrantfox.kjdautils.api.annotation.Service
 import me.aberrantfox.kjdautils.api.dsl.embed
 import me.aberrantfox.kjdautils.extensions.jda.fullName
 import me.markhc.hangoutbot.locale.Messages
 import me.markhc.hangoutbot.services.PersistentData
 import net.dv8tion.jda.api.entities.Guild
 import net.dv8tion.jda.api.entities.Message
+import net.dv8tion.jda.api.entities.TextChannel
 import net.dv8tion.jda.api.entities.User
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent
 import java.util.*
 
-@Suppress("unused")
-class WelcomeEmbedListeners(private val persistentData: PersistentData) {
-    private val welcomeMessages: MutableMap<Long, Queue<Pair<Long, Long>>> = mutableMapOf()
+@Service
+class GreetingService(private val persistentData: PersistentData) {
+    companion object {
+        private val welcomeMessages: MutableMap<Long, Queue<Pair<Long, Long>>> = mutableMapOf()
+    }
 
     @Subscribe
     fun onGuildMemberJoin(event: GuildMemberJoinEvent) {
@@ -60,6 +64,8 @@ class WelcomeEmbedListeners(private val persistentData: PersistentData) {
         val message = getCachedMessage(event.guild, event.user) ?: return
 
         welcomeChannel.deleteMessageById(message).queue()
+
+        removeMessagesFromCache(event.guild, event.user)
     }
 
     private fun addMessageToCache(user: User, msg: Message) {
@@ -72,5 +78,24 @@ class WelcomeEmbedListeners(private val persistentData: PersistentData) {
     }
 
     private fun getCachedMessage(guild: Guild, user: User) =
-        welcomeMessages[guild.idLong]?.find { it.first == user.idLong }?.second
+            welcomeMessages[guild.idLong]?.find { it.first == user.idLong }?.second
+
+    private fun removeMessagesFromCache(guild: Guild, user: User) =
+            welcomeMessages[guild.idLong]?.removeIf { it.first == user.idLong }
+
+    fun setEnabled(guild: Guild, state: Boolean) = persistentData.setGuildProperty(guild) {
+        welcomeEmbeds = state
+    }
+    fun isEnabled(guild: Guild) = persistentData.getGuildProperty(guild) {
+        welcomeEmbeds
+    }
+
+    fun setChannel(guild: Guild, textChannel: TextChannel) = persistentData.setGuildProperty(guild) {
+        welcomeChannel = textChannel.id
+    }
+    fun getChannel(guild: Guild) = persistentData.getGuildProperty(guild) { welcomeChannel }.let {
+        it.ifBlank { null }?.let { id ->
+            guild.getGuildChannelById(id) as TextChannel?
+        }
+    }
 }

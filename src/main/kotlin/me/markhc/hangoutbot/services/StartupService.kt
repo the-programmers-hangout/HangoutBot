@@ -3,8 +3,10 @@ package me.markhc.hangoutbot.services
 import me.aberrantfox.kjdautils.api.annotation.Service
 import me.aberrantfox.kjdautils.discord.Discord
 import me.aberrantfox.kjdautils.extensions.jda.fullName
-import me.markhc.hangoutbot.commands.utilities.services.MuteService
-import me.markhc.hangoutbot.commands.utilities.services.ReminderService
+import me.markhc.hangoutbot.configuration.BotConfiguration
+import me.markhc.hangoutbot.configuration.Properties
+import me.markhc.hangoutbot.modules.utilities.services.MuteService
+import me.markhc.hangoutbot.modules.utilities.services.ReminderService
 
 @Service
 class StartupService(properties: Properties,
@@ -20,6 +22,7 @@ class StartupService(properties: Properties,
         reminderService.launchTimers()
 
         with(discord.configuration) {
+
             prefix {
                 if(it.guild == null)
                     config.prefix
@@ -76,7 +79,7 @@ class StartupService(properties: Properties,
             }
 
             visibilityPredicate predicate@{
-                return@predicate if(it.guild == null && it.command.requiresGuild) {
+                return@predicate if(it.guild == null && it.command.requiresGuild ?: discord.configuration.requiresGuild) {
                     false
                 } else {
                     permissionsService.isCommandVisible(it.guild, it.user, it.command)

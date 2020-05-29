@@ -1,4 +1,4 @@
-package me.markhc.hangoutbot.commands.utilities.services
+package me.markhc.hangoutbot.modules.utilities.services
 
 import com.github.kittinunf.result.Result
 import kotlinx.coroutines.GlobalScope
@@ -7,8 +7,8 @@ import kotlinx.coroutines.launch
 import me.aberrantfox.kjdautils.api.annotation.Service
 import me.aberrantfox.kjdautils.api.dsl.embed
 import me.aberrantfox.kjdautils.discord.Discord
-import me.markhc.hangoutbot.dataclasses.GuildConfiguration
-import me.markhc.hangoutbot.dataclasses.MuteEntry
+import me.markhc.hangoutbot.configuration.GuildConfiguration
+import me.markhc.hangoutbot.configuration.MuteEntry
 import me.markhc.hangoutbot.services.PersistentData
 import me.markhc.hangoutbot.utilities.toShortDurationString
 import net.dv8tion.jda.api.entities.Member

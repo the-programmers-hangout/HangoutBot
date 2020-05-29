@@ -2,8 +2,9 @@ package me.markhc.hangoutbot.services
 
 import me.aberrantfox.kjdautils.api.annotation.Service
 import me.aberrantfox.kjdautils.internal.services.PersistenceService
-import me.markhc.hangoutbot.dataclasses.Configuration
-import me.markhc.hangoutbot.dataclasses.GuildConfiguration
+import me.markhc.hangoutbot.configuration.BotConfiguration
+import me.markhc.hangoutbot.configuration.Configuration
+import me.markhc.hangoutbot.configuration.GuildConfiguration
 import net.dv8tion.jda.api.entities.Guild
 
 @Service
