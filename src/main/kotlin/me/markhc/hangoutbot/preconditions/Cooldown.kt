@@ -1,16 +1,16 @@
 package me.markhc.hangoutbot.preconditions
 
-import me.aberrantfox.kjdautils.api.annotation.Precondition
-import me.aberrantfox.kjdautils.internal.command.Fail
-import me.aberrantfox.kjdautils.internal.command.Pass
-import me.aberrantfox.kjdautils.internal.command.precondition
-import me.markhc.hangoutbot.configuration.BotConfiguration
+import me.jakejmattson.kutils.api.annotations.Precondition
+import me.jakejmattson.kutils.api.dsl.preconditions.Fail
+import me.jakejmattson.kutils.api.dsl.preconditions.Pass
+import me.jakejmattson.kutils.api.dsl.preconditions.precondition
+import me.markhc.hangoutbot.dataclasses.BotConfiguration
 import me.markhc.hangoutbot.services.PersistentData
 import org.joda.time.DateTime
 
 val cooldownMap = mutableMapOf<Long, Long>()
 
-@Precondition
+@Precondition(1)
 fun produceCooldownPrecondition(botConfiguration: BotConfiguration, persistentData: PersistentData) = precondition { event ->
     if(event.command == null)
         return@precondition Pass

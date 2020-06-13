@@ -3,7 +3,7 @@ package me.markhc.hangoutbot.modules.`fun`.services
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.gson.responseObject
 import com.github.kittinunf.fuel.httpGet
-import me.aberrantfox.kjdautils.api.annotation.Service
+import me.jakejmattson.kutils.api.annotations.Service
 import org.joda.time.DateTime
 import org.joda.time.Duration
 import java.net.URLEncoder

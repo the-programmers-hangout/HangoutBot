@@ -1,8 +1,8 @@
 package me.markhc.hangoutbot.modules.utilities.services
 
 import com.google.common.eventbus.Subscribe
-import me.aberrantfox.kjdautils.api.annotation.Service
-import me.aberrantfox.kjdautils.extensions.jda.getRoleByName
+import me.jakejmattson.kutils.api.annotations.Service
+import me.jakejmattson.kutils.api.extensions.jda.getRoleByName
 import me.markhc.hangoutbot.extensions.addRole
 import me.markhc.hangoutbot.extensions.removeRole
 import me.markhc.hangoutbot.services.PermissionLevel

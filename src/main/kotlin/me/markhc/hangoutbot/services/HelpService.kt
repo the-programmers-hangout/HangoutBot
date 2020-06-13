@@ -1,9 +1,9 @@
 package me.markhc.hangoutbot.services
 
-import me.aberrantfox.kjdautils.api.annotation.Service
-import me.aberrantfox.kjdautils.api.dsl.command.Command
-import me.aberrantfox.kjdautils.api.dsl.command.CommandEvent
-import me.aberrantfox.kjdautils.api.dsl.embed
+import me.jakejmattson.kutils.api.annotations.Service
+import me.jakejmattson.kutils.api.dsl.command.Command
+import me.jakejmattson.kutils.api.dsl.command.CommandEvent
+import me.jakejmattson.kutils.api.dsl.embed.embed
 import net.dv8tion.jda.api.entities.Guild
 import net.dv8tion.jda.api.entities.User
 

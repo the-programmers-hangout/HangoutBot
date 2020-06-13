@@ -4,11 +4,11 @@ import com.github.kittinunf.result.Result
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import me.aberrantfox.kjdautils.api.annotation.Service
-import me.aberrantfox.kjdautils.api.dsl.embed
-import me.aberrantfox.kjdautils.discord.Discord
-import me.markhc.hangoutbot.configuration.GuildConfiguration
-import me.markhc.hangoutbot.configuration.MuteEntry
+import me.jakejmattson.kutils.api.Discord
+import me.jakejmattson.kutils.api.annotations.Service
+import me.jakejmattson.kutils.api.dsl.embed.embed
+import me.markhc.hangoutbot.dataclasses.GuildConfiguration
+import me.markhc.hangoutbot.dataclasses.MuteEntry
 import me.markhc.hangoutbot.services.PersistentData
 import me.markhc.hangoutbot.utilities.toShortDurationString
 import net.dv8tion.jda.api.entities.Member
@@ -22,6 +22,7 @@ import org.joda.time.format.DateTimeFormat
 class MuteService(private val persistentData: PersistentData,
                   private val discord: Discord) {
     private val dateFormatter = DateTimeFormat.longDateTime()
+
 
     fun addMutedMember(member: Member, ms: Long, soft: Boolean) = Result.of<MessageEmbed, Exception> {
         val guild      = member.guild

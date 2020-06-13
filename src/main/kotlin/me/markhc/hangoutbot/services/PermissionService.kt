@@ -1,10 +1,9 @@
 package me.markhc.hangoutbot.services
 
-import me.aberrantfox.kjdautils.api.annotation.Service
-import me.aberrantfox.kjdautils.api.dsl.command.Command
-import me.aberrantfox.kjdautils.api.dsl.command.CommandEvent
-import me.aberrantfox.kjdautils.api.getInjectionObject
-import me.markhc.hangoutbot.configuration.BotConfiguration
+import me.jakejmattson.kutils.api.annotations.Service
+import me.jakejmattson.kutils.api.dsl.command.Command
+import me.jakejmattson.kutils.api.dsl.command.CommandEvent
+import me.markhc.hangoutbot.dataclasses.BotConfiguration
 import me.markhc.hangoutbot.locale.Messages
 import net.dv8tion.jda.api.entities.Guild
 import net.dv8tion.jda.api.entities.Member
@@ -103,9 +102,9 @@ var Command.requiredPermissionLevel: PermissionLevel
     }
 
 fun CommandEvent<*>.requiresPermission(level: PermissionLevel, action: CommandEvent<*>.() -> Unit) {
-    val svc = this.discord.getInjectionObject<PermissionsService>()
+    val svc = this.discord.getInjectionObjects(PermissionsService::class)
 
-    if(svc?.hasClearance(this.guild, this.author, level) == true) {
+    if(svc.hasClearance(this.guild, this.author, level)) {
         action(this)
     } else {
         respond(Messages.INSUFFICIENT_PERMS)

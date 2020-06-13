@@ -3,14 +3,15 @@ package me.markhc.hangoutbot.modules.utilities.services
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import me.aberrantfox.kjdautils.api.annotation.Service
-import me.aberrantfox.kjdautils.discord.Discord
+import me.jakejmattson.kutils.api.annotations.Service
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
 import org.joda.time.format.DateTimeFormat
 import com.github.kittinunf.result.Result
-import me.aberrantfox.kjdautils.api.dsl.embed
-import me.markhc.hangoutbot.configuration.Reminder
+import me.jakejmattson.kutils.api.Discord
+import me.jakejmattson.kutils.api.dsl.embed.embed
+import me.jakejmattson.kutils.api.extensions.jda.sendPrivateMessage
+import me.markhc.hangoutbot.dataclasses.Reminder
 import me.markhc.hangoutbot.services.PersistentData
 import me.markhc.hangoutbot.utilities.toLongDurationString
 import net.dv8tion.jda.api.entities.*
@@ -57,7 +58,7 @@ class ReminderService(private val persistentData: PersistentData,
         GlobalScope.launch {
             delay(ms)
 
-            discord.getUserById(userId)?.sendPrivateMessage(embed {
+            discord.jda.getUserById(userId)?.sendPrivateMessage(embed {
                 title = "Reminder"
                 description = what
                 color = infoColor

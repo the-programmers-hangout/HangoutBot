@@ -5,17 +5,12 @@
 | ---------- | -------------------------- |
 | (Argument) | This argument is optional. |
 
-## Anime
-| Commands | Arguments    | Description                                                |
-| -------- | ------------ | ---------------------------------------------------------- |
-| anime    | Search terms | Searches for an anime on Anilist based on the given terms. |
-| manga    | Search terms | Searches for a manga on Anilist based on the given terms.  |
-
 ## Bot Information
-| Commands | Arguments | Description                                       |
-| -------- | --------- | ------------------------------------------------- |
-| botstats | <none>    | Displays miscellaneous information about the bot. |
-| source   | <none>    | Get the url for the bot source code.              |
+| Commands   | Arguments | Description                                       |
+| ---------- | --------- | ------------------------------------------------- |
+| botstats   | <none>    | Displays miscellaneous information about the bot. |
+| debugstats | <none>    | Displays some debugging information               |
+| source     | <none>    | Get the url for the bot source code.              |
 
 ## Channel
 | Commands  | Arguments           | Description                          |
@@ -39,14 +34,22 @@
 | muterole     | (Role)        | Gets or sets the role used to mute an user.                                                                     |
 | softmuterole | (Role)        | Gets or sets the role used to soft mute an user                                                                 |
 
+## Custom Alerts
+| Commands     | Arguments       | Description                                                                                                                                                                                                          |
+| ------------ | --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| disablealert | (Id), (Remove)  | Disables a custom alert. Disabled alerts are not removed unless you include `remove` after the alert id. **Run without args to get a list of all your alerts.**                                                      |
+| enablealert  | (Id)            | Enables a previously disabled alert.                                                                                                                                                                                 |
+| listalerts   | <none>          | Lists all your alerts.                                                                                                                                                                                               |
+| setupalert   | (Channel), Text | Setup a custom alert. Alerts are notifications sent by the Bot via DM when a message that matches the requirements is received. You can setup an alert to be notified when someone says a specific word or sentence. |
+
 ## Fun
-| Commands | Arguments                   | Description                                                                                |
-| -------- | --------------------------- | ------------------------------------------------------------------------------------------ |
-| coin     | (Coins)                     | Flip a coin (or coins).                                                                    |
-| cowsay   | (Cow), (Message)            | Displays a cowsay with a given message. Run with no arguments to get a list of valid cows. |
-| dadjoke  | <none>                      | Returns a random dad joke.                                                                 |
-| flip     | Choice 1 \| Choice 2 \| ... | Choose one of the given choices.                                                           |
-| roll     | (Min), (Max)                | Rolls a number in a range (default 1-100)                                                  |
+| Commands | Arguments        | Description                                                                                |
+| -------- | ---------------- | ------------------------------------------------------------------------------------------ |
+| coin     | (Coins)          | Flip a coin (or coins).                                                                    |
+| cowsay   | (Cow), (Message) | Displays a cowsay with a given message. Run with no arguments to get a list of valid cows. |
+| dadjoke  | <none>           | Returns a random dad joke.                                                                 |
+| flip     | \|               | Choose one of the given choices.                                                           |
+| roll     | (Min), (Max)     | Rolls a number in a range (default 1-100)                                                  |
 
 ## Greetings
 | Commands  | Arguments        | Description                                       |
@@ -76,10 +79,10 @@
 | setprefix | Prefix    | Sets the bot prefix.                                                                                         |
 
 ## Permissions
-| Commands                | Arguments                                     | Description                                                 |
-| ----------------------- | --------------------------------------------- | ----------------------------------------------------------- |
-| permission, permissions | (set/get/list), (Command), (Permission Level) | Returns the required permission level for the given command |
-| roleperms               | Role, (Permission Level)                      | Gets or sets the permission level of the given role         |
+| Commands                | Arguments                                     | Description                                         |
+| ----------------------- | --------------------------------------------- | --------------------------------------------------- |
+| permission, permissions | (set/get/list), (Command), (Permission Level) | <No Description>                                    |
+| roleperms               | Role, (Permission Level)                      | Gets or sets the permission level of the given role |
 
 ## Reminders
 | Commands      | Arguments  | Description                                                            |

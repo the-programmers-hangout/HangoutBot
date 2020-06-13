@@ -1,6 +1,6 @@
-package me.markhc.hangoutbot.configuration
+package me.markhc.hangoutbot.dataclasses
 
-import me.aberrantfox.kjdautils.api.annotation.Data
+import me.jakejmattson.kutils.api.annotations.Data
 import me.markhc.hangoutbot.services.PermissionLevel
 
 @Data("data/guilds.json", killIfGenerated = false)
@@ -23,7 +23,9 @@ data class GuildConfiguration(val guildId: String = "",
                               val rolePermissions: MutableMap<String, PermissionLevel> = mutableMapOf(),
                               val commandPermission: MutableMap<String, PermissionLevel> = mutableMapOf(),
                               val assignedColorRoles: MutableMap<String, MutableList<String>> = mutableMapOf(),
-                              val mutedUsers: MutableList<MuteEntry> = mutableListOf())
+                              val mutedUsers: MutableList<MuteEntry> = mutableListOf(),
+                              val customAlerts: MutableList<CustomAlert> = mutableListOf())
 
 data class MuteEntry(val user: String = "", val timeUntil: String = "", val isSoft: Boolean = false)
 data class Reminder(val user: String = "", val timeUntil: String = "", val what: String = "")
+data class CustomAlert(val id: Int = 0, val user: Long = 0, val channel: Long = 0, val text: String = "", var disabled: Boolean = false)

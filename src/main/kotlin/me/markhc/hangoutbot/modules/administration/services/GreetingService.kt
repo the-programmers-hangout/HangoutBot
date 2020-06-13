@@ -2,9 +2,9 @@ package me.markhc.hangoutbot.modules.administration.services
 
 import com.google.common.collect.EvictingQueue
 import com.google.common.eventbus.Subscribe
-import me.aberrantfox.kjdautils.api.annotation.Service
-import me.aberrantfox.kjdautils.api.dsl.embed
-import me.aberrantfox.kjdautils.extensions.jda.fullName
+import me.jakejmattson.kutils.api.annotations.Service
+import me.jakejmattson.kutils.api.dsl.embed.embed
+import me.jakejmattson.kutils.api.extensions.jda.fullName
 import me.markhc.hangoutbot.locale.Messages
 import me.markhc.hangoutbot.services.PersistentData
 import net.dv8tion.jda.api.entities.Guild

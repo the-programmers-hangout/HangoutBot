@@ -1,7 +1,7 @@
-package me.markhc.hangoutbot.configuration
+package me.markhc.hangoutbot.dataclasses
 
 import com.google.gson.Gson
-import me.aberrantfox.kjdautils.api.annotation.Data
+import me.jakejmattson.kutils.api.annotations.Data
 import java.io.File
 
 @Data("config/config.json")
