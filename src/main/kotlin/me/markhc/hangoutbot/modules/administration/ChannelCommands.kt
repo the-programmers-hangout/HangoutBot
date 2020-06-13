@@ -12,7 +12,7 @@ import me.markhc.hangoutbot.utilities.runLoggedCommand
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException
 
 @CommandSet("Channel")
-fun channelCommands(persistentData: PersistentData) = commands {
+fun channelCommands() = commands {
     command("chnltopic") {
         description = "Gets or sets the topic of a channel."
         requiredPermissionLevel = PermissionLevel.Administrator

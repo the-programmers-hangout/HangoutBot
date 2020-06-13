@@ -23,9 +23,7 @@ data class GuildConfiguration(val guildId: String = "",
                               val rolePermissions: MutableMap<String, PermissionLevel> = mutableMapOf(),
                               val commandPermission: MutableMap<String, PermissionLevel> = mutableMapOf(),
                               val assignedColorRoles: MutableMap<String, MutableList<String>> = mutableMapOf(),
-                              val mutedUsers: MutableList<MuteEntry> = mutableListOf(),
-                              val customAlerts: MutableList<CustomAlert> = mutableListOf())
+                              val mutedUsers: MutableList<MuteEntry> = mutableListOf())
 
 data class MuteEntry(val user: String = "", val timeUntil: String = "", val isSoft: Boolean = false)
 data class Reminder(val user: String = "", val timeUntil: String = "", val what: String = "")
-data class CustomAlert(val id: Int = 0, val user: Long = 0, val channel: Long = 0, val text: String = "", var disabled: Boolean = false)

@@ -19,7 +19,7 @@ fun botInformationCommands(helpService: HelpService, botStats: BotStatsService, 
             runLoggedCommand(it) {
                 val properties = it.discord.getInjectionObjects(Properties::class)
 
-                it.respond(properties.repository ?: "None")
+                it.respond(properties.repository)
             }
         }
     }

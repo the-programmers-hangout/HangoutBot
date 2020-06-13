@@ -15,7 +15,7 @@ open class LowerRankedMemberArg(override val name : String = "Lower Ranked membe
             = mutableListOf("@Bob", "197780697866305536", "302134543639511050")
 
     override fun convert(arg: String, args: List<String>, event: CommandEvent<*>): ArgumentResult<Member> {
-        val permissions = event.discord.getInjectionObject<PermissionsService>()!!
+        val permissions = event.discord.getInjectionObjects(PermissionsService::class)
         val retrieved = event.discord.jda.tryRetrieveSnowflake {
             event.guild?.getMemberById(arg.trimToID())
         } as Member? ?: return ArgumentResult.Error("Couldn't retrieve member: $arg")

@@ -4,11 +4,8 @@ import me.jakejmattson.kutils.api.annotations.Service
 import me.jakejmattson.kutils.api.services.PersistenceService
 import me.markhc.hangoutbot.dataclasses.BotConfiguration
 import me.markhc.hangoutbot.dataclasses.Configuration
-import me.markhc.hangoutbot.dataclasses.CustomAlert
 import me.markhc.hangoutbot.dataclasses.GuildConfiguration
 import net.dv8tion.jda.api.entities.Guild
-import net.dv8tion.jda.api.entities.TextChannel
-import net.dv8tion.jda.api.entities.User
 
 @Service
 class PersistentData(private val botConfiguration: BotConfiguration,
@@ -34,22 +31,6 @@ class PersistentData(private val botConfiguration: BotConfiguration,
 
     fun <R> getGuildProperty(guild: Guild, fn: GuildConfiguration.() -> R) =
             getGuildConfig(guild).let(fn)
-
-    fun addCustomAlertUnchecked(guild: Guild, user: User, channel: TextChannel?, text: String): Int {
-        return setGuildProperty(guild) {
-            val lastId = customAlerts.filter { it.user == user.idLong }.maxBy { it.id }?.id ?: 0
-
-            customAlerts.add(CustomAlert(
-                    id = lastId + 1,
-                    user = user.idLong,
-                    channel = channel?.idLong ?: 0,
-                    text = text,
-                    disabled = false
-            ))
-
-            lastId + 1
-        }
-    }
 
     private fun getGuildConfig(guildId: String): GuildConfiguration {
         val guild = configuration.guildConfigurations.find { it.guildId == guildId }

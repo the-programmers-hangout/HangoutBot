@@ -41,7 +41,7 @@ fun produceFunCommands() = commands {
 
     command("flip") {
         description = "Choose one of the given choices."
-        execute(SplitterArg("|", "Choice 1 | Choice 2 | ...")) {
+        execute(SplitterArg(name = "Choice 1;Choice 2;...", splitter = ";")) {
             runLoggedCommand(it) {
                 val (args) = it.args
                 val choice = args[Random.nextInt(args.size)].trim()

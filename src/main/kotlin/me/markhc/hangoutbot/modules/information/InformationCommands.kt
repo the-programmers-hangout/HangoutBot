@@ -20,7 +20,7 @@ fun formatOffsetTime(time: OffsetDateTime): String {
 }
 
 @CommandSet("Information")
-fun produceInformationCommands(helpService: HelpService, botStats: BotStatsService, config: Configuration) = commands {
+fun produceInformationCommands(helpService: HelpService) = commands {
     command("help") {
         description = "Display help information."
         requiresGuild = true

@@ -46,7 +46,7 @@ fun ownerCommands(persistentData: PersistentData) = commands {
         execute(AnyArg("Prefix")) {
             runLoggedCommand(it) {
                 persistentData.setGuildProperty(it.guild!!) {
-                    prefix = it.args.first!!
+                    prefix = it.args.first
                 }
 
                 it.respond("Bot prefix set to **${it.args.first}**")

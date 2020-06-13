@@ -10,7 +10,7 @@ import me.markhc.hangoutbot.services.requiredPermissionLevel
 import me.markhc.hangoutbot.utilities.runLoggedCommand
 
 @CommandSet("Greetings")
-fun greetingCommands(persistentData: PersistentData, greetingService: GreetingService) = commands {
+fun greetingCommands(greetingService: GreetingService) = commands {
     command("greetings") {
         description = "Enables or disables the greetings on member join."
         requiredPermissionLevel = PermissionLevel.Administrator
