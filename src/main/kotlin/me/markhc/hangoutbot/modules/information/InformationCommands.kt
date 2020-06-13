@@ -72,7 +72,7 @@ fun produceInformationCommands(helpService: HelpService, botStats: BotStatsServi
 
     command("userinfo") {
         description = "Displays information about the given user."
-        execute(UserArg.makeOptional { it.author }) {
+        execute(UserArg("user", allowsBot = true).makeOptional { it.author }) {
             runLoggedCommand(it) {
                 val (user) = it.args
                 val member = it.guild?.getMember(user)
@@ -96,7 +96,7 @@ fun produceInformationCommands(helpService: HelpService, botStats: BotStatsServi
 
     command("avatar") {
         description = "Gets the avatar from the given user"
-        execute(UserArg.makeOptional { it.author }) {
+        execute(UserArg("user", allowsBot = true).makeOptional { it.author }) {
             runLoggedCommand(it) {
                 val user = it.args.first
 
