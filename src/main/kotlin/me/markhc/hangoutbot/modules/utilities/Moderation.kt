@@ -1,10 +1,11 @@
 package me.markhc.hangoutbot.modules.utilities
 
-import me.aberrantfox.kjdautils.api.annotation.CommandSet
-import me.aberrantfox.kjdautils.api.dsl.command.commands
-import me.aberrantfox.kjdautils.internal.arguments.*
+import me.jakejmattson.kutils.api.annotations.CommandSet
+import me.jakejmattson.kutils.api.dsl.command.commands
+import me.jakejmattson.kutils.api.arguments.*
 import me.markhc.hangoutbot.modules.utilities.services.ColorService
 import me.markhc.hangoutbot.services.*
+import me.markhc.hangoutbot.utilities.runLoggedCommand
 import net.dv8tion.jda.api.entities.*
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException
 
@@ -16,9 +17,11 @@ fun moderationCommands(persistentData: PersistentData,
         requiredPermissionLevel = PermissionLevel.Staff
         requiresGuild = true
         execute(TextChannelArg.makeOptional { it.channel as TextChannel }, EveryArg) {
-            val (target, message) = it.args
+            runLoggedCommand(it) {
+                val (target, message) = it.args
 
-            target.sendMessage(message).queue()
+                target.sendMessage(message).queue()
+            }
         }
     }
 
@@ -28,24 +31,26 @@ fun moderationCommands(persistentData: PersistentData,
         requiresGuild = true
         execute(TextChannelArg.makeOptional { it.channel as TextChannel },
                 IntegerArg) {
-            val (channel, amount) = it.args
+            runLoggedCommand(it) {
+                val (channel, amount) = it.args
 
-            if (amount !in 2..99) {
-                return@execute it.respond("You can only nuke between 2 and 99 messages")
-            }
-
-            val sameChannel = it.channel.id == channel.id
-
-            try {
-                channel.history.retrievePast(amount + if (sameChannel) 1 else 0).queue { past ->
-                    safeDeleteMessages(channel, past)
-
-                    channel.sendMessage("Be nice. No spam.").queue()
-
-                    if (!sameChannel) it.respond("$amount messages deleted.")
+                if (amount !in 2..99) {
+                    return@execute it.respond("You can only nuke between 2 and 99 messages")
                 }
-            } catch(e: InsufficientPermissionException) {
-                it.respond(e.message!!)
+
+                val sameChannel = it.channel.id == channel.id
+
+                try {
+                    channel.history.retrievePast(amount + if (sameChannel) 1 else 0).queue { past ->
+                        safeDeleteMessages(channel, past)
+
+                        channel.sendMessage("Be nice. No spam.").queue()
+
+                        if (!sameChannel) it.respond("$amount messages deleted.")
+                    }
+                } catch (e: InsufficientPermissionException) {
+                    it.respond(e.message!!)
+                }
             }
         }
     }

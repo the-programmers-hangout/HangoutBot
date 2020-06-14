@@ -1,22 +1,22 @@
 package me.markhc.hangoutbot.services
 
-import me.aberrantfox.kjdautils.api.annotation.Service
-import me.aberrantfox.kjdautils.discord.Discord
-import me.aberrantfox.kjdautils.extensions.jda.fullName
-import me.markhc.hangoutbot.configuration.BotConfiguration
-import me.markhc.hangoutbot.configuration.Properties
+import me.jakejmattson.kutils.api.Discord
+import me.jakejmattson.kutils.api.annotations.Service
+import me.jakejmattson.kutils.api.extensions.jda.fullName
+import me.markhc.hangoutbot.dataclasses.BotConfiguration
+import me.markhc.hangoutbot.dataclasses.Properties
 import me.markhc.hangoutbot.modules.utilities.services.MuteService
 import me.markhc.hangoutbot.modules.utilities.services.ReminderService
 
 @Service
-class StartupService(properties: Properties,
-                     config: BotConfiguration,
-                     botStats: BotStatsService,
-                     discord: Discord,
-                     permissionsService: PermissionsService,
-                     persistentData: PersistentData,
-                     muteService: MuteService,
-                     reminderService: ReminderService) {
+class StartupService(private val properties: Properties,
+                     private val config: BotConfiguration,
+                     private val botStats: BotStatsService,
+                     private val discord: Discord,
+                     private val permissionsService: PermissionsService,
+                     private val persistentData: PersistentData,
+                     private val muteService: MuteService,
+                     private val reminderService: ReminderService) {
     init {
         muteService.launchTimers()
         reminderService.launchTimers()
@@ -50,7 +50,7 @@ class StartupService(properties: Properties,
                 }
                 field {
                     name = "Contributors"
-                    value = "markhc#0001"
+                    value = "markhc#8366"
                     inline = true
                 }
 

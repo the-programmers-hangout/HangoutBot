@@ -1,14 +1,16 @@
 package me.markhc.hangoutbot.services
 
-import me.aberrantfox.kjdautils.api.annotation.Service
-import me.aberrantfox.kjdautils.internal.services.PersistenceService
-import me.markhc.hangoutbot.configuration.BotConfiguration
-import me.markhc.hangoutbot.configuration.Configuration
-import me.markhc.hangoutbot.configuration.GuildConfiguration
+import me.jakejmattson.kutils.api.annotations.Service
+import me.jakejmattson.kutils.api.services.PersistenceService
+import me.markhc.hangoutbot.dataclasses.BotConfiguration
+import me.markhc.hangoutbot.dataclasses.Configuration
+import me.markhc.hangoutbot.dataclasses.GuildConfiguration
 import net.dv8tion.jda.api.entities.Guild
 
 @Service
-class PersistentData(private val botConfiguration: BotConfiguration, private val configuration: Configuration, private val persistenceService: PersistenceService) {
+class PersistentData(private val botConfiguration: BotConfiguration,
+                     private val configuration: Configuration,
+                     private val persistenceService: PersistenceService) {
     fun getGuilds() = configuration.guildConfigurations
 
     fun <R> setGlobalProperty(fn: Configuration.() -> R) =

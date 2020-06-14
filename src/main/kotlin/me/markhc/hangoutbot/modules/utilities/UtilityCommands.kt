@@ -1,12 +1,12 @@
 package me.markhc.hangoutbot.modules.utilities
 
-import me.aberrantfox.kjdautils.api.annotation.CommandSet
-import me.aberrantfox.kjdautils.api.dsl.command.commands
-import me.aberrantfox.kjdautils.api.dsl.embed
-import me.aberrantfox.kjdautils.extensions.jda.fullName
-import me.aberrantfox.kjdautils.extensions.jda.sendPrivateMessage
-import me.aberrantfox.kjdautils.internal.arguments.EveryArg
-import me.aberrantfox.kjdautils.internal.arguments.TimeArg
+import me.jakejmattson.kutils.api.annotations.CommandSet
+import me.jakejmattson.kutils.api.arguments.EveryArg
+import me.jakejmattson.kutils.api.arguments.TimeArg
+import me.jakejmattson.kutils.api.dsl.command.commands
+import me.jakejmattson.kutils.api.dsl.embed.embed
+import me.jakejmattson.kutils.api.extensions.jda.fullName
+import me.jakejmattson.kutils.api.extensions.jda.sendPrivateMessage
 import me.markhc.hangoutbot.modules.utilities.services.MuteService
 import me.markhc.hangoutbot.modules.utilities.services.ReminderService
 import java.util.concurrent.TimeUnit

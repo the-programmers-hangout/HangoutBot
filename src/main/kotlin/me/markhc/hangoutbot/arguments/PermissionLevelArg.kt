@@ -1,8 +1,8 @@
 package me.markhc.hangoutbot.arguments
 
-import me.aberrantfox.kjdautils.api.dsl.command.CommandEvent
-import me.aberrantfox.kjdautils.internal.command.ArgumentResult
-import me.aberrantfox.kjdautils.internal.command.ArgumentType
+import me.jakejmattson.kutils.api.dsl.arguments.ArgumentResult
+import me.jakejmattson.kutils.api.dsl.arguments.ArgumentType
+import me.jakejmattson.kutils.api.dsl.command.CommandEvent
 import me.markhc.hangoutbot.services.PermissionLevel
 
 open class PermissionLevelArg(override val name : String = "Permission Level") : ArgumentType<PermissionLevel>() {

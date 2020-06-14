@@ -1,6 +1,6 @@
-package me.markhc.hangoutbot.configuration
+package me.markhc.hangoutbot.dataclasses
 
-import me.aberrantfox.kjdautils.api.annotation.Data
+import me.jakejmattson.kutils.api.annotations.Data
 import me.markhc.hangoutbot.services.PermissionLevel
 
 @Data("data/guilds.json", killIfGenerated = false)
