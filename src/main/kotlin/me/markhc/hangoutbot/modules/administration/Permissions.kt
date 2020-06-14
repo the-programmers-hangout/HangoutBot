@@ -42,6 +42,8 @@ fun producePermissionCommands(persistentData: PersistentData,
     }
 
     command("permission", "permissions") {
+        description = "Gets or sets the permissions for a command. Use `list` to view all permissions"
+        requiredPermissionLevel = PermissionLevel.Staff
         execute(ChoiceArg("set/get/list", "set", "get", "list").makeOptional("get"),
                 CommandArg.makeNullableOptional(null),
                 PermissionLevelArg.makeNullableOptional(null)) {

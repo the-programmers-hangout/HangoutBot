@@ -24,7 +24,7 @@ fun botInformationCommands(helpService: HelpService, botStats: BotStatsService, 
         }
     }
 
-    command("botstats") {
+    command("botstats", "ping") {
         description = "Displays miscellaneous information about the bot."
         execute {
             runLoggedCommand(it) {
