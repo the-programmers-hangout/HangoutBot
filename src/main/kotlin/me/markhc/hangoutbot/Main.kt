@@ -13,7 +13,7 @@ fun main() {
         val properties = Gson().fromJson(propFile, Properties::class.java)
                 ?: throw Exception("Failed to parse properties")
 
-        startBot(configuration.token) {
+        startBot(configuration.token, enableScriptEngine = true) {
             registerInjectionObjects(configuration, properties)
 
             configure {

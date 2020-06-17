@@ -3,10 +3,12 @@ package me.markhc.hangoutbot.services
 import me.jakejmattson.kutils.api.Discord
 import me.jakejmattson.kutils.api.annotations.Service
 import me.jakejmattson.kutils.api.extensions.jda.fullName
+import me.jakejmattson.kutils.api.services.ScriptEngineService
 import me.markhc.hangoutbot.dataclasses.BotConfiguration
 import me.markhc.hangoutbot.dataclasses.Properties
 import me.markhc.hangoutbot.modules.utilities.services.MuteService
 import me.markhc.hangoutbot.modules.utilities.services.ReminderService
+import kotlin.concurrent.thread
 
 @Service
 class StartupService(private val properties: Properties,
@@ -16,13 +18,41 @@ class StartupService(private val properties: Properties,
                      private val permissionsService: PermissionsService,
                      private val persistentData: PersistentData,
                      private val muteService: MuteService,
-                     private val reminderService: ReminderService) {
+                     private val reminderService: ReminderService,
+                     private val scriptingEngine: ScriptEngineService) {
     init {
         muteService.launchTimers()
         reminderService.launchTimers()
 
-        with(discord.configuration) {
+        thread(start = true, isDaemon = true) {
+            while(true) {
+                var input = readLine()
+                while(input?.endsWith("$$") == false) {
+                    input +=  '\n' + (readLine() ?: "")
+                }
+                input = input?.dropLast(2)
 
+                try {
+                    scriptingEngine.engine.eval(
+                        """
+                        val commands = bindings["commandContainer"]
+                        val discord = bindings["discord"] as me.jakejmattson.kutils.api.Discord
+                        val jda = discord.jda
+                        
+                        fun evalScript() {
+                            $input
+                        } 
+                        
+                        evalScript();
+                        """.trimIndent()
+                    )
+                } catch(e: Exception) {
+                    System.err.print(e.message ?: "An exception occurred in the scripting engine.")
+                }
+            }
+        }
+
+        with(discord.configuration) {
             prefix {
                 if(it.guild == null)
                     config.prefix
