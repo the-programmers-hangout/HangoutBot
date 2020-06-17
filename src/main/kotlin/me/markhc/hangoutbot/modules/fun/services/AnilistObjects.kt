@@ -6,8 +6,6 @@ import java.awt.Color
 import java.awt.image.BufferedImage
 import java.net.URL
 import javax.imageio.ImageIO
-import kotlin.math.min
-
 
 data class MediaTitle(val romaji: String? = "",
                       val english: String? = "",
@@ -18,6 +16,7 @@ enum class MediaType {
     MANGA
 }
 
+@Suppress("unused")
 enum class MediaFormat {
     TV,
     TV_SHORT,
@@ -31,6 +30,7 @@ enum class MediaFormat {
     ONE_SHOT
 }
 
+@Suppress("unused")
 enum class MediaStatus {
     FINISHED,
     RELEASING,
@@ -38,6 +38,7 @@ enum class MediaStatus {
     CANCELLED
 }
 
+@Suppress("unused")
 enum class MediaSeason {
     WINTER,
     SPRING,
@@ -45,6 +46,7 @@ enum class MediaSeason {
     FALL
 }
 
+@Suppress("unused")
 enum class MediaSource {
     ORIGINAL,
     MANGA,
@@ -70,6 +72,7 @@ data class StudioEdge(val id: Int,
 
 data class StudioConnection(val edges: List<StudioEdge> = listOf())
 
+@Suppress("unused")
 enum class MediaRankType {
     RATED,
     POPULAR
@@ -105,15 +108,14 @@ data class Media(val id: Int,
                  val studios: StudioConnection? =  null,
                  val isAdult: Boolean = false,
                  val rankings: List<MediaRank>,
-                 val siteUrl: String? = null) {
+                 val siteUrl: String) {
     fun buildEmbed() = embed {
         title {
-            text = mediaTitle.english ?: mediaTitle.native ?: mediaTitle.romaji ?: "No title"
+            text = getNiceTitle()
             url = siteUrl
         }
 
-        val i = mediaDescription.indexOf("<br>")
-        description = if(i != -1) mediaDescription.substring(0, min(i, 300)) else mediaDescription.substring(0, 300) + "..."
+        description = getNiceDescription()
         thumbnail = coverImage?.medium
         color = if(coverImage?.medium != null) averageImageColor(coverImage.medium) else infoColor
 
@@ -165,6 +167,22 @@ data class Media(val id: Int,
             }
         }
 
+    }
+
+    private fun getNiceTitle(): String {
+        return mediaTitle.romaji ?: mediaTitle.english ?: mediaTitle.native ?: "No title"
+    }
+
+    private fun getNiceDescription(): String {
+        // Replace some simple html tags
+        val str = mediaDescription
+                .replace("<i>", "*").replace("</i>", "*")
+                .replace("<b>", "*").replace("</b>", "*")
+                .replace("<br>", "\n")
+                // replace multiple new lines with a single one
+                .replace("\n{2,}".toRegex(), "\n")
+
+        return if(str.length < 256) str else "${str.take(256)}... [Read more](${siteUrl})"
     }
 }
 

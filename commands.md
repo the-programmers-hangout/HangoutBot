@@ -19,10 +19,10 @@
 | source         | <none>    | Get the url for the bot source code.              |
 
 ## Channel
-| Commands  | Arguments           | Description                          |
-| --------- | ------------------- | ------------------------------------ |
-| chnltopic | TextChannel, (Text) | Gets or sets the topic of a channel. |
-| slowmode  | TextChannel, Time   | Set the slowmode in a channel.       |
+| Commands  | Arguments            | Description                          |
+| --------- | -------------------- | ------------------------------------ |
+| chnltopic | Text Channel, (Text) | Gets or sets the topic of a channel. |
+| slowmode  | Text Channel, Time   | Set the slowmode in a channel.       |
 
 ## Colors
 | Commands   | Arguments            | Description                                                              |
@@ -32,13 +32,13 @@
 | setcolor   | (HexColor), RoleName | Creates a role with the given name and color and assigns it to the user. |
 
 ## Configuration
-| Commands     | Arguments     | Description                                                                                                     |
-| ------------ | ------------- | --------------------------------------------------------------------------------------------------------------- |
-| botchannel   | (TextChannel) | Sets the bot channel. If set, the bot channel will be the only channel where the bot will accept commands from. |
-| greetchannel | (TextChannel) | Gets or sets the channel used for welcome greetings.                                                            |
-| logchannel   | (TextChannel) | Sets the channel used to log executed commands                                                                  |
-| muterole     | (Role)        | Gets or sets the role used to mute an user.                                                                     |
-| softmuterole | (Role)        | Gets or sets the role used to soft mute an user                                                                 |
+| Commands     | Arguments      | Description                                                                                                     |
+| ------------ | -------------- | --------------------------------------------------------------------------------------------------------------- |
+| botchannel   | (Text Channel) | Sets the bot channel. If set, the bot channel will be the only channel where the bot will accept commands from. |
+| greetchannel | (Text Channel) | Gets or sets the channel used for welcome greetings.                                                            |
+| logchannel   | (Text Channel) | Sets the channel used to log executed commands                                                                  |
+| muterole     | (Role)         | Gets or sets the role used to mute an user.                                                                     |
+| softmuterole | (Role)         | Gets or sets the role used to soft mute an user                                                                 |
 
 ## Fun
 | Commands | Arguments        | Description                                                                                |
@@ -65,10 +65,10 @@
 | userinfo   | (user)    | Displays information about the given user.         |
 
 ## Moderation
-| Commands | Arguments              | Description                                                                       |
-| -------- | ---------------------- | --------------------------------------------------------------------------------- |
-| echo     | (TextChannel), Text    | Echo a message to a channel.                                                      |
-| nuke     | (TextChannel), Integer | Delete 2 - 99 past messages in the given channel (default is the invoked channel) |
+| Commands | Arguments               | Description                                                                       |
+| -------- | ----------------------- | --------------------------------------------------------------------------------- |
+| echo     | (Text Channel), Text    | Echo a message to a channel.                                                      |
+| nuke     | (Text Channel), Integer | Delete 2 - 99 past messages in the given channel (default is the invoked channel) |
 
 ## Owner Commands
 | Commands  | Arguments | Description                                                                                                  |
