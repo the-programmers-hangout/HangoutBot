@@ -116,7 +116,7 @@ data class Media(val id: Int,
         }
 
         description = getNiceDescription()
-        thumbnail = coverImage?.medium
+        thumbnail = coverImage?.large ?: coverImage?.medium
         color = if(coverImage?.medium != null) averageImageColor(coverImage.medium) else infoColor
 
         addInlineField("Status", status.toString().toLowerCase().replace('_', ' ').capitalize())
