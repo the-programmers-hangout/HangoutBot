@@ -74,6 +74,7 @@
 | Commands  | Arguments | Description                                                                                                  |
 | --------- | --------- | ------------------------------------------------------------------------------------------------------------ |
 | cooldown  | (Integer) | Gets or sets the cooldown (in seconds) after a user executes a command before he is able to execute another. |
+| eval      | Text      | Evaluates a script                                                                                           |
 | setprefix | Prefix    | Sets the bot prefix.                                                                                         |
 
 ## Permissions
