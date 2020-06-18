@@ -16,49 +16,6 @@ enum class MediaType {
     MANGA
 }
 
-@Suppress("unused")
-enum class MediaFormat {
-    TV,
-    TV_SHORT,
-    MOVIE,
-    SPECIAL,
-    OVA,
-    ONA,
-    MUSIC,
-    MANGA,
-    NOVEL,
-    ONE_SHOT
-}
-
-@Suppress("unused")
-enum class MediaStatus {
-    FINISHED,
-    RELEASING,
-    NOT_YET_RELEASED,
-    CANCELLED
-}
-
-@Suppress("unused")
-enum class MediaSeason {
-    WINTER,
-    SPRING,
-    SUMMER,
-    FALL
-}
-
-@Suppress("unused")
-enum class MediaSource {
-    ORIGINAL,
-    MANGA,
-    LIGHT_NOVEL,
-    VISUAL_NOVEL,
-    VIDEO_GAME,
-    OTHER,
-    NOVEL,
-    DOUJINSHI,
-    ANIME
-}
-
 data class MediaCoverImage(val large: String = "",
                            val medium: String = "",
                            val color: String = "")
@@ -72,18 +29,12 @@ data class StudioEdge(val id: Int,
 
 data class StudioConnection(val edges: List<StudioEdge> = listOf())
 
-@Suppress("unused")
-enum class MediaRankType {
-    RATED,
-    POPULAR
-}
-
 data class MediaRank(val id: Int,
                      val rank: Int,
-                     val type: MediaRankType,
+                     val type: String,
                      val year: Int? =  null,
                      val allTime: Boolean,
-                     val season: MediaSeason? = null)
+                     val season: String? = null)
 
 data class FuzzyDate(val year: Int?, val month: Int?, val day: Int?)
 
@@ -91,18 +42,18 @@ data class Media(val id: Int,
                  @SerializedName("title")
                  val mediaTitle: MediaTitle,
                  val type: MediaType,
-                 val format: MediaFormat,
-                 val status: MediaStatus,
+                 val format: String,
+                 val status: String,
                  val startDate: FuzzyDate? = null,
                  @SerializedName("description")
                  val mediaDescription: String,
                  val meanScore: Int = 0,
-                 val season: MediaSeason? =  null,
+                 val season: String? =  null,
                  val seasonYear: Int? =  null,
                  val episodes: Int? =  null,
                  val chapters: Int? =  null,
                  val volumes: Int? =  null,
-                 val source: MediaSource? =  null,
+                 val source: String? =  null,
                  val coverImage: MediaCoverImage? = null,
                  val genres: List<String>,
                  val favourites: Int,
@@ -120,10 +71,10 @@ data class Media(val id: Int,
         thumbnail = coverImage?.large ?: coverImage?.medium
         color = if(coverImage?.medium != null) averageImageColor(coverImage.medium) else infoColor
 
-        addInlineField("Status", status.toString().toLowerCase().replace('_', ' ').capitalize())
+        addInlineField("Status", status.toLowerCase().replace('_', ' ').capitalize())
 
         if(season != null) {
-            addInlineField("Season", season.toString().toLowerCase().capitalize() + (startDate?.year?.let { " $it" } ?: ""))
+            addInlineField("Season", season.toLowerCase().capitalize() + (startDate?.year?.let { " $it" } ?: ""))
         } else {
             addInlineField("Start date", startDate?.let { formatFuzzyDate(it) } ?: "Unknown")
         }
@@ -140,7 +91,7 @@ data class Media(val id: Int,
         }
 
         if(source != null) {
-            addInlineField("Source", source.toString().toLowerCase().replace('_', ' ').capitalize())
+            addInlineField("Source", source.toLowerCase().replace('_', ' ').capitalize())
         }
 
         if(studios != null) {
@@ -162,7 +113,7 @@ data class Media(val id: Int,
         if(allTime.isNotEmpty()) {
             footer {
                 text = allTime.joinToString(", ") {
-                    if(it.type == MediaRankType.POPULAR) {
+                    if(it.type == "POPULAR") {
                         "#${it.rank} Most Popular All Time"
                     } else {
                         "#${it.rank} Highest Rated All Time"
