@@ -155,7 +155,7 @@ data class Media(val id: Int,
         }
 
         if(genres.isNotEmpty()) {
-            addField("Genres", genres.joinToString())
+            addInlineField("Genres", genres.joinToString())
         }
 
         val allTime = rankings.filter { it.allTime }
