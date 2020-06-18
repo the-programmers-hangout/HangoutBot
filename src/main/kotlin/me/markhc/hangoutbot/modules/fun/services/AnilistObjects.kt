@@ -96,6 +96,7 @@ data class Media(val id: Int,
                  val startDate: FuzzyDate? = null,
                  @SerializedName("description")
                  val mediaDescription: String,
+                 val meanScore: Int = 0,
                  val season: MediaSeason? =  null,
                  val seasonYear: Int? =  null,
                  val episodes: Int? =  null,
@@ -121,7 +122,11 @@ data class Media(val id: Int,
 
         addInlineField("Status", status.toString().toLowerCase().replace('_', ' ').capitalize())
 
-        addInlineField("Start date", startDate?.let { formatFuzzyDate(it) } ?: "Unknown")
+        if(season != null) {
+            addInlineField("Season", season.toString().toLowerCase().capitalize() + (startDate?.year?.let { " $it" } ?: ""))
+        } else {
+            addInlineField("Start date", startDate?.let { formatFuzzyDate(it) } ?: "Unknown")
+        }
 
         field {
             inline = true
@@ -132,10 +137,6 @@ data class Media(val id: Int,
                 name = "Chapters"
                 value = chapters?.toString() ?: "Unknown"
             }
-        }
-
-        if(season != null) {
-            addInlineField("Season", season.toString().toLowerCase().capitalize())
         }
 
         if(source != null) {
@@ -149,8 +150,12 @@ data class Media(val id: Int,
             }
         }
 
+        if(meanScore != 0) {
+            addInlineField("Score", (meanScore / 10.0).toString())
+        }
+
         if(genres.isNotEmpty()) {
-            addInlineField("Genres", genres.take(5).joinToString())
+            addField("Genres", genres.joinToString())
         }
 
         val allTime = rankings.filter { it.allTime }

@@ -18,6 +18,7 @@ query ($search: String, $type: MediaType) {
     season
     seasonYear
     episodes
+    meanScore
     chapters
     volumes
     source
