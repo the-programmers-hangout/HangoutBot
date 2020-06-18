@@ -10,7 +10,7 @@ import me.jakejmattson.kutils.api.arguments.IntegerArg
 import me.jakejmattson.kutils.api.arguments.SplitterArg
 import me.jakejmattson.kutils.api.dsl.command.commands
 import me.markhc.hangoutbot.locale.Messages
-import me.markhc.hangoutbot.utilities.runLoggedCommand
+import me.markhc.hangoutbot.utilities.executeLogged
 import kotlin.random.Random
 
 private object CowsayData {
@@ -22,51 +22,43 @@ private data class JokeResponse(val id: String = "", val joke: String = "", val 
 fun produceFunCommands() = commands {
     command("coin") {
         description = "Flip a coin (or coins)."
-        execute(IntegerArg("Coins").makeOptional(1)) {
-            runLoggedCommand(it) {
-                val response = when (val coins = it.args.first) {
-                    1 -> if (Random.nextDouble() > 0.5) "Heads!" else "Tails!"
-                    in 2..100000 -> {
-                        val heads = (0..coins).sumBy { if (Random.nextDouble() > 0.5) 1 else 0 }
-                        val tails = coins - heads
-                        "Flipped $coins coins. Result: $heads heads, $tails tails!"
-                    }
-                    else -> "Sorry, cannot flip that many coins"
+        executeLogged(IntegerArg("Coins").makeOptional(1)) {
+            val response = when (val coins = it.args.first) {
+                1 -> if (Random.nextDouble() > 0.5) "Heads!" else "Tails!"
+                in 2..100000 -> {
+                    val heads = (0..coins).sumBy { if (Random.nextDouble() > 0.5) 1 else 0 }
+                    val tails = coins - heads
+                    "Flipped $coins coins. Result: $heads heads, $tails tails!"
                 }
-
-                it.respond(response)
+                else -> "Sorry, cannot flip that many coins"
             }
+
+            it.respond(response)
         }
     }
 
     command("flip") {
         description = "Choose one of the given choices."
-        execute(SplitterArg("Choices", ";")) {
-            runLoggedCommand(it) {
-                val (args) = it.args
-                val choice = args[Random.nextInt(args.size)]
-                it.respond(Messages.getRandomFlipMessage(choice))
-            }
+        executeLogged(SplitterArg("Choices", ";")) {
+            val (args) = it.args
+            val choice = args[Random.nextInt(args.size)]
+            it.respond(Messages.getRandomFlipMessage(choice))
         }
-    }
 
-    command("roll") {
-        description = "Rolls a number in a range (default 1-100)"
-        execute(IntegerArg("Min").makeOptional(1), IntegerArg("Max").makeOptional(100)) {
-            runLoggedCommand(it) {
+        command("roll") {
+            description = "Rolls a number in a range (default 1-100)"
+            executeLogged(IntegerArg("Min").makeOptional(1), IntegerArg("Max").makeOptional(100)) {
                 val (a, b) = it.args
-                if (a == b) return@execute it.respond("$a")
+                if (a == b) return@executeLogged it.respond("$a")
                 val result = if (a > b) Random.nextInt(b, a) else Random.nextInt(a, b)
 
                 it.respond("$result")
             }
         }
-    }
 
-    command("cowsay") {
-        description = "Displays a cowsay with a given message. Run with no arguments to get a list of valid cows."
-        execute(AnyArg("Cow").makeOptional(""), EveryArg("Message").makeOptional("")) {
-            runLoggedCommand(it) {
+        command("cowsay") {
+            description = "Displays a cowsay with a given message. Run with no arguments to get a list of valid cows."
+            executeLogged(AnyArg("Cow").makeOptional(""), EveryArg("Message").makeOptional("")) {
                 val (arg0, arg1) = it.args
 
                 it.respond(when {
@@ -77,12 +69,10 @@ fun produceFunCommands() = commands {
                 })
             }
         }
-    }
 
-    command("dadjoke") {
-        description = "Returns a random dad joke."
-        execute { event ->
-            runLoggedCommand(event) {
+        command("dadjoke") {
+            description = "Returns a random dad joke."
+            executeLogged { event ->
                 val (_, _, result) = Fuel
                         .get("https://icanhazdadjoke.com/")
                         .set("User-Agent", "HangoutBot (https://github.com/the-programmers-hangout/HangoutBot/)")

@@ -11,38 +11,34 @@ import me.jakejmattson.kutils.api.services.ScriptEngineService
 import me.markhc.hangoutbot.services.PermissionLevel
 import me.markhc.hangoutbot.services.PersistentData
 import me.markhc.hangoutbot.services.requiredPermissionLevel
-import me.markhc.hangoutbot.utilities.runLoggedCommand
-import javax.script.Bindings
+import me.markhc.hangoutbot.utilities.executeLogged
 import javax.script.ScriptContext
 import javax.script.ScriptEngine
-import kotlin.concurrent.thread
 
 @CommandSet("Owner Commands")
 fun ownerCommands(persistentData: PersistentData, scriptEngineService: ScriptEngineService) = commands {
     command("cooldown") {
-        description = "Gets or sets the cooldown (in seconds) after a user executes a command before he is able to execute another."
+        description = "Gets or sets the cooldown (in seconds) after a user executes a command before he is able to executeLogged another."
         requiredPermissionLevel = PermissionLevel.GuildOwner
         requiresGuild = true
-        execute(IntegerArg.makeNullableOptional(null)) {
-            runLoggedCommand(it) {
-                val (cd) = it.args
+        executeLogged(IntegerArg.makeNullableOptional(null)) {
+            val (cd) = it.args
 
-                if (cd != null) {
-                    if (cd < 1) {
-                        return@execute it.respond("Cooldown cannot be less than 1 second!")
-                    }
-
-                    persistentData.getGuildProperty(it.guild!!) {
-                        cooldown = cd.toInt()
-                    }
-
-                    it.respond("Command cooldown set to $cd seconds")
-                } else {
-                    val value = persistentData.getGuildProperty(it.guild!!) {
-                        cooldown
-                    }
-                    it.respond("Command cooldown is $value seconds")
+            if (cd != null) {
+                if (cd < 1) {
+                    return@executeLogged it.respond("Cooldown cannot be less than 1 second!")
                 }
+
+                persistentData.getGuildProperty(it.guild!!) {
+                    cooldown = cd.toInt()
+                }
+
+                it.respond("Command cooldown set to $cd seconds")
+            } else {
+                val value = persistentData.getGuildProperty(it.guild!!) {
+                    cooldown
+                }
+                it.respond("Command cooldown is $value seconds")
             }
         }
     }
@@ -51,14 +47,12 @@ fun ownerCommands(persistentData: PersistentData, scriptEngineService: ScriptEng
         description = "Sets the bot prefix."
         requiredPermissionLevel = PermissionLevel.GuildOwner
         requiresGuild = true
-        execute(AnyArg("Prefix")) {
-            runLoggedCommand(it) {
-                persistentData.setGuildProperty(it.guild!!) {
-                    prefix = it.args.first
-                }
-
-                it.respond("Bot prefix set to **${it.args.first}**")
+        executeLogged(AnyArg("Prefix")) {
+            persistentData.setGuildProperty(it.guild!!) {
+                prefix = it.args.first
             }
+
+            it.respond("Bot prefix set to **${it.args.first}**")
         }
     }
 
@@ -66,10 +60,8 @@ fun ownerCommands(persistentData: PersistentData, scriptEngineService: ScriptEng
         description = "Evaluates a script"
         requiredPermissionLevel = PermissionLevel.BotOwner
         requiresGuild = true
-        execute(EveryArg) {
-            runLoggedCommand(it) {
-                evalCommand(scriptEngineService.engine, it)
-            }
+        executeLogged(EveryArg) {
+            evalCommand(scriptEngineService.engine, it)
         }
     }
 }

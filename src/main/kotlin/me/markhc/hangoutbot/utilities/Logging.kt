@@ -1,17 +1,17 @@
 package me.markhc.hangoutbot.utilities
 
-import me.jakejmattson.kutils.api.dsl.command.CommandEvent
-import me.jakejmattson.kutils.api.dsl.command.GenericContainer
+import me.jakejmattson.kutils.api.dsl.arguments.ArgumentType
+import me.jakejmattson.kutils.api.dsl.command.*
 import me.jakejmattson.kutils.api.extensions.jda.fullName
 import me.markhc.hangoutbot.services.BotStatsService
 import kotlin.system.measureTimeMillis
 
-inline fun <T : GenericContainer> runLoggedCommand(event: CommandEvent<T>, action: () -> Unit) {
+inline fun <T : GenericContainer> runLoggedCommand(event: CommandEvent<T>, action: (CommandEvent<T>) -> Unit) {
     val stats = event.discord.getInjectionObjects(BotStatsService::class)
 
     runCatching {
         measureTimeMillis {
-            action()
+            action(event)
         }
     }.onSuccess {
         stats.commandExecutionTime(event.command!!, it)
@@ -27,3 +27,15 @@ inline fun <T : GenericContainer> runLoggedCommand(event: CommandEvent<T>, actio
         println("---------------------------------------");
     }
 }
+
+fun Command.executeLogged(e: (CommandEvent<NoArgs>) -> Unit)
+        = execute { runLoggedCommand(it, e) }
+fun <A> Command.executeLogged(a1: ArgumentType<A>, e: (CommandEvent<Args1<A>>) -> Unit)
+        = execute(a1) { runLoggedCommand(it, e) }
+fun <A, B> Command.executeLogged(a1: ArgumentType<A>, a2: ArgumentType<B>, e: (CommandEvent<Args2<A, B>>) -> Unit)
+        = execute(a1, a2) { runLoggedCommand(it, e) }
+fun <A, B, C> Command.executeLogged(a1: ArgumentType<A>,
+                                    a2: ArgumentType<B>,
+                                    a3: ArgumentType<C>,
+                                    e: (CommandEvent<Args3<A, B, C>>) -> Unit)
+        = execute(a1, a2, a3) { runLoggedCommand(it, e) }
