@@ -22,7 +22,9 @@ fun producePermissionCommands(persistentData: PersistentData,
                 .sortedByDescending { it.second.size }
 
         event.respond(embed{
-            title = "Required permissions"
+            title {
+                text = "Required permissions"
+            }
             description= "```css\n" +
                     "[B] → Bot Owner\n" +
                     "[G] → Guild Owner\n" +

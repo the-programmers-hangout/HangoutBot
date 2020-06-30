@@ -73,7 +73,7 @@ fun colorCommands(persistentData: PersistentData,
 
 
             event.respond(embed {
-                title = "Currently used colors"
+                title { text = "Currently used colors" }
                 description = "Run `setcolor <name>` to use one of the colors here.\n" +
                         "Run `setcolor <hexcolor> <name>` to create a new color."
                 color = infoColor

@@ -109,7 +109,7 @@ class MuteService(private val persistentData: PersistentData,
     }
 
     private fun buildMuteEmbed(member: Member, duration: Long) = embed {
-        title = "You have been muted"
+        title { text = "You have been muted" }
         description = "The mute will be automatically removed when the timer expires. " +
                 "If you think this was an error, contact a staff member."
         color = infoColor

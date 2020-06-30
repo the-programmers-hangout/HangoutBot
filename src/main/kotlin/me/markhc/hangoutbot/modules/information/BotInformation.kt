@@ -26,7 +26,7 @@ fun botInformationCommands(helpService: HelpService, botStats: BotStatsService, 
         description = "Displays miscellaneous information about the bot."
         executeLogged {
             it.respond(embed {
-                title = "Stats"
+                title { text = "Stats" }
                 color = infoColor
 
                 field {
@@ -67,7 +67,7 @@ fun botInformationCommands(helpService: HelpService, botStats: BotStatsService, 
             requiredPermissionLevel = PermissionLevel.BotOwner
             executeLogged {
                 it.respond(embed {
-                    title = "Debug"
+                    title { text = "Debug" }
                     color = infoColor
 
                     field {

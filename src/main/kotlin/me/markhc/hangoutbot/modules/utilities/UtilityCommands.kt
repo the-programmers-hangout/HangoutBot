@@ -100,7 +100,7 @@ fun reminderCommands(muteService: MuteService,
         description = "List your active reminders"
         executeLogged { event ->
             val messageEmbed = embed {
-                title = "Active reminders for ${event.author.fullName()}"
+                title { text = "Active reminders for ${event.author.fullName()}" }
 
                 val count = reminderService.listReminders(event.author) {
                     field {

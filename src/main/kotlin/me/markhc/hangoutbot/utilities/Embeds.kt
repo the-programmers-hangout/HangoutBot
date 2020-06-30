@@ -13,7 +13,7 @@ import java.time.format.DateTimeFormatter
 import java.util.concurrent.TimeUnit
 
 fun buildServerInfoEmbed(guild: Guild) = embed {
-    title = guild.name
+    title { text = guild.name }
     color = infoColor
 
     footer {
@@ -81,7 +81,7 @@ fun buildServerInfoEmbed(guild: Guild) = embed {
 }
 
 fun buildRoleInfoEmbed(role: Role) = embed {
-    title = "Role information"
+    title { text = "Role information" }
     color = role.color
 
     field {
@@ -132,7 +132,7 @@ private fun formatOffsetTime(time: OffsetDateTime): String {
 }
 
 fun buildUserInfoEmbed(user: User) = embed {
-    title = "User information"
+    title { text = "User information" }
     color = infoColor
     thumbnail = user.effectiveAvatarUrl
 
@@ -167,7 +167,7 @@ fun getSafeNickname(member: Member): String {
 }
 
 fun buildMemberInfoEmbed(member: Member) = embed {
-    title = "User information"
+    title { text = "User information" }
     color = member.color
     thumbnail = member.user.effectiveAvatarUrl
 

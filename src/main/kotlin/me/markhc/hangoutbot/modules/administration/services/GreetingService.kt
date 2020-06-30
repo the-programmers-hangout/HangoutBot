@@ -31,7 +31,7 @@ class GreetingService(private val persistentData: PersistentData) {
 
         val welcomeChannel = event.guild.getTextChannelById(channel)
         val welcomeEmbed = embed {
-            title = "Welcome"
+            title { text = "Welcome" }
             description = Messages.getRandomJoinMessage("${event.user.asMention} (${event.user.fullName()})")
             thumbnail = event.user.effectiveAvatarUrl
             color = infoColor

@@ -83,7 +83,7 @@ fun roleCommands(persistentData: PersistentData) = commands {
                             event.respond("No roles set")
                         } else {
                             val responseEmbed = embed {
-                                title = "Grantable roles"
+                                title { text = "Grantable roles" }
                                 color = infoColor
 
                                 grantableRoles.entries.forEach {

@@ -15,7 +15,9 @@ class HelpService(private val permissionsService: PermissionsService) {
     fun buildHelpEmbed(event: CommandEvent<*>) = embed {
         val container = event.container
 
-        title = "Help information"
+        title {
+            text = "Help information"
+        }
         description = "Use `${event.relevantPrefix}help <command>` for more information"
         color = infoColor
 
@@ -54,7 +56,7 @@ class HelpService(private val permissionsService: PermissionsService) {
             }
 
     fun buildHelpEmbedForCommand(event: CommandEvent<*>, command: Command) = embed {
-        title = command.names.joinToString()
+        title { text = command.names.joinToString() }
         description = command.description
         color = infoColor
 

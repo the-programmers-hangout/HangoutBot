@@ -59,7 +59,7 @@ class ReminderService(private val persistentData: PersistentData,
             delay(ms)
 
             discord.jda.getUserById(userId)?.sendPrivateMessage(embed {
-                title = "Reminder"
+                title { text = "Reminder" }
                 description = what
                 color = infoColor
             })
