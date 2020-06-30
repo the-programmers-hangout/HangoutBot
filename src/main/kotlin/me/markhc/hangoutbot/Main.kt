@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import me.jakejmattson.kutils.api.dsl.configuration.bot
 import me.markhc.hangoutbot.dataclasses.Properties
 import me.markhc.hangoutbot.dataclasses.loadConfig
+import net.dv8tion.jda.api.JDABuilder
 import net.dv8tion.jda.api.requests.GatewayIntent
 import net.dv8tion.jda.api.utils.ChunkingFilter
 import net.dv8tion.jda.api.utils.MemberCachePolicy
@@ -18,8 +19,9 @@ fun main() {
                 ?: throw Exception("Failed to parse properties")
 
         bot(configuration.token) {
-            client {
-                jdaBuilder.setChunkingFilter(ChunkingFilter.ALL)
+            client { token ->
+                JDABuilder.createDefault(token)
+                        .setChunkingFilter(ChunkingFilter.ALL)
                         .enableIntents(EnumSet.allOf(GatewayIntent::class.java))
                         .setMemberCachePolicy(MemberCachePolicy.ALL)
             }
