@@ -5,6 +5,7 @@ import me.jakejmattson.kutils.api.dsl.command.commands
 import me.jakejmattson.kutils.api.arguments.AnyArg
 import me.jakejmattson.kutils.api.arguments.EveryArg
 import me.jakejmattson.kutils.api.arguments.IntegerArg
+import me.jakejmattson.kutils.api.arguments.IntegerRangeArg
 import me.jakejmattson.kutils.api.dsl.command.CommandEvent
 import me.jakejmattson.kutils.api.dsl.command.GenericContainer
 import me.jakejmattson.kutils.api.services.ScriptEngineService
@@ -27,6 +28,9 @@ fun ownerCommands(persistentData: PersistentData, scriptEngineService: ScriptEng
             if (cd != null) {
                 if (cd < 1) {
                     return@executeLogged it.respond("Cooldown cannot be less than 1 second!")
+                }
+                if (cd > 3600) {
+                    return@executeLogged it.respond("Cooldown cannot be more than 1 hour!")
                 }
 
                 persistentData.getGuildProperty(it.guild!!) {
