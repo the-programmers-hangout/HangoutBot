@@ -1,4 +1,4 @@
-package me.markhc.hangoutbot.modules.utilities.services
+package me.markhc.hangoutbot.commands.utilities.services
 
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay

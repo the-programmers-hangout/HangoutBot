@@ -5,8 +5,8 @@ import me.jakejmattson.kutils.api.annotations.Service
 import me.jakejmattson.kutils.api.extensions.jda.fullName
 import me.markhc.hangoutbot.dataclasses.BotConfiguration
 import me.markhc.hangoutbot.dataclasses.Properties
-import me.markhc.hangoutbot.modules.utilities.services.MuteService
-import me.markhc.hangoutbot.modules.utilities.services.ReminderService
+import me.markhc.hangoutbot.commands.utilities.services.MuteService
+import me.markhc.hangoutbot.commands.utilities.services.ReminderService
 
 @Service
 class StartupService(private val properties: Properties,

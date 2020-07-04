@@ -1,4 +1,4 @@
-package me.markhc.hangoutbot.modules.`fun`
+package me.markhc.hangoutbot.commands.`fun`
 
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.gson.responseObject

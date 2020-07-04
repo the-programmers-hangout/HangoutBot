@@ -1,10 +1,10 @@
-package me.markhc.hangoutbot.modules.utilities
+package me.markhc.hangoutbot.commands.utilities
 
 import me.jakejmattson.kutils.api.annotations.CommandSet
 import me.jakejmattson.kutils.api.dsl.command.commands
 import me.jakejmattson.kutils.api.arguments.*
 import me.jakejmattson.kutils.api.dsl.embed.embed
-import me.markhc.hangoutbot.modules.utilities.services.ColorService
+import me.markhc.hangoutbot.commands.utilities.services.ColorService
 import me.markhc.hangoutbot.services.PermissionLevel
 import me.markhc.hangoutbot.services.PersistentData
 import me.markhc.hangoutbot.services.requiredPermissionLevel

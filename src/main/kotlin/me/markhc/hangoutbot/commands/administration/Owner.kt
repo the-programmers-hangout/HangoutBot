@@ -1,4 +1,4 @@
-package me.markhc.hangoutbot.modules.administration
+package me.markhc.hangoutbot.commands.administration
 
 import me.jakejmattson.kutils.api.annotations.CommandSet
 import me.jakejmattson.kutils.api.dsl.command.commands

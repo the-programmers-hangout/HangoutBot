@@ -1,10 +1,10 @@
-package me.markhc.hangoutbot.modules.`fun`
+package me.markhc.hangoutbot.commands.`fun`
 
 import me.jakejmattson.kutils.api.annotations.CommandSet
 import me.jakejmattson.kutils.api.arguments.EveryArg
 import me.jakejmattson.kutils.api.dsl.command.*
-import me.markhc.hangoutbot.modules.`fun`.services.AnilistService
-import me.markhc.hangoutbot.modules.`fun`.services.MediaType
+import me.markhc.hangoutbot.commands.`fun`.services.AnilistService
+import me.markhc.hangoutbot.commands.`fun`.services.MediaType
 import me.markhc.hangoutbot.utilities.executeLogged
 
 @CommandSet("Anime")

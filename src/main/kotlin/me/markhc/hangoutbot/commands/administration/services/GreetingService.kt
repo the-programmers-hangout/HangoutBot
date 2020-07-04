@@ -1,4 +1,4 @@
-package me.markhc.hangoutbot.modules.administration.services
+package me.markhc.hangoutbot.commands.administration.services
 
 import com.google.common.collect.EvictingQueue
 import com.google.common.eventbus.Subscribe

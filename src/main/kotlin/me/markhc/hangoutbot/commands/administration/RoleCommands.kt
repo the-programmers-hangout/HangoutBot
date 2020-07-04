@@ -1,11 +1,10 @@
-package me.markhc.hangoutbot.modules.administration
+package me.markhc.hangoutbot.commands.administration
 
 import me.jakejmattson.kutils.api.annotations.CommandSet
 import me.jakejmattson.kutils.api.dsl.command.commands
 import me.jakejmattson.kutils.api.arguments.*
 import me.jakejmattson.kutils.api.dsl.embed.embed
 import me.jakejmattson.kutils.api.extensions.jda.fullName
-import me.markhc.hangoutbot.arguments.LowerRankedMemberArg
 import me.markhc.hangoutbot.extensions.addRole
 import me.markhc.hangoutbot.extensions.removeRole
 import me.markhc.hangoutbot.services.PermissionLevel
@@ -111,7 +110,7 @@ fun roleCommands(persistentData: PersistentData) = commands {
         description = "Grants a role to a lower ranked member or yourself"
         requiredPermissionLevel = PermissionLevel.Staff
         requiresGuild = true
-        executeLogged(LowerRankedMemberArg("Member").makeOptional { it.guild!!.getMember(it.author)!! },
+        executeLogged(MemberArg("Member").makeOptional { it.guild!!.getMember(it.author)!! },
                 RoleArg("GrantableRole")) { event ->
             val (member, role) = event.args
             val guild = event.guild!!
@@ -132,7 +131,7 @@ fun roleCommands(persistentData: PersistentData) = commands {
         description = "Revokes a role from a lower ranked member or yourself"
         requiredPermissionLevel = PermissionLevel.Staff
         requiresGuild = true
-        executeLogged(LowerRankedMemberArg("Member").makeOptional { it.guild!!.getMember(it.author)!! },
+        executeLogged(MemberArg("Member").makeOptional { it.guild!!.getMember(it.author)!! },
                 RoleArg("GrantableRole")) { event ->
             val (member, role) = event.args
             val guild = event.guild!!

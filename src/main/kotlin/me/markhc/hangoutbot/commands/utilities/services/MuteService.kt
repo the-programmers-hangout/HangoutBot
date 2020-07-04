@@ -1,4 +1,4 @@
-package me.markhc.hangoutbot.modules.utilities.services
+package me.markhc.hangoutbot.commands.utilities.services
 
 import com.github.kittinunf.result.Result
 import kotlinx.coroutines.GlobalScope

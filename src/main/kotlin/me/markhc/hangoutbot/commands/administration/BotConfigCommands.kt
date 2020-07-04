@@ -1,10 +1,10 @@
-package me.markhc.hangoutbot.modules.administration
+package me.markhc.hangoutbot.commands.administration
 
 import me.jakejmattson.kutils.api.annotations.CommandSet
 import me.jakejmattson.kutils.api.arguments.RoleArg
 import me.jakejmattson.kutils.api.arguments.TextChannelArg
 import me.jakejmattson.kutils.api.dsl.command.commands
-import me.markhc.hangoutbot.modules.administration.services.GreetingService
+import me.markhc.hangoutbot.commands.administration.services.GreetingService
 import me.markhc.hangoutbot.services.PermissionLevel
 import me.markhc.hangoutbot.services.PersistentData
 import me.markhc.hangoutbot.services.requiredPermissionLevel

@@ -1,4 +1,4 @@
-package me.markhc.hangoutbot.modules.`fun`.services
+package me.markhc.hangoutbot.commands.`fun`.services
 
 import com.google.gson.annotations.SerializedName
 import me.jakejmattson.kutils.api.dsl.embed.embed
