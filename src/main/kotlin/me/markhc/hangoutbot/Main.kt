@@ -1,9 +1,11 @@
 package me.markhc.hangoutbot
 
 import com.google.gson.Gson
-import me.jakejmattson.kutils.api.dsl.configuration.bot
+import me.jakejmattson.kutils.api.dsl.bot
+import me.markhc.hangoutbot.commands.administration.services.ScriptEngineService
 import me.markhc.hangoutbot.dataclasses.Properties
 import me.markhc.hangoutbot.dataclasses.loadConfig
+import me.markhc.hangoutbot.utilities.toLongDurationString
 import net.dv8tion.jda.api.JDABuilder
 import net.dv8tion.jda.api.requests.GatewayIntent
 import net.dv8tion.jda.api.utils.ChunkingFilter
@@ -12,6 +14,7 @@ import java.awt.Color
 import java.util.*
 
 fun main() {
+    println(3600.toLong().toLongDurationString())
     loadConfig {
         val configuration = it ?: throw Exception("Failed to parse configuration")
         val propFile = Properties::class.java.getResource("/hangoutbot_properties.json").readText()
@@ -27,8 +30,7 @@ fun main() {
             }
 
             injection {
-                enableScriptEngineService = true
-
+                inject(configuration)
                 inject(configuration)
                 inject(properties)
             }
@@ -43,6 +45,7 @@ fun main() {
                 allowMentionPrefix = true
                 requiresGuild = false
             }
+
             logging {
                 generateCommandDocs = false
             }

@@ -1,13 +1,12 @@
 package me.markhc.hangoutbot.dataclasses
 
 import com.google.gson.Gson
-import me.jakejmattson.kutils.api.annotations.Data
+import me.jakejmattson.kutils.api.dsl.data.Data
 import java.io.File
 
-@Data("config/config.json")
 data class BotConfiguration(val token: String = "",
                             var prefix: String = "++",
-                            val ownerId: String = "");
+                            val ownerId: String = "") : Data("config/config.json");
 
 data class Properties(val version: String = "",
                       val kutils: String = "",

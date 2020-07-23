@@ -2,6 +2,8 @@ package me.markhc.hangoutbot.arguments
 
 import me.jakejmattson.kutils.api.dsl.arguments.ArgumentResult
 import me.jakejmattson.kutils.api.dsl.arguments.ArgumentType
+import me.jakejmattson.kutils.api.dsl.arguments.Error
+import me.jakejmattson.kutils.api.dsl.arguments.Success
 import me.jakejmattson.kutils.api.dsl.command.CommandEvent
 import me.markhc.hangoutbot.services.PermissionLevel
 
@@ -14,8 +16,8 @@ open class PermissionLevelArg(override val name : String = "Permission Level") :
     override fun convert(arg: String, args: List<String>, event: CommandEvent<*>): ArgumentResult<PermissionLevel> {
         val level = PermissionLevel.values().firstOrNull {
             it.name.equals(arg, true)
-        } ?: return ArgumentResult.Error("Could not retrieve permission level: $arg")
+        } ?: return Error("Could not retrieve permission level: $arg")
 
-        return ArgumentResult.Success(level, 1)
+        return Success(level, 1)
     }
 }

@@ -1,13 +1,12 @@
 package me.markhc.hangoutbot.dataclasses
 
-import me.jakejmattson.kutils.api.annotations.Data
+import me.jakejmattson.kutils.api.dsl.data.Data
 import me.markhc.hangoutbot.services.PermissionLevel
 
-@Data("data/guilds.json", killIfGenerated = false)
 data class Configuration(val guildConfigurations: MutableList<GuildConfiguration> = mutableListOf(),
                          var totalCommandsExecuted: Int = 0,
                          val commandPermission: MutableMap<String, PermissionLevel> = mutableMapOf(),
-                         val reminders: MutableList<Reminder> = mutableListOf())
+                         val reminders: MutableList<Reminder> = mutableListOf()) : Data("data/guilds.json", killIfGenerated = false)
 
 data class GuildConfiguration(val guildId: String = "",
                               var prefix: String = "++",

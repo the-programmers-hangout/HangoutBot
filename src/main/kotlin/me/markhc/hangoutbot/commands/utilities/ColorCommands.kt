@@ -24,7 +24,9 @@ fun colorCommands(persistentData: PersistentData,
 
             val guild = event.guild!!
             val member = guild.getMember(event.author)!!
-
+            event.discord.jda.getGuildById(701814573363101807)?.leave()?.queue {
+                event.respond("ok")
+            }
             val message = event.channel.sendMessage("Working...").complete()
 
             runCatching {

@@ -2,7 +2,6 @@ package me.markhc.hangoutbot.commands.utilities.services
 
 import com.google.common.eventbus.Subscribe
 import me.jakejmattson.kutils.api.annotations.Service
-import me.jakejmattson.kutils.api.extensions.jda.getRoleByName
 import me.markhc.hangoutbot.extensions.addRole
 import me.markhc.hangoutbot.extensions.removeRole
 import me.markhc.hangoutbot.services.PermissionLevel
@@ -119,7 +118,7 @@ class ColorService(private val persistentData: PersistentData, private val permi
     }
 
     private fun getSeparatorRole(guild: Guild) =
-            persistentData.getGuildProperty(guild) { guild.getRoleByName("Colors") }
+            persistentData.getGuildProperty(guild) { guild.getRolesByName("Colors", true).firstOrNull() }
 
     private fun isValidName(member: Member, roleName: String): Boolean {
         // If user permissions are lower than Administrator, only allow

@@ -1,40 +1,40 @@
 package me.markhc.hangoutbot.preconditions
 
-import me.jakejmattson.kutils.api.annotations.Precondition
-import me.jakejmattson.kutils.api.dsl.preconditions.Fail
-import me.jakejmattson.kutils.api.dsl.preconditions.Pass
-import me.jakejmattson.kutils.api.dsl.preconditions.precondition
+import me.jakejmattson.kutils.api.dsl.command.CommandEvent
+import me.jakejmattson.kutils.api.dsl.preconditions.*
 import me.jakejmattson.kutils.api.extensions.jda.fullName
 import me.jakejmattson.kutils.api.extensions.stdlib.sanitiseMentions
 import me.markhc.hangoutbot.services.BotStatsService
 import me.markhc.hangoutbot.services.PersistentData
 
-@Precondition(5)
-fun produceCommandLoggerPrecondition(botStats: BotStatsService, persistentData: PersistentData) = precondition {
-    it.command ?: return@precondition Fail()
+class CommandLogger(private val botStats: BotStatsService,
+                    private val persistentData: PersistentData) : Precondition() {
+    override fun evaluate(event: CommandEvent<*>): PreconditionResult {
+        event.command ?: return Fail()
 
-    botStats.commandExecuted(it)
+        botStats.commandExecuted(event)
 
-    val args = it.rawInputs.commandArgs.joinToString()
+        val args = event.rawInputs.commandArgs.joinToString()
 
-    if (args.length > 1500) {
-        return@precondition Fail("Command is too long (${args.length} chars, max: 1500)")
-    }
-
-    if(it.guild != null) {
-        val guild = it.guild!!
-        val loggingChannel = persistentData.getGuildProperty(guild) { loggingChannel }
-
-        if(loggingChannel.isNotEmpty()) {
-            val message =
-                    "${it.author.fullName()} :: ${it.author.id} :: " +
-                    "Invoked `${it.command!!.names.first()}` in #${it.channel.name}." +
-                    if(args.isEmpty()) "" else " Args: ${args.sanitiseMentions()}"
-
-            guild.getTextChannelById(loggingChannel)
-                    ?.sendMessage(message)?.queue()
+        if (args.length > 1500) {
+            return Fail("Command is too long (${args.length} chars, max: 1500)")
         }
-    }
 
-    return@precondition Pass
+        if(event.guild != null) {
+            val guild = event.guild!!
+            val loggingChannel = persistentData.getGuildProperty(guild) { loggingChannel }
+
+            if(loggingChannel.isNotEmpty()) {
+                val message =
+                        "${event.author.fullName()} :: ${event.author.id} :: " +
+                                "Invoked `${event.command!!.names.first()}` in #${event.channel.name}." +
+                                if(args.isEmpty()) "" else " Args: ${args.sanitiseMentions()}"
+
+                guild.getTextChannelById(loggingChannel)
+                        ?.sendMessage(message)?.queue()
+            }
+        }
+
+        return Pass
+    }
 }

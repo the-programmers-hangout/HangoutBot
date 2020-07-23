@@ -12,30 +12,6 @@ import net.dv8tion.jda.api.exceptions.InsufficientPermissionException
 
 @CommandSet("Channel")
 fun channelCommands() = commands {
-    command("chnltopic") {
-        description = "Gets or sets the topic of a channel."
-        requiredPermissionLevel = PermissionLevel.Administrator
-        requiresGuild = true
-        executeLogged(TextChannelArg, EveryArg.makeOptional("")) { event ->
-            val channel = event.args.first
-            val topic = event.args.second.trim()
-
-            if (topic.isEmpty()) {
-                if (channel.topic != null) {
-                    event.respond("The topic for ${channel.asMention} is: \n```\n${channel.topic}\n```")
-                } else {
-                    event.respond("${channel.asMention} does not have a set topic!")
-                }
-            } else {
-                try {
-                    channel.manager.setTopic(topic).queue { event.respond("Success!") }
-                } catch (e: InsufficientPermissionException) {
-                    event.respond(e.message!!)
-                }
-            }
-        }
-    }
-
     command("slowmode") {
         description = "Set the slowmode in a channel."
         requiredPermissionLevel = PermissionLevel.Staff

@@ -119,7 +119,7 @@ fun roleCommands(persistentData: PersistentData) = commands {
 
             if (roles.values.any { r -> r.contains(role.id) }) {
                 member.addRole(role).queue {
-                    event.respond("Granted ${role.name} to ${member.fullName()}")
+                    event.respond("Granted ${role.name} to ${member.user.fullName()}")
                 }
             } else {
                 event.respond("${role.name} is not a grantable role")
@@ -142,7 +142,7 @@ fun roleCommands(persistentData: PersistentData) = commands {
 
             if (isGrantable) {
                 member.removeRole(role).queue {
-                    event.respond("Revoked ${role.name} from ${member.fullName()}")
+                    event.respond("Revoked ${role.name} from ${member.user.fullName()}")
                 }
             } else {
                 event.respond("${role.name} is not a grantable role")

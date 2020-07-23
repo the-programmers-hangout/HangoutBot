@@ -30,7 +30,7 @@ fun buildServerInfoEmbed(guild: Guild) = embed {
 
     field {
         name = "**Owner**"
-        value = guild.owner?.fullName() ?: "<None>"
+        value = guild.owner?.user?.fullName() ?: "<None>"
         inline = true
     }
     field {
@@ -173,7 +173,7 @@ fun buildMemberInfoEmbed(member: Member) = embed {
 
     field {
         name = "**Username**"
-        value = member.fullName()
+        value = member.user.fullName()
         inline = true
     }
     field {
