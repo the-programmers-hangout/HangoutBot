@@ -31,7 +31,6 @@ fun main() {
 
             injection {
                 inject(configuration)
-                inject(configuration)
                 inject(properties)
             }
 
