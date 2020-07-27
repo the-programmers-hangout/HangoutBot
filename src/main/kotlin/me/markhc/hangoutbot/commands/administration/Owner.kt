@@ -14,12 +14,11 @@ import me.markhc.hangoutbot.services.requiredPermissionLevel
 import me.markhc.hangoutbot.utilities.executeLogged
 import javax.script.ScriptContext
 import javax.script.ScriptEngine
-import javax.script.ScriptEngineManager
 
 @CommandSet("Owner Commands")
 fun ownerCommands(persistentData: PersistentData, scriptEngineService: ScriptEngineService) = commands {
     command("cooldown") {
-        description = "Gets or sets the cooldown (in seconds) after a user executes a command before he is able to executeLogged another."
+        description = "Gets or sets the command cooldown period (in seconds)."
         requiredPermissionLevel = PermissionLevel.GuildOwner
         requiresGuild = true
         executeLogged(IntegerArg.makeNullableOptional(null)) {
@@ -33,7 +32,7 @@ fun ownerCommands(persistentData: PersistentData, scriptEngineService: ScriptEng
                     return@executeLogged it.respond("Cooldown cannot be more than 1 hour!")
                 }
 
-                persistentData.getGuildProperty(it.guild!!) {
+                persistentData.setGuildProperty(it.guild!!) {
                     cooldown = cd.toInt()
                 }
 
