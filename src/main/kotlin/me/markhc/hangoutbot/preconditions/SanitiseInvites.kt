@@ -1,10 +1,10 @@
 package me.markhc.hangoutbot.preconditions
 
-import me.jakejmattson.kutils.api.dsl.command.CommandEvent
-import me.jakejmattson.kutils.api.dsl.preconditions.Fail
-import me.jakejmattson.kutils.api.dsl.preconditions.Pass
-import me.jakejmattson.kutils.api.dsl.preconditions.Precondition
-import me.jakejmattson.kutils.api.dsl.preconditions.PreconditionResult
+import me.jakejmattson.discordkt.api.dsl.command.CommandEvent
+import me.jakejmattson.discordkt.api.dsl.preconditions.Fail
+import me.jakejmattson.discordkt.api.dsl.preconditions.Pass
+import me.jakejmattson.discordkt.api.dsl.preconditions.Precondition
+import me.jakejmattson.discordkt.api.dsl.preconditions.PreconditionResult
 
 class SanitiseInvites : Precondition() {
     override fun evaluate(event: CommandEvent<*>): PreconditionResult {

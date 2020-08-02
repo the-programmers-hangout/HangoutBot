@@ -1,7 +1,7 @@
 package me.markhc.hangoutbot.dataclasses
 
 import com.google.gson.Gson
-import me.jakejmattson.kutils.api.dsl.data.Data
+import me.jakejmattson.discordkt.api.dsl.data.Data
 import java.io.File
 
 data class BotConfiguration(val token: String = "",

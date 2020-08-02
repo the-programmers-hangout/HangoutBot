@@ -4,9 +4,9 @@ import com.github.kittinunf.result.Result
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import me.jakejmattson.kutils.api.Discord
-import me.jakejmattson.kutils.api.annotations.Service
-import me.jakejmattson.kutils.api.dsl.embed.embed
+import me.jakejmattson.discordkt.api.Discord
+import me.jakejmattson.discordkt.api.annotations.Service
+import me.jakejmattson.discordkt.api.dsl.embed.embed
 import me.markhc.hangoutbot.dataclasses.GuildConfiguration
 import me.markhc.hangoutbot.dataclasses.MuteEntry
 import me.markhc.hangoutbot.services.PersistentData

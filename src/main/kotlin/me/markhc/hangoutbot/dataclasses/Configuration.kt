@@ -1,6 +1,6 @@
 package me.markhc.hangoutbot.dataclasses
 
-import me.jakejmattson.kutils.api.dsl.data.Data
+import me.jakejmattson.discordkt.api.dsl.data.Data
 import me.markhc.hangoutbot.services.PermissionLevel
 
 data class Configuration(val guildConfigurations: MutableList<GuildConfiguration> = mutableListOf(),

@@ -1,12 +1,12 @@
 package me.markhc.hangoutbot.commands.utilities
 
-import me.jakejmattson.kutils.api.annotations.CommandSet
-import me.jakejmattson.kutils.api.arguments.EveryArg
-import me.jakejmattson.kutils.api.arguments.TimeArg
-import me.jakejmattson.kutils.api.dsl.command.commands
-import me.jakejmattson.kutils.api.dsl.embed.embed
-import me.jakejmattson.kutils.api.extensions.jda.fullName
-import me.jakejmattson.kutils.api.extensions.jda.sendPrivateMessage
+import me.jakejmattson.discordkt.api.annotations.CommandSet
+import me.jakejmattson.discordkt.api.arguments.EveryArg
+import me.jakejmattson.discordkt.api.arguments.TimeArg
+import me.jakejmattson.discordkt.api.dsl.command.commands
+import me.jakejmattson.discordkt.api.dsl.embed.embed
+import me.jakejmattson.discordkt.api.extensions.jda.fullName
+import me.jakejmattson.discordkt.api.extensions.jda.sendPrivateMessage
 import me.markhc.hangoutbot.commands.utilities.services.MuteService
 import me.markhc.hangoutbot.commands.utilities.services.ReminderService
 import me.markhc.hangoutbot.utilities.executeLogged
