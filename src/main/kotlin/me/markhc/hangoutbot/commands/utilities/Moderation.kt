@@ -26,8 +26,22 @@ fun moderationCommands() = commands {
         requiredPermissionLevel = PermissionLevel.Staff
         requiresGuild = true
         executeLogged(TextChannelArg.makeOptional { it.channel as TextChannel },
-                IntegerArg) {
-            val (channel, amount) = it.args
+                IntegerArg or MessageArg) {
+            val channel = it.args.first
+            val amount = it.args.second.map(
+                    { it },
+                    { message ->
+                        if (message.channel.id != channel.id) {
+                            return@map null.apply { it.respond("Message cannot be retrieved from given channel") }
+                        }
+
+                        try {
+                            channel.getHistoryAfter(message, 100).complete(true).size() + 1
+                        } catch (e: Exception) {
+                            null.apply { it.respond(e.message!!) }
+                        }
+                    }
+            ) ?: return@executeLogged
 
             if (amount !in 2..99) {
                 return@executeLogged it.respond("You can only nuke between 2 and 99 messages")
