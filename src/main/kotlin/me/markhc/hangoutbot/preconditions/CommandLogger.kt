@@ -28,7 +28,7 @@ class CommandLogger(private val botStats: BotStatsService,
                 val message =
                         "${event.author.fullName()} :: ${event.author.id} :: " +
                                 "Invoked `${event.command!!.names.first()}` in #${event.channel.name}." +
-                                if(args.isEmpty()) "" else " Args: ${args.sanitiseMentions(event.discord.jda)}"
+                                if(args.isEmpty()) "" else " Args: ${args.sanitiseMentions(event.discord)}"
 
                 guild.getTextChannelById(loggingChannel)
                         ?.sendMessage(message)?.queue()

@@ -10,7 +10,7 @@ import me.jakejmattson.discordkt.api.dsl.embed.embed
 import me.markhc.hangoutbot.dataclasses.GuildConfiguration
 import me.markhc.hangoutbot.dataclasses.MuteEntry
 import me.markhc.hangoutbot.services.PersistentData
-import me.markhc.hangoutbot.utilities.toShortDurationString
+import me.markhc.hangoutbot.utilities.TimeFormatter
 import net.dv8tion.jda.api.entities.Member
 import net.dv8tion.jda.api.entities.MessageEmbed
 import net.dv8tion.jda.api.entities.Role
@@ -117,7 +117,7 @@ class MuteService(private val persistentData: PersistentData,
         field {
             inline = true
             name = "Duration"
-            value = duration.toShortDurationString()
+            value = TimeFormatter.toShortDurationString(duration)
         }
 
         field {

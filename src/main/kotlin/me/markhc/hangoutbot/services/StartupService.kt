@@ -60,7 +60,7 @@ class StartupService(private val properties: Properties,
                         name = "Build Info"
                         value = "```"+
                                 "Version: $version\n" +
-                                "KUtils:  $kutils\n" +
+                                "DiscordKt:  $discordKt\n" +
                                 "Kotlin:  $kotlinVersion" +
                                 "```"
                     }

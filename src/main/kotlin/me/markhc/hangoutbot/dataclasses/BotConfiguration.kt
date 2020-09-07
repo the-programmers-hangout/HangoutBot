@@ -9,7 +9,7 @@ data class BotConfiguration(val token: String = "",
                             val ownerId: String = "") : Data("config/config.json");
 
 data class Properties(val version: String = "",
-                      val kutils: String = "",
+                      val discordKt: String = "",
                       val repository: String = "")
 
 fun loadConfig(onFinishedLoading: (BotConfiguration?) -> Unit) {

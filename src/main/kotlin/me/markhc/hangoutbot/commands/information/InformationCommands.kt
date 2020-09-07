@@ -5,11 +5,12 @@ import me.jakejmattson.discordkt.api.dsl.command.commands
 import me.jakejmattson.discordkt.api.arguments.CommandArg
 import me.jakejmattson.discordkt.api.arguments.RoleArg
 import me.jakejmattson.discordkt.api.arguments.UserArg
+import me.markhc.hangoutbot.services.EmbedService
 import me.markhc.hangoutbot.services.HelpService
 import me.markhc.hangoutbot.utilities.*
 
 @CommandSet("Information")
-fun produceInformationCommands(helpService: HelpService) = commands {
+fun produceInformationCommands(helpService: HelpService, embedService: EmbedService) = commands {
     command("help") {
         description = "Display help information."
         requiresGuild = true
@@ -47,21 +48,19 @@ fun produceInformationCommands(helpService: HelpService) = commands {
         description = "Display a message giving basic server information."
         requiresGuild = true
         executeLogged {
-            val guild = it.guild!!
-
-            it.respond(buildServerInfoEmbed(guild))
+            it.respond(embedService.guildInfo(it.guild!!))
         }
     }
 
     command("userinfo") {
         description = "Displays information about the given user."
-        executeLogged(UserArg("user", allowsBot = true).makeOptional { it.author }) {
+        executeLogged(UserArg("user").makeOptional { it.author }) {
             val (user) = it.args
             val member = it.guild?.getMember(user)
             if (member != null)
-                it.respond(buildMemberInfoEmbed(member))
+                it.respond(embedService.memberInfo(member))
             else
-                it.respond(buildUserInfoEmbed(user))
+                it.respond(embedService.userInfo(user))
         }
     }
 
@@ -69,13 +68,13 @@ fun produceInformationCommands(helpService: HelpService) = commands {
         description = "Displays information about the given role."
         requiresGuild = true
         executeLogged(RoleArg) {
-            it.respond(buildRoleInfoEmbed(it.args.first))
+            it.respond(embedService.roleInfo(it.args.first))
         }
     }
 
     command("avatar") {
         description = "Gets the avatar from the given user"
-        executeLogged(UserArg("user", allowsBot = true).makeOptional { it.author }) {
+        executeLogged(UserArg("user").makeOptional { it.author }) {
             val user = it.args.first
 
             it.respond("${user.effectiveAvatarUrl}?size=512")

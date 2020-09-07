@@ -13,7 +13,7 @@ import me.jakejmattson.discordkt.api.dsl.embed.embed
 import me.jakejmattson.discordkt.api.extensions.jda.sendPrivateMessage
 import me.markhc.hangoutbot.dataclasses.Reminder
 import me.markhc.hangoutbot.services.PersistentData
-import me.markhc.hangoutbot.utilities.toLongDurationString
+import me.markhc.hangoutbot.utilities.TimeFormatter
 import net.dv8tion.jda.api.entities.*
 
 @Service
@@ -36,7 +36,7 @@ class ReminderService(private val persistentData: PersistentData,
 
         launchReminder(user.id, ms, what)
 
-        return Result.Success("Got it, I'll remind you in ${ms.toLongDurationString()} about that.")
+        return Result.Success("Got it, I'll remind you in ${TimeFormatter.toLongDurationString(ms)} about that.")
     }
 
     fun listReminders(user: User, fn: (Reminder) -> Unit): Int {

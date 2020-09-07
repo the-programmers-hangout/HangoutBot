@@ -4,7 +4,7 @@ import me.jakejmattson.discordkt.api.Discord
 import me.jakejmattson.discordkt.api.annotations.Service
 import me.jakejmattson.discordkt.api.dsl.command.Command
 import me.jakejmattson.discordkt.api.dsl.command.CommandEvent
-import me.markhc.hangoutbot.utilities.toLongDurationString
+import me.markhc.hangoutbot.utilities.TimeFormatter
 import java.util.*
 
 @Service
@@ -36,7 +36,7 @@ class BotStatsService(private val persistentData: PersistentData,
     }
 
     val uptime: String
-        get() = (Date().time - startTime.time).toLongDurationString()
+        get() = TimeFormatter.toLongDurationString(Date().time - startTime.time)
 
     val avgCommandTimes: Map<String, Double>
         get() = averageExecutionTime.map { it.key.names.first() to it.value.second }.toMap()

@@ -16,11 +16,11 @@ import net.dv8tion.jda.api.entities.Guild
 
 @CommandSet("Roles")
 fun roleCommands(persistentData: PersistentData) = commands {
-    command("grantablerole") {
-        description = "Adds, removes or lists grantble roles."
+    command("grantablerole", "grantableroles") {
+        description = "Adds, removes or lists grantable roles."
         requiredPermissionLevel = PermissionLevel.Staff
         requiresGuild = true
-        executeLogged(ChoiceArg("add/rem/list", "add", "rem", "list"),
+        executeLogged(ChoiceArg("add/rem/list", "add", "rem", "list").makeOptional("list"),
                 RoleArg.makeNullableOptional(null),
                 AnyArg("Category").makeNullableOptional(null)) { event ->
             val (choice, role, category) = event.args
