@@ -1,10 +1,10 @@
 package me.markhc.hangoutbot.commands.information
 
-import me.jakejmattson.kutils.api.annotations.CommandSet
-import me.jakejmattson.kutils.api.dsl.command.commands
-import me.jakejmattson.kutils.api.arguments.CommandArg
-import me.jakejmattson.kutils.api.arguments.RoleArg
-import me.jakejmattson.kutils.api.arguments.UserArg
+import me.jakejmattson.discordkt.api.annotations.CommandSet
+import me.jakejmattson.discordkt.api.dsl.command.commands
+import me.jakejmattson.discordkt.api.arguments.CommandArg
+import me.jakejmattson.discordkt.api.arguments.RoleArg
+import me.jakejmattson.discordkt.api.arguments.UserArg
 import me.markhc.hangoutbot.services.HelpService
 import me.markhc.hangoutbot.utilities.*
 

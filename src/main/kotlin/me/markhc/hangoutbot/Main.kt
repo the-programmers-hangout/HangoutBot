@@ -1,7 +1,7 @@
 package me.markhc.hangoutbot
 
 import com.google.gson.Gson
-import me.jakejmattson.kutils.api.dsl.bot
+import me.jakejmattson.discordkt.api.dsl.bot
 import me.markhc.hangoutbot.commands.administration.services.ScriptEngineService
 import me.markhc.hangoutbot.dataclasses.Properties
 import me.markhc.hangoutbot.dataclasses.loadConfig

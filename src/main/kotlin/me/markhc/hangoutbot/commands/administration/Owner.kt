@@ -1,12 +1,12 @@
 package me.markhc.hangoutbot.commands.administration
 
-import me.jakejmattson.kutils.api.annotations.CommandSet
-import me.jakejmattson.kutils.api.dsl.command.commands
-import me.jakejmattson.kutils.api.arguments.AnyArg
-import me.jakejmattson.kutils.api.arguments.EveryArg
-import me.jakejmattson.kutils.api.arguments.IntegerArg
-import me.jakejmattson.kutils.api.dsl.command.CommandEvent
-import me.jakejmattson.kutils.api.dsl.command.GenericContainer
+import me.jakejmattson.discordkt.api.annotations.CommandSet
+import me.jakejmattson.discordkt.api.dsl.command.commands
+import me.jakejmattson.discordkt.api.arguments.AnyArg
+import me.jakejmattson.discordkt.api.arguments.EveryArg
+import me.jakejmattson.discordkt.api.arguments.IntegerArg
+import me.jakejmattson.discordkt.api.dsl.command.CommandEvent
+import me.jakejmattson.discordkt.api.dsl.command.GenericContainer
 import me.markhc.hangoutbot.commands.administration.services.ScriptEngineService
 import me.markhc.hangoutbot.services.PermissionLevel
 import me.markhc.hangoutbot.services.PersistentData
@@ -87,9 +87,9 @@ fun <T: GenericContainer> evalCommand(
         engine.setBindings(bindings, ScriptContext.ENGINE_SCOPE)
         engine.eval(
                 """
-                val discord = bindings["discord"] as me.jakejmattson.kutils.api.Discord
-                val container = bindings["container"] as me.jakejmattson.kutils.api.dsl.command.CommandsContainer
-                val event = bindings["event"] as me.jakejmattson.kutils.api.dsl.command.CommandEvent<*>
+                val discord = bindings["discord"] as me.jakejmattson.discordkt.api.Discord
+                val container = bindings["container"] as me.jakejmattson.discordkt.api.dsl.command.CommandsContainer
+                val event = bindings["event"] as me.jakejmattson.discordkt.api.dsl.command.CommandEvent<*>
                 val jda = discord.jda
                 
                 fun evalScript() {

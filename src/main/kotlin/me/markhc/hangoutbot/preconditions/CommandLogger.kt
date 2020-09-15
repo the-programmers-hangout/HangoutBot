@@ -1,9 +1,9 @@
 package me.markhc.hangoutbot.preconditions
 
-import me.jakejmattson.kutils.api.dsl.command.CommandEvent
-import me.jakejmattson.kutils.api.dsl.preconditions.*
-import me.jakejmattson.kutils.api.extensions.jda.fullName
-import me.jakejmattson.kutils.api.extensions.stdlib.sanitiseMentions
+import me.jakejmattson.discordkt.api.dsl.command.CommandEvent
+import me.jakejmattson.discordkt.api.dsl.preconditions.*
+import me.jakejmattson.discordkt.api.extensions.jda.fullName
+import me.jakejmattson.discordkt.api.extensions.stdlib.sanitiseMentions
 import me.markhc.hangoutbot.services.BotStatsService
 import me.markhc.hangoutbot.services.PersistentData
 
