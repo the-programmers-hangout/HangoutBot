@@ -1,10 +1,8 @@
 package me.markhc.hangoutbot.commands.information
 
 import me.jakejmattson.discordkt.api.annotations.CommandSet
+import me.jakejmattson.discordkt.api.arguments.*
 import me.jakejmattson.discordkt.api.dsl.command.commands
-import me.jakejmattson.discordkt.api.arguments.CommandArg
-import me.jakejmattson.discordkt.api.arguments.RoleArg
-import me.jakejmattson.discordkt.api.arguments.UserArg
 import me.markhc.hangoutbot.services.HelpService
 import me.markhc.hangoutbot.utilities.*
 
@@ -57,7 +55,7 @@ fun produceInformationCommands(helpService: HelpService) = commands {
         description = "Displays information about the given user."
         executeLogged(UserArg("user", allowsBot = true).makeOptional { it.author }) {
             val (user) = it.args
-            val member = it.guild?.getMember(user)
+            val member = it.guild.getMember(user)
             if (member != null)
                 it.respond(buildMemberInfoEmbed(member))
             else

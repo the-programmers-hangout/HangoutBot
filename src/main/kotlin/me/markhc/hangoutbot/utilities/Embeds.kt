@@ -21,7 +21,7 @@ fun buildServerInfoEmbed(guild: Guild) = embed {
     }
     thumbnail = guild.iconUrl ?: ""
 
-    if(guild.description != null) {
+    if (guild.description != null) {
         field {
             name = "**Description**"
             value = guild.description
@@ -30,7 +30,7 @@ fun buildServerInfoEmbed(guild: Guild) = embed {
 
     field {
         name = "**Owner**"
-        value = guild.owner?.user?.fullName() ?: "<None>"
+        value = guild.owner.user.fullName() ?: "<None>"
         inline = true
     }
     field {
@@ -65,12 +65,12 @@ fun buildServerInfoEmbed(guild: Guild) = embed {
     }
     field {
         name = "**Emotes**"
-        value = "${guild.emotes.size}/${guild.maxEmotes*2}"
+        value = "${guild.emotes.size}/${guild.maxEmotes * 2}"
         inline = true
     }
     field {
         name = "**Invite URL**"
-        value = if(guild.vanityUrl != null) "[Link](${guild.vanityUrl})" else "Not set"
+        value = if (guild.vanityUrl != null) "[Link](${guild.vanityUrl})" else "Not set"
         inline = true
     }
     field {
@@ -96,7 +96,7 @@ fun buildRoleInfoEmbed(role: Role) = embed {
     }
     field {
         name = "**Color**"
-        value = if(role.color != null) "**rgb(${role.color!!.red}, ${role.color!!.green}, ${role.color!!.blue})**" else "None"
+        value = if (role.color != null) "**rgb(${role.color!!.red}, ${role.color!!.green}, ${role.color!!.blue})**" else "None"
         inline = true
     }
 
@@ -123,7 +123,7 @@ fun buildRoleInfoEmbed(role: Role) = embed {
 
 private fun formatOffsetTime(time: OffsetDateTime): String {
     val days = TimeUnit.MILLISECONDS.toDays(DateTime.now().millis - time.toInstant().toEpochMilli())
-    return if(days > 4) {
+    return if (days > 4) {
         "$days days ago\n${time.format(DateTimeFormatter.ISO_LOCAL_DATE)}"
     } else {
         val hours = TimeUnit.MILLISECONDS.toHours(DateTime.now().millis - time.toInstant().toEpochMilli())
@@ -159,9 +159,9 @@ fun buildUserInfoEmbed(user: User) = embed {
 }
 
 fun getSafeNickname(member: Member): String {
-    if(member.nickname == null) return "Not set"
+    if (member.nickname == null) return "Not set"
 
-    if(member.nickname!!.length <= 16) return member.nickname!!
+    if (member.nickname!!.length <= 16) return member.nickname!!
 
     return "${member.nickname!!.take(12)}..."
 }
@@ -178,7 +178,7 @@ fun buildMemberInfoEmbed(member: Member) = embed {
     }
     field {
         name = "**Nickname**"
-        value =  getSafeNickname(member)
+        value = getSafeNickname(member)
         inline = true
     }
     field {
@@ -202,7 +202,7 @@ fun buildMemberInfoEmbed(member: Member) = embed {
         inline = true
     }
 
-    if(member.roles.isNotEmpty()) {
+    if (member.roles.isNotEmpty()) {
         field {
             name = "**Roles**"
             value = member.roles.joinToString(", ") { it.name }

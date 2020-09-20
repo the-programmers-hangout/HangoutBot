@@ -1,21 +1,21 @@
 package me.markhc.hangoutbot.dataclasses
 
 import com.google.gson.Gson
-import me.jakejmattson.discordkt.api.dsl.data.Data
+import me.jakejmattson.discordkt.api.dsl.Data
 import java.io.File
 
 data class BotConfiguration(val token: String = "",
                             var prefix: String = "++",
-                            val ownerId: String = "") : Data("config/config.json");
+                            val ownerId: String = "") : Data("config/config.json")
 
 data class Properties(val version: String = "",
                       val discordkt: String = "",
                       val repository: String = "")
 
-fun loadConfig(onFinishedLoading: (BotConfiguration?) -> Unit) {
+suspend fun loadConfig(onFinishedLoading: suspend (BotConfiguration?) -> Unit) {
     val configFile = File("config/config.json")
 
-    if(!configFile.exists()) {
+    if (!configFile.exists()) {
         return onFinishedLoading(null)
     }
 

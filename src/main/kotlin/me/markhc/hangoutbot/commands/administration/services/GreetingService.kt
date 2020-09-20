@@ -1,18 +1,10 @@
 package me.markhc.hangoutbot.commands.administration.services
 
-import com.google.common.collect.EvictingQueue
-import com.google.common.eventbus.Subscribe
+import com.gitlab.kordlib.core.entity.*
+import com.gitlab.kordlib.core.entity.channel.TextChannel
 import me.jakejmattson.discordkt.api.annotations.Service
-import me.jakejmattson.discordkt.api.dsl.embed.embed
-import me.jakejmattson.discordkt.api.extensions.jda.fullName
 import me.markhc.hangoutbot.locale.Messages
 import me.markhc.hangoutbot.services.PersistentData
-import net.dv8tion.jda.api.entities.Guild
-import net.dv8tion.jda.api.entities.Message
-import net.dv8tion.jda.api.entities.TextChannel
-import net.dv8tion.jda.api.entities.User
-import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent
-import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent
 import java.util.*
 
 @Service
@@ -27,25 +19,24 @@ class GreetingService(private val persistentData: PersistentData) {
             welcomeEmbeds to welcomeChannel
         }
 
-        if(!embeds || channel.isEmpty()) return;
+        if (!embeds || channel.isEmpty()) return
 
         val welcomeChannel = event.guild.getTextChannelById(channel)
-        val welcomeEmbed = embed {
-            title { text = "Welcome" }
-            description = Messages.getRandomJoinMessage("${event.user.asMention} (${event.user.fullName()})")
-            thumbnail = event.user.effectiveAvatarUrl
-            color = infoColor
-            field  {
-                name = "How do I start?"
-                value = Messages.welcomeDescription
-            }
-        }
 
         try {
-            welcomeChannel?.sendMessage(welcomeEmbed)?.queue { message ->
-                addMessageToCache(event.user, message)
-                message.addReaction("\uD83D\uDC4B").queue()
+            val message = welcomeChannel.createEmbed {
+                title { text = "Welcome" }
+                description = Messages.getRandomJoinMessage("${event.user.asMention} (${event.user.fullName()})")
+                thumbnail = event.user.effectiveAvatarUrl
+                color = infoColor
+                field {
+                    name = "How do I start?"
+                    value = Messages.welcomeDescription
+                }
             }
+
+            addMessageToCache(event.user, message)
+            message.addReaction("\uD83D\uDC4B")
         } catch (ex: Exception) {
             System.err.println(ex.message ?: "Failed to send message.")
         }
@@ -57,7 +48,7 @@ class GreetingService(private val persistentData: PersistentData) {
             welcomeChannel
         }
 
-        if(channel.isEmpty()) return;
+        if (channel.isEmpty()) return
 
         val welcomeChannel = event.guild.getTextChannelById(channel) ?: return
 
@@ -69,32 +60,34 @@ class GreetingService(private val persistentData: PersistentData) {
     }
 
     private fun addMessageToCache(user: User, msg: Message) {
-        if(welcomeMessages.containsKey(msg.guild.idLong)) {
-            welcomeMessages[msg.guild.idLong]!!.add(user.idLong to msg.idLong)
+        if (welcomeMessages.containsKey(msg.guild.id.longValue)) {
+            welcomeMessages[msg.guild.id.longValue]!!.add(user.idLong to msg.idLong)
         } else {
-            welcomeMessages[msg.guild.idLong] = EvictingQueue.create(200)
-            welcomeMessages[msg.guild.idLong]!!.add(user.idLong to msg.idLong)
+            welcomeMessages[msg.guild.id.longValue] = EvictingQueue.create(200)
+            welcomeMessages[msg.guild.id.longValue]!!.add(user.idLong to msg.idLong)
         }
     }
 
     private fun getCachedMessage(guild: Guild, user: User) =
-            welcomeMessages[guild.idLong]?.find { it.first == user.idLong }?.second
+        welcomeMessages[guild.id.longValue]?.find { it.first == user.id.longValue }?.second
 
     private fun removeMessagesFromCache(guild: Guild, user: User) =
-            welcomeMessages[guild.idLong]?.removeIf { it.first == user.idLong }
+        welcomeMessages[guild.id.longValue]?.removeIf { it.first == user.id.longValue }
 
     fun setEnabled(guild: Guild, state: Boolean) = persistentData.setGuildProperty(guild) {
         welcomeEmbeds = state
     }
+
     fun isEnabled(guild: Guild) = persistentData.getGuildProperty(guild) {
         welcomeEmbeds
     }
 
     fun setChannel(guild: Guild, textChannel: TextChannel) = persistentData.setGuildProperty(guild) {
-        welcomeChannel = textChannel.id
+        welcomeChannel = textChannel.id.value
     }
+
     fun getChannel(guild: Guild) = persistentData.getGuildProperty(guild) { welcomeChannel }.let {
-        it.ifBlank { null }?.let { id ->
+        it.ifBlank { null }.let { id ->
             guild.getGuildChannelById(id) as TextChannel?
         }
     }

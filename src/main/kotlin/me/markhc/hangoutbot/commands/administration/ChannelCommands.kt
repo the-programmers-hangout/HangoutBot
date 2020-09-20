@@ -1,33 +1,32 @@
 package me.markhc.hangoutbot.commands.administration
 
-import me.jakejmattson.discordkt.api.annotations.CommandSet
-import me.jakejmattson.discordkt.api.arguments.EveryArg
-import me.jakejmattson.discordkt.api.arguments.TextChannelArg
-import me.jakejmattson.discordkt.api.arguments.TimeArg
-import me.jakejmattson.discordkt.api.dsl.command.commands
-import me.markhc.hangoutbot.services.PermissionLevel
-import me.markhc.hangoutbot.services.requiredPermissionLevel
+import com.gitlab.kordlib.core.behavior.channel.edit
+import me.jakejmattson.discordkt.api.arguments.*
+import me.jakejmattson.discordkt.api.dsl.commands
+import me.markhc.hangoutbot.services.*
 import me.markhc.hangoutbot.utilities.executeLogged
-import net.dv8tion.jda.api.exceptions.InsufficientPermissionException
 
-@CommandSet("Channel")
-fun channelCommands() = commands {
+fun channelCommands() = commands("Channel") {
     command("slowmode") {
         description = "Set the slowmode in a channel."
         requiredPermissionLevel = PermissionLevel.Staff
         requiresGuild = true
-        executeLogged(TextChannelArg, TimeArg) { event ->
-            val (channel, interval) = event.args
+        executeLogged(ChannelArg, TimeArg) {
+            val (channel, interval) = args
 
             if (interval > 21600 || interval < 0) {
-                return@executeLogged event.respond("Invalid time element passed.")
+                return@executeLogged respond("Invalid time element passed.")
             }
             try {
+                channel.edit {
+
+                }
+
                 channel.manager.setSlowmode(interval.toInt()).queue {
-                    event.respond("Successfully set slow-mode in channel ${channel.asMention} to ${interval.toInt()} seconds.")
+                    respond("Successfully set slow-mode in channel ${channel.mention} to ${interval.toInt()} seconds.")
                 }
             } catch (e: InsufficientPermissionException) {
-                event.respond(e.message!!)
+                respond(e.message!!)
             }
         }
     }

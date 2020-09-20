@@ -1,33 +1,25 @@
 package me.markhc.hangoutbot.commands.information
 
-import me.jakejmattson.discordkt.api.annotations.CommandSet
-import me.jakejmattson.discordkt.api.dsl.command.commands
-import me.jakejmattson.discordkt.api.dsl.embed.embed
-import me.markhc.hangoutbot.dataclasses.Configuration
-import me.markhc.hangoutbot.dataclasses.Properties
-import me.markhc.hangoutbot.services.BotStatsService
-import me.markhc.hangoutbot.services.HelpService
-import me.markhc.hangoutbot.services.PermissionLevel
-import me.markhc.hangoutbot.services.requiredPermissionLevel
+import me.jakejmattson.discordkt.api.dsl.commands
+import me.markhc.hangoutbot.dataclasses.*
+import me.markhc.hangoutbot.services.*
 import me.markhc.hangoutbot.utilities.executeLogged
 
-@CommandSet("Bot Information")
-fun botInformationCommands(helpService: HelpService, botStats: BotStatsService, config: Configuration) = commands {
+fun botInformationCommands(helpService: HelpService, botStats: BotStatsService, config: Configuration) = commands("Bot Information") {
     command("source") {
         description = "Get the url for the bot source code."
         executeLogged {
-            val properties = it.discord.getInjectionObjects(Properties::class)
-
-            it.respond(properties.repository)
+            val properties = discord.getInjectionObjects(Properties::class)
+            respond(properties.repository)
         }
     }
 
     command("botstats", "ping") {
         description = "Displays miscellaneous information about the bot."
         executeLogged {
-            it.respond(embed {
-                title { text = "Stats" }
-                color = infoColor
+            respond {
+                title = "Stats"
+                color = discord.configuration.theme
 
                 field {
                     name = "Commands"
@@ -59,26 +51,26 @@ fun botInformationCommands(helpService: HelpService, botStats: BotStatsService, 
                     name = "Uptime"
                     value = botStats.uptime
                 }
-            })
+            }
         }
 
         command("debugstats") {
             description = "Displays some debugging information"
             requiredPermissionLevel = PermissionLevel.BotOwner
             executeLogged {
-                it.respond(embed {
-                    title { text = "Debug" }
-                    color = infoColor
+                respond {
+                    title = "Debug"
+                    color = discord.configuration.theme
 
                     field {
                         name = "Command times"
                         value = "```\n" + botStats.avgCommandTimes.toList()
-                                .sortedBy { it.second }
-                                .joinToString("\n") {
-                                    "${it.first.padEnd(15)} ${it.second.toString().padStart(8)} ms"
-                                } + "\n```";
+                            .sortedBy { it.second }
+                            .joinToString("\n") {
+                                "${it.first.padEnd(15)} ${it.second.toString().padStart(8)} ms"
+                            } + "\n```"
                     }
-                })
+                }
             }
         }
     }

@@ -1,8 +1,8 @@
 package me.markhc.hangoutbot.services
 
 import me.jakejmattson.discordkt.api.annotations.Service
+import me.jakejmattson.discordkt.api.dsl.CommandEvent
 import me.jakejmattson.discordkt.api.dsl.command.Command
-import me.jakejmattson.discordkt.api.dsl.command.CommandEvent
 import me.jakejmattson.discordkt.api.dsl.embed.embed
 import net.dv8tion.jda.api.entities.Guild
 import net.dv8tion.jda.api.entities.User
@@ -10,7 +10,7 @@ import net.dv8tion.jda.api.entities.User
 @Service
 class HelpService(private val permissionsService: PermissionsService) {
     private fun Command.isVisible(guild: Guild, user: User) =
-            permissionsService.isCommandVisible(guild, user, this)
+        permissionsService.isCommandVisible(guild, user, this)
 
     fun buildHelpEmbed(event: CommandEvent<*>) = embed {
         val container = event.container
@@ -22,18 +22,18 @@ class HelpService(private val permissionsService: PermissionsService) {
         color = infoColor
 
         fun joinNames(value: List<Command>) =
-                value.joinToString("\n") { it.names.first() }
+            value.joinToString("\n") { it.names.first() }
 
         val commands = container.commands
-                .filter { it.isVisible(event.guild!!, event.author) }
-                .groupBy { it.category }
-                .toList()
-                .sortedByDescending { it.second.size }
+            .filter { it.isVisible(event.guild!!, event.author) }
+            .groupBy { it.category }
+            .toList()
+            .sortedByDescending { it.second.size }
 
-        if(commands.isNotEmpty()) {
+        if (commands.isNotEmpty()) {
             commands.map { (category, commands) ->
                 val sorted = commands
-                        .sortedBy { it.names.first() }
+                    .sortedBy { it.names.first() }
 
                 field {
                     name = "**$category**"
@@ -45,15 +45,15 @@ class HelpService(private val permissionsService: PermissionsService) {
     }
 
     private fun generateStructure(command: Command) =
-            command.arguments.joinToString(" ") {
-                val type = it.name
-                if (it.isOptional) "($type)" else "[$type]"
-            }
+        command.arguments.joinToString(" ") {
+            val type = it.name
+            if (it.isOptional) "($type)" else "[$type]"
+        }
 
     private fun generateExample(event: CommandEvent<*>, command: Command) =
-            command.arguments.joinToString(" ") {
-                it.generateExamples(event).random()
-            }
+        command.arguments.joinToString(" ") {
+            it.generateExamples(event).random()
+        }
 
     fun buildHelpEmbedForCommand(event: CommandEvent<*>, command: Command) = embed {
         title { text = command.names.joinToString() }

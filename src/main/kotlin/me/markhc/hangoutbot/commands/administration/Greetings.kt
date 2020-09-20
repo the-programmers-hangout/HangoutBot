@@ -1,30 +1,26 @@
 package me.markhc.hangoutbot.commands.administration
 
-import me.jakejmattson.discordkt.api.annotations.CommandSet
+
 import me.jakejmattson.discordkt.api.arguments.BooleanArg
-import me.jakejmattson.discordkt.api.dsl.command.commands
+import me.jakejmattson.discordkt.api.dsl.commands
 import me.markhc.hangoutbot.commands.administration.services.GreetingService
-import me.markhc.hangoutbot.services.PermissionLevel
-import me.markhc.hangoutbot.services.requiredPermissionLevel
+import me.markhc.hangoutbot.services.*
 import me.markhc.hangoutbot.utilities.executeLogged
 
-@CommandSet("Greetings")
-fun greetingCommands(greetingService: GreetingService) = commands {
+fun greetingCommands(greetingService: GreetingService) = commands("Greetings") {
     command("greetings") {
         description = "Enables or disables the greetings on member join."
         requiredPermissionLevel = PermissionLevel.Administrator
         requiresGuild = true
         executeLogged(BooleanArg("enable/disable", "enable", "disable").makeNullableOptional(null)) {
-            val (enable) = it.args
+            val (enable) = args
 
             if (enable != null) {
-                greetingService.setEnabled(it.guild!!, enable)
-
-                it.respond("Welcome embeds are now ${if (enable) "enabled" else "disabled"}")
+                greetingService.setEnabled(guild!!, enable)
+                respond("Welcome embeds are now ${if (enable) "enabled" else "disabled"}")
             } else {
-                val state = greetingService.isEnabled(it.guild!!)
-
-                it.respond("Welcome embeds are ${if (state) "enabled" else "disabled"}")
+                val state = greetingService.isEnabled(guild!!)
+                respond("Welcome embeds are ${if (state) "enabled" else "disabled"}")
             }
         }
     }

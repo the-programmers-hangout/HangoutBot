@@ -1,16 +1,12 @@
 package me.markhc.hangoutbot.preconditions
 
-import me.jakejmattson.discordkt.api.dsl.command.CommandEvent
-import me.jakejmattson.discordkt.api.dsl.preconditions.*
+import me.jakejmattson.discordkt.api.dsl.*
 import me.markhc.hangoutbot.locale.Messages
-import me.markhc.hangoutbot.services.PermissionLevel
-import me.markhc.hangoutbot.services.PermissionsService
-import me.markhc.hangoutbot.services.PersistentData
-import me.markhc.hangoutbot.services.requiredPermissionLevel
+import me.markhc.hangoutbot.services.*
 
 class PermissionPrecondition(private val persistentData: PersistentData,
                              private val permissionsService: PermissionsService) : Precondition() {
-    override fun evaluate(event: CommandEvent<*>): PreconditionResult {
+    override suspend fun evaluate(event: CommandEvent<*>): PreconditionResult {
         val command = event.command ?: return Fail()
 
         if (event.guild == null) {
@@ -20,12 +16,12 @@ class PermissionPrecondition(private val persistentData: PersistentData,
                 Fail(Messages.INSUFFICIENT_PERMS)
         } else {
             val guild = event.guild!!
-            val member = guild.getMember(event.author)!!
+            val member = event.author.asMember(guild.id)
 
             val botChannel = persistentData.getGuildProperty(guild) { botChannel }
             if (botChannel.isNotEmpty()
-                    && event.channel.id != botChannel
-                    && permissionsService.getPermissionLevel(member) > PermissionLevel.Administrator)
+                && event.channel.id != botChannel
+                && permissionsService.getPermissionLevel(member) > PermissionLevel.Administrator)
                 return Fail()
 
             val level = permissionsService.getCommandPermissionLevel(guild, command)

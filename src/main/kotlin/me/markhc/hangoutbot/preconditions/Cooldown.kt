@@ -1,14 +1,12 @@
 package me.markhc.hangoutbot.preconditions
 
-import me.jakejmattson.discordkt.api.dsl.command.CommandEvent
+import me.jakejmattson.discordkt.api.dsl.CommandEvent
 import me.jakejmattson.discordkt.api.dsl.preconditions.Fail
 import me.jakejmattson.discordkt.api.dsl.preconditions.Pass
 import me.jakejmattson.discordkt.api.dsl.preconditions.Precondition
 import me.jakejmattson.discordkt.api.dsl.preconditions.PreconditionResult
 import me.markhc.hangoutbot.dataclasses.BotConfiguration
-import me.markhc.hangoutbot.services.PermissionLevel
-import me.markhc.hangoutbot.services.PermissionsService
-import me.markhc.hangoutbot.services.PersistentData
+import me.markhc.hangoutbot.services.*
 import org.joda.time.DateTime
 
 class Cooldown(private val botConfiguration: BotConfiguration,

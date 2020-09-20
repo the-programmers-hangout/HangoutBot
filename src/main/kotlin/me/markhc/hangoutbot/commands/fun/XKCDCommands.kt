@@ -1,22 +1,19 @@
 package me.markhc.hangoutbot.commands.`fun`
 
-import me.jakejmattson.discordkt.api.annotations.CommandSet
-import me.jakejmattson.discordkt.api.arguments.EveryArg
-import me.jakejmattson.discordkt.api.arguments.IntegerArg
-import me.jakejmattson.discordkt.api.dsl.command.commands
+import me.jakejmattson.discordkt.api.arguments.*
+import me.jakejmattson.discordkt.api.dsl.commands
 import me.markhc.hangoutbot.commands.`fun`.services.XKCDService
 import me.markhc.hangoutbot.utilities.executeLogged
 import kotlin.random.Random
 
-@CommandSet("XKCD")
-fun xkcdCommands(xkcd: XKCDService) = commands {
+fun xkcdCommands(xkcd: XKCDService) = commands("XKCD") {
     command("xkcd") {
         description = "Returns the XKCD comic number specified, or a random comic if you don't supply a number."
         executeLogged(IntegerArg("Comic Number").makeNullableOptional()) {
             val (id) = it.args
 
             val latest = xkcd.getLatest()
-                    ?: return@executeLogged it.respond("Sorry, failed to get a comic.")
+                ?: return@executeLogged it.respond("Sorry, failed to get a comic.")
 
             if (id == null) {
                 it.respond(xkcd.getUrl(Random.nextInt(1, latest)))
@@ -32,7 +29,7 @@ fun xkcdCommands(xkcd: XKCDService) = commands {
         description = "Grabs the latest XKCD comic."
         executeLogged {
             val latest = xkcd.getLatest()
-                    ?: return@executeLogged it.respond("Sorry, failed to get latest comic.")
+                ?: return@executeLogged it.respond("Sorry, failed to get latest comic.")
 
             it.respond(xkcd.getUrl(latest))
         }

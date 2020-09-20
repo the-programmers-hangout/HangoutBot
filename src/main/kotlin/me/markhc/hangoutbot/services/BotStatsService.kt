@@ -2,15 +2,12 @@ package me.markhc.hangoutbot.services
 
 import me.jakejmattson.discordkt.api.Discord
 import me.jakejmattson.discordkt.api.annotations.Service
-import me.jakejmattson.discordkt.api.dsl.command.Command
-import me.jakejmattson.discordkt.api.dsl.command.CommandEvent
+import me.jakejmattson.discordkt.api.dsl.*
 import me.markhc.hangoutbot.utilities.toLongDurationString
 import java.util.*
 
 @Service
-class BotStatsService(private val persistentData: PersistentData,
-                      private val discord: Discord) {
-
+class BotStatsService(private val persistentData: PersistentData, private val discord: Discord) {
     private var startTime: Date = Date()
     private var averageExecutionTime = mutableMapOf<Command, Pair<Int, Double>>()
 
@@ -20,7 +17,7 @@ class BotStatsService(private val persistentData: PersistentData,
             totalCommandsExecuted++
         }
 
-        if(event.guild != null) {
+        if (event.guild != null) {
             persistentData.setGuildProperty(event.guild!!) {
                 totalCommandsExecuted++
             }
@@ -32,7 +29,7 @@ class BotStatsService(private val persistentData: PersistentData,
 
         val newAverage = average + (it.toDouble() - average) / (count + 1)
 
-        averageExecutionTime[command] = (count+1) to newAverage
+        averageExecutionTime[command] = (count + 1) to newAverage
     }
 
     val uptime: String
@@ -45,7 +42,7 @@ class BotStatsService(private val persistentData: PersistentData,
         get() = averageExecutionTime.map { it.value.second }.average()
 
     val ping: String
-        get() = "${discord.jda.gatewayPing} ms"
+        get() = "${discord.api.gateway.averagePing} ms"
 
     private var _totalCommands: Int = 0
     var totalCommands: Int

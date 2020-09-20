@@ -1,21 +1,18 @@
 package me.markhc.hangoutbot.commands.utilities.services
 
 import com.github.kittinunf.result.Result
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import com.gitlab.kordlib.core.entity.Member
+import kotlinx.coroutines.*
 import me.jakejmattson.discordkt.api.Discord
 import me.jakejmattson.discordkt.api.annotations.Service
 import me.jakejmattson.discordkt.api.dsl.embed.embed
-import me.markhc.hangoutbot.dataclasses.GuildConfiguration
-import me.markhc.hangoutbot.dataclasses.MuteEntry
+import me.markhc.hangoutbot.dataclasses.*
 import me.markhc.hangoutbot.services.PersistentData
 import me.markhc.hangoutbot.utilities.toShortDurationString
 import net.dv8tion.jda.api.entities.Member
 import net.dv8tion.jda.api.entities.MessageEmbed
 import net.dv8tion.jda.api.entities.Role
-import org.joda.time.DateTime
-import org.joda.time.DateTimeZone
+import org.joda.time.*
 import org.joda.time.format.DateTimeFormat
 
 @Service
@@ -25,15 +22,14 @@ class MuteService(private val persistentData: PersistentData,
 
 
     fun addMutedMember(member: Member, ms: Long, soft: Boolean) = Result.of<MessageEmbed, Exception> {
-        val guild      = member.guild
-        val muteRoleId = persistentData.getGuildProperty(guild) { if(soft) softMuteRole else muteRole }
+        val guild = member.guild
+        val muteRoleId = persistentData.getGuildProperty(guild) { if (soft) softMuteRole else muteRole }
 
         if (muteRoleId.isEmpty()) {
             throw Exception("Sorry, this guild does not have a mute role.")
         }
 
-        val muteRole = guild.getRoleById(muteRoleId)
-                ?: throw Exception("Sorry, the configured mute role could not be found.")
+        val muteRole = guild.getRole(muteRoleId)
 
         if (muteRole.id in member.roles.map { it.id }) {
             throw Exception("Nice try, but you're already muted!")
@@ -65,12 +61,12 @@ class MuteService(private val persistentData: PersistentData,
     private fun startMuteTimers(config: GuildConfiguration) {
         if (config.mutedUsers.isEmpty()) return
 
-        val guild        = discord.jda.getGuildById(config.guildId) ?: return
-        val muteRole     = config.muteRole.ifBlank { null }?.let {
+        val guild = discord.jda.getGuildById(config.guildId) ?: return
+        val muteRole = config.muteRole.ifBlank { null }?.let {
             guild.getRoleById(it)
         }
 
-        val softMuteRole     = config.softMuteRole.ifBlank { null }?.let {
+        val softMuteRole = config.softMuteRole.ifBlank { null }?.let {
             guild.getRoleById(it)
         }
 
@@ -78,9 +74,9 @@ class MuteService(private val persistentData: PersistentData,
             val millis = dateFormatter.parseMillis(entry.timeUntil) - DateTime.now().millis
             val member = guild.getMemberById(entry.user)
             if (member != null) {
-                if(entry.isSoft && softMuteRole != null) {
+                if (entry.isSoft && softMuteRole != null) {
                     applyMute(member, softMuteRole, millis)
-                } else if(muteRole != null) {
+                } else if (muteRole != null) {
                     applyMute(member, muteRole, millis)
                 }
             }
@@ -111,7 +107,7 @@ class MuteService(private val persistentData: PersistentData,
     private fun buildMuteEmbed(member: Member, duration: Long) = embed {
         title { text = "You have been muted" }
         description = "The mute will be automatically removed when the timer expires. " +
-                "If you think this was an error, contact a staff member."
+            "If you think this was an error, contact a staff member."
         color = infoColor
 
         field {

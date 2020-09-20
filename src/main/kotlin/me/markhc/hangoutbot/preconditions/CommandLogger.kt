@@ -1,11 +1,10 @@
 package me.markhc.hangoutbot.preconditions
 
-import me.jakejmattson.discordkt.api.dsl.command.CommandEvent
+import me.jakejmattson.discordkt.api.dsl.CommandEvent
 import me.jakejmattson.discordkt.api.dsl.preconditions.*
 import me.jakejmattson.discordkt.api.extensions.jda.fullName
 import me.jakejmattson.discordkt.api.extensions.stdlib.sanitiseMentions
-import me.markhc.hangoutbot.services.BotStatsService
-import me.markhc.hangoutbot.services.PersistentData
+import me.markhc.hangoutbot.services.*
 
 class CommandLogger(private val botStats: BotStatsService,
                     private val persistentData: PersistentData) : Precondition() {
@@ -20,18 +19,18 @@ class CommandLogger(private val botStats: BotStatsService,
             return Fail("Command is too long (${args.length} chars, max: 1500)")
         }
 
-        if(event.guild != null) {
+        if (event.guild != null) {
             val guild = event.guild!!
             val loggingChannel = persistentData.getGuildProperty(guild) { loggingChannel }
 
-            if(loggingChannel.isNotEmpty()) {
+            if (loggingChannel.isNotEmpty()) {
                 val message =
-                        "${event.author.fullName()} :: ${event.author.id} :: " +
-                                "Invoked `${event.command!!.names.first()}` in #${event.channel.name}." +
-                                if(args.isEmpty()) "" else " Args: ${args.sanitiseMentions()}"
+                    "${event.author.fullName()} :: ${event.author.id} :: " +
+                        "Invoked `${event.command!!.names.first()}` in #${event.channel.name}." +
+                        if (args.isEmpty()) "" else " Args: ${args.sanitiseMentions()}"
 
                 guild.getTextChannelById(loggingChannel)
-                        ?.sendMessage(message)?.queue()
+                    .sendMessage(message).queue()
             }
         }
 

@@ -1,17 +1,13 @@
 package me.markhc.hangoutbot.commands.utilities
 
 import me.jakejmattson.discordkt.api.annotations.CommandSet
-import me.jakejmattson.discordkt.api.arguments.EveryArg
-import me.jakejmattson.discordkt.api.arguments.TimeArg
+import me.jakejmattson.discordkt.api.arguments.*
 import me.jakejmattson.discordkt.api.dsl.command.commands
 import me.jakejmattson.discordkt.api.dsl.embed.embed
 import me.jakejmattson.discordkt.api.extensions.jda.fullName
 import me.jakejmattson.discordkt.api.extensions.jda.sendPrivateMessage
-import me.markhc.hangoutbot.commands.utilities.services.MuteService
-import me.markhc.hangoutbot.commands.utilities.services.ReminderService
-import me.markhc.hangoutbot.utilities.executeLogged
+import me.markhc.hangoutbot.commands.utilities.services.*
 import java.util.concurrent.TimeUnit
-import kotlin.math.roundToLong
 
 @CommandSet("Selfmute")
 fun produceUtilityCommands(muteService: MuteService) = commands {
@@ -21,10 +17,10 @@ fun produceUtilityCommands(muteService: MuteService) = commands {
         executeLogged(TimeArg.makeOptional(3600.0)) {
             val (timeInSeconds) = it.args
 
-            if(timeInSeconds < 5) {
+            if (timeInSeconds < 5) {
                 return@executeLogged it.respond("You cannot mute yourself for less than 5 seconds.")
             }
-            if(timeInSeconds > TimeUnit.HOURS.toSeconds(24)) {
+            if (timeInSeconds > TimeUnit.HOURS.toSeconds(24)) {
                 return@executeLogged it.respond("You cannot mute yourself for more than 24 hours.")
             }
 
@@ -33,11 +29,11 @@ fun produceUtilityCommands(muteService: MuteService) = commands {
             val millis = timeInSeconds.roundToLong() * 1000
 
             muteService.addMutedMember(member, millis, soft = false).fold(
-                    success = { embed ->
-                        it.message.addReaction("\uD83D\uDD07").queue()
-                        it.author.sendPrivateMessage(embed)
-                    },
-                    failure = { ex -> it.respond(ex.message!!) }
+                success = { embed ->
+                    it.message.addReaction("\uD83D\uDD07").queue()
+                    it.author.sendPrivateMessage(embed)
+                },
+                failure = { ex -> it.respond(ex.message!!) }
             )
         }
     }
@@ -45,15 +41,15 @@ fun produceUtilityCommands(muteService: MuteService) = commands {
     command("productivemute") {
         requiresGuild = true
         description = "Trying to be productive? Mute yourself for the specified amount of time. " +
-                "A productive mute will prevent you from talking in the social channels while still allowing " +
-                "the use of the language channels. Default is 1 hour. Max is 24 hours."
+            "A productive mute will prevent you from talking in the social channels while still allowing " +
+            "the use of the language channels. Default is 1 hour. Max is 24 hours."
         executeLogged(TimeArg.makeOptional(3600.0)) {
             val (timeInSeconds) = it.args
 
-            if(timeInSeconds < 5) {
+            if (timeInSeconds < 5) {
                 return@executeLogged it.respond("You cannot mute yourself for less than 5 seconds.")
             }
-            if(timeInSeconds > TimeUnit.HOURS.toSeconds(24)) {
+            if (timeInSeconds > TimeUnit.HOURS.toSeconds(24)) {
                 return@executeLogged it.respond("You cannot mute yourself for more than 24 hours.")
             }
 
@@ -62,11 +58,11 @@ fun produceUtilityCommands(muteService: MuteService) = commands {
             val millis = timeInSeconds.roundToLong() * 1000
 
             muteService.addMutedMember(member, millis, soft = true).fold(
-                    success = { embed ->
-                        it.message.addReaction("\uD83D\uDD07").queue()
-                        it.author.sendPrivateMessage(embed)
-                    },
-                    failure = { ex -> it.respond(ex.message!!) }
+                success = { embed ->
+                    it.message.addReaction("\uD83D\uDD07").queue()
+                    it.author.sendPrivateMessage(embed)
+                },
+                failure = { ex -> it.respond(ex.message!!) }
             )
         }
     }
@@ -80,18 +76,18 @@ fun reminderCommands(muteService: MuteService,
         executeLogged(TimeArg, EveryArg) {
             val (timeInSeconds, sentence) = it.args
 
-            if(timeInSeconds < 5) {
+            if (timeInSeconds < 5) {
                 return@executeLogged it.respond("You cannot set a reminder for less than 5 seconds.")
             }
-            if(timeInSeconds > TimeUnit.DAYS.toSeconds(90)) {
+            if (timeInSeconds > TimeUnit.DAYS.toSeconds(90)) {
                 return@executeLogged it.respond("You cannot set a reminder more than 90 days into the future.")
             }
 
             val millis = timeInSeconds.roundToLong() * 1000
 
             reminderService.addReminder(it.author, millis, sentence).fold(
-                    success = { msg -> it.respond(msg) },
-                    failure = { ex -> it.respond(ex.message!!) }
+                success = { msg -> it.respond(msg) },
+                failure = { ex -> it.respond(ex.message!!) }
             )
         }
     }
@@ -105,11 +101,11 @@ fun reminderCommands(muteService: MuteService,
                 val count = reminderService.listReminders(event.author) {
                     field {
                         name = it.timeUntil
-                        value = "```\n${if(it.what.length < 100) it.what else "${it.what.take(100)}..."}\n```"
+                        value = "```\n${if (it.what.length < 100) it.what else "${it.what.take(100)}..."}\n```"
                     }
                 }
 
-                if(count == 0) {
+                if (count == 0) {
                     description = "There doesn't seem to be anything here."
                 }
             }

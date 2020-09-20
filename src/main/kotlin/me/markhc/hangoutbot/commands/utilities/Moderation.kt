@@ -1,10 +1,9 @@
 package me.markhc.hangoutbot.commands.utilities
 
 import me.jakejmattson.discordkt.api.annotations.CommandSet
-import me.jakejmattson.discordkt.api.dsl.command.commands
 import me.jakejmattson.discordkt.api.arguments.*
-import me.markhc.hangoutbot.services.*
-import me.markhc.hangoutbot.utilities.executeLogged
+import me.jakejmattson.discordkt.api.dsl.command.commands
+import me.markhc.hangoutbot.services.PermissionLevel
 import net.dv8tion.jda.api.entities.*
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException
 
@@ -26,7 +25,7 @@ fun moderationCommands() = commands {
         requiredPermissionLevel = PermissionLevel.Staff
         requiresGuild = true
         executeLogged(TextChannelArg.makeOptional { it.channel as TextChannel },
-                IntegerArg) {
+            IntegerArg) {
             val (channel, amount) = it.args
 
             if (amount !in 2..99) {

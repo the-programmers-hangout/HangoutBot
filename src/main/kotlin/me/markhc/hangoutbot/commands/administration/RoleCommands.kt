@@ -1,42 +1,32 @@
 package me.markhc.hangoutbot.commands.administration
 
-import me.jakejmattson.discordkt.api.annotations.CommandSet
-import me.jakejmattson.discordkt.api.dsl.command.commands
 import me.jakejmattson.discordkt.api.arguments.*
-import me.jakejmattson.discordkt.api.dsl.embed.embed
-import me.jakejmattson.discordkt.api.extensions.jda.fullName
-import me.markhc.hangoutbot.extensions.addRole
-import me.markhc.hangoutbot.extensions.removeRole
-import me.markhc.hangoutbot.services.PermissionLevel
-import me.markhc.hangoutbot.services.PersistentData
-import me.markhc.hangoutbot.services.requiredPermissionLevel
-import me.markhc.hangoutbot.services.requiresPermission
+import me.jakejmattson.discordkt.api.dsl.commands
+import me.markhc.hangoutbot.services.*
 import me.markhc.hangoutbot.utilities.executeLogged
-import net.dv8tion.jda.api.entities.Guild
 
-@CommandSet("Roles")
-fun roleCommands(persistentData: PersistentData) = commands {
+fun roleCommands(persistentData: PersistentData) = commands("Roles") {
     command("grantablerole") {
         description = "Adds, removes or lists grantble roles."
         requiredPermissionLevel = PermissionLevel.Staff
         requiresGuild = true
         executeLogged(ChoiceArg("add/rem/list", "add", "rem", "list"),
-                RoleArg.makeNullableOptional(null),
-                AnyArg("Category").makeNullableOptional(null)) { event ->
-            val (choice, role, category) = event.args
+            RoleArg.makeNullableOptional(null),
+            AnyArg("Category").makeNullableOptional(null)) {
+            val (choice, role, category) = args
 
             when (choice) {
                 "add" -> {
-                    event.requiresPermission(PermissionLevel.Administrator) {
+                    requiresPermission(PermissionLevel.Administrator) {
                         if (role == null || category == null) {
-                            return@requiresPermission event.respond(
-                                    "Received less arguments than expected. Expected: `(Role) (Category)`"
+                            return@requiresPermission respond(
+                                "Received less arguments than expected. Expected: `(Role) (Category)`"
                             )
                         }
 
                         persistentData.setGuildProperty(event.guild!!) {
                             if (grantableRoles.any { it.value.contains(role.id) }) {
-                                event.respond("Role is already grantable")
+                                respond("Role is already grantable")
                             } else {
                                 val key = grantableRoles.keys.find {
                                     it.compareTo(category, true) == 0
@@ -48,16 +38,16 @@ fun roleCommands(persistentData: PersistentData) = commands {
                                     grantableRoles[key]!!.add(role.id)
                                 }
 
-                                event.respond("Added \"${role.name}\" to the category \"${key ?: category}\".")
+                                respond("Added \"${role.name}\" to the category \"${key ?: category}\".")
                             }
                         }
                     }
                 }
                 "rem" -> {
-                    event.requiresPermission(PermissionLevel.Administrator) {
+                    requiresPermission(PermissionLevel.Administrator) {
                         if (role == null) {
                             return@requiresPermission event.respond(
-                                    "Received less arguments than expected. Expected: `(Command)`"
+                                "Received less arguments than expected. Expected: `(Command)`"
                             )
                         }
 
@@ -89,7 +79,7 @@ fun roleCommands(persistentData: PersistentData) = commands {
                                     field {
                                         name = it.key
                                         value = it.value.joinToString("\n") { id ->
-                                            event.guild!!.getRoleById(id)?.name ?: id
+                                            event.guild!!.getRoleById(id).name ?: id
                                         }
                                     }
                                 }
@@ -100,7 +90,7 @@ fun roleCommands(persistentData: PersistentData) = commands {
                     }
                 }
                 else -> {
-                    event.respond("Invalid choice")
+                    respond("Invalid choice")
                 }
             }
         }
@@ -110,19 +100,19 @@ fun roleCommands(persistentData: PersistentData) = commands {
         description = "Grants a role to a lower ranked member or yourself"
         requiredPermissionLevel = PermissionLevel.Staff
         requiresGuild = true
-        executeLogged(MemberArg("Member").makeOptional { it.guild!!.getMember(it.author)!! },
-                RoleArg("GrantableRole")) { event ->
-            val (member, role) = event.args
-            val guild = event.guild!!
+        executeLogged(MemberArg("Member").makeOptional { it.guild!!.getMember(it.author) },
+            RoleArg("GrantableRole")) {
+            val (member, role) = args
+            val guild = guild!!
 
             val roles = persistentData.getGuildProperty(guild) { grantableRoles }
 
             if (roles.values.any { r -> r.contains(role.id) }) {
                 member.addRole(role).queue {
-                    event.respond("Granted ${role.name} to ${member.user.fullName()}")
+                    respond("Granted ${role.name} to ${member.user.fullName()}")
                 }
             } else {
-                event.respond("${role.name} is not a grantable role")
+                respond("${role.name} is not a grantable role")
             }
         }
     }
@@ -131,13 +121,11 @@ fun roleCommands(persistentData: PersistentData) = commands {
         description = "Revokes a role from a lower ranked member or yourself"
         requiredPermissionLevel = PermissionLevel.Staff
         requiresGuild = true
-        executeLogged(MemberArg("Member").makeOptional { it.guild!!.getMember(it.author)!! },
-                RoleArg("GrantableRole")) { event ->
-            val (member, role) = event.args
-            val guild = event.guild!!
-
+        executeLogged(MemberArg("Member").makeOptional { it.guild!!.getMember(it.author) },
+            RoleArg("GrantableRole")) {
+            val (member, role) = args
+            val guild = guild!!
             val roles = persistentData.getGuildProperty(guild) { grantableRoles }
-
             val isGrantable = roles.any { it.value.any { r -> r.equals(role.id, true) } }
 
             if (isGrantable) {
@@ -160,7 +148,7 @@ fun roleCommands(persistentData: PersistentData) = commands {
 
             guild.retrieveMembers().thenRun {
                 val messages = buildRolelistMessages(guild,
-                        (event.args.first ?: "").toRegex(setOf(RegexOption.IGNORE_CASE, RegexOption.MULTILINE)))
+                    (event.args.first ?: "").toRegex(setOf(RegexOption.IGNORE_CASE, RegexOption.MULTILINE)))
 
                 if (messages.isNotEmpty()) {
                     message.editMessage(messages.first()).queue()
@@ -188,7 +176,7 @@ fun roleCommands(persistentData: PersistentData) = commands {
  */
 private fun buildRolelistMessages(guild: Guild, regex: Regex): List<String> {
     val list = guild.roles.map {
-        "${it.id} (${String.format("#%02x%02x%02x", it.color?.red?:0, it.color?.green?:0, it.color?.blue?:0)}) - ${it.name}: ${guild.getMembersWithRoles(it).size} users"
+        "${it.id} (${String.format("#%02x%02x%02x", it.color.red ?: 0, it.color.green ?: 0, it.color.blue ?: 0)}) - ${it.name}: ${guild.getMembersWithRoles(it).size} users"
     }.filter { regex.containsMatchIn(it) }
 
     // Try joining them in a single message
@@ -206,8 +194,8 @@ private fun buildRolelistMessages(guild: Guild, regex: Regex): List<String> {
             // Otherwise, break it into multiple messages
             val result = mutableListOf<String>()
             var data = "```\n"
-            for(i in list.indices) {
-                if(data.length + list[i].length < 1990) {
+            for (i in list.indices) {
+                if (data.length + list[i].length < 1990) {
                     data += list[i] + '\n'
                 } else {
                     result.add("$data```")
