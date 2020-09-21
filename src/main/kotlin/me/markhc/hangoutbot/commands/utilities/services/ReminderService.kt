@@ -3,17 +3,17 @@ package me.markhc.hangoutbot.commands.utilities.services
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import me.jakejmattson.kutils.api.annotations.Service
+import me.jakejmattson.discordkt.api.annotations.Service
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
 import org.joda.time.format.DateTimeFormat
 import com.github.kittinunf.result.Result
-import me.jakejmattson.kutils.api.Discord
-import me.jakejmattson.kutils.api.dsl.embed.embed
-import me.jakejmattson.kutils.api.extensions.jda.sendPrivateMessage
+import me.jakejmattson.discordkt.api.Discord
+import me.jakejmattson.discordkt.api.dsl.embed.embed
+import me.jakejmattson.discordkt.api.extensions.jda.sendPrivateMessage
 import me.markhc.hangoutbot.dataclasses.Reminder
 import me.markhc.hangoutbot.services.PersistentData
-import me.markhc.hangoutbot.utilities.toLongDurationString
+import me.markhc.hangoutbot.utilities.TimeFormatter
 import net.dv8tion.jda.api.entities.*
 
 @Service
@@ -36,7 +36,7 @@ class ReminderService(private val persistentData: PersistentData,
 
         launchReminder(user.id, ms, what)
 
-        return Result.Success("Got it, I'll remind you in ${ms.toLongDurationString()} about that.")
+        return Result.Success("Got it, I'll remind you in ${TimeFormatter.toLongDurationString(ms)} about that.")
     }
 
     fun listReminders(user: User, fn: (Reminder) -> Unit): Int {

@@ -1,12 +1,12 @@
 package me.markhc.hangoutbot.commands.administration
 
-import me.jakejmattson.kutils.api.annotations.CommandSet
-import me.jakejmattson.kutils.api.dsl.command.CommandEvent
-import me.jakejmattson.kutils.api.dsl.command.commands
-import me.jakejmattson.kutils.api.arguments.ChoiceArg
-import me.jakejmattson.kutils.api.arguments.CommandArg
-import me.jakejmattson.kutils.api.arguments.RoleArg
-import me.jakejmattson.kutils.api.dsl.embed.embed
+import me.jakejmattson.discordkt.api.annotations.CommandSet
+import me.jakejmattson.discordkt.api.dsl.command.CommandEvent
+import me.jakejmattson.discordkt.api.dsl.command.commands
+import me.jakejmattson.discordkt.api.arguments.ChoiceArg
+import me.jakejmattson.discordkt.api.arguments.CommandArg
+import me.jakejmattson.discordkt.api.arguments.RoleArg
+import me.jakejmattson.discordkt.api.dsl.embed.embed
 import me.markhc.hangoutbot.arguments.PermissionLevelArg
 import me.markhc.hangoutbot.services.*
 import me.markhc.hangoutbot.utilities.executeLogged

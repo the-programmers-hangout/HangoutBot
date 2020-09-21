@@ -1,9 +1,9 @@
 package me.markhc.hangoutbot.commands.`fun`
 
-import me.jakejmattson.kutils.api.annotations.CommandSet
-import me.jakejmattson.kutils.api.arguments.EveryArg
-import me.jakejmattson.kutils.api.arguments.IntegerArg
-import me.jakejmattson.kutils.api.dsl.command.commands
+import me.jakejmattson.discordkt.api.annotations.CommandSet
+import me.jakejmattson.discordkt.api.arguments.EveryArg
+import me.jakejmattson.discordkt.api.arguments.IntegerArg
+import me.jakejmattson.discordkt.api.dsl.command.commands
 import me.markhc.hangoutbot.commands.`fun`.services.XKCDService
 import me.markhc.hangoutbot.utilities.executeLogged
 import kotlin.random.Random

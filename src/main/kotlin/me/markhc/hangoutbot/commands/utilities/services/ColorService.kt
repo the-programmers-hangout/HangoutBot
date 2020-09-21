@@ -1,7 +1,7 @@
 package me.markhc.hangoutbot.commands.utilities.services
 
 import com.google.common.eventbus.Subscribe
-import me.jakejmattson.kutils.api.annotations.Service
+import me.jakejmattson.discordkt.api.annotations.Service
 import me.markhc.hangoutbot.extensions.addRole
 import me.markhc.hangoutbot.extensions.removeRole
 import me.markhc.hangoutbot.services.PermissionLevel
