@@ -1,8 +1,8 @@
 package me.markhc.hangoutbot.services
 
-import me.jakejmattson.kutils.api.annotations.Service
-import me.jakejmattson.kutils.api.dsl.command.Command
-import me.jakejmattson.kutils.api.dsl.command.CommandEvent
+import me.jakejmattson.discordkt.api.annotations.Service
+import me.jakejmattson.discordkt.api.dsl.command.Command
+import me.jakejmattson.discordkt.api.dsl.command.CommandEvent
 import me.markhc.hangoutbot.dataclasses.BotConfiguration
 import me.markhc.hangoutbot.locale.Messages
 import net.dv8tion.jda.api.entities.Guild

@@ -1,10 +1,10 @@
 package me.markhc.hangoutbot.arguments
 
-import me.jakejmattson.kutils.api.dsl.arguments.ArgumentResult
-import me.jakejmattson.kutils.api.dsl.arguments.ArgumentType
-import me.jakejmattson.kutils.api.dsl.arguments.Error
-import me.jakejmattson.kutils.api.dsl.arguments.Success
-import me.jakejmattson.kutils.api.dsl.command.CommandEvent
+import me.jakejmattson.discordkt.api.dsl.arguments.ArgumentResult
+import me.jakejmattson.discordkt.api.dsl.arguments.ArgumentType
+import me.jakejmattson.discordkt.api.dsl.arguments.Error
+import me.jakejmattson.discordkt.api.dsl.arguments.Success
+import me.jakejmattson.discordkt.api.dsl.command.CommandEvent
 import me.markhc.hangoutbot.services.PermissionLevel
 
 open class PermissionLevelArg(override val name : String = "Permission Level") : ArgumentType<PermissionLevel>() {

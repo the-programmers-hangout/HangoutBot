@@ -1,8 +1,8 @@
 package me.markhc.hangoutbot.services
 
-import me.jakejmattson.kutils.api.Discord
-import me.jakejmattson.kutils.api.annotations.Service
-import me.jakejmattson.kutils.api.extensions.jda.fullName
+import me.jakejmattson.discordkt.api.Discord
+import me.jakejmattson.discordkt.api.annotations.Service
+import me.jakejmattson.discordkt.api.extensions.jda.fullName
 import me.markhc.hangoutbot.dataclasses.BotConfiguration
 import me.markhc.hangoutbot.dataclasses.Properties
 import me.markhc.hangoutbot.commands.utilities.services.MuteService
@@ -60,7 +60,7 @@ class StartupService(private val properties: Properties,
                         name = "Build Info"
                         value = "```"+
                                 "Version: $version\n" +
-                                "KUtils:  $kutils\n" +
+                                "DiscordKt:  $discordKt\n" +
                                 "Kotlin:  $kotlinVersion" +
                                 "```"
                     }

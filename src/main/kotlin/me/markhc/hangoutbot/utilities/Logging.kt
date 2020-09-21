@@ -1,8 +1,8 @@
 package me.markhc.hangoutbot.utilities
 
-import me.jakejmattson.kutils.api.dsl.arguments.ArgumentType
-import me.jakejmattson.kutils.api.dsl.command.*
-import me.jakejmattson.kutils.api.extensions.jda.fullName
+import me.jakejmattson.discordkt.api.dsl.arguments.ArgumentType
+import me.jakejmattson.discordkt.api.dsl.command.*
+import me.jakejmattson.discordkt.api.extensions.jda.fullName
 import me.markhc.hangoutbot.services.BotStatsService
 import kotlin.system.measureTimeMillis
 

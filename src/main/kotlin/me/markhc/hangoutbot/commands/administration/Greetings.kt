@@ -1,8 +1,8 @@
 package me.markhc.hangoutbot.commands.administration
 
-import me.jakejmattson.kutils.api.annotations.CommandSet
-import me.jakejmattson.kutils.api.arguments.BooleanArg
-import me.jakejmattson.kutils.api.dsl.command.commands
+import me.jakejmattson.discordkt.api.annotations.CommandSet
+import me.jakejmattson.discordkt.api.arguments.BooleanArg
+import me.jakejmattson.discordkt.api.dsl.command.commands
 import me.markhc.hangoutbot.commands.administration.services.GreetingService
 import me.markhc.hangoutbot.services.PermissionLevel
 import me.markhc.hangoutbot.services.requiredPermissionLevel

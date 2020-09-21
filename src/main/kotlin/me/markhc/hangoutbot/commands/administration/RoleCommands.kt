@@ -1,10 +1,10 @@
 package me.markhc.hangoutbot.commands.administration
 
-import me.jakejmattson.kutils.api.annotations.CommandSet
-import me.jakejmattson.kutils.api.dsl.command.commands
-import me.jakejmattson.kutils.api.arguments.*
-import me.jakejmattson.kutils.api.dsl.embed.embed
-import me.jakejmattson.kutils.api.extensions.jda.fullName
+import me.jakejmattson.discordkt.api.annotations.CommandSet
+import me.jakejmattson.discordkt.api.dsl.command.commands
+import me.jakejmattson.discordkt.api.arguments.*
+import me.jakejmattson.discordkt.api.dsl.embed.embed
+import me.jakejmattson.discordkt.api.extensions.jda.fullName
 import me.markhc.hangoutbot.extensions.addRole
 import me.markhc.hangoutbot.extensions.removeRole
 import me.markhc.hangoutbot.services.PermissionLevel
@@ -16,11 +16,11 @@ import net.dv8tion.jda.api.entities.Guild
 
 @CommandSet("Roles")
 fun roleCommands(persistentData: PersistentData) = commands {
-    command("grantablerole") {
-        description = "Adds, removes or lists grantble roles."
+    command("grantablerole", "grantableroles") {
+        description = "Adds, removes or lists grantable roles."
         requiredPermissionLevel = PermissionLevel.Staff
         requiresGuild = true
-        executeLogged(ChoiceArg("add/rem/list", "add", "rem", "list"),
+        executeLogged(ChoiceArg("add/rem/list", "add", "rem", "list").makeOptional("list"),
                 RoleArg.makeNullableOptional(null),
                 AnyArg("Category").makeNullableOptional(null)) { event ->
             val (choice, role, category) = event.args

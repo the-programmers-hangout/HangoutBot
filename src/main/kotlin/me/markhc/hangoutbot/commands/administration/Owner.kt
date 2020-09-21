@@ -1,12 +1,12 @@
 package me.markhc.hangoutbot.commands.administration
 
-import me.jakejmattson.kutils.api.annotations.CommandSet
-import me.jakejmattson.kutils.api.dsl.command.commands
-import me.jakejmattson.kutils.api.arguments.AnyArg
-import me.jakejmattson.kutils.api.arguments.EveryArg
-import me.jakejmattson.kutils.api.arguments.IntegerArg
-import me.jakejmattson.kutils.api.dsl.command.CommandEvent
-import me.jakejmattson.kutils.api.dsl.command.GenericContainer
+import me.jakejmattson.discordkt.api.annotations.CommandSet
+import me.jakejmattson.discordkt.api.dsl.command.commands
+import me.jakejmattson.discordkt.api.arguments.AnyArg
+import me.jakejmattson.discordkt.api.arguments.EveryArg
+import me.jakejmattson.discordkt.api.arguments.IntegerArg
+import me.jakejmattson.discordkt.api.dsl.command.CommandEvent
+import me.jakejmattson.discordkt.api.dsl.command.GenericContainer
 import me.markhc.hangoutbot.commands.administration.services.ScriptEngineService
 import me.markhc.hangoutbot.services.PermissionLevel
 import me.markhc.hangoutbot.services.PersistentData
@@ -14,12 +14,11 @@ import me.markhc.hangoutbot.services.requiredPermissionLevel
 import me.markhc.hangoutbot.utilities.executeLogged
 import javax.script.ScriptContext
 import javax.script.ScriptEngine
-import javax.script.ScriptEngineManager
 
 @CommandSet("Owner Commands")
 fun ownerCommands(persistentData: PersistentData, scriptEngineService: ScriptEngineService) = commands {
     command("cooldown") {
-        description = "Gets or sets the cooldown (in seconds) after a user executes a command before he is able to executeLogged another."
+        description = "Gets or sets the command cooldown period (in seconds)."
         requiredPermissionLevel = PermissionLevel.GuildOwner
         requiresGuild = true
         executeLogged(IntegerArg.makeNullableOptional(null)) {
@@ -33,7 +32,7 @@ fun ownerCommands(persistentData: PersistentData, scriptEngineService: ScriptEng
                     return@executeLogged it.respond("Cooldown cannot be more than 1 hour!")
                 }
 
-                persistentData.getGuildProperty(it.guild!!) {
+                persistentData.setGuildProperty(it.guild!!) {
                     cooldown = cd.toInt()
                 }
 
@@ -87,9 +86,9 @@ fun <T: GenericContainer> evalCommand(
         engine.setBindings(bindings, ScriptContext.ENGINE_SCOPE)
         engine.eval(
                 """
-                val discord = bindings["discord"] as me.jakejmattson.kutils.api.Discord
-                val container = bindings["container"] as me.jakejmattson.kutils.api.dsl.command.CommandsContainer
-                val event = bindings["event"] as me.jakejmattson.kutils.api.dsl.command.CommandEvent<*>
+                val discord = bindings["discord"] as me.jakejmattson.discordkt.api.Discord
+                val container = bindings["container"] as me.jakejmattson.discordkt.api.dsl.command.CommandsContainer
+                val event = bindings["event"] as me.jakejmattson.discordkt.api.dsl.command.CommandEvent<*>
                 val jda = discord.jda
                 
                 fun evalScript() {
