@@ -12,7 +12,7 @@ Join our server at https://discord.gg/programming
 
 ## Installation
 
-The bot makes use of Docker and Docker Compose to setup the required environment. It makes use of a MySQL database image for persistent data.
+The bot makes use of Docker and Docker Compose to setup the required environment. 
 
 ```console
 $ git clone https://github.com/the-programmers-hangout/HangoutBot.git
