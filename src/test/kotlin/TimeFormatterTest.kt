@@ -1,5 +1,3 @@
-package utilities
-
 import me.markhc.hangoutbot.utilities.TimeFormatter
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
@@ -109,7 +107,5 @@ class TimeFormatterTest {
         assertEquals("48:00:01", TimeFormatter.toShortDurationString(makeTime(48, 0, 1)))
         assertEquals("48:01:00", TimeFormatter.toShortDurationString(makeTime(48, 1, 0)))
         assertEquals("48:01:01", TimeFormatter.toShortDurationString(makeTime(48, 1, 1)))
-
-
     }
 }

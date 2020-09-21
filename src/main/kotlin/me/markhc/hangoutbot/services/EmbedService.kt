@@ -1,5 +1,6 @@
 package me.markhc.hangoutbot.services
 
+import me.jakejmattson.discordkt.api.annotations.Service
 import me.jakejmattson.discordkt.api.dsl.embed.embed
 import me.jakejmattson.discordkt.api.extensions.jda.fullName
 import me.markhc.hangoutbot.dataclasses.Configuration
@@ -13,6 +14,7 @@ import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 import java.util.concurrent.TimeUnit
 
+@Service
 class EmbedService(private val botStats: BotStatsService, private val config: Configuration) {
     fun botStats() = embed {
         simpleTitle = "Stats"
