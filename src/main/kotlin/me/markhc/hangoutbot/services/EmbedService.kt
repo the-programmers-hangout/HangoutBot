@@ -26,7 +26,6 @@ class EmbedService(private val botStats: BotStatsService, private val config: Co
                         ```
                         Commands executed:      ${String.format("%6d", config.totalCommandsExecuted)}
                         Commands since restart: ${String.format("%6d", botStats.totalCommands)}
-                        Average execution time: ${String.format("%6.1f", botStats.avgResponseTime)} ms
                         ```
                     """.trimIndent()
         }
@@ -49,20 +48,6 @@ class EmbedService(private val botStats: BotStatsService, private val config: Co
         field {
             name = "Uptime"
             value = botStats.uptime
-        }
-    }
-
-    fun debugStats() = embed {
-        simpleTitle = "Debug"
-        color = infoColor
-
-        field {
-            name = "Command times"
-            value = "```\n" + botStats.avgCommandTimes.toList()
-                    .sortedBy { it.second }
-                    .joinToString("\n") {
-                        "${it.first.padEnd(15)} ${it.second.toString().padStart(8)} ms"
-                    } + "\n```";
         }
     }
 

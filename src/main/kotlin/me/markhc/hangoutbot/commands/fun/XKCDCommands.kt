@@ -5,18 +5,17 @@ import me.jakejmattson.discordkt.api.arguments.EveryArg
 import me.jakejmattson.discordkt.api.arguments.IntegerArg
 import me.jakejmattson.discordkt.api.dsl.command.commands
 import me.markhc.hangoutbot.commands.`fun`.services.XKCDService
-import me.markhc.hangoutbot.utilities.executeLogged
 import kotlin.random.Random
 
 @CommandSet("XKCD")
 fun xkcdCommands(xkcd: XKCDService) = commands {
     command("xkcd") {
         description = "Returns the XKCD comic number specified, or a random comic if you don't supply a number."
-        executeLogged(IntegerArg("Comic Number").makeNullableOptional()) {
+        execute(IntegerArg("Comic Number").makeNullableOptional()) {
             val (id) = it.args
 
             val latest = xkcd.getLatest()
-                    ?: return@executeLogged it.respond("Sorry, failed to get a comic.")
+                    ?: return@execute it.respond("Sorry, failed to get a comic.")
 
             if (id == null) {
                 it.respond(xkcd.getUrl(Random.nextInt(1, latest)))
@@ -30,9 +29,9 @@ fun xkcdCommands(xkcd: XKCDService) = commands {
 
     command("xkcd-latest") {
         description = "Grabs the latest XKCD comic."
-        executeLogged {
+        execute {
             val latest = xkcd.getLatest()
-                    ?: return@executeLogged it.respond("Sorry, failed to get latest comic.")
+                    ?: return@execute it.respond("Sorry, failed to get latest comic.")
 
             it.respond(xkcd.getUrl(latest))
         }
@@ -40,10 +39,10 @@ fun xkcdCommands(xkcd: XKCDService) = commands {
 
     command("xkcd-search") {
         description = "Returns a XKCD comic that most closely matches your query."
-        executeLogged(EveryArg("Query")) {
+        execute(EveryArg("Query")) {
             val (what) = it.args
 
-            val result = xkcd.search(what) ?: return@executeLogged it.respond("Sorry, the search failed.")
+            val result = xkcd.search(what) ?: return@execute it.respond("Sorry, the search failed.")
 
             it.respond(xkcd.getUrl(result))
         }

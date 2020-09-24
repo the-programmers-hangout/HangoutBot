@@ -14,7 +14,7 @@ fun produceInformationCommands(helpService: HelpService, embedService: EmbedServ
     command("help") {
         description = "Display help information."
         requiresGuild = true
-        executeLogged(CommandArg.makeNullableOptional { null }) {
+        execute(CommandArg.makeNullableOptional { null }) {
             val (command) = it.args
 
             if (command == null) {
@@ -28,7 +28,7 @@ fun produceInformationCommands(helpService: HelpService, embedService: EmbedServ
     command("invite") {
         description = "Generates an invite link to this server."
         requiresGuild = true
-        executeLogged {
+        execute {
             val guild = it.guild!!
 
             if (guild.vanityUrl != null) {
@@ -47,14 +47,14 @@ fun produceInformationCommands(helpService: HelpService, embedService: EmbedServ
     command("serverinfo") {
         description = "Display a message giving basic server information."
         requiresGuild = true
-        executeLogged {
+        execute {
             it.respond(embedService.guildInfo(it.guild!!))
         }
     }
 
     command("userinfo") {
         description = "Displays information about the given user."
-        executeLogged(UserArg("user").makeOptional { it.author }) {
+        execute(UserArg("user").makeOptional { it.author }) {
             val (user) = it.args
             val member = it.guild?.getMember(user)
             if (member != null)
@@ -67,14 +67,14 @@ fun produceInformationCommands(helpService: HelpService, embedService: EmbedServ
     command("roleinfo") {
         description = "Displays information about the given role."
         requiresGuild = true
-        executeLogged(RoleArg) {
+        execute(RoleArg) {
             it.respond(embedService.roleInfo(it.args.first))
         }
     }
 
     command("avatar") {
         description = "Gets the avatar from the given user"
-        executeLogged(UserArg("user").makeOptional { it.author }) {
+        execute(UserArg("user").makeOptional { it.author }) {
             val user = it.args.first
 
             it.respond("${user.effectiveAvatarUrl}?size=512")

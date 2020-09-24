@@ -9,8 +9,6 @@ import me.jakejmattson.discordkt.api.arguments.RoleArg
 import me.jakejmattson.discordkt.api.dsl.embed.embed
 import me.markhc.hangoutbot.arguments.PermissionLevelArg
 import me.markhc.hangoutbot.services.*
-import me.markhc.hangoutbot.utilities.executeLogged
-
 @CommandSet("Permissions")
 fun producePermissionCommands(persistentData: PersistentData,
                               permissionsService: PermissionsService) = commands {
@@ -46,7 +44,7 @@ fun producePermissionCommands(persistentData: PersistentData,
     command("permission", "permissions") {
         description = "Gets or sets the permissions for a command. Use `list` to view all permissions"
         requiredPermissionLevel = PermissionLevel.Staff
-        executeLogged(ChoiceArg("set/get/list", "set", "get", "list").makeOptional("get"),
+        execute(ChoiceArg("set/get/list", "set", "get", "list").makeOptional("get"),
                 CommandArg.makeNullableOptional(null),
                 PermissionLevelArg.makeNullableOptional(null)) {
             val (choice, command, level) = it.args
@@ -85,12 +83,12 @@ fun producePermissionCommands(persistentData: PersistentData,
         description = "Gets or sets the permission level of the given role"
         requiredPermissionLevel = PermissionLevel.GuildOwner
         requiresGuild = true
-        executeLogged(RoleArg, PermissionLevelArg.makeNullableOptional(null)) {
+        execute(RoleArg, PermissionLevelArg.makeNullableOptional(null)) {
             val (role, level) = it.args
 
             if (level != null) {
                 if (level == PermissionLevel.BotOwner || level == PermissionLevel.GuildOwner) {
-                    return@executeLogged it.respond("Sorry, cannot set permission level to $level.")
+                    return@execute it.respond("Sorry, cannot set permission level to $level.")
                 }
 
                 persistentData.setGuildProperty(it.guild!!) {

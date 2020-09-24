@@ -7,7 +7,6 @@ import me.jakejmattson.discordkt.api.arguments.TimeArg
 import me.jakejmattson.discordkt.api.dsl.command.commands
 import me.markhc.hangoutbot.services.PermissionLevel
 import me.markhc.hangoutbot.services.requiredPermissionLevel
-import me.markhc.hangoutbot.utilities.executeLogged
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException
 
 @CommandSet("Channel")
@@ -16,11 +15,11 @@ fun channelCommands() = commands {
         description = "Set the slowmode in a channel."
         requiredPermissionLevel = PermissionLevel.Staff
         requiresGuild = true
-        executeLogged(TextChannelArg, TimeArg) { event ->
+        execute(TextChannelArg, TimeArg) { event ->
             val (channel, interval) = event.args
 
             if (interval > 21600 || interval < 0) {
-                return@executeLogged event.respond("Invalid time element passed.")
+                return@execute event.respond("Invalid time element passed.")
             }
             try {
                 channel.manager.setSlowmode(interval.toInt()).queue {

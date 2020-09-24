@@ -8,7 +8,6 @@ import me.markhc.hangoutbot.commands.utilities.services.ColorService
 import me.markhc.hangoutbot.services.PermissionLevel
 import me.markhc.hangoutbot.services.PersistentData
 import me.markhc.hangoutbot.services.requiredPermissionLevel
-import me.markhc.hangoutbot.utilities.executeLogged
 import java.awt.Color
 
 @CommandSet("Colors")
@@ -19,7 +18,7 @@ fun colorCommands(persistentData: PersistentData,
         description = "Creates a role with the given name and color and assigns it to the user."
         requiredPermissionLevel = PermissionLevel.Staff
         requiresGuild = true
-        executeLogged(HexColorArg("HexColor").makeNullableOptional(), EveryArg("RoleName")) { event ->
+        execute(HexColorArg("HexColor").makeNullableOptional(), EveryArg("RoleName")) { event ->
             val (color, roleName) = event.args
 
             val guild = event.guild!!
@@ -43,7 +42,7 @@ fun colorCommands(persistentData: PersistentData,
         description = "Clears the current color role."
         requiredPermissionLevel = PermissionLevel.Staff
         requiresGuild = true
-        executeLogged {
+        execute {
             val member = it.guild!!.getMember(it.author)!!
 
             colorService.clearMemberColor(member)
@@ -56,11 +55,11 @@ fun colorCommands(persistentData: PersistentData,
         description = "Creates a role with the given name and color and assigns it to the user."
         requiredPermissionLevel = PermissionLevel.Staff
         requiresGuild = true
-        executeLogged { event ->
+        execute { event ->
             val (colorRoles, prefix) = persistentData.getGuildProperty(event.guild!!) { assignedColorRoles to prefix }
 
             if (colorRoles.isEmpty()) {
-                return@executeLogged event.respond("No colors set. For more information, see `${prefix}help setcolor`")
+                return@execute event.respond("No colors set. For more information, see `${prefix}help setcolor`")
             }
 
             val colorInfo = colorRoles.map {

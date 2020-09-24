@@ -4,7 +4,6 @@ import me.jakejmattson.discordkt.api.annotations.CommandSet
 import me.jakejmattson.discordkt.api.dsl.command.commands
 import me.jakejmattson.discordkt.api.arguments.*
 import me.markhc.hangoutbot.services.*
-import me.markhc.hangoutbot.utilities.executeLogged
 import net.dv8tion.jda.api.entities.*
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException
 
@@ -14,7 +13,7 @@ fun moderationCommands() = commands {
         description = "Echo a message to a channel."
         requiredPermissionLevel = PermissionLevel.Staff
         requiresGuild = true
-        executeLogged(TextChannelArg.makeOptional { it.channel as TextChannel }, EveryArg) {
+        execute(TextChannelArg.makeOptional { it.channel as TextChannel }, EveryArg) {
             val (target, message) = it.args
 
             target.sendMessage(message).queue()
@@ -25,12 +24,12 @@ fun moderationCommands() = commands {
         description = "Delete 2 - 99 past messages in the given channel (default is the invoked channel)"
         requiredPermissionLevel = PermissionLevel.Staff
         requiresGuild = true
-        executeLogged(TextChannelArg.makeOptional { it.channel as TextChannel },
+        execute(TextChannelArg.makeOptional { it.channel as TextChannel },
                 IntegerArg) {
             val (channel, amount) = it.args
 
             if (amount !in 2..99) {
-                return@executeLogged it.respond("You can only nuke between 2 and 99 messages")
+                return@execute it.respond("You can only nuke between 2 and 99 messages")
             }
 
             val sameChannel = it.channel.id == channel.id

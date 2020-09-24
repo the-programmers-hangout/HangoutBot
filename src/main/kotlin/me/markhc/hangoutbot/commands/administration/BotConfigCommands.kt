@@ -8,7 +8,6 @@ import me.markhc.hangoutbot.commands.administration.services.GreetingService
 import me.markhc.hangoutbot.services.PermissionLevel
 import me.markhc.hangoutbot.services.PersistentData
 import me.markhc.hangoutbot.services.requiredPermissionLevel
-import me.markhc.hangoutbot.utilities.executeLogged
 import net.dv8tion.jda.api.entities.TextChannel
 
 @CommandSet("Configuration")
@@ -17,7 +16,7 @@ fun botConfigCommands(persistentData: PersistentData, greetingService: GreetingS
         description = "Gets or sets the role used to mute an user."
         requiredPermissionLevel = PermissionLevel.Administrator
         requiresGuild = true
-        executeLogged(RoleArg.makeNullableOptional(null)) {
+        execute(RoleArg.makeNullableOptional(null)) {
             val (role) = it.args
             
             if(role != null) {
@@ -40,7 +39,7 @@ fun botConfigCommands(persistentData: PersistentData, greetingService: GreetingS
         description = "Gets or sets the role used to soft mute an user"
         requiredPermissionLevel = PermissionLevel.Administrator
         requiresGuild = true
-        executeLogged(RoleArg.makeNullableOptional(null)) {
+        execute(RoleArg.makeNullableOptional(null)) {
             val (role) = it.args
 
             if (role != null) {
@@ -63,7 +62,7 @@ fun botConfigCommands(persistentData: PersistentData, greetingService: GreetingS
         description = "Sets the channel used to log executed commands"
         requiredPermissionLevel = PermissionLevel.Administrator
         requiresGuild = true
-        executeLogged(TextChannelArg.makeNullableOptional(null)) {
+        execute(TextChannelArg.makeNullableOptional(null)) {
             val (textChannel) = it.args
 
             if (textChannel != null) {
@@ -88,7 +87,7 @@ fun botConfigCommands(persistentData: PersistentData, greetingService: GreetingS
         description = "Sets the bot channel. If set, the bot channel will be the only channel where the bot will accept commands from."
         requiredPermissionLevel = PermissionLevel.Administrator
         requiresGuild = true
-        executeLogged(TextChannelArg.makeNullableOptional(null)) {
+        execute(TextChannelArg.makeNullableOptional(null)) {
             val channel = it.args.first
 
             persistentData.setGuildProperty(it.guild!!) {
@@ -106,7 +105,7 @@ fun botConfigCommands(persistentData: PersistentData, greetingService: GreetingS
         description = "Gets or sets the channel used for welcome greetings."
         requiredPermissionLevel = PermissionLevel.Administrator
         requiresGuild = true
-        executeLogged(TextChannelArg.makeNullableOptional(null)) {
+        execute(TextChannelArg.makeNullableOptional(null)) {
             val (textChannel) = it.args
             val guild = it.guild!!
 

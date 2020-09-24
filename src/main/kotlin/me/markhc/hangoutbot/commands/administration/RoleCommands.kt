@@ -11,16 +11,15 @@ import me.markhc.hangoutbot.services.PermissionLevel
 import me.markhc.hangoutbot.services.PersistentData
 import me.markhc.hangoutbot.services.requiredPermissionLevel
 import me.markhc.hangoutbot.services.requiresPermission
-import me.markhc.hangoutbot.utilities.executeLogged
 import net.dv8tion.jda.api.entities.Guild
 
 @CommandSet("Roles")
 fun roleCommands(persistentData: PersistentData) = commands {
-    command("grantablerole", "grantableroles") {
+    command("grantablerole") {
         description = "Adds, removes or lists grantable roles."
         requiredPermissionLevel = PermissionLevel.Staff
         requiresGuild = true
-        executeLogged(ChoiceArg("add/rem/list", "add", "rem", "list").makeOptional("list"),
+        execute(ChoiceArg("mode", "add", "rem", "list").makeOptional("list"),
                 RoleArg.makeNullableOptional(null),
                 AnyArg("Category").makeNullableOptional(null)) { event ->
             val (choice, role, category) = event.args
@@ -110,7 +109,7 @@ fun roleCommands(persistentData: PersistentData) = commands {
         description = "Grants a role to a lower ranked member or yourself"
         requiredPermissionLevel = PermissionLevel.Staff
         requiresGuild = true
-        executeLogged(MemberArg("Member").makeOptional { it.guild!!.getMember(it.author)!! },
+        execute(MemberArg("Member").makeOptional { it.guild!!.getMember(it.author)!! },
                 RoleArg("GrantableRole")) { event ->
             val (member, role) = event.args
             val guild = event.guild!!
@@ -131,7 +130,7 @@ fun roleCommands(persistentData: PersistentData) = commands {
         description = "Revokes a role from a lower ranked member or yourself"
         requiredPermissionLevel = PermissionLevel.Staff
         requiresGuild = true
-        executeLogged(MemberArg("Member").makeOptional { it.guild!!.getMember(it.author)!! },
+        execute(MemberArg("Member").makeOptional { it.guild!!.getMember(it.author)!! },
                 RoleArg("GrantableRole")) { event ->
             val (member, role) = event.args
             val guild = event.guild!!
@@ -154,7 +153,7 @@ fun roleCommands(persistentData: PersistentData) = commands {
         description = "List all the roles available in the guild."
         requiredPermissionLevel = PermissionLevel.Staff
         requiresGuild = true
-        executeLogged(EveryArg("GrepRegex").makeNullableOptional(null)) { event ->
+        execute(EveryArg("GrepRegex").makeNullableOptional(null)) { event ->
             val guild = event.guild!!
             val message = event.channel.sendMessage("Working...").complete()
 

@@ -6,15 +6,13 @@ import me.jakejmattson.discordkt.api.dsl.command.commands
 import me.markhc.hangoutbot.commands.administration.services.GreetingService
 import me.markhc.hangoutbot.services.PermissionLevel
 import me.markhc.hangoutbot.services.requiredPermissionLevel
-import me.markhc.hangoutbot.utilities.executeLogged
-
 @CommandSet("Greetings")
 fun greetingCommands(greetingService: GreetingService) = commands {
     command("greetings") {
         description = "Enables or disables the greetings on member join."
         requiredPermissionLevel = PermissionLevel.Administrator
         requiresGuild = true
-        executeLogged(BooleanArg("enable/disable", "enable", "disable").makeNullableOptional(null)) {
+        execute(BooleanArg("enable/disable", "enable", "disable").makeNullableOptional(null)) {
             val (enable) = it.args
 
             if (enable != null) {
@@ -33,7 +31,7 @@ fun greetingCommands(greetingService: GreetingService) = commands {
         description = "Whether to send  greetings through DMs"
         requiredPermissionLevel = PermissionLevel.Administrator
         requiresGuild = true
-        executeLogged(BooleanArg("enable/disable", "enable", "disable")) {
+        execute(BooleanArg("enable/disable", "enable", "disable")) {
             it.respond("Not implemented yet!")
         }
     }
@@ -42,7 +40,7 @@ fun greetingCommands(greetingService: GreetingService) = commands {
         description = "Whether to send  greetings in the configured greeting channel"
         requiredPermissionLevel = PermissionLevel.Administrator
         requiresGuild = true
-        executeLogged(BooleanArg("enable/disable", "enable", "disable")) {
+        execute(BooleanArg("enable/disable", "enable", "disable")) {
             it.respond("Not implemented yet!")
         }
     }
@@ -51,7 +49,7 @@ fun greetingCommands(greetingService: GreetingService) = commands {
         description = "Configure the contents of the greeting message"
         requiredPermissionLevel = PermissionLevel.Administrator
         requiresGuild = true
-        executeLogged {
+        execute {
             it.respond("Not implemented yet!")
         }
     }*/

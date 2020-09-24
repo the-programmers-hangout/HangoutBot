@@ -10,7 +10,6 @@ import me.jakejmattson.discordkt.api.arguments.IntegerArg
 import me.jakejmattson.discordkt.api.arguments.SplitterArg
 import me.jakejmattson.discordkt.api.dsl.command.commands
 import me.markhc.hangoutbot.locale.Messages
-import me.markhc.hangoutbot.utilities.executeLogged
 import kotlin.random.Random
 
 private object CowsayData {
@@ -22,7 +21,7 @@ private data class JokeResponse(val id: String = "", val joke: String = "", val 
 fun produceFunCommands() = commands {
     command("coin") {
         description = "Flip a coin (or coins)."
-        executeLogged(IntegerArg("Coins").makeOptional(1)) {
+        execute(IntegerArg("Coins").makeOptional(1)) {
             val response = when (val coins = it.args.first) {
                 1 -> if (Random.nextDouble() > 0.5) "Heads!" else "Tails!"
                 in 2..100000 -> {
@@ -39,7 +38,7 @@ fun produceFunCommands() = commands {
 
     command("flip") {
         description = "Choose one of the given choices."
-        executeLogged(SplitterArg("Choices", ";")) {
+        execute(SplitterArg("Choices", ";")) {
             val (args) = it.args
             val choice = args[Random.nextInt(args.size)]
             it.respond(Messages.getRandomFlipMessage(choice))
@@ -47,9 +46,9 @@ fun produceFunCommands() = commands {
 
         command("roll") {
             description = "Rolls a number in a range (default 1-100)"
-            executeLogged(IntegerArg("Min").makeOptional(1), IntegerArg("Max").makeOptional(100)) {
+            execute(IntegerArg("Min").makeOptional(1), IntegerArg("Max").makeOptional(100)) {
                 val (a, b) = it.args
-                if (a == b) return@executeLogged it.respond("$a")
+                if (a == b) return@execute it.respond("$a")
                 val result = if (a > b) Random.nextInt(b, a) else Random.nextInt(a, b)
 
                 it.respond("$result")
@@ -58,7 +57,7 @@ fun produceFunCommands() = commands {
 
         command("cowsay") {
             description = "Displays a cowsay with a given message. Run with no arguments to get a list of valid cows."
-            executeLogged(AnyArg("Cow").makeOptional(""), EveryArg("Message").makeOptional("")) {
+            execute(AnyArg("Cow").makeOptional(""), EveryArg("Message").makeOptional("")) {
                 val (arg0, arg1) = it.args
 
                 it.respond(when {
@@ -72,7 +71,7 @@ fun produceFunCommands() = commands {
 
         command("dadjoke") {
             description = "Returns a random dad joke."
-            executeLogged { event ->
+            execute { event ->
                 val (_, _, result) = Fuel
                         .get("https://icanhazdadjoke.com/")
                         .set("User-Agent", "HangoutBot (https://github.com/the-programmers-hangout/HangoutBot/)")

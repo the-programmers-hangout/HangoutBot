@@ -9,7 +9,6 @@ import me.jakejmattson.discordkt.api.extensions.jda.fullName
 import me.jakejmattson.discordkt.api.extensions.jda.sendPrivateMessage
 import me.markhc.hangoutbot.commands.utilities.services.MuteService
 import me.markhc.hangoutbot.commands.utilities.services.ReminderService
-import me.markhc.hangoutbot.utilities.executeLogged
 import java.util.concurrent.TimeUnit
 import kotlin.math.roundToLong
 
@@ -18,14 +17,14 @@ fun produceUtilityCommands(muteService: MuteService) = commands {
     command("selfmute") {
         requiresGuild = true
         description = "Mute yourself for the given amount of time. A mute will stop you from talking in any channel. Default is 1 hour. Max is 24 hours."
-        executeLogged(TimeArg.makeOptional(3600.0)) {
+        execute(TimeArg.makeOptional(3600.0)) {
             val (timeInSeconds) = it.args
 
             if(timeInSeconds < 5) {
-                return@executeLogged it.respond("You cannot mute yourself for less than 5 seconds.")
+                return@execute it.respond("You cannot mute yourself for less than 5 seconds.")
             }
             if(timeInSeconds > TimeUnit.HOURS.toSeconds(24)) {
-                return@executeLogged it.respond("You cannot mute yourself for more than 24 hours.")
+                return@execute it.respond("You cannot mute yourself for more than 24 hours.")
             }
 
             val guild = it.guild!!
@@ -47,14 +46,14 @@ fun produceUtilityCommands(muteService: MuteService) = commands {
         description = "Trying to be productive? Mute yourself for the specified amount of time. " +
                 "A productive mute will prevent you from talking in the social channels while still allowing " +
                 "the use of the language channels. Default is 1 hour. Max is 24 hours."
-        executeLogged(TimeArg.makeOptional(3600.0)) {
+        execute(TimeArg.makeOptional(3600.0)) {
             val (timeInSeconds) = it.args
 
             if(timeInSeconds < 5) {
-                return@executeLogged it.respond("You cannot mute yourself for less than 5 seconds.")
+                return@execute it.respond("You cannot mute yourself for less than 5 seconds.")
             }
             if(timeInSeconds > TimeUnit.HOURS.toSeconds(24)) {
-                return@executeLogged it.respond("You cannot mute yourself for more than 24 hours.")
+                return@execute it.respond("You cannot mute yourself for more than 24 hours.")
             }
 
             val guild = it.guild!!
@@ -77,14 +76,14 @@ fun reminderCommands(muteService: MuteService,
                      reminderService: ReminderService) = commands {
     command("remindme") {
         description = "A command that'll remind you about something after the specified time."
-        executeLogged(TimeArg, EveryArg) {
+        execute(TimeArg, EveryArg) {
             val (timeInSeconds, sentence) = it.args
 
             if(timeInSeconds < 5) {
-                return@executeLogged it.respond("You cannot set a reminder for less than 5 seconds.")
+                return@execute it.respond("You cannot set a reminder for less than 5 seconds.")
             }
             if(timeInSeconds > TimeUnit.DAYS.toSeconds(90)) {
-                return@executeLogged it.respond("You cannot set a reminder more than 90 days into the future.")
+                return@execute it.respond("You cannot set a reminder more than 90 days into the future.")
             }
 
             val millis = timeInSeconds.roundToLong() * 1000
@@ -98,7 +97,7 @@ fun reminderCommands(muteService: MuteService,
 
     command("listreminders") {
         description = "List your active reminders"
-        executeLogged { event ->
+        execute { event ->
             val messageEmbed = embed {
                 title { text = "Active reminders for ${event.author.fullName()}" }
 
