@@ -9,7 +9,6 @@ import java.util.*
 @Service
 class BotStatsService(private val persistentData: PersistentData, private val discord: Discord) {
     private var startTime: Date = Date()
-    private var averageExecutionTime = mutableMapOf<Command, Pair<Int, Double>>()
 
     suspend fun commandExecuted(event: CommandEvent<*>) {
         totalCommands++
@@ -24,22 +23,8 @@ class BotStatsService(private val persistentData: PersistentData, private val di
         }
     }
 
-    fun commandExecutionTime(command: Command, it: Long) {
-        val (count, average) = averageExecutionTime[command] ?: (0 to 0.0)
-
-        val newAverage = average + (it.toDouble() - average) / (count + 1)
-
-        averageExecutionTime[command] = (count + 1) to newAverage
-    }
-
     val uptime: String
         get() = TimeFormatter.toLongDurationString(Date().time - startTime.time)
-
-    val avgCommandTimes: Map<String, Double>
-        get() = averageExecutionTime.map { it.key.names.first() to it.value.second }.toMap()
-
-    val avgResponseTime: Double
-        get() = averageExecutionTime.map { it.value.second }.average()
 
     val ping: String
         get() = "${discord.api.gateway.averagePing} ms"

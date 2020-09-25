@@ -4,7 +4,7 @@ import me.jakejmattson.discordkt.api.arguments.*
 import me.jakejmattson.discordkt.api.dsl.commands
 import me.jakejmattson.discordkt.api.extensions.sendPrivateMessage
 import me.markhc.hangoutbot.commands.utilities.services.*
-import me.markhc.hangoutbot.utilities.executeLogged
+
 import java.util.concurrent.TimeUnit
 import kotlin.math.roundToLong
 
@@ -12,14 +12,14 @@ fun produceUtilityCommands(muteService: MuteService) = commands("Selfmute") {
     command("selfmute") {
         requiresGuild = true
         description = "Mute yourself for the given amount of time. A mute will stop you from talking in any channel. Default is 1 hour. Max is 24 hours."
-        executeLogged(TimeArg.makeOptional(3600.0)) {
+        execute(TimeArg.makeOptional(3600.0)) {
             val (timeInSeconds) = args
 
             if (timeInSeconds < 5) {
-                return@executeLogged respond("You cannot mute yourself for less than 5 seconds.")
+                return@execute respond("You cannot mute yourself for less than 5 seconds.")
             }
             if (timeInSeconds > TimeUnit.HOURS.toSeconds(24)) {
-                return@executeLogged respond("You cannot mute yourself for more than 24 hours.")
+                return@execute respond("You cannot mute yourself for more than 24 hours.")
             }
 
             val guild = guild!!
@@ -41,14 +41,14 @@ fun produceUtilityCommands(muteService: MuteService) = commands("Selfmute") {
         description = "Trying to be productive? Mute yourself for the specified amount of time. " +
             "A productive mute will prevent you from talking in the social channels while still allowing " +
             "the use of the language channels. Default is 1 hour. Max is 24 hours."
-        executeLogged(TimeArg.makeOptional(3600.0)) {
+        execute(TimeArg.makeOptional(3600.0)) {
             val (timeInSeconds) = args
 
             if (timeInSeconds < 5) {
-                return@executeLogged respond("You cannot mute yourself for less than 5 seconds.")
+                return@execute respond("You cannot mute yourself for less than 5 seconds.")
             }
             if (timeInSeconds > TimeUnit.HOURS.toSeconds(24)) {
-                return@executeLogged respond("You cannot mute yourself for more than 24 hours.")
+                return@execute respond("You cannot mute yourself for more than 24 hours.")
             }
 
             val guild = guild!!
@@ -70,14 +70,14 @@ fun reminderCommands(muteService: MuteService,
                      reminderService: ReminderService) = commands("Reminders") {
     command("remindme") {
         description = "A command that'll remind you about something after the specified time."
-        executeLogged(TimeArg, EveryArg) {
+        execute(TimeArg, EveryArg) {
             val (timeInSeconds, sentence) = args
 
             if (timeInSeconds < 5) {
-                return@executeLogged respond("You cannot set a reminder for less than 5 seconds.")
+                return@execute respond("You cannot set a reminder for less than 5 seconds.")
             }
             if (timeInSeconds > TimeUnit.DAYS.toSeconds(90)) {
-                return@executeLogged respond("You cannot set a reminder more than 90 days into the future.")
+                return@execute respond("You cannot set a reminder more than 90 days into the future.")
             }
 
             val millis = timeInSeconds.roundToLong() * 1000
@@ -91,13 +91,13 @@ fun reminderCommands(muteService: MuteService,
 
     command("listreminders") {
         description = "List your active reminders"
-        executeLogged {
+        execute {
             val authorTag = author.tag
 
             respond {
                 title = "Active reminders for $authorTag"
 
-                val count = reminderService.listReminders(author) {
+                val count = reminderService.listReminders(this@execute.author) {
                     field {
                         name = timeUntil
                         value = "```\n${if (it.what.length < 100) it.what else "${it.what.take(100)}..."}\n```"

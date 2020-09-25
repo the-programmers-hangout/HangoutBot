@@ -1,21 +1,21 @@
 package me.markhc.hangoutbot.commands.utilities
 
+import com.gitlab.kordlib.core.entity.Message
+import com.gitlab.kordlib.core.entity.channel.TextChannel
+import kotlinx.coroutines.flow.*
+import me.jakejmattson.discordkt.api.arguments.*
 import me.jakejmattson.discordkt.api.dsl.commands
-import me.jakejmattson.discordkt.api.arguments.*
-import me.markhc.hangoutbot.services.PermissionLevel
-import me.jakejmattson.discordkt.api.arguments.*
 import me.markhc.hangoutbot.services.*
-import me.markhc.hangoutbot.utilities.executeLogged
 
 fun moderationCommands() = commands("Moderation") {
     command("echo") {
         description = "Echo a message to a channel."
         requiredPermissionLevel = PermissionLevel.Staff
         requiresGuild = true
-        executeLogged(TextChannelArg.makeOptional { it.channel as TextChannel }, EveryArg) {
-            val (target, message) = it.args
+        execute(ChannelArg.makeOptional { it.channel as TextChannel }, EveryArg) {
+            val (target, message) = args
 
-            target.sendMessage(message).queue()
+            target.createMessage(message)
         }
     }
 
@@ -23,36 +23,24 @@ fun moderationCommands() = commands("Moderation") {
         description = "Delete 2 - 99 past messages in the given channel (default is the invoked channel)"
         requiredPermissionLevel = PermissionLevel.Staff
         requiresGuild = true
-        executeLogged(TextChannelArg.makeOptional { it.channel as TextChannel },
+        execute(ChannelArg.makeOptional { it.channel as TextChannel },
             IntegerArg) {
-            val (channel, amount) = it.args
+            val (channel, amount) = args
 
             if (amount !in 2..99) {
-                return@executeLogged it.respond("You can only nuke between 2 and 99 messages")
+                return@execute respond("You can only nuke between 2 and 99 messages")
             }
 
-            val sameChannel = it.channel.id == channel.id
+            val sameChannel = channel.id == channel.id
+            val messages = channel.messages.take(amount + if (sameChannel) 1 else 0).toList()
 
-            try {
-                channel.history.retrievePast(amount + if (sameChannel) 1 else 0).queue { past ->
-                    safeDeleteMessages(channel, past)
+            safeDeleteMessages(channel, messages)
 
-                    channel.sendMessage("Be nice. No spam.").queue()
+            channel.createMessage("Be nice. No spam.")
 
-                    if (!sameChannel) it.respond("$amount messages deleted.")
-                }
-            } catch (e: InsufficientPermissionException) {
-                it.respond(e.message!!)
-            }
+            if (!sameChannel) respond("$amount messages deleted.")
         }
     }
 }
 
-private fun safeDeleteMessages(channel: TextChannel,
-                               messages: List<Message>) {
-    try {
-        channel.deleteMessages(messages).queue()
-    } catch (e: IllegalArgumentException) { // some messages older than 2 weeks => can't mass delete
-        messages.forEach { it.delete().queue() }
-    }
-}
+private suspend fun safeDeleteMessages(channel: TextChannel, messages: List<Message>) = channel.bulkDelete(messages.map { it.id })

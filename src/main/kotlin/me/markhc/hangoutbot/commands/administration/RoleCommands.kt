@@ -1,5 +1,6 @@
 package me.markhc.hangoutbot.commands.administration
 
+import com.gitlab.kordlib.core.behavior.edit
 import com.gitlab.kordlib.core.entity.Guild
 
 import me.jakejmattson.discordkt.api.arguments.*
@@ -10,14 +11,14 @@ import me.markhc.hangoutbot.services.PermissionLevel
 import me.markhc.hangoutbot.services.PersistentData
 import me.markhc.hangoutbot.services.requiredPermissionLevel
 import me.markhc.hangoutbot.services.requiresPermission
-import me.markhc.hangoutbot.utilities.executeLogged
+
 
 fun roleCommands(persistentData: PersistentData) = commands("Roles") {
     command("grantablerole", "grantableroles") {
         description = "Adds, removes or lists grantable roles."
         requiredPermissionLevel = PermissionLevel.Staff
         requiresGuild = true
-        executeLogged(ChoiceArg("add/rem/list", "add", "rem", "list").makeOptional("list"),
+        execute(ChoiceArg("add/rem/list", "add", "rem", "list").makeOptional("list"),
                 RoleArg.makeNullableOptional(null),
                 AnyArg("Category").makeNullableOptional(null)) {
             val (choice, role, category) = args
@@ -105,8 +106,8 @@ fun roleCommands(persistentData: PersistentData) = commands("Roles") {
         description = "Grants a role to a lower ranked member or yourself"
         requiredPermissionLevel = PermissionLevel.Staff
         requiresGuild = true
-        executeLogged(MemberArg("Member").makeOptional { it.guild!!.getMember(it.author.id) },
-            RoleArg("GrantableRole")) {
+        execute(MemberArg("Member").makeOptional { it.guild!!.getMember(it.author.id)!! },
+                RoleArg("GrantableRole")) {
             val (member, role) = args
             val guild = guild!!
 
@@ -125,10 +126,11 @@ fun roleCommands(persistentData: PersistentData) = commands("Roles") {
         description = "Revokes a role from a lower ranked member or yourself"
         requiredPermissionLevel = PermissionLevel.Staff
         requiresGuild = true
-        executeLogged(MemberArg("Member").makeOptional { it.guild!!.getMember(it.author) },
+        execute(MemberArg("Member").makeOptional { it.guild!!.getMember(it.author.id) },
             RoleArg("GrantableRole")) {
             val (member, role) = args
             val guild = guild!!
+
             val roles = persistentData.getGuildProperty(guild) { grantableRoles }
             val isGrantable = roles.any { it.value.any { r -> r.equals(role.id, true) } }
 
@@ -145,22 +147,24 @@ fun roleCommands(persistentData: PersistentData) = commands("Roles") {
         description = "List all the roles available in the guild."
         requiredPermissionLevel = PermissionLevel.Staff
         requiresGuild = true
-        executeLogged(EveryArg("GrepRegex").makeNullableOptional(null)) {
+        execute(EveryArg("GrepRegex").makeNullableOptional(null)) {
             val guild = guild!!
             val message = channel.createMessage("Working...")
 
-            guild.retrieveMembers().thenRun {
-                val messages = buildRolelistMessages(guild,
-                    (event.args.first ?: "").toRegex(setOf(RegexOption.IGNORE_CASE, RegexOption.MULTILINE)))
+            val messages = buildRolelistMessages(guild,
+                (args.first ?: "").toRegex(setOf(RegexOption.IGNORE_CASE, RegexOption.MULTILINE)))
 
-                if (messages.isNotEmpty()) {
-                    message.editMessage(messages.first()).queue()
+            if (messages.isNotEmpty()) {
+                message.edit {
+                    content = messages.first()
+                }
 
-                    for (i in 1 until messages.size) {
-                        event.channel.sendMessage(messages[i]).queue()
-                    }
-                } else {
-                    message.editMessage("No results").queue()
+                for (i in 1 until messages.size) {
+                    channel.createMessage(messages[i])
+                }
+            } else {
+                message.edit {
+                    content = "No results"
                 }
             }
         }

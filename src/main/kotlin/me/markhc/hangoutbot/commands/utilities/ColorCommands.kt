@@ -5,7 +5,7 @@ import me.jakejmattson.discordkt.api.arguments.*
 import me.jakejmattson.discordkt.api.dsl.commands
 import me.markhc.hangoutbot.commands.utilities.services.ColorService
 import me.markhc.hangoutbot.services.*
-import me.markhc.hangoutbot.utilities.executeLogged
+
 import java.awt.Color
 
 fun colorCommands(persistentData: PersistentData, colorService: ColorService) = commands("Colors") {
@@ -13,7 +13,7 @@ fun colorCommands(persistentData: PersistentData, colorService: ColorService) = 
         description = "Creates a role with the given name and color and assigns it to the user."
         requiredPermissionLevel = PermissionLevel.Staff
         requiresGuild = true
-        executeLogged(HexColorArg("HexColor").makeNullableOptional(), EveryArg("RoleName")) {
+        execute(HexColorArg("HexColor").makeNullableOptional(), EveryArg("RoleName")) {
             val (color, roleName) = args
 
             val guild = guild!!
@@ -38,7 +38,7 @@ fun colorCommands(persistentData: PersistentData, colorService: ColorService) = 
         description = "Clears the current color role."
         requiredPermissionLevel = PermissionLevel.Staff
         requiresGuild = true
-        executeLogged {
+        execute {
             val member = author.asMember(guild!!.id)
             colorService.clearMemberColor(member)
             respond("Cleared user color")
@@ -49,11 +49,11 @@ fun colorCommands(persistentData: PersistentData, colorService: ColorService) = 
         description = "Creates a role with the given name and color and assigns it to the user."
         requiredPermissionLevel = PermissionLevel.Staff
         requiresGuild = true
-        executeLogged {
+        execute {
             val (colorRoles, prefix) = persistentData.getGuildProperty(guild!!) { assignedColorRoles to prefix }
 
             if (colorRoles.isEmpty()) {
-                return@executeLogged respond("No colors set. For more information, see `${prefix}help setcolor`")
+                return@execute respond("No colors set. For more information, see `${prefix}help setcolor`")
             }
 
             val colorInfo = colorRoles.map {

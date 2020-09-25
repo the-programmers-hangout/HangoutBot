@@ -3,13 +3,12 @@ package me.markhc.hangoutbot.commands.information
 import me.jakejmattson.discordkt.api.arguments.*
 import me.jakejmattson.discordkt.api.dsl.commands
 import me.markhc.hangoutbot.services.*
-import me.markhc.hangoutbot.utilities.executeLogged
 
 fun produceInformationCommands(helpService: HelpService, embedService: EmbedService) = commands("Information") {
     command("help") {
         description = "Display help information."
         requiresGuild = true
-        executeLogged(CommandArg.makeNullableOptional { null }) {
+        execute(CommandArg.makeNullableOptional { null }) {
             val (command) = args
 
             if (command == null) {
@@ -23,7 +22,7 @@ fun produceInformationCommands(helpService: HelpService, embedService: EmbedServ
     command("invite") {
         description = "Generates an invite link to this server."
         requiresGuild = true
-        executeLogged {
+        execute {
             val guild = guild!!
 
             if (guild.vanityUrl != null) {
@@ -42,14 +41,14 @@ fun produceInformationCommands(helpService: HelpService, embedService: EmbedServ
     command("serverinfo") {
         description = "Display a message giving basic server information."
         requiresGuild = true
-        executeLogged {
+        execute {
             respond(embedService.guildInfo(guild!!))
         }
     }
 
     command("userinfo") {
         description = "Displays information about the given user."
-        executeLogged(UserArg("user").makeOptional { it.author }) {
+        execute(UserArg("user").makeOptional { it.author }) {
             val (user) = args
             val member = guild?.getMember(user.id)
 
@@ -63,14 +62,14 @@ fun produceInformationCommands(helpService: HelpService, embedService: EmbedServ
     command("roleinfo") {
         description = "Displays information about the given role."
         requiresGuild = true
-        executeLogged(RoleArg) {
+        execute(RoleArg) {
             respond(embedService.roleInfo(args.first))
         }
     }
 
     command("avatar") {
         description = "Gets the avatar from the given user"
-        executeLogged(UserArg("user").makeOptional { it.author }) {
+        execute(UserArg("user").makeOptional { it.author }) {
             val user = args.first
 
             respond("${user.avatar.url}?size=512")

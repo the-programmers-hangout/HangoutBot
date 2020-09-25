@@ -5,7 +5,7 @@ import me.jakejmattson.discordkt.api.arguments.*
 import me.jakejmattson.discordkt.api.dsl.*
 import me.markhc.hangoutbot.commands.administration.services.ScriptEngineService
 import me.markhc.hangoutbot.services.*
-import me.markhc.hangoutbot.utilities.executeLogged
+
 import javax.script.*
 
 fun ownerCommands(persistentData: PersistentData, scriptEngineService: ScriptEngineService) = commands("Owner Commands") {
@@ -13,15 +13,15 @@ fun ownerCommands(persistentData: PersistentData, scriptEngineService: ScriptEng
         description = "Gets or sets the command cooldown period (in seconds)."
         requiredPermissionLevel = PermissionLevel.GuildOwner
         requiresGuild = true
-        executeLogged(IntegerArg.makeNullableOptional(null)) {
+        execute(IntegerArg.makeNullableOptional(null)) {
             val (cd) = args
 
             if (cd != null) {
                 if (cd < 1) {
-                    return@executeLogged respond("Cooldown cannot be less than 1 second!")
+                    return@execute respond("Cooldown cannot be less than 1 second!")
                 }
                 if (cd > 3600) {
-                    return@executeLogged respond("Cooldown cannot be more than 1 hour!")
+                    return@execute respond("Cooldown cannot be more than 1 hour!")
                 }
 
                 persistentData.setGuildProperty(guild!!) {
@@ -42,7 +42,7 @@ fun ownerCommands(persistentData: PersistentData, scriptEngineService: ScriptEng
         description = "Sets the bot prefix."
         requiredPermissionLevel = PermissionLevel.GuildOwner
         requiresGuild = true
-        executeLogged(AnyArg("Prefix")) {
+        execute(AnyArg("Prefix")) {
             val newPrefix = args.first
 
             persistentData.setGuildProperty(guild!!) {
@@ -57,7 +57,7 @@ fun ownerCommands(persistentData: PersistentData, scriptEngineService: ScriptEng
         description = "Evaluates a script"
         requiredPermissionLevel = PermissionLevel.BotOwner
         requiresGuild = true
-        executeLogged(EveryArg) {
+        execute(EveryArg) {
             evalCommand(scriptEngineService.engine, this)
         }
     }

@@ -4,7 +4,7 @@ import me.jakejmattson.discordkt.api.arguments.*
 import me.jakejmattson.discordkt.api.dsl.*
 import me.markhc.hangoutbot.arguments.PermissionLevelArg
 import me.markhc.hangoutbot.services.*
-import me.markhc.hangoutbot.utilities.executeLogged
+
 
 fun producePermissionCommands(persistentData: PersistentData,
                               permissionsService: PermissionsService) = commands("Permissions") {
@@ -40,9 +40,9 @@ fun producePermissionCommands(persistentData: PersistentData,
     command("permission", "permissions") {
         description = "Gets or sets the permissions for a command. Use `list` to view all permissions"
         requiredPermissionLevel = PermissionLevel.Staff
-        executeLogged(ChoiceArg("set/get/list", "set", "get", "list").makeOptional("get"),
-            CommandArg.makeNullableOptional(null),
-            PermissionLevelArg.makeNullableOptional(null)) {
+        execute(ChoiceArg("set/get/list", "set", "get", "list").makeOptional("get"),
+                CommandArg.makeNullableOptional(null),
+                PermissionLevelArg.makeNullableOptional(null)) {
             val (choice, command, level) = args
 
             when (choice) {
@@ -79,12 +79,12 @@ fun producePermissionCommands(persistentData: PersistentData,
         description = "Gets or sets the permission level of the given role"
         requiredPermissionLevel = PermissionLevel.GuildOwner
         requiresGuild = true
-        executeLogged(RoleArg, PermissionLevelArg.makeNullableOptional(null)) {
+        execute(RoleArg, PermissionLevelArg.makeNullableOptional(null)) {
             val (role, level) = args
 
             if (level != null) {
                 if (level == PermissionLevel.BotOwner || level == PermissionLevel.GuildOwner) {
-                    return@executeLogged respond("Sorry, cannot set permission level to $level.")
+                    return@execute respond("Sorry, cannot set permission level to $level.")
                 }
 
                 persistentData.setGuildProperty(guild!!) {
