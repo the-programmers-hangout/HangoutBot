@@ -1,14 +1,14 @@
 package me.markhc.hangoutbot.preconditions
 
-import me.jakejmattson.discordkt.api.dsl.CommandEvent
-import me.jakejmattson.discordkt.api.dsl.preconditions.*
-import me.jakejmattson.discordkt.api.extensions.jda.fullName
-import me.jakejmattson.discordkt.api.extensions.stdlib.sanitiseMentions
+import com.gitlab.kordlib.core.behavior.getChannelOf
+import com.gitlab.kordlib.core.entity.channel.TextChannel
+import me.jakejmattson.discordkt.api.dsl.*
+import me.jakejmattson.discordkt.api.extensions.sanitiseMentions
 import me.markhc.hangoutbot.services.*
 
 class CommandLogger(private val botStats: BotStatsService,
                     private val persistentData: PersistentData) : Precondition() {
-    override fun evaluate(event: CommandEvent<*>): PreconditionResult {
+    override suspend fun evaluate(event: CommandEvent<*>): PreconditionResult {
         event.command ?: return Fail()
 
         botStats.commandExecuted(event)
@@ -25,12 +25,11 @@ class CommandLogger(private val botStats: BotStatsService,
 
             if (loggingChannel.isNotEmpty()) {
                 val message =
-                    "${event.author.fullName()} :: ${event.author.id} :: " +
-                        "Invoked `${event.command!!.names.first()}` in #${event.channel.name}." +
-                        if (args.isEmpty()) "" else " Args: ${args.sanitiseMentions()}"
+                "${event.author.tag} :: ${event.author.id} :: " +
+                    "Invoked `${event.command!!.names.first()}` in #${event.channel}." +
+                    if (args.isEmpty()) "" else " Args: ${args.sanitiseMentions(event.discord)}"
 
-                guild.getTextChannelById(loggingChannel)
-                    .sendMessage(message).queue()
+                guild.getChannelOf<TextChannel>(loggingChannel).createMessage(message)
             }
         }
 

@@ -52,6 +52,8 @@ fun botInformationCommands(helpService: HelpService, botStats: BotStatsService, 
                     value = botStats.uptime
                 }
             }
+
+            respond(embedService.botStats())
         }
 
         command("debugstats") {
@@ -71,6 +73,8 @@ fun botInformationCommands(helpService: HelpService, botStats: BotStatsService, 
                             } + "\n```"
                     }
                 }
+
+            respond(embedService.debugStats())
             }
         }
     }

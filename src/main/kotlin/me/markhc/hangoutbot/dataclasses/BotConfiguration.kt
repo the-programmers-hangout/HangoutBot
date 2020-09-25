@@ -1,6 +1,7 @@
 package me.markhc.hangoutbot.dataclasses
 
-import com.google.gson.Gson
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
 import me.jakejmattson.discordkt.api.dsl.Data
 import java.io.File
 
@@ -19,5 +20,5 @@ suspend fun loadConfig(onFinishedLoading: suspend (BotConfiguration?) -> Unit) {
         return onFinishedLoading(null)
     }
 
-    return onFinishedLoading(Gson().fromJson(configFile.readText(), BotConfiguration::class.java))
+    return onFinishedLoading(Json.decodeFromString<BotConfiguration>(configFile.readText()))
 }

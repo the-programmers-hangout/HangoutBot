@@ -3,6 +3,9 @@ package me.markhc.hangoutbot.services
 import com.gitlab.kordlib.core.entity.Guild
 import me.jakejmattson.discordkt.api.annotations.Service
 import me.markhc.hangoutbot.dataclasses.*
+import me.markhc.hangoutbot.dataclasses.BotConfiguration
+import me.markhc.hangoutbot.dataclasses.Configuration
+import me.markhc.hangoutbot.dataclasses.GuildConfiguration
 
 @Service
 class PersistentData(private val botConfiguration: BotConfiguration,
@@ -15,7 +18,7 @@ class PersistentData(private val botConfiguration: BotConfiguration,
     fun <R> getGlobalProperty(fn: Configuration.() -> R) =
         configuration.let(fn)
 
-    fun <R> setGuildProperty(guild: Guild, fn: GuildConfiguration.() -> R): R {
+    suspend fun <R> setGuildProperty(guild: Guild, fn: suspend GuildConfiguration.() -> R): R {
         val config = getGuildConfig(guild)
         return fn(config).also { configuration.save() }
     }

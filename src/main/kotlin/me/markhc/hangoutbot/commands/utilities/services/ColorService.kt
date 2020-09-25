@@ -3,6 +3,9 @@ package me.markhc.hangoutbot.commands.utilities.services
 import com.gitlab.kordlib.core.entity.Member
 import me.jakejmattson.discordkt.api.annotations.Service
 import me.markhc.hangoutbot.services.*
+import me.markhc.hangoutbot.services.PermissionLevel
+import me.markhc.hangoutbot.services.PermissionsService
+import me.markhc.hangoutbot.services.PersistentData
 import java.awt.Color
 
 @Service

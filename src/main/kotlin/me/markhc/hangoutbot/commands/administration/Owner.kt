@@ -10,7 +10,7 @@ import javax.script.*
 
 fun ownerCommands(persistentData: PersistentData, scriptEngineService: ScriptEngineService) = commands("Owner Commands") {
     command("cooldown") {
-        description = "Gets or sets the cooldown (in seconds) after a user executes a command before he is able to executeLogged another."
+        description = "Gets or sets the command cooldown period (in seconds)."
         requiredPermissionLevel = PermissionLevel.GuildOwner
         requiresGuild = true
         executeLogged(IntegerArg.makeNullableOptional(null)) {
@@ -24,7 +24,7 @@ fun ownerCommands(persistentData: PersistentData, scriptEngineService: ScriptEng
                     return@executeLogged respond("Cooldown cannot be more than 1 hour!")
                 }
 
-                persistentData.getGuildProperty(guild!!) {
+                persistentData.setGuildProperty(guild!!) {
                     cooldown = cd.toInt()
                 }
 
@@ -74,16 +74,16 @@ suspend fun <T : GenericContainer> evalCommand(
     try {
         val bindings = engine.createBindings()
         bindings["discord"] = commandEvent.discord
-        bindings["container"] = commandEvent.container
+        bindings["commands"] = commandEvent.discord.commands
         bindings["event"] = commandEvent
 
         engine.setBindings(bindings, ScriptContext.ENGINE_SCOPE)
         engine.eval(
             """
                 val discord = bindings["discord"] as me.jakejmattson.discordkt.api.Discord
-                val container = bindings["container"] as me.jakejmattson.discordkt.api.dsl.command.CommandsContainer
+                val commands = bindings["commands"] as MutableList<me.jakejmattson.discordkt.api.dsl.Command>
                 val event = bindings["event"] as me.jakejmattson.discordkt.api.dsl.CommandEvent<*>
-                val jda = discord.jda
+                val kord = discord.api
                 
                 fun evalScript() {
                     $input

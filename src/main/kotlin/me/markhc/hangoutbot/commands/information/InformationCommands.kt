@@ -1,23 +1,21 @@
 package me.markhc.hangoutbot.commands.information
 
-import me.jakejmattson.discordkt.api.annotations.CommandSet
 import me.jakejmattson.discordkt.api.arguments.*
-import me.jakejmattson.discordkt.api.dsl.command.commands
-import me.markhc.hangoutbot.services.HelpService
-import me.markhc.hangoutbot.utilities.*
+import me.jakejmattson.discordkt.api.dsl.commands
+import me.markhc.hangoutbot.services.*
+import me.markhc.hangoutbot.utilities.executeLogged
 
-@CommandSet("Information")
-fun produceInformationCommands(helpService: HelpService) = commands {
+fun produceInformationCommands(helpService: HelpService, embedService: EmbedService) = commands("Information") {
     command("help") {
         description = "Display help information."
         requiresGuild = true
         executeLogged(CommandArg.makeNullableOptional { null }) {
-            val (command) = it.args
+            val (command) = args
 
             if (command == null) {
-                it.respond(helpService.buildHelpEmbed(it))
+                respond(helpService.buildHelpEmbed(it))
             } else {
-                it.respond(helpService.buildHelpEmbedForCommand(it, command))
+                respond(helpService.buildHelpEmbedForCommand(it, command))
             }
         }
     }
@@ -26,16 +24,16 @@ fun produceInformationCommands(helpService: HelpService) = commands {
         description = "Generates an invite link to this server."
         requiresGuild = true
         executeLogged {
-            val guild = it.guild!!
+            val guild = guild!!
 
             if (guild.vanityUrl != null) {
-                it.respond(guild.vanityUrl!!)
+                respond(guild.vanityUrl!!)
             } else {
                 val guildChannel = guild.getGuildChannelById(guild.defaultChannel!!.id)!!
 
                 // TODO: Cache these invites so we don't generate a new one every time
                 guildChannel.createInvite().setMaxAge(86400).queue { invite ->
-                    it.respond("Here's your invite! It will expire in 24 hours!\n${invite.url}")
+                    respond("Here's your invite! It will expire in 24 hours!\n${invite.url}")
                 }
             }
         }
@@ -45,21 +43,20 @@ fun produceInformationCommands(helpService: HelpService) = commands {
         description = "Display a message giving basic server information."
         requiresGuild = true
         executeLogged {
-            val guild = it.guild!!
-
-            it.respond(buildServerInfoEmbed(guild))
+            respond(embedService.guildInfo(guild!!))
         }
     }
 
     command("userinfo") {
         description = "Displays information about the given user."
-        executeLogged(UserArg("user", allowsBot = true).makeOptional { it.author }) {
-            val (user) = it.args
-            val member = it.guild.getMember(user)
+        executeLogged(UserArg("user").makeOptional { it.author }) {
+            val (user) = args
+            val member = guild?.getMember(user.id)
+
             if (member != null)
-                it.respond(buildMemberInfoEmbed(member))
+                respond(embedService.memberInfo(member))
             else
-                it.respond(buildUserInfoEmbed(user))
+                respond(embedService.userInfo(user))
         }
     }
 
@@ -67,16 +64,16 @@ fun produceInformationCommands(helpService: HelpService) = commands {
         description = "Displays information about the given role."
         requiresGuild = true
         executeLogged(RoleArg) {
-            it.respond(buildRoleInfoEmbed(it.args.first))
+            respond(embedService.roleInfo(args.first))
         }
     }
 
     command("avatar") {
         description = "Gets the avatar from the given user"
-        executeLogged(UserArg("user", allowsBot = true).makeOptional { it.author }) {
-            val user = it.args.first
+        executeLogged(UserArg("user").makeOptional { it.author }) {
+            val user = args.first
 
-            it.respond("${user.effectiveAvatarUrl}?size=512")
+            respond("${user.avatar.url}?size=512")
         }
     }
 }

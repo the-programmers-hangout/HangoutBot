@@ -1,6 +1,5 @@
 package me.markhc.hangoutbot.commands.administration
 
-
 import me.jakejmattson.discordkt.api.arguments.BooleanArg
 import me.jakejmattson.discordkt.api.dsl.commands
 import me.markhc.hangoutbot.commands.administration.services.GreetingService

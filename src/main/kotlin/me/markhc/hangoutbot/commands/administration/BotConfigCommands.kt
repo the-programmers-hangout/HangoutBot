@@ -1,5 +1,6 @@
 package me.markhc.hangoutbot.commands.administration
 
+import com.gitlab.kordlib.core.behavior.getChannelOf
 import com.gitlab.kordlib.core.entity.channel.TextChannel
 import me.jakejmattson.discordkt.api.arguments.*
 import me.jakejmattson.discordkt.api.dsl.commands
@@ -69,7 +70,7 @@ fun botConfigCommands(persistentData: PersistentData, greetingService: GreetingS
                 val channelId = persistentData.getGuildProperty(guild!!) { loggingChannel }
 
                 if (channelId.isNotEmpty()) {
-                    val channel = guild!!.getGuildChannelById(channelId) as TextChannel?
+                    val channel = guild!!.getChannelOf<TextChannel>(channelId)
 
                     respond("Logging channel is ${channel.mention}")
                 } else {

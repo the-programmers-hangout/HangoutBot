@@ -1,11 +1,8 @@
 package me.markhc.hangoutbot.services
 
+import com.gitlab.kordlib.core.entity.*
 import me.jakejmattson.discordkt.api.annotations.Service
-import me.jakejmattson.discordkt.api.dsl.CommandEvent
-import me.jakejmattson.discordkt.api.dsl.command.Command
-import me.jakejmattson.discordkt.api.dsl.embed.embed
-import net.dv8tion.jda.api.entities.Guild
-import net.dv8tion.jda.api.entities.User
+import me.jakejmattson.discordkt.api.dsl.*
 
 @Service
 class HelpService(private val permissionsService: PermissionsService) {

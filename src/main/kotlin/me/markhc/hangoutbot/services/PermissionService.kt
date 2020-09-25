@@ -3,7 +3,6 @@ package me.markhc.hangoutbot.services
 import com.gitlab.kordlib.core.entity.*
 import me.jakejmattson.discordkt.api.annotations.Service
 import me.jakejmattson.discordkt.api.dsl.*
-import me.jakejmattson.discordkt.api.dsl.command.Command
 import me.markhc.hangoutbot.dataclasses.BotConfiguration
 import me.markhc.hangoutbot.locale.Messages
 import net.dv8tion.jda.api.entities.Guild

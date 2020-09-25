@@ -6,11 +6,9 @@ import me.jakejmattson.discordkt.api.dsl.bot
 import me.jakejmattson.discordkt.api.extensions.addInlineField
 import me.markhc.hangoutbot.dataclasses.*
 import me.markhc.hangoutbot.services.*
-import me.markhc.hangoutbot.utilities.toLongDurationString
 import java.awt.Color
 
 suspend fun main() {
-    println(3600.toLong().toLongDurationString())
     loadConfig {
         val configuration = it ?: throw Exception("Failed to parse configuration")
         val propFile = Properties::class.java.getResource("/hangoutbot_properties.json").readText()
@@ -54,14 +52,14 @@ suspend fun main() {
                 addInlineField("Prefix", it.prefix())
                 addInlineField("Contributors", "markhc#8366")
 
-                with(it.discord.versions) {
+                with(properties) {
                     val kotlinVersion = KotlinVersion.CURRENT
 
                     field {
                         name = "Build Info"
                         value = "```" +
                             "Version:   $version\n" +
-                            "DiscordKt: $libr\n" +
+                            "DiscordKt: $version\n" +
                             "Kotlin:    $kotlinVersion" +
                             "```"
                     }

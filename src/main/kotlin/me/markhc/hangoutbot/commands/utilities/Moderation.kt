@@ -1,14 +1,13 @@
 package me.markhc.hangoutbot.commands.utilities
 
-import me.jakejmattson.discordkt.api.annotations.CommandSet
+import me.jakejmattson.discordkt.api.dsl.commands
 import me.jakejmattson.discordkt.api.arguments.*
-import me.jakejmattson.discordkt.api.dsl.command.commands
 import me.markhc.hangoutbot.services.PermissionLevel
-import net.dv8tion.jda.api.entities.*
-import net.dv8tion.jda.api.exceptions.InsufficientPermissionException
+import me.jakejmattson.discordkt.api.arguments.*
+import me.markhc.hangoutbot.services.*
+import me.markhc.hangoutbot.utilities.executeLogged
 
-@CommandSet("Moderation")
-fun moderationCommands() = commands {
+fun moderationCommands() = commands("Moderation") {
     command("echo") {
         description = "Echo a message to a channel."
         requiredPermissionLevel = PermissionLevel.Staff
