@@ -106,6 +106,29 @@ class MacroService(private val persistentData: PersistentData) {
         }
     }
 
+    fun listAllMacros(guild: Guild): MessageEmbed {
+        val allMacros = persistentData.getGuildProperty(guild) { availableMacros }
+                .map { it.value }
+                .groupBy { if(it.channel.isEmpty()) "<Global>" else guild.getGuildChannelById(it.channel)?.name }
+                .toList()
+                .sortedByDescending { it.second.size }
+
+        return embed {
+            simpleTitle = "All available macros"
+            color = infoColor
+
+            if(allMacros.isNotEmpty()) {
+                allMacros.map { (channel, macros) ->
+                    field {
+                        name = "**$channel**"
+                        value = "```css\n${macros.joinToString("\n") { it.name }}\n```"
+                        inline = true
+                    }
+                }
+            }
+        }
+    }
+
     private fun getMacrosAvailableIn(guild: Guild, channel: TextChannel): List<TextMacro> {
         val macroList = persistentData.getGuildProperty(guild) {
             availableMacros.filter {

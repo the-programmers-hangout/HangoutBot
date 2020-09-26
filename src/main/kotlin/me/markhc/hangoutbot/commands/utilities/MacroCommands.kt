@@ -62,4 +62,13 @@ fun macroCommands(macroService: MacroService) = commands {
             it.respond(macroService.listMacros(it.guild!!, it.args.first))
         }
     }
+
+    command("listallmacros") {
+        description = "Lists all macros available in the guild, grouped by channel."
+        requiredPermissionLevel = PermissionLevel.Everyone
+        requiresGuild = true
+        execute {
+            it.respond(macroService.listAllMacros(it.guild!!))
+        }
+    }
 }
