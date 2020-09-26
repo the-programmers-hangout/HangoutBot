@@ -1,8 +1,10 @@
 package me.markhc.hangoutbot.commands.administration.services
 
+import com.gitlab.kordlib.core.behavior.*
 import com.gitlab.kordlib.core.entity.*
 import com.gitlab.kordlib.core.entity.channel.TextChannel
 import me.jakejmattson.discordkt.api.annotations.Service
+import me.jakejmattson.discordkt.api.extensions.toSnowflake
 import me.markhc.hangoutbot.services.PersistentData
 import java.util.*
 
@@ -31,7 +33,7 @@ class GreetingService(private val persistentData: PersistentData) {
         welcomeEmbeds = state
     }
 
-    fun isEnabled(guild: Guild) = persistentData.getGuildProperty(guild) {
+    suspend fun isEnabled(guild: Guild) = persistentData.getGuildProperty(guild) {
         welcomeEmbeds
     }
 
@@ -39,9 +41,9 @@ class GreetingService(private val persistentData: PersistentData) {
         welcomeChannel = textChannel.id.value
     }
 
-    fun getChannel(guild: Guild) = persistentData.getGuildProperty(guild) { welcomeChannel }.let {
+    suspend fun getChannel(guild: Guild) = persistentData.getGuildProperty(guild) { welcomeChannel }.let {
         it.ifBlank { null }.let { id ->
-            guild.getGuildChannelById(id) as TextChannel?
+            id?.toSnowflake()?.let { guild.getChannelOfOrNull<TextChannel>(it) }
         }
     }
 }

@@ -19,12 +19,8 @@ suspend fun main() {
             inject(properties)
 
             prefix {
-                val (config, persistentData) = discord.getInjectionObjects(Configuration::class, PersistentData::class)
-
-                if (guild == null)
-                    config.prefix
-                else
-                    persistentData.getGuildProperty(guild!!) { prefix() }
+                val persistentData = discord.getInjectionObjects(PersistentData::class)
+                guild?.let { persistentData.getGuildProperty(it) { prefix() } } ?: "++"
             }
 
             configure {
@@ -36,6 +32,8 @@ suspend fun main() {
             }
 
             mentionEmbed {
+                val botStats = it.discord.getInjectionObjects(BotStatsService::class)
+
                 val channel = it.channel
                 val self = channel.kord.getSelf()
                 color = it.discord.configuration.theme
@@ -80,7 +78,7 @@ suspend fun main() {
                 val permissionsService = discord.getInjectionObjects(PermissionsService::class)
 
                 if (guild != null || !(command.requiresGuild ?: discord.configuration.requiresGuild))
-                    permissionsService.isCommandVisible(guild, user, command)
+                    permissionsService.isCommandVisible(guild!!, user, command)
                 else
                     false
             }

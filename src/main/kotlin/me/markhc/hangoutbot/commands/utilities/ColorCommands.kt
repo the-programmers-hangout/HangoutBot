@@ -3,6 +3,7 @@ package me.markhc.hangoutbot.commands.utilities
 import com.gitlab.kordlib.core.behavior.edit
 import me.jakejmattson.discordkt.api.arguments.*
 import me.jakejmattson.discordkt.api.dsl.commands
+import me.jakejmattson.discordkt.api.extensions.toSnowflake
 import me.markhc.hangoutbot.commands.utilities.services.ColorService
 import me.markhc.hangoutbot.services.*
 
@@ -57,13 +58,13 @@ fun colorCommands(persistentData: PersistentData, colorService: ColorService) = 
             }
 
             val colorInfo = colorRoles.map {
-                guild!!.getRole(it.key)
+                it.key.toSnowflake()?.let { guild!!.getRole(it) }
             }.filterNotNull().sortedBy {
-                val rgb = it.color!!
+                val rgb = it.color
                 val hsv = Color.RGBtoHSB(rgb.red, rgb.green, rgb.blue, null)
 
                 hsv[0]
-            }.joinToString("\n") { it.asMention }
+            }.joinToString("\n") { it.mention }
 
             respond {
                 title = "Currently used colors"

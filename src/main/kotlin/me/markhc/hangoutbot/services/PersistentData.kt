@@ -28,8 +28,8 @@ class PersistentData(private val botConfiguration: BotConfiguration,
         return fn(config).also { configuration.save() }
     }
 
-    fun <R> getGuildProperty(guild: Guild, fn: suspend GuildConfiguration.() -> R) =
-        getGuildConfig(guild).let(fn)
+    suspend fun <R> getGuildProperty(guild: Guild, fn: suspend GuildConfiguration.() -> R) =
+        fn(getGuildConfig(guild))
 
     private fun getGuildConfig(guildId: String): GuildConfiguration {
         val guild = configuration.guildConfigurations.find { it.guildId == guildId }
@@ -43,5 +43,5 @@ class PersistentData(private val botConfiguration: BotConfiguration,
         return configuration.guildConfigurations.first { it.guildId == guildId }
     }
 
-    private fun getGuildConfig(guild: Guild) = getGuildConfig(guild.id)
+    private fun getGuildConfig(guild: Guild) = configuration.guildConfigurations.first { it.guildId == guild.id.value }
 }

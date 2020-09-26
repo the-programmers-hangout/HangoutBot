@@ -1,5 +1,7 @@
 package me.markhc.hangoutbot.commands.utilities
 
+import com.gitlab.kordlib.kordx.emoji.*
+import com.gitlab.kordlib.rest.route.Route
 import me.jakejmattson.discordkt.api.arguments.*
 import me.jakejmattson.discordkt.api.dsl.commands
 import me.jakejmattson.discordkt.api.extensions.sendPrivateMessage
@@ -26,13 +28,7 @@ fun produceUtilityCommands(muteService: MuteService) = commands("Selfmute") {
             val member = author.asMember(guild.id)
             val millis = timeInSeconds.roundToLong() * 1000
 
-            muteService.addMutedMember(member, millis, soft = false).fold(
-                success = { embed ->
-                    message.addReaction("\uD83D\uDD07")
-                    author.sendPrivateMessage(embed)
-                },
-                failure = { ex -> respond(ex.message!!) }
-            )
+            muteService.addMutedMember(this, member, millis, soft = false)
         }
     }
 
@@ -55,13 +51,7 @@ fun produceUtilityCommands(muteService: MuteService) = commands("Selfmute") {
             val member = author.asMember(guild.id)
             val millis = timeInSeconds.roundToLong() * 1000
 
-            muteService.addMutedMember(member, millis, soft = true).fold(
-                success = { embed ->
-                    message.addReaction("\uD83D\uDD07").queue()
-                    author.sendPrivateMessage(embed)
-                },
-                failure = { ex -> respond(ex.message!!) }
-            )
+            muteService.addMutedMember(this, member, millis, soft = true)
         }
     }
 }
@@ -99,7 +89,7 @@ fun reminderCommands(muteService: MuteService,
 
                 val count = reminderService.listReminders(this@execute.author) {
                     field {
-                        name = timeUntil
+                        name = it.timeUntil
                         value = "```\n${if (it.what.length < 100) it.what else "${it.what.take(100)}..."}\n```"
                     }
                 }

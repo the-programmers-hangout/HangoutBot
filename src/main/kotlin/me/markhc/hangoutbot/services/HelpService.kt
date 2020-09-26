@@ -6,22 +6,20 @@ import me.jakejmattson.discordkt.api.dsl.*
 
 @Service
 class HelpService(private val permissionsService: PermissionsService) {
-    private fun Command.isVisible(guild: Guild, user: User) =
+    private suspend fun Command.isVisible(guild: Guild, user: User) =
         permissionsService.isCommandVisible(guild, user, this)
 
-    fun buildHelpEmbed(event: CommandEvent<*>) = embed {
-        val container = event.container
+    suspend fun buildHelpEmbed(event: CommandEvent<*>) = event.respond {
+        val container = event.discord.commands
 
-        title {
-            text = "Help information"
-        }
-        description = "Use `${event.relevantPrefix}help <command>` for more information"
-        color = infoColor
+        title = "Help information"
+        description = "Use `${event.prefix()}help <command>` for more information"
+        color = event.discord.configuration.theme
 
         fun joinNames(value: List<Command>) =
             value.joinToString("\n") { it.names.first() }
 
-        val commands = container.commands
+        val commands = container
             .filter { it.isVisible(event.guild!!, event.author) }
             .groupBy { it.category }
             .toList()
@@ -52,12 +50,12 @@ class HelpService(private val permissionsService: PermissionsService) {
             it.generateExamples(event).random()
         }
 
-    fun buildHelpEmbedForCommand(event: CommandEvent<*>, command: Command) = embed {
-        title { text = command.names.joinToString() }
+    suspend fun buildHelpEmbedForCommand(event: CommandEvent<*>, command: Command) = event.respond {
+        title = command.names.joinToString()
         description = command.description
-        color = infoColor
+        color = event.discord.configuration.theme
 
-        val commandInvocation = "${event.relevantPrefix}${command.names.first()}"
+        val commandInvocation = "${event.prefix()}${command.names.first()}"
 
         field {
             name = "What is the structure of the command?"

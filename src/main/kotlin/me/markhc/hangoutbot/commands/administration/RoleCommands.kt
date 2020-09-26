@@ -2,11 +2,14 @@ package me.markhc.hangoutbot.commands.administration
 
 import com.gitlab.kordlib.core.behavior.edit
 import com.gitlab.kordlib.core.entity.Guild
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.runBlocking
 
 import me.jakejmattson.discordkt.api.arguments.*
 import me.jakejmattson.discordkt.api.dsl.commands
 import me.markhc.hangoutbot.services.*
 import me.jakejmattson.discordkt.api.arguments.*
+import me.jakejmattson.discordkt.api.extensions.toSnowflake
 import me.markhc.hangoutbot.services.PermissionLevel
 import me.markhc.hangoutbot.services.PersistentData
 import me.markhc.hangoutbot.services.requiredPermissionLevel
@@ -84,11 +87,12 @@ fun roleCommands(persistentData: PersistentData) = commands("Roles") {
                                 color = discord.configuration.theme
 
                                 grantableRoles.entries.forEach {
+                                    runBlocking {  }
                                     field {
                                         name = it.key
-                                        value = it.value.joinToString("\n") { id ->
-                                            guild!!.getRole(id).name ?: id
-                                        }
+                                        value = it.value.map { id ->
+                                            id.toSnowflake()?.let { guild!!.getRole(it).name } ?: id
+                                        }.joinToString("\n")
                                     }
                                 }
                             }
@@ -106,7 +110,7 @@ fun roleCommands(persistentData: PersistentData) = commands("Roles") {
         description = "Grants a role to a lower ranked member or yourself"
         requiredPermissionLevel = PermissionLevel.Staff
         requiresGuild = true
-        execute(MemberArg("Member").makeOptional { it.guild!!.getMember(it.author.id)!! },
+        execute(MemberArg("Member").makeOptional { it.guild!!.getMember(it.author.id) },
                 RoleArg("GrantableRole")) {
             val (member, role) = args
             val guild = guild!!
@@ -132,7 +136,9 @@ fun roleCommands(persistentData: PersistentData) = commands("Roles") {
             val guild = guild!!
 
             val roles = persistentData.getGuildProperty(guild) { grantableRoles }
-            val isGrantable = roles.any { it.value.any { r -> r.equals(role.id, true) } }
+            val isGrantable = roles.any {
+                it.value.any { it.equals(role.id.value, true) }
+            }
 
             if (isGrantable) {
                 member.removeRole(role.id)
@@ -181,9 +187,9 @@ fun roleCommands(persistentData: PersistentData) = commands("Roles") {
  *
  *  @return The list of messages to send
  */
-private fun buildRolelistMessages(guild: Guild, regex: Regex): List<String> {
-    val list = guild.roles.map {
-        "${it.id} (${String.format("#%02x%02x%02x", it.color.red ?: 0, it.color.green ?: 0, it.color.blue ?: 0)}) - ${it.name}: ${guild.getMembersWithRoles(it).size} users"
+private suspend fun buildRolelistMessages(guild: Guild, regex: Regex): List<String> {
+    val list = guild.roles.toList().map { role ->
+        "${role.id} (${String.format("#%02x%02x%02x", role.color.red, role.color.green, role.color.blue)}) - ${role.name}: ${guild.members.count { role in it.roles.toList() }} users"
     }.filter { regex.containsMatchIn(it) }
 
     // Try joining them in a single message

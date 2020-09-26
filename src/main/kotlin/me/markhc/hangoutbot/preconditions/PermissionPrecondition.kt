@@ -20,7 +20,7 @@ class PermissionPrecondition(private val persistentData: PersistentData,
 
             val botChannel = persistentData.getGuildProperty(guild) { botChannel }
             if (botChannel.isNotEmpty()
-                && event.channel.id != botChannel
+                && event.channel.id.value != botChannel
                 && permissionsService.getPermissionLevel(member) > PermissionLevel.Administrator)
                 return Fail()
 
