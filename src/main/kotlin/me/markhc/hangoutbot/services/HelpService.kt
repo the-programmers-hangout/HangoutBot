@@ -4,8 +4,20 @@ import me.jakejmattson.discordkt.api.annotations.Service
 import me.jakejmattson.discordkt.api.dsl.command.Command
 import me.jakejmattson.discordkt.api.dsl.command.CommandEvent
 import me.jakejmattson.discordkt.api.dsl.embed.embed
+import me.markhc.hangoutbot.locale.Messages
 import net.dv8tion.jda.api.entities.Guild
 import net.dv8tion.jda.api.entities.User
+
+import net.dv8tion.jda.api.entities.Member
+import net.dv8tion.jda.api.entities.Role
+
+val commandUsage: MutableMap<Command, List<String>> = mutableMapOf()
+
+var Command.usageExamples: List<String>
+    get() = commandUsage[this] ?: emptyList()
+    set(value) {
+        commandUsage[this] = value
+    }
 
 @Service
 class HelpService(private val permissionsService: PermissionsService) {
@@ -15,9 +27,7 @@ class HelpService(private val permissionsService: PermissionsService) {
     fun buildHelpEmbed(event: CommandEvent<*>) = embed {
         val container = event.container
 
-        title {
-            text = "Help information"
-        }
+        simpleTitle = "Help information"
         description = "Use `${event.relevantPrefix}help <command>` for more information"
         color = infoColor
 
@@ -50,10 +60,15 @@ class HelpService(private val permissionsService: PermissionsService) {
                 if (it.isOptional) "($type)" else "[$type]"
             }
 
-    private fun generateExample(event: CommandEvent<*>, command: Command) =
+    private fun generateExample(event: CommandEvent<*>, command: Command): String {
+        return if(command.usageExamples.isEmpty()) {
             command.arguments.joinToString(" ") {
                 it.generateExamples(event).random()
             }
+        } else {
+            command.usageExamples.random()
+        }
+    }
 
     fun buildHelpEmbedForCommand(event: CommandEvent<*>, command: Command) = embed {
         title { text = command.names.joinToString() }
@@ -64,12 +79,12 @@ class HelpService(private val permissionsService: PermissionsService) {
 
         field {
             name = "What is the structure of the command?"
-            value = "$commandInvocation ${generateStructure(command)}"
+            value = "```\n$commandInvocation ${generateStructure(command)}\n```"
         }
 
         field {
             name = "Show me an example of someone using the command."
-            value = "$commandInvocation ${generateExample(event, command)}"
+            value = "```\n$commandInvocation ${generateExample(event, command)}\n```"
         }
     }
 }

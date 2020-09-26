@@ -4,6 +4,7 @@ import me.jakejmattson.discordkt.api.annotations.CommandSet
 import me.jakejmattson.discordkt.api.dsl.command.commands
 import me.markhc.hangoutbot.dataclasses.Properties
 import me.markhc.hangoutbot.services.*
+
 @CommandSet("Bot Information")
 fun botInformationCommands(helpService: HelpService, embedService: EmbedService) = commands {
     command("source") {
