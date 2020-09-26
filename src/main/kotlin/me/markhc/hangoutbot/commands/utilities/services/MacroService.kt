@@ -3,6 +3,8 @@ package me.markhc.hangoutbot.commands.utilities.services
 import me.jakejmattson.discordkt.api.annotations.Service
 import me.jakejmattson.discordkt.api.dsl.command.CommandEvent
 import me.jakejmattson.discordkt.api.dsl.embed.embed
+import me.jakejmattson.discordkt.api.dsl.menu.Menu
+import me.jakejmattson.discordkt.api.dsl.menu.menu
 import me.jakejmattson.discordkt.api.dsl.preconditions.Pass
 import me.jakejmattson.discordkt.api.dsl.preconditions.Precondition
 import me.jakejmattson.discordkt.api.dsl.preconditions.PreconditionResult
@@ -82,47 +84,59 @@ class MacroService(private val persistentData: PersistentData) {
         }
     }
 
-    fun listMacros(guild: Guild, channel: TextChannel): MessageEmbed {
-        val macros = getMacrosAvailableIn(guild, channel)
+    fun listMacros(guild: Guild, channel: TextChannel): Menu {
+        val availableMacros = getMacrosAvailableIn(guild, channel)
                 .groupBy { it.category }
                 .toList()
                 .sortedByDescending { it.second.size }
 
-        return embed {
-            simpleTitle = "Macros available in ${channel.name}"
-            color = infoColor
+        val chunks = availableMacros.chunked(25)
 
-            if(macros.isNotEmpty()) {
-                macros.map { (category, macros) ->
-                    val sorted = macros.sortedBy { it.name }
+        return menu {
+            chunks.map {
+                page {
+                    simpleTitle = "Macros available in ${channel.name}"
+                    color = infoColor
 
-                    field {
-                        name = "**$category**"
-                        value = "```css\n${sorted.joinToString("\n") { it.name }}\n```"
-                        inline = true
+                    if (it.isNotEmpty()) {
+                        it.map { (category, macros) ->
+                            val sorted = macros.sortedBy { it.name }
+
+                            field {
+                                name = "**$category**"
+                                value = "```css\n${sorted.joinToString("\n") { it.name }}\n```"
+                                inline = true
+                            }
+                        }
                     }
                 }
             }
         }
     }
 
-    fun listAllMacros(guild: Guild): MessageEmbed {
+    fun listAllMacros(guild: Guild): Menu {
         val allMacros = persistentData.getGuildProperty(guild) { availableMacros }
                 .map { it.value }
-                .groupBy { if(it.channel.isEmpty()) "<Global>" else guild.getGuildChannelById(it.channel)?.name }
+                .groupBy { if(it.channel.isEmpty()) "Global Macros" else guild.getGuildChannelById(it.channel)?.name }
                 .toList()
                 .sortedByDescending { it.second.size }
 
-        return embed {
-            simpleTitle = "All available macros"
-            color = infoColor
+        val chunks = allMacros.chunked(25)
 
-            if(allMacros.isNotEmpty()) {
-                allMacros.map { (channel, macros) ->
-                    field {
-                        name = "**$channel**"
-                        value = "```css\n${macros.joinToString("\n") { it.name }}\n```"
-                        inline = true
+        return menu {
+            chunks.map {
+                page {
+                    simpleTitle = "All available macros"
+                    color = infoColor
+
+                    if (it.isNotEmpty()) {
+                        it.map { (channel, macros) ->
+                            field {
+                                name = "**$channel**"
+                                value = "```css\n${macros.joinToString("\n") { it.name }}\n```"
+                                inline = true
+                            }
+                        }
                     }
                 }
             }
