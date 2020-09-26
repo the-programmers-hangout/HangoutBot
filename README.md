@@ -31,7 +31,7 @@ The bot will look for a configuration file at `config/config.json`. This file is
 
 ```json
 {
-  "token" : "<inser-token>",
+  "token" : "<insert-token>",
   "ownerId": "<insert-bot-owner-id>",
   "prefix": "!!"
 }
