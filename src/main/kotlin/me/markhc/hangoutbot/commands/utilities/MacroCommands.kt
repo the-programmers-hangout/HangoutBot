@@ -45,6 +45,15 @@ fun macroCommands(macroService: MacroService) = commands {
         }
     }
 
+    command("editmacrocategory") {
+        description = "Edits the category of a macro"
+        requiredPermissionLevel = PermissionLevel.Staff
+        requiresGuild = true
+        execute(AnyArg("Name"), TextChannelArg("Channel").makeNullableOptional(), AnyArg("New Category")) {
+            it.respond(macroService.editMacroCategory(it.guild!!, it.args.first, it.args.second, it.args.third))
+        }
+    }
+
     command("listmacros") {
         description = "Lists all macros available in the given channel. If no channel is specified, defaults to the current channel."
         requiredPermissionLevel = PermissionLevel.Everyone

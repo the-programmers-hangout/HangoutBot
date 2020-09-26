@@ -105,7 +105,7 @@ class MacroService(private val persistentData: PersistentData) {
         }
     }
 
-    fun getMacrosAvailableIn(guild: Guild, channel: TextChannel): List<TextMacro> {
+    private fun getMacrosAvailableIn(guild: Guild, channel: TextChannel): List<TextMacro> {
         val macroList = persistentData.getGuildProperty(guild) {
             availableMacros.filter {
                 it.key.endsWith('#') || it.key.takeLast(18) == channel.id
