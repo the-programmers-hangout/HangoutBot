@@ -37,7 +37,7 @@ class StartupService(private val properties: Properties,
 
                 field {
                     name = self.fullName()
-                    value = "A bot to manage utility commands and functionality that does not warrant its own bot"
+                    value = "Utility bot for The Programmers Hangout Discord server"
                 }
                 field {
                     name = "Prefix"
@@ -59,9 +59,9 @@ class StartupService(private val properties: Properties,
                     field {
                         name = "Build Info"
                         value = "```"+
-                                "Version: $version\n" +
-                                "DiscordKt:  $discordKt\n" +
-                                "Kotlin:  $kotlinVersion" +
+                                "Version:   $version\n" +
+                                "DiscordKt: $discordKt\n" +
+                                "Kotlin:    $kotlinVersion" +
                                 "```"
                     }
 
