@@ -90,6 +90,7 @@ class MacroService(private val persistentData: PersistentData) {
 
         return embed {
             simpleTitle = "Macros available in ${channel.name}"
+            color = infoColor
 
             if(macros.isNotEmpty()) {
                 macros.map { (category, macros) ->
