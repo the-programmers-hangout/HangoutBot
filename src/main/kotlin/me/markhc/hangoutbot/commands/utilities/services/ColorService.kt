@@ -4,7 +4,7 @@ import com.gitlab.kordlib.core.behavior.addRole
 import com.gitlab.kordlib.core.entity.*
 import kotlinx.coroutines.flow.*
 import me.jakejmattson.discordkt.api.annotations.Service
-import me.jakejmattson.discordkt.api.extensions.toSnowflake
+import me.jakejmattson.discordkt.api.extensions.*
 import me.markhc.hangoutbot.services.*
 import java.awt.Color
 
@@ -37,7 +37,7 @@ class ColorService(private val persistentData: PersistentData, private val permi
 
     private suspend fun createAndAssignRole(member: Member, roleName: String, roleColor: Color) {
         val existingRole = persistentData.getGuildProperty(member.guild.asGuild()) {
-            assignedColorRoles.keys.mapNotNull { it.toSnowflake()?.let { it1 -> member.guild.getRole(it1) } }
+            assignedColorRoles.keys.mapNotNull { it.toSnowflakeOrNull()?.let { it1 -> member.guild.getRole(it1) } }
                 .firstOrNull { it.name.equals(roleName, true) && it.color == roleColor }
         }
 
@@ -80,7 +80,7 @@ class ColorService(private val persistentData: PersistentData, private val permi
     private suspend fun findExistingRole(member: Member, roleName: String): Role? {
         return persistentData.getGuildProperty(member.guild.asGuild()) {
             assignedColorRoles.keys
-                .mapNotNull { it.toSnowflake()?.let { member.guild.getRole(it) } }
+                .mapNotNull { it.toSnowflakeOrNull()?.let { member.guild.getRole(it) } }
                 .firstOrNull { it.name == roleName }
         }
     }

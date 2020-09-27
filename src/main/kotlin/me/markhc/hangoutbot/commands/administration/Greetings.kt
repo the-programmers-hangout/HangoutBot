@@ -7,18 +7,17 @@ import me.markhc.hangoutbot.services.*
 
 
 fun greetingCommands(greetingService: GreetingService) = commands("Greetings") {
-    command("greetings") {
+    guildCommand("greetings") {
         description = "Enables or disables the greetings on member join."
         requiredPermissionLevel = PermissionLevel.Administrator
-        requiresGuild = true
         execute(BooleanArg("enable/disable", "enable", "disable").makeNullableOptional(null)) {
             val (enable) = args
 
             if (enable != null) {
-                greetingService.setEnabled(guild!!, enable)
+                greetingService.setEnabled(guild, enable)
                 respond("Welcome embeds are now ${if (enable) "enabled" else "disabled"}")
             } else {
-                val state = greetingService.isEnabled(guild!!)
+                val state = greetingService.isEnabled(guild)
                 respond("Welcome embeds are ${if (state) "enabled" else "disabled"}")
             }
         }

@@ -8,29 +8,25 @@ import me.markhc.hangoutbot.utilities.*
 fun produceInformationCommands(helpService: HelpService) = commands("Information") {
     command("help") {
         description = "Display help information."
-        requiresGuild = true
         execute(CommandArg.makeNullableOptional { null }) {
             val (command) = args
 
             if (command == null) {
-                respond(helpService.buildHelpEmbed(this))
+                helpService.buildHelpEmbed(this)
             } else {
-                respond(helpService.buildHelpEmbedForCommand(this, command))
+                helpService.buildHelpEmbedForCommand(this, command)
             }
         }
     }
 
-    command("invite") {
+    guildCommand("invite") {
         description = "Generates an invite link to this server."
-        requiresGuild = true
         execute {
-            val guild = guild!!
 
             if (guild.getVanityUrl() != null) {
                 respond(guild.getVanityUrl()!!)
             } else {
-                val guildChannel = guild.rulesChannel ?: guild.systemChannel ?: guild.publicUpdatesChannel
-                    ?: return@execute respond("Couldn't find a channel to create an invite for")
+                val guildChannel = guild.rulesChannel ?: guild.systemChannel ?: guild.publicUpdatesChannel ?: channel
 
                 // TODO: Cache these invites so we don't generate a new one every time
                 val invite = guildChannel.asChannel().createInvite {
@@ -42,12 +38,11 @@ fun produceInformationCommands(helpService: HelpService) = commands("Information
         }
     }
 
-    command("serverinfo") {
+    guildCommand("serverinfo") {
         description = "Display a message giving basic server information."
-        requiresGuild = true
         execute {
             respond {
-                buildGuildInfoEmbed(guild!!)
+                buildGuildInfoEmbed(guild)
             }
         }
     }
@@ -65,9 +60,8 @@ fun produceInformationCommands(helpService: HelpService) = commands("Information
         }
     }
 
-    command("roleinfo") {
+    guildCommand("roleinfo") {
         description = "Displays information about the given role."
-        requiresGuild = true
         execute(RoleArg) {
             buildRoleInfoEmbed(args.first)
         }

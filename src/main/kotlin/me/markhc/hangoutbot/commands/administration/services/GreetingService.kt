@@ -4,7 +4,7 @@ import com.gitlab.kordlib.core.behavior.*
 import com.gitlab.kordlib.core.entity.*
 import com.gitlab.kordlib.core.entity.channel.TextChannel
 import me.jakejmattson.discordkt.api.annotations.Service
-import me.jakejmattson.discordkt.api.extensions.toSnowflake
+import me.jakejmattson.discordkt.api.extensions.*
 import me.markhc.hangoutbot.services.PersistentData
 import me.markhc.hangoutbot.utilities.EvictingQueue
 import java.util.*
@@ -44,7 +44,7 @@ class GreetingService(private val persistentData: PersistentData) {
 
     suspend fun getChannel(guild: Guild) = persistentData.getGuildProperty(guild) { welcomeChannel }.let {
         it.ifBlank { null }.let { id ->
-            id?.toSnowflake()?.let { guild.getChannelOfOrNull<TextChannel>(it) }
+            id?.toSnowflakeOrNull()?.let { guild.getChannelOfOrNull<TextChannel>(it) }
         }
     }
 }

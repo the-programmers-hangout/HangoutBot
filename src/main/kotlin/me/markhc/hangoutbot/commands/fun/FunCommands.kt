@@ -45,10 +45,15 @@ fun produceFunCommands() = commands("Fun") {
         description = "Rolls a number in a range (default 1-100)"
         execute(IntegerArg("Min").makeOptional(1), IntegerArg("Max").makeOptional(100)) {
             val (a, b) = args
-            if (a == b) return@execute respond("$a")
-            val result = if (a > b) Random.nextInt(b, a) else Random.nextInt(a, b)
 
-            respond("$result")
+            val result =
+                when {
+                    a > b -> Random.nextInt(b, a)
+                    a < b -> Random.nextInt(a, b)
+                    else -> a
+                }
+
+            respond(result)
         }
     }
 

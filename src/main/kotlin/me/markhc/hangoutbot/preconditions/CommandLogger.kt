@@ -7,7 +7,7 @@ import me.jakejmattson.discordkt.api.extensions.*
 import me.markhc.hangoutbot.services.*
 
 class CommandLogger(private val botStats: BotStatsService, private val persistentData: PersistentData) : Precondition() {
-    override suspend fun evaluate(event: CommandEvent<*>): PreconditionResult {
+    override suspend fun evaluate(event: GlobalCommandEvent<*>): PreconditionResult {
         event.command ?: return Fail()
 
         botStats.commandExecuted(event)
@@ -20,7 +20,7 @@ class CommandLogger(private val botStats: BotStatsService, private val persisten
 
         if (event.guild != null) {
             val guild = event.guild!!
-            val loggingChannel = persistentData.getGuildProperty(guild) { loggingChannel }.toSnowflake()
+            val loggingChannel = persistentData.getGuildProperty(guild) { loggingChannel }.toSnowflakeOrNull()
 
             if (loggingChannel != null) {
                 val message =

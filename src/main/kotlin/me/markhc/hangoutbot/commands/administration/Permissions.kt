@@ -8,7 +8,7 @@ import me.markhc.hangoutbot.services.*
 
 fun producePermissionCommands(persistentData: PersistentData,
                               permissionsService: PermissionsService) = commands("Permissions") {
-    suspend fun listPermissions(event: CommandEvent<*>) {
+    suspend fun listPermissions(event: GuildCommandEvent<*>) {
         val commands = event.discord.commands
             .sortedBy { it.names.joinToString() }
             .groupBy { it.category }
@@ -28,7 +28,7 @@ fun producePermissionCommands(persistentData: PersistentData,
                     name = it.first
                     value = "```css\n${
                         it.second.map {
-                            "[${permissionsService.getCommandPermissionLevel(event.guild!!, it).toString().first()}]\u202F${it.names.first()}"
+                            "[${permissionsService.getCommandPermissionLevel(event.guild, it).toString().first()}]\u202F${it.names.first()}"
                         }.joinToString("\n")
                     }\n```"
                     inline = true
@@ -37,7 +37,7 @@ fun producePermissionCommands(persistentData: PersistentData,
         }
     }
 
-    command("permission", "permissions") {
+    guildCommand("permission", "permissions") {
         description = "Gets or sets the permissions for a command. Use `list` to view all permissions"
         requiredPermissionLevel = PermissionLevel.Staff
         execute(ChoiceArg("set/get/list", "set", "get", "list").makeOptional("get"),
@@ -51,7 +51,7 @@ fun producePermissionCommands(persistentData: PersistentData,
                         respond("Received less arguments than expected. Expected: `(Command)`")
                     } else {
                         respond("${
-                            permissionsService.getCommandPermissionLevel(guild!!, command!!)
+                            permissionsService.getCommandPermissionLevel(guild, command)
                         }")
                     }
                 }
@@ -60,7 +60,7 @@ fun producePermissionCommands(persistentData: PersistentData,
                         if (command == null || level == null) {
                             respond("Received less arguments than expected. Expected: `(Command) (Level)`")
                         } else {
-                            if (permissionsService.trySetCommandPermission(guild!!, author, command, level)) {
+                            if (permissionsService.trySetCommandPermission(guild, author, command, level)) {
                                 respond("${command.names.first()} is now available to ${level}.")
                             } else {
                                 respond("Sorry, you cannot change permissions for ${command.names.first()}")
@@ -75,16 +75,16 @@ fun producePermissionCommands(persistentData: PersistentData,
         }
     }
 
-    command("roleperms") {
+    guildCommand("roleperms") {
         description = "Gets or sets the permission level of the given role"
         requiredPermissionLevel = PermissionLevel.GuildOwner
-        requiresGuild = true
         execute(RoleArg, PermissionLevelArg.makeNullableOptional(null)) {
             val (role, level) = args
 
             if (level != null) {
                 if (level == PermissionLevel.BotOwner || level == PermissionLevel.GuildOwner) {
-                    return@execute respond("Sorry, cannot set permission level to $level.")
+                    respond("Sorry, cannot set permission level to $level.")
+                    return@execute
                 }
 
                 persistentData.setGuildProperty(guild!!) {

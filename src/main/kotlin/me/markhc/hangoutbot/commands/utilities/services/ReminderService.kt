@@ -52,7 +52,7 @@ class ReminderService(private val persistentData: PersistentData, private val di
         GlobalScope.launch {
             delay(ms)
 
-            userId.toSnowflake()?.let {
+            userId.toSnowflakeOrNull()?.let {
                 discord.api.getUser(it)?.sendPrivateMessage {
                     title = "Reminder"
                     description = what

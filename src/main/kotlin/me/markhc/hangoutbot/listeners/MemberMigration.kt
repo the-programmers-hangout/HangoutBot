@@ -8,7 +8,7 @@ import com.gitlab.kordlib.core.event.guild.*
 import com.gitlab.kordlib.kordx.emoji.*
 
 import me.jakejmattson.discordkt.api.dsl.listeners
-import me.jakejmattson.discordkt.api.extensions.toSnowflake
+import me.jakejmattson.discordkt.api.extensions.*
 import me.markhc.hangoutbot.commands.administration.services.GreetingService
 import me.markhc.hangoutbot.locale.Messages
 import me.markhc.hangoutbot.services.PersistentData
@@ -21,7 +21,7 @@ fun migrationListeners(persistentData: PersistentData, guildService: GreetingSer
 
         if (!embeds || channel.isEmpty()) return@on
 
-        val welcomeChannel = channel.toSnowflake()?.let { guild.getChannelOf<TextChannel>(it) } ?: return@on
+        val welcomeChannel = channel.toSnowflakeOrNull()?.let { guild.getChannelOf<TextChannel>(it) } ?: return@on
 
         try {
             val message = welcomeChannel.createEmbed {
@@ -51,7 +51,7 @@ fun migrationListeners(persistentData: PersistentData, guildService: GreetingSer
 
         val channel = persistentData.getGuildProperty(guild) {
             welcomeChannel
-        }.toSnowflake() ?: return@on
+        }.toSnowflakeOrNull() ?: return@on
 
         val welcomeChannel = guild.getChannelOfOrNull<TextChannel>(channel) ?: return@on
 

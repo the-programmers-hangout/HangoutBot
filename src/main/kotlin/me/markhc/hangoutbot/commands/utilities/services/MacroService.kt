@@ -4,7 +4,7 @@ import com.gitlab.kordlib.core.entity.Guild
 import com.gitlab.kordlib.core.entity.channel.*
 import me.jakejmattson.discordkt.api.annotations.Service
 import me.jakejmattson.discordkt.api.dsl.*
-import me.jakejmattson.discordkt.api.extensions.toSnowflake
+import me.jakejmattson.discordkt.api.extensions.*
 import me.markhc.hangoutbot.dataclasses.TextMacro
 import me.markhc.hangoutbot.services.PersistentData
 
@@ -109,7 +109,7 @@ class MacroService(private val persistentData: PersistentData) {
     suspend fun listAllMacros(event: CommandEvent<*>, guild: Guild) {
         val allMacros = persistentData.getGuildProperty(guild) { availableMacros }
                 .map { it.value }
-                .groupBy { it.channel.toSnowflake()?.let { guild.getChannel(it).name } ?: "Global Macros" }
+                .groupBy { it.channel.toSnowflakeOrNull()?.let { guild.getChannel(it).name } ?: "Global Macros" }
                 .toList()
                 .sortedByDescending { it.second.size }
 
@@ -164,7 +164,7 @@ class MacroService(private val persistentData: PersistentData) {
 }
 
 class MacroPrecondition(private val macroService: MacroService) : Precondition() {
-    override suspend fun evaluate(event: CommandEvent<*>): PreconditionResult {
+    override suspend fun evaluate(event: GlobalCommandEvent<*>): PreconditionResult {
         if(event.command != null)
             return Pass
 

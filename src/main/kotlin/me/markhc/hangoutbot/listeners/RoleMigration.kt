@@ -4,7 +4,7 @@ import com.gitlab.kordlib.core.event.guild.MemberUpdateEvent
 import com.gitlab.kordlib.core.event.role.RoleDeleteEvent
 import kotlinx.coroutines.flow.toList
 import me.jakejmattson.discordkt.api.dsl.listeners
-import me.jakejmattson.discordkt.api.extensions.toSnowflake
+import me.jakejmattson.discordkt.api.extensions.*
 import me.markhc.hangoutbot.services.PersistentData
 
 fun roleMigration(persistentData: PersistentData) = listeners {
@@ -48,7 +48,7 @@ fun roleMigration(persistentData: PersistentData) = listeners {
                 assignedColorRoles.entries
                     .filter { it.value.isEmpty() }
                     .forEach {
-                        it.key.toSnowflake()?.let { guild.getRole(it) }?.delete()
+                        it.key.toSnowflakeOrNull()?.let { guild.getRole(it) }?.delete()
                     }
 
                 // and then remove them from the list

@@ -4,7 +4,6 @@ import com.gitlab.kordlib.core.entity.*
 import me.jakejmattson.discordkt.api.annotations.Service
 import me.jakejmattson.discordkt.api.dsl.*
 
-
 val commandUsage: MutableMap<Command, List<String>> = mutableMapOf()
 
 var Command.usageExamples: List<String>
@@ -18,7 +17,7 @@ class HelpService(private val permissionsService: PermissionsService) {
     private suspend fun Command.isVisible(guild: Guild, user: User) =
         permissionsService.isCommandVisible(guild, user, this)
 
-    suspend fun buildHelpEmbed(event: CommandEvent<*>) = event.respond {
+    suspend fun buildHelpEmbed(event: GlobalCommandEvent<*>) = event.respond {
         val container = event.discord.commands
 
         title = "Help information"
@@ -57,7 +56,7 @@ class HelpService(private val permissionsService: PermissionsService) {
     private fun generateExample(event: CommandEvent<*>, command: Command): String {
         return if(command.usageExamples.isEmpty()) {
             command.arguments.joinToString(" ") {
-                it.generateExamples(event).random()
+                it.generateExamples(event as GlobalCommandEvent<*>).random()
             }
         } else {
             command.usageExamples.random()

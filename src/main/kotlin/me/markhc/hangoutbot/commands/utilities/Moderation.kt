@@ -8,10 +8,9 @@ import me.jakejmattson.discordkt.api.dsl.commands
 import me.markhc.hangoutbot.services.*
 
 fun moderationCommands() = commands("Moderation") {
-    command("echo") {
+    guildCommand("echo") {
         description = "Echo a message to a channel."
         requiredPermissionLevel = PermissionLevel.Staff
-        requiresGuild = true
         execute(ChannelArg.makeOptional { it.channel as TextChannel }, EveryArg) {
             val (target, message) = args
 
@@ -19,16 +18,16 @@ fun moderationCommands() = commands("Moderation") {
         }
     }
 
-    command("nuke") {
+    guildCommand("nuke") {
         description = "Delete 2 - 99 past messages in the given channel (default is the invoked channel)"
         requiredPermissionLevel = PermissionLevel.Staff
-        requiresGuild = true
         execute(ChannelArg.makeOptional { it.channel as TextChannel },
             IntegerArg) {
             val (channel, amount) = args
 
             if (amount !in 2..99) {
-                return@execute respond("You can only nuke between 2 and 99 messages")
+                respond("You can only nuke between 2 and 99 messages")
+                return@execute
             }
 
             val sameChannel = channel.id == channel.id

@@ -11,20 +11,20 @@ import java.util.concurrent.TimeUnit
 import kotlin.math.roundToLong
 
 fun produceUtilityCommands(muteService: MuteService) = commands("Selfmute") {
-    command("selfmute") {
-        requiresGuild = true
+    guildCommand("selfmute") {
         description = "Mute yourself for the given amount of time. A mute will stop you from talking in any channel. Default is 1 hour. Max is 24 hours."
         execute(TimeArg.makeOptional(3600.0)) {
             val (timeInSeconds) = args
 
             if (timeInSeconds < 5) {
-                return@execute respond("You cannot mute yourself for less than 5 seconds.")
+                respond("You cannot mute yourself for less than 5 seconds.")
+                return@execute
             }
             if (timeInSeconds > TimeUnit.HOURS.toSeconds(24)) {
-                return@execute respond("You cannot mute yourself for more than 24 hours.")
+                respond("You cannot mute yourself for more than 24 hours.")
+                return@execute
             }
 
-            val guild = guild!!
             val member = author.asMember(guild.id)
             val millis = timeInSeconds.roundToLong() * 1000
 
@@ -32,8 +32,7 @@ fun produceUtilityCommands(muteService: MuteService) = commands("Selfmute") {
         }
     }
 
-    command("productivemute") {
-        requiresGuild = true
+    guildCommand("productivemute") {
         description = "Trying to be productive? Mute yourself for the specified amount of time. " +
             "A productive mute will prevent you from talking in the social channels while still allowing " +
             "the use of the language channels. Default is 1 hour. Max is 24 hours."
@@ -41,10 +40,12 @@ fun produceUtilityCommands(muteService: MuteService) = commands("Selfmute") {
             val (timeInSeconds) = args
 
             if (timeInSeconds < 5) {
-                return@execute respond("You cannot mute yourself for less than 5 seconds.")
+                respond("You cannot mute yourself for less than 5 seconds.")
+                return@execute
             }
             if (timeInSeconds > TimeUnit.HOURS.toSeconds(24)) {
-                return@execute respond("You cannot mute yourself for more than 24 hours.")
+                respond("You cannot mute yourself for more than 24 hours.")
+                return@execute
             }
 
             val guild = guild!!
@@ -64,10 +65,12 @@ fun reminderCommands(muteService: MuteService,
             val (timeInSeconds, sentence) = args
 
             if (timeInSeconds < 5) {
-                return@execute respond("You cannot set a reminder for less than 5 seconds.")
+                respond("You cannot set a reminder for less than 5 seconds.")
+                return@execute
             }
             if (timeInSeconds > TimeUnit.DAYS.toSeconds(90)) {
-                return@execute respond("You cannot set a reminder more than 90 days into the future.")
+                respond("You cannot set a reminder more than 90 days into the future.")
+                return@execute
             }
 
             val millis = timeInSeconds.roundToLong() * 1000

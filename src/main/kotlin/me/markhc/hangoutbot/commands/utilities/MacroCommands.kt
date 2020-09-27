@@ -7,10 +7,9 @@ import me.markhc.hangoutbot.commands.utilities.services.MacroService
 import me.markhc.hangoutbot.services.*
 
 fun macroCommands(macroService: MacroService) = commands("Macros") {
-    command("addmacro") {
+    guildCommand("addmacro") {
         description = "Adds a macro to a specific channel or globally, if no channel is given"
         requiredPermissionLevel = PermissionLevel.Staff
-        requiresGuild = true
         usageExamples = listOf(
             "coolname Miscellaneous This is a global macro",
             "promises Programming #javascript Channel specific macro"
@@ -25,46 +24,41 @@ fun macroCommands(macroService: MacroService) = commands("Macros") {
         }
     }
 
-    command("removemacro") {
+    guildCommand("removemacro") {
         description = "Removes a macro"
         requiredPermissionLevel = PermissionLevel.Staff
-        requiresGuild = true
         execute(AnyArg("Name"), ChannelArg<TextChannel>("Channel").makeNullableOptional()) {
             respond(macroService.removeMacro(guild!!, args.first, args.second))
         }
     }
 
-    command("editmacro") {
+    guildCommand("editmacro") {
         description = "Edits the contents of a macro"
         requiredPermissionLevel = PermissionLevel.Staff
-        requiresGuild = true
         execute(AnyArg("Name"), ChannelArg<TextChannel>("Channel").makeNullableOptional(), EveryArg("Contents")) {
             respond(macroService.editMacro(guild!!, args.first, args.second, args.third))
         }
     }
 
-    command("editmacrocategory") {
+    guildCommand("editmacrocategory") {
         description = "Edits the category of a macro"
         requiredPermissionLevel = PermissionLevel.Staff
-        requiresGuild = true
         execute(AnyArg("Name"), ChannelArg<TextChannel>("Channel").makeNullableOptional(), AnyArg("New Category")) {
             respond(macroService.editMacroCategory(guild!!, args.first, args.second, args.third))
         }
     }
 
-    command("listmacros") {
+    guildCommand("listmacros") {
         description = "Lists all macros available in the given channel. If no channel is specified, defaults to the current channel."
         requiredPermissionLevel = PermissionLevel.Everyone
-        requiresGuild = true
         execute(ChannelArg<TextChannel>("Channel").makeOptional { it.channel as TextChannel }) {
             macroService.listMacros(this, guild!!, args.first)
         }
     }
 
-    command("listallmacros") {
+    guildCommand("listallmacros") {
         description = "Lists all macros available in the guild, grouped by channel."
         requiredPermissionLevel = PermissionLevel.Everyone
-        requiresGuild = true
         execute {
             respond(macroService.listAllMacros(this, guild!!))
         }

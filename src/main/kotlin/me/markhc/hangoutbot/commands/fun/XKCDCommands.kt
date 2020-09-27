@@ -12,7 +12,11 @@ fun xkcdCommands(xkcd: XKCDService) = commands("XKCD") {
             val (id) = args
 
             val latest = xkcd.getLatest()
-                ?: return@execute respond("Sorry, failed to get a comic.")
+
+            if (latest == null) {
+                respond("Sorry, failed to get a comic.")
+                return@execute
+            }
 
             val response = when {
                 id == null -> xkcd.getUrl(Random.nextInt(1, latest))
@@ -28,7 +32,11 @@ fun xkcdCommands(xkcd: XKCDService) = commands("XKCD") {
         description = "Grabs the latest XKCD comic."
         execute {
             val latest = xkcd.getLatest()
-                ?: return@execute respond("Sorry, failed to get latest comic.")
+
+            if (latest == null) {
+                respond("Sorry, failed to get latest comic.")
+                return@execute
+            }
 
             respond(xkcd.getUrl(latest))
         }
@@ -39,7 +47,13 @@ fun xkcdCommands(xkcd: XKCDService) = commands("XKCD") {
         execute(EveryArg("Query")) {
             val (what) = args
 
-            val result = xkcd.search(what) ?: return@execute respond("Sorry, the search failed.")
+            val result = xkcd.search(what)
+
+            if (result == null) {
+                respond("Sorry, the search failed.")
+                return@execute
+            }
+
             respond(xkcd.getUrl(result))
         }
     }

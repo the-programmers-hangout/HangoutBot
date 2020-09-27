@@ -93,7 +93,7 @@ var Command.requiredPermissionLevel: PermissionLevel
         commandPermissions[this] = value
     }
 
-suspend fun CommandEvent<*>.requiresPermission(level: PermissionLevel, action: suspend CommandEvent<*>.() -> Unit) {
+suspend fun GuildCommandEvent<*>.requiresPermission(level: PermissionLevel, action: suspend GuildCommandEvent<*>.() -> Unit) {
     val svc = this.discord.getInjectionObjects(PermissionsService::class)
 
     if (svc.hasClearance(this.guild, this.author, level)) {

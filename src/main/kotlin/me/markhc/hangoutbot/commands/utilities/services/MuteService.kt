@@ -7,7 +7,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.launch
 import me.jakejmattson.discordkt.api.Discord
 import me.jakejmattson.discordkt.api.annotations.Service
-import me.jakejmattson.discordkt.api.dsl.CommandEvent
+import me.jakejmattson.discordkt.api.dsl.*
 import me.jakejmattson.discordkt.api.extensions.*
 import me.markhc.hangoutbot.dataclasses.*
 import me.markhc.hangoutbot.services.PersistentData
@@ -19,24 +19,27 @@ import org.joda.time.format.DateTimeFormat
 class MuteService(private val persistentData: PersistentData, private val discord: Discord) {
     private val dateFormatter = DateTimeFormat.longDateTime()
 
-    suspend fun addMutedMember(event: CommandEvent<*>, member: Member, ms: Long, soft: Boolean) {
-            val guild = event.guild!!
-            val muteRoleId = persistentData.getGuildProperty(guild.asGuild()) { if (soft) softMuteRole else muteRole }.toSnowflake()
+    suspend fun addMutedMember(event: GuildCommandEvent<*>, member: Member, ms: Long, soft: Boolean) {
+            val guild = event.guild
+            val muteRoleId = persistentData.getGuildProperty(guild.asGuild()) { if (soft) softMuteRole else muteRole }.toSnowflakeOrNull()
 
             if (muteRoleId == null) {
-                return event.respond("Sorry, this guild does not have a mute role.")
+                event.respond("Sorry, this guild does not have a mute role.")
+                return
             }
 
             val muteRole = guild.getRole(muteRoleId)
 
             if (muteRole.id in member.roleIds) {
-                return event.respond("Nice try, but you're already muted!")
+                event.respond("Nice try, but you're already muted!")
+                return
             }
 
             val mutedUsers = persistentData.getGuildProperty(guild) { mutedUsers }
 
             if (mutedUsers.any { muted -> muted.user == member.id.value }) {
-                return event.respond("Sorry, you already have an active mute!")
+                event.respond("Sorry, you already have an active mute!")
+                return
             }
 
             val until = DateTime.now(DateTimeZone.UTC).plus(ms)
@@ -60,19 +63,19 @@ class MuteService(private val persistentData: PersistentData, private val discor
     private suspend fun startMuteTimers(config: GuildConfiguration) {
         if (config.mutedUsers.isEmpty()) return
 
-        val guild = config.guildId.toSnowflake()?.let { discord.api.getGuild(it) } ?: return
+        val guild = config.guildId.toSnowflakeOrNull()?.let { discord.api.getGuild(it) } ?: return
 
         val muteRole = config.muteRole.ifBlank { null }?.let {
-            it.toSnowflake()?.let { guild.getRole(it) }
+            it.toSnowflakeOrNull()?.let { guild.getRole(it) }
         }
 
         val softMuteRole = config.softMuteRole.ifBlank { null }?.let {
-            it.toSnowflake()?.let { guild.getRole(it) }
+            it.toSnowflakeOrNull()?.let { guild.getRole(it) }
         }
 
         config.mutedUsers.forEach { entry ->
             val millis = dateFormatter.parseMillis(entry.timeUntil) - DateTime.now().millis
-            val member = entry.user.toSnowflake()?.let { guild.getMember(it) }
+            val member = entry.user.toSnowflakeOrNull()?.let { guild.getMember(it) }
 
             if (member != null) {
                 if (entry.isSoft && softMuteRole != null) {

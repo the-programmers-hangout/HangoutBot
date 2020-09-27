@@ -6,15 +6,15 @@ import me.jakejmattson.discordkt.api.dsl.commands
 import me.markhc.hangoutbot.services.*
 
 fun channelCommands() = commands("Channel") {
-    command("slowmode") {
+    guildCommand("slowmode") {
         description = "Set the slowmode in a channel."
         requiredPermissionLevel = PermissionLevel.Staff
-        requiresGuild = true
         execute(ChannelArg, TimeArg) {
             val (channel, interval) = args
 
             if (interval > 21600 || interval < 0) {
-                return@execute respond("Invalid time element passed.")
+                respond("Invalid time element passed.")
+                return@execute
             }
 
             channel.edit {

@@ -9,28 +9,29 @@ import me.markhc.hangoutbot.services.*
 import javax.script.*
 
 fun ownerCommands(persistentData: PersistentData, scriptEngineService: ScriptEngineService) = commands("Owner Commands") {
-    command("cooldown") {
+    guildCommand("cooldown") {
         description = "Gets or sets the command cooldown period (in seconds)."
         requiredPermissionLevel = PermissionLevel.GuildOwner
-        requiresGuild = true
         execute(IntegerArg.makeNullableOptional(null)) {
             val (cd) = args
 
             if (cd != null) {
                 if (cd < 1) {
-                    return@execute respond("Cooldown cannot be less than 1 second!")
+                    respond("Cooldown cannot be less than 1 second!")
+                    return@execute
                 }
                 if (cd > 3600) {
-                    return@execute respond("Cooldown cannot be more than 1 hour!")
+                    respond("Cooldown cannot be more than 1 hour!")
+                    return@execute
                 }
 
-                persistentData.setGuildProperty(guild!!) {
+                persistentData.setGuildProperty(guild) {
                     cooldown = cd.toInt()
                 }
 
                 respond("Command cooldown set to $cd seconds")
             } else {
-                val value = persistentData.getGuildProperty(guild!!) {
+                val value = persistentData.getGuildProperty(guild) {
                     cooldown
                 }
                 respond("Command cooldown is $value seconds")
@@ -38,14 +39,13 @@ fun ownerCommands(persistentData: PersistentData, scriptEngineService: ScriptEng
         }
     }
 
-    command("setprefix") {
+    guildCommand("setprefix") {
         description = "Sets the bot prefix."
         requiredPermissionLevel = PermissionLevel.GuildOwner
-        requiresGuild = true
         execute(AnyArg("Prefix")) {
             val newPrefix = args.first
 
-            persistentData.setGuildProperty(guild!!) {
+            persistentData.setGuildProperty(guild) {
                 prefix = newPrefix
             }
 
@@ -53,12 +53,11 @@ fun ownerCommands(persistentData: PersistentData, scriptEngineService: ScriptEng
         }
     }
 
-    command("eval") {
+    guildCommand("eval") {
         description = "Evaluates a script"
         requiredPermissionLevel = PermissionLevel.BotOwner
-        requiresGuild = true
         execute(EveryArg) {
-            evalCommand(scriptEngineService.engine, this)
+            //evalCommand(scriptEngineService.engine, this)
         }
     }
 }

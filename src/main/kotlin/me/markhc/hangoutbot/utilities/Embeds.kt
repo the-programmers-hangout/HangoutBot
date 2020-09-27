@@ -4,7 +4,7 @@ import com.gitlab.kordlib.core.entity.*
 import com.gitlab.kordlib.core.entity.channel.*
 import com.gitlab.kordlib.rest.Image
 import kotlinx.coroutines.flow.*
-import me.jakejmattson.discordkt.api.dsl.CommandEvent
+import me.jakejmattson.discordkt.api.dsl.*
 import me.markhc.hangoutbot.dataclasses.Configuration
 import me.markhc.hangoutbot.services.BotStatsService
 import org.joda.time.DateTime
@@ -117,7 +117,7 @@ suspend fun CommandEvent<*>.buildGuildInfoEmbed(guild: Guild) = respond {
     }
 }
 
-suspend fun CommandEvent<*>.buildRoleInfoEmbed(role: Role) = respond {
+suspend fun GuildCommandEvent<*>.buildRoleInfoEmbed(role: Role) = respond {
     title = "Role information"
     color = role.color
 

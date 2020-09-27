@@ -10,7 +10,7 @@ class Cooldown(private val botConfiguration: BotConfiguration,
                private val permissionsService: PermissionsService) : Precondition() {
     val cooldownMap = mutableMapOf<Long, Long>()
 
-    override suspend fun evaluate(event: CommandEvent<*>): PreconditionResult {
+    override suspend fun evaluate(event: GlobalCommandEvent<*>): PreconditionResult {
         if (event.command == null)
             return Pass
 
