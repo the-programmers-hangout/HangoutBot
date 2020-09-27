@@ -3,13 +3,12 @@ package me.markhc.hangoutbot.utilities
 import com.gitlab.kordlib.core.entity.*
 import com.gitlab.kordlib.core.entity.channel.*
 import com.gitlab.kordlib.rest.Image
-import com.gitlab.kordlib.rest.builder.message.EmbedBuilder
 import kotlinx.coroutines.flow.*
 import me.jakejmattson.discordkt.api.dsl.CommandEvent
 import me.markhc.hangoutbot.dataclasses.Configuration
 import me.markhc.hangoutbot.services.BotStatsService
 import org.joda.time.DateTime
-import java.time.*
+import java.time.Instant
 import java.time.format.DateTimeFormatter
 import java.util.concurrent.TimeUnit
 
@@ -20,11 +19,11 @@ suspend fun CommandEvent<*>.createBotStatsEmbed(botStats: BotStatsService, confi
     field {
         name = "Commands"
         value = """
-                        ```
-                        Commands executed:      ${String.format("%6d", config.totalCommandsExecuted)}
-                        Commands since restart: ${String.format("%6d", botStats.totalCommands)}
-                        ```
-                    """.trimIndent()
+            ```
+            Commands executed:      ${String.format("%6d", config.totalCommandsExecuted)}
+            Commands since restart: ${String.format("%6d", botStats.totalCommands)}
+            ```
+        """.trimIndent()
     }
 
     val runtime = Runtime.getRuntime()
@@ -73,7 +72,7 @@ suspend fun CommandEvent<*>.buildGuildInfoEmbed(guild: Guild) = respond {
     }
     field {
         name = "**Users**"
-        value = "${guild.members.toList().filter { it.onlineStatus != OnlineStatus.OFFLINE }.size}/${guild.members.size}"
+        //TODO value = "${guild.members.toList().filter { it.onlineStatus != OnlineStatus.OFFLINE }.size}/${guild.memberCount}"
         inline = true
     }
     field {
@@ -103,7 +102,7 @@ suspend fun CommandEvent<*>.buildGuildInfoEmbed(guild: Guild) = respond {
     }
     field {
         name = "**Emotes**"
-        value = "${guild.emojis.size}/${guild.maxEmotes * 2}"
+        //TODO value = "${guild.emojis.size}/${guild * 2}"
         inline = true
     }
     field {
@@ -113,7 +112,7 @@ suspend fun CommandEvent<*>.buildGuildInfoEmbed(guild: Guild) = respond {
     }
     field {
         name = "**Boosts**"
-        value = "${guild.boostCount} (Tier: ${guild.boostTier.ordinal})"
+        //TODO value = "${guild.boostCount} (Tier: ${guild.boostTier.ordinal})"
         inline = true
     }
 }
@@ -155,7 +154,7 @@ suspend fun CommandEvent<*>.buildRoleInfoEmbed(role: Role) = respond {
     }
     field {
         name = "**Members**"
-        value = "${role.guild.getMembersWithRoles(role).size} members"
+        value = "${guild!!.members.toList().filter { role in it.roles.toList() }.size} members"
     }
 }
 
@@ -208,7 +207,7 @@ fun getSafeNickname(member: Member): String {
 
 suspend fun CommandEvent<*>.buildMemberInfoEmbed(member: Member) = respond {
     title = "User information"
-    color = member.color
+    color = member.roles.toList().maxByOrNull { it.rawPosition }?.color
     thumbnail {
         url = member.avatar.url
     }

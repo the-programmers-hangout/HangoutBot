@@ -6,12 +6,13 @@ import com.gitlab.kordlib.core.entity.channel.TextChannel
 import me.jakejmattson.discordkt.api.annotations.Service
 import me.jakejmattson.discordkt.api.extensions.toSnowflake
 import me.markhc.hangoutbot.services.PersistentData
+import me.markhc.hangoutbot.utilities.EvictingQueue
 import java.util.*
 
 @Service
 class GreetingService(private val persistentData: PersistentData) {
     companion object {
-        private val welcomeMessages: MutableMap<Long, Queue<Pair<Long, Long>>> = mutableMapOf()
+        private val welcomeMessages: MutableMap<Long, EvictingQueue<Pair<Long, Long>>> = mutableMapOf()
     }
 
     suspend fun addMessageToCache(user: User, msg: Message) {

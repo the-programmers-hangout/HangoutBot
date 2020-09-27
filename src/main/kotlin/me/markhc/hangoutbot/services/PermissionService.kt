@@ -71,19 +71,17 @@ class PermissionsService(private val persistentData: PersistentData, private val
         val adminRoles = roles
             .filter { it.value == PermissionLevel.Administrator }
             .map { it.key }
-        val userRoles = this.roles.map { it.id }
 
-        return adminRoles.intersect(userRoles).isNotEmpty()
+        return adminRoles.intersect(roleIds).isNotEmpty()
     }
 
-    private fun Member.isStaff(): Boolean {
-        val roles = persistentData.getGuildProperty(guild) { rolePermissions }
+    private suspend fun Member.isStaff(): Boolean {
+        val roles = persistentData.getGuildProperty(guild.asGuild()) { rolePermissions }
         val staffRoles = roles
             .filter { it.value == PermissionLevel.Staff }
             .map { it.key }
-        val userRoles = this.roles.map { it.id }
 
-        return staffRoles.intersect(userRoles).isNotEmpty()
+        return staffRoles.intersect(roleIds).isNotEmpty()
     }
 }
 
@@ -95,7 +93,7 @@ var Command.requiredPermissionLevel: PermissionLevel
         commandPermissions[this] = value
     }
 
-fun CommandEvent<*>.requiresPermission(level: PermissionLevel, action: suspend CommandEvent<*>.() -> Unit) {
+suspend fun CommandEvent<*>.requiresPermission(level: PermissionLevel, action: suspend CommandEvent<*>.() -> Unit) {
     val svc = this.discord.getInjectionObjects(PermissionsService::class)
 
     if (svc.hasClearance(this.guild, this.author, level)) {

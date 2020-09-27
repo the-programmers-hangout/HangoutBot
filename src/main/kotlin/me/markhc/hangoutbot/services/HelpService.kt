@@ -4,6 +4,15 @@ import com.gitlab.kordlib.core.entity.*
 import me.jakejmattson.discordkt.api.annotations.Service
 import me.jakejmattson.discordkt.api.dsl.*
 
+
+val commandUsage: MutableMap<Command, List<String>> = mutableMapOf()
+
+var Command.usageExamples: List<String>
+    get() = commandUsage[this] ?: emptyList()
+    set(value) {
+        commandUsage[this] = value
+    }
+
 @Service
 class HelpService(private val permissionsService: PermissionsService) {
     private suspend fun Command.isVisible(guild: Guild, user: User) =
@@ -45,10 +54,15 @@ class HelpService(private val permissionsService: PermissionsService) {
             if (it.isOptional) "($type)" else "[$type]"
         }
 
-    private fun generateExample(event: CommandEvent<*>, command: Command) =
-        command.arguments.joinToString(" ") {
-            it.generateExamples(event).random()
+    private fun generateExample(event: CommandEvent<*>, command: Command): String {
+        return if(command.usageExamples.isEmpty()) {
+            command.arguments.joinToString(" ") {
+                it.generateExamples(event).random()
+            }
+        } else {
+            command.usageExamples.random()
         }
+    }
 
     suspend fun buildHelpEmbedForCommand(event: CommandEvent<*>, command: Command) = event.respond {
         title = command.names.joinToString()
@@ -59,12 +73,12 @@ class HelpService(private val permissionsService: PermissionsService) {
 
         field {
             name = "What is the structure of the command?"
-            value = "$commandInvocation ${generateStructure(command)}"
+            value = "```\n$commandInvocation ${generateStructure(command)}\n```"
         }
 
         field {
             name = "Show me an example of someone using the command."
-            value = "$commandInvocation ${generateExample(event, command)}"
+            value = "```\n$commandInvocation ${generateExample(event, command)}\n```"
         }
     }
 }
