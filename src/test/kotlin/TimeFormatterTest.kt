@@ -1,6 +1,6 @@
 import me.markhc.hangoutbot.utilities.TimeFormatter
 import org.junit.jupiter.api.Test
-import kotlin.test.assertEquals
+import org.junit.jupiter.api.Assertions.assertEquals
 
 class TimeFormatterTest {
     private fun makeTime(h: Int, m: Int, s: Int): Long {
