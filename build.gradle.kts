@@ -14,7 +14,7 @@ plugins {
 repositories {
     mavenCentral()
     jcenter()
-    mavenLocal()
+    maven("https://oss.sonatype.org/content/repositories/snapshots/")
 }
 
 dependencies {
