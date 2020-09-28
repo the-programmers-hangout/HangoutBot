@@ -14,10 +14,11 @@ plugins {
 repositories {
     mavenCentral()
     jcenter()
-    mavenLocal()
+    maven("https://oss.sonatype.org/content/repositories/snapshots/")
 }
 
 dependencies {
+    implementation(kotlin("stdlib-jdk8"))
     implementation(kotlin("scripting-compiler-embeddable", KotlinCompilerVersion.VERSION))
     implementation(kotlin("compiler-embeddable", KotlinCompilerVersion.VERSION))
     implementation(kotlin("script-runtime", KotlinCompilerVersion.VERSION))
@@ -30,8 +31,15 @@ dependencies {
     implementation("com.github.ricksbrown:cowsay:1.1.0")
 
     testImplementation("io.mockk:mockk:1.10.2")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.0")
-    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.7.0")
+    testImplementation(platform("org.junit:junit-bom:5.7.0"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
+}
+
+tasks.test {
+    useJUnitPlatform()
+    testLogging {
+        events("passed", "skipped", "failed")
+    }
 }
 
 tasks.withType<KotlinCompile> {
