@@ -28,8 +28,8 @@ fun roleCommands(persistentData: PersistentData) = commands("Roles") {
                             return@requiresPermission
                         }
 
-                        persistentData.setGuildProperty(guild!!) {
-                            if (grantableRoles.any { it.value.contains(role.id) }) {
+                        persistentData.setGuildProperty(guild) {
+                            if (grantableRoles.any { it.value.contains(role.id.value) }) {
                                 respond("Role is already grantable")
                             } else {
                                 val key = grantableRoles.keys.find {
@@ -109,11 +109,11 @@ fun roleCommands(persistentData: PersistentData) = commands("Roles") {
         execute(MemberArg("Member").makeOptional { it.guild!!.getMember(it.author.id) },
             RoleArg("GrantableRole")) {
             val (member, role) = args
-            val guild = guild!!
+            val guild = guild
 
             val roles = persistentData.getGuildProperty(guild) { grantableRoles }
 
-            if (roles.values.any { r -> r.contains(role.id) }) {
+            if (roles.values.any { r -> r.contains(role.id.value) }) {
                 member.addRole(role.id)
                 respond("Granted ${role.name} to ${member.tag}")
             } else {
@@ -190,7 +190,7 @@ private suspend fun buildRolelistMessages(guild: Guild, regex: Regex): List<Stri
     val response = list.joinToString("\n")
 
     return when {
-        response.isEmpty() -> {
+        response.isEmpty -> {
             listOf()
         }
         response.length < 1990 -> {

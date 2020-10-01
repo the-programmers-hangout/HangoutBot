@@ -4,9 +4,6 @@ import com.github.kittinunf.fuel.*
 import com.github.kittinunf.fuel.gson.responseObject
 import me.jakejmattson.discordkt.api.annotations.Service
 import org.joda.time.*
-import com.github.kittinunf.fuel.httpGet
-import org.joda.time.DateTime
-import org.joda.time.Duration
 import java.net.URLEncoder
 
 private data class XKCDInfo(val num: Int = 0)

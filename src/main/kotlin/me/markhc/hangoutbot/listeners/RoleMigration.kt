@@ -4,7 +4,7 @@ import com.gitlab.kordlib.core.event.guild.MemberUpdateEvent
 import com.gitlab.kordlib.core.event.role.RoleDeleteEvent
 import kotlinx.coroutines.flow.toList
 import me.jakejmattson.discordkt.api.dsl.listeners
-import me.jakejmattson.discordkt.api.extensions.*
+import me.jakejmattson.discordkt.api.extensions.toSnowflakeOrNull
 import me.markhc.hangoutbot.services.PersistentData
 
 fun roleMigration(persistentData: PersistentData) = listeners {

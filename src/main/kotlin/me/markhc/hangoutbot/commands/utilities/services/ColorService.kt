@@ -4,7 +4,7 @@ import com.gitlab.kordlib.core.behavior.addRole
 import com.gitlab.kordlib.core.entity.*
 import kotlinx.coroutines.flow.*
 import me.jakejmattson.discordkt.api.annotations.Service
-import me.jakejmattson.discordkt.api.extensions.*
+import me.jakejmattson.discordkt.api.extensions.toSnowflakeOrNull
 import me.markhc.hangoutbot.services.*
 import java.awt.Color
 

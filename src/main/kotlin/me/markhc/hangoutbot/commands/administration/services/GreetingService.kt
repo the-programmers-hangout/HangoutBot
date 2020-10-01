@@ -1,13 +1,12 @@
 package me.markhc.hangoutbot.commands.administration.services
 
-import com.gitlab.kordlib.core.behavior.*
+import com.gitlab.kordlib.core.behavior.getChannelOfOrNull
 import com.gitlab.kordlib.core.entity.*
 import com.gitlab.kordlib.core.entity.channel.TextChannel
 import me.jakejmattson.discordkt.api.annotations.Service
-import me.jakejmattson.discordkt.api.extensions.*
+import me.jakejmattson.discordkt.api.extensions.toSnowflakeOrNull
 import me.markhc.hangoutbot.services.PersistentData
 import me.markhc.hangoutbot.utilities.EvictingQueue
-import java.util.*
 
 @Service
 class GreetingService(private val persistentData: PersistentData) {

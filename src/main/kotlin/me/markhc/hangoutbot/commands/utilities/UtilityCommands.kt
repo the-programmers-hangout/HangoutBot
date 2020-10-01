@@ -1,12 +1,8 @@
 package me.markhc.hangoutbot.commands.utilities
 
-import com.gitlab.kordlib.kordx.emoji.*
-import com.gitlab.kordlib.rest.route.Route
 import me.jakejmattson.discordkt.api.arguments.*
 import me.jakejmattson.discordkt.api.dsl.commands
-import me.jakejmattson.discordkt.api.extensions.sendPrivateMessage
 import me.markhc.hangoutbot.commands.utilities.services.*
-
 import java.util.concurrent.TimeUnit
 import kotlin.math.roundToLong
 
@@ -48,7 +44,7 @@ fun produceUtilityCommands(muteService: MuteService) = commands("Selfmute") {
                 return@execute
             }
 
-            val guild = guild!!
+            val guild = guild
             val member = author.asMember(guild.id)
             val millis = timeInSeconds.roundToLong() * 1000
 
@@ -57,8 +53,7 @@ fun produceUtilityCommands(muteService: MuteService) = commands("Selfmute") {
     }
 }
 
-fun reminderCommands(muteService: MuteService,
-                     reminderService: ReminderService) = commands("Reminders") {
+fun reminderCommands(reminderService: ReminderService) = commands("Reminders") {
     command("remindme") {
         description = "A command that'll remind you about something after the specified time."
         execute(TimeArg, EveryArg) {

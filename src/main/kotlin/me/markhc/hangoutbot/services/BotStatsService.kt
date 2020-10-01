@@ -2,7 +2,7 @@ package me.markhc.hangoutbot.services
 
 import me.jakejmattson.discordkt.api.Discord
 import me.jakejmattson.discordkt.api.annotations.Service
-import me.jakejmattson.discordkt.api.dsl.*
+import me.jakejmattson.discordkt.api.dsl.CommandEvent
 import me.markhc.hangoutbot.utilities.TimeFormatter
 import java.util.*
 
@@ -10,7 +10,7 @@ import java.util.*
 class BotStatsService(private val persistentData: PersistentData, private val discord: Discord) {
     private var startTime: Date = Date()
 
-    suspend fun commandExecuted(event: GlobalCommandEvent<*>) {
+    suspend fun commandExecuted(event: CommandEvent<*>) {
         totalCommands++
         persistentData.setGlobalProperty {
             totalCommandsExecuted++

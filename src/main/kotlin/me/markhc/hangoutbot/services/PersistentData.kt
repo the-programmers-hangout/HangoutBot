@@ -3,9 +3,6 @@ package me.markhc.hangoutbot.services
 import com.gitlab.kordlib.core.entity.Guild
 import me.jakejmattson.discordkt.api.annotations.Service
 import me.markhc.hangoutbot.dataclasses.*
-import me.markhc.hangoutbot.dataclasses.BotConfiguration
-import me.markhc.hangoutbot.dataclasses.Configuration
-import me.markhc.hangoutbot.dataclasses.GuildConfiguration
 
 @Service
 class PersistentData(private val botConfiguration: BotConfiguration,

@@ -17,7 +17,7 @@ class HelpService(private val permissionsService: PermissionsService) {
     private suspend fun Command.isVisible(guild: Guild, user: User) =
         permissionsService.isCommandVisible(guild, user, this)
 
-    suspend fun buildHelpEmbed(event: GlobalCommandEvent<*>) = event.respond {
+    suspend fun buildHelpEmbed(event: CommandEvent<*>) = event.respond {
         val container = event.discord.commands
 
         title = "Help information"
@@ -54,9 +54,9 @@ class HelpService(private val permissionsService: PermissionsService) {
         }
 
     private fun generateExample(event: CommandEvent<*>, command: Command): String {
-        return if(command.usageExamples.isEmpty()) {
+        return if (command.usageExamples.isEmpty()) {
             command.arguments.joinToString(" ") {
-                it.generateExamples(event as GlobalCommandEvent<*>).random()
+                it.generateExamples(event).random()
             }
         } else {
             command.usageExamples.random()

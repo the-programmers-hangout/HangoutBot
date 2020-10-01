@@ -3,10 +3,9 @@ package me.markhc.hangoutbot.commands.utilities
 import com.gitlab.kordlib.core.behavior.edit
 import me.jakejmattson.discordkt.api.arguments.*
 import me.jakejmattson.discordkt.api.dsl.commands
-import me.jakejmattson.discordkt.api.extensions.*
+import me.jakejmattson.discordkt.api.extensions.toSnowflakeOrNull
 import me.markhc.hangoutbot.commands.utilities.services.ColorService
 import me.markhc.hangoutbot.services.*
-
 import java.awt.Color
 
 fun colorCommands(persistentData: PersistentData, colorService: ColorService) = commands("Colors") {
@@ -16,7 +15,7 @@ fun colorCommands(persistentData: PersistentData, colorService: ColorService) = 
         execute(HexColorArg("HexColor").makeNullableOptional(), EveryArg("RoleName")) {
             val (color, roleName) = args
 
-            val guild = guild!!
+            val guild = guild
             val member = author.asMember(guild.id)
             val message = channel.createMessage("Working...")
 

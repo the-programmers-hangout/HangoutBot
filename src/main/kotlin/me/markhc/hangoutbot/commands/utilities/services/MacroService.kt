@@ -4,7 +4,7 @@ import com.gitlab.kordlib.core.entity.Guild
 import com.gitlab.kordlib.core.entity.channel.*
 import me.jakejmattson.discordkt.api.annotations.Service
 import me.jakejmattson.discordkt.api.dsl.*
-import me.jakejmattson.discordkt.api.extensions.*
+import me.jakejmattson.discordkt.api.extensions.toSnowflakeOrNull
 import me.markhc.hangoutbot.dataclasses.TextMacro
 import me.markhc.hangoutbot.services.PersistentData
 
@@ -17,8 +17,8 @@ class MacroService(private val persistentData: PersistentData) {
             availableMacros.putIfAbsent("$name#$channelId", TextMacro(name, contents, channelId, category))
         }
 
-        return if(result == null) {
-            "Success. Macro `$name` is now available ${ if(channel == null) "globally" else "on channel ${channel.mention}"} and will respond with ```\n$contents\n```"
+        return if (result == null) {
+            "Success. Macro `$name` is now available ${if (channel == null) "globally" else "on channel ${channel.mention}"} and will respond with ```\n$contents\n```"
         } else {
             "A macro with that name already exists."
         }
@@ -31,7 +31,7 @@ class MacroService(private val persistentData: PersistentData) {
             availableMacros.remove("$name#$channelId")
         }
 
-        return if(result == null) {
+        return if (result == null) {
             "Success. Macro `$name` has been removed"
         } else {
             "Cannot find a macro by that name. If it is a channel specific macro you need to provide the channel as well."
@@ -42,7 +42,7 @@ class MacroService(private val persistentData: PersistentData) {
         val channelId = channel?.id ?: ""
 
         val result = persistentData.setGuildProperty(guild) {
-            if(availableMacros.containsKey("$name#$channelId")) {
+            if (availableMacros.containsKey("$name#$channelId")) {
                 availableMacros["$name#$channelId"]!!.contents = contents
                 true
             } else {
@@ -50,8 +50,8 @@ class MacroService(private val persistentData: PersistentData) {
             }
         }
 
-        return if(result) {
-            "Success. Macro `$name` available ${ if(channel == null) "globally" else "on channel ${channel.mention}"} will now respond with ```\n$contents\n```"
+        return if (result) {
+            "Success. Macro `$name` available ${if (channel == null) "globally" else "on channel ${channel.mention}"} will now respond with ```\n$contents\n```"
         } else {
             "Cannot find a macro by that name. If it is a channel specific macro you need to provide the channel as well."
         }
@@ -61,7 +61,7 @@ class MacroService(private val persistentData: PersistentData) {
         val channelId = channel?.id ?: ""
 
         val result = persistentData.setGuildProperty(guild) {
-            if(availableMacros.containsKey("$name#$channelId")) {
+            if (availableMacros.containsKey("$name#$channelId")) {
                 availableMacros["$name#$channelId"]!!.category = category
                 true
             } else {
@@ -69,8 +69,8 @@ class MacroService(private val persistentData: PersistentData) {
             }
         }
 
-        return if(result) {
-            "Success. Macro `$name` available ${ if(channel == null) "globally" else "on channel ${channel.mention}"} is now in category `${category}`"
+        return if (result) {
+            "Success. Macro `$name` available ${if (channel == null) "globally" else "on channel ${channel.mention}"} is now in category `${category}`"
         } else {
             "Cannot find a macro by that name. If it is a channel specific macro you need to provide the channel as well."
         }
@@ -78,9 +78,9 @@ class MacroService(private val persistentData: PersistentData) {
 
     suspend fun listMacros(event: CommandEvent<*>, guild: Guild, channel: TextChannel) = with(event) {
         val availableMacros = getMacrosAvailableIn(guild, channel)
-                .groupBy { it.category }
-                .toList()
-                .sortedByDescending { it.second.size }
+            .groupBy { it.category }
+            .toList()
+            .sortedByDescending { it.second.size }
 
         val chunks = availableMacros.chunked(25)
 
@@ -108,10 +108,10 @@ class MacroService(private val persistentData: PersistentData) {
 
     suspend fun listAllMacros(event: CommandEvent<*>, guild: Guild) {
         val allMacros = persistentData.getGuildProperty(guild) { availableMacros }
-                .map { it.value }
-                .groupBy { it.channel.toSnowflakeOrNull()?.let { guild.getChannel(it).name } ?: "Global Macros" }
-                .toList()
-                .sortedByDescending { it.second.size }
+            .map { it.value }
+            .groupBy { it.channel.toSnowflakeOrNull()?.let { guild.getChannel(it).name } ?: "Global Macros" }
+            .toList()
+            .sortedByDescending { it.second.size }
 
         val chunks = allMacros.chunked(25)
 
@@ -143,7 +143,7 @@ class MacroService(private val persistentData: PersistentData) {
         }
 
         return macroList.filterKeys { key ->
-            if(key.endsWith('#')) {
+            if (key.endsWith('#')) {
                 macroList.keys.none { it.startsWith(key) && !it.endsWith('#') }
             } else {
                 true
@@ -152,7 +152,7 @@ class MacroService(private val persistentData: PersistentData) {
     }
 
     suspend fun findMacro(guild: Guild?, name: String, channel: MessageChannel): TextMacro? {
-        if(guild == null)
+        if (guild == null)
             return null
 
         return persistentData.getGuildProperty(guild) {
@@ -164,13 +164,13 @@ class MacroService(private val persistentData: PersistentData) {
 }
 
 class MacroPrecondition(private val macroService: MacroService) : Precondition() {
-    override suspend fun evaluate(event: GlobalCommandEvent<*>): PreconditionResult {
-        if(event.command != null)
+    override suspend fun evaluate(event: CommandEvent<*>): PreconditionResult {
+        if (event.command != null)
             return Pass
 
         val macro = macroService.findMacro(event.guild, event.rawInputs.commandName, event.channel.asChannel())
 
-        if(macro != null) {
+        if (macro != null) {
             event.message.delete()
             event.channel.createMessage(macro.contents)
         }

@@ -2,7 +2,7 @@ package me.markhc.hangoutbot.commands.information
 
 import me.jakejmattson.discordkt.api.dsl.commands
 import me.markhc.hangoutbot.dataclasses.*
-import me.markhc.hangoutbot.services.*
+import me.markhc.hangoutbot.services.BotStatsService
 import me.markhc.hangoutbot.utilities.createBotStatsEmbed
 
 fun botInformationCommands(botStats: BotStatsService, config: Configuration) = commands("Bot Information") {

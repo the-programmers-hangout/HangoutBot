@@ -6,7 +6,7 @@ import me.markhc.hangoutbot.services.*
 
 class PermissionPrecondition(private val persistentData: PersistentData,
                              private val permissionsService: PermissionsService) : Precondition() {
-    override suspend fun evaluate(event: GlobalCommandEvent<*>): PreconditionResult {
+    override suspend fun evaluate(event: CommandEvent<*>): PreconditionResult {
         val command = event.command ?: return Fail()
 
         if (event.guild == null) {

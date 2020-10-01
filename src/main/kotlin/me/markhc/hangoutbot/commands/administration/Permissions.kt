@@ -41,8 +41,8 @@ fun producePermissionCommands(persistentData: PersistentData,
         description = "Gets or sets the permissions for a command. Use `list` to view all permissions"
         requiredPermissionLevel = PermissionLevel.Staff
         execute(ChoiceArg("set/get/list", "set", "get", "list").makeOptional("get"),
-                CommandArg.makeNullableOptional(null),
-                PermissionLevelArg.makeNullableOptional(null)) {
+            CommandArg.makeNullableOptional(null),
+            PermissionLevelArg.makeNullableOptional(null)) {
             val (choice, command, level) = args
 
             when (choice) {
@@ -87,13 +87,13 @@ fun producePermissionCommands(persistentData: PersistentData,
                     return@execute
                 }
 
-                persistentData.setGuildProperty(guild!!) {
+                persistentData.setGuildProperty(guild) {
                     rolePermissions[role.id.value] = level
                 }
 
                 respond("${role.name} permission level set to $level")
             } else {
-                persistentData.getGuildProperty(guild!!) {
+                persistentData.getGuildProperty(guild) {
                     respond("The permission level for ${role.name} is ${rolePermissions[role.id.value] ?: "not set"}")
                 }
             }

@@ -2,7 +2,7 @@ package me.markhc.hangoutbot.commands.information
 
 import me.jakejmattson.discordkt.api.arguments.*
 import me.jakejmattson.discordkt.api.dsl.commands
-import me.markhc.hangoutbot.services.*
+import me.markhc.hangoutbot.services.HelpService
 import me.markhc.hangoutbot.utilities.*
 
 fun produceInformationCommands(helpService: HelpService) = commands("Information") {

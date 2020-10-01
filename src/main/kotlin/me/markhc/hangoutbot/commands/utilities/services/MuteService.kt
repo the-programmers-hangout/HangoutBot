@@ -20,38 +20,38 @@ class MuteService(private val persistentData: PersistentData, private val discor
     private val dateFormatter = DateTimeFormat.longDateTime()
 
     suspend fun addMutedMember(event: GuildCommandEvent<*>, member: Member, ms: Long, soft: Boolean) {
-            val guild = event.guild
-            val muteRoleId = persistentData.getGuildProperty(guild.asGuild()) { if (soft) softMuteRole else muteRole }.toSnowflakeOrNull()
+        val guild = event.guild
+        val muteRoleId = persistentData.getGuildProperty(guild.asGuild()) { if (soft) softMuteRole else muteRole }.toSnowflakeOrNull()
 
-            if (muteRoleId == null) {
-                event.respond("Sorry, this guild does not have a mute role.")
-                return
-            }
+        if (muteRoleId == null) {
+            event.respond("Sorry, this guild does not have a mute role.")
+            return
+        }
 
-            val muteRole = guild.getRole(muteRoleId)
+        val muteRole = guild.getRole(muteRoleId)
 
-            if (muteRole.id in member.roleIds) {
-                event.respond("Nice try, but you're already muted!")
-                return
-            }
+        if (muteRole.id in member.roleIds) {
+            event.respond("Nice try, but you're already muted!")
+            return
+        }
 
-            val mutedUsers = persistentData.getGuildProperty(guild) { mutedUsers }
+        val mutedUsers = persistentData.getGuildProperty(guild) { mutedUsers }
 
-            if (mutedUsers.any { muted -> muted.user == member.id.value }) {
-                event.respond("Sorry, you already have an active mute!")
-                return
-            }
+        if (mutedUsers.any { muted -> muted.user == member.id.value }) {
+            event.respond("Sorry, you already have an active mute!")
+            return
+        }
 
-            val until = DateTime.now(DateTimeZone.UTC).plus(ms)
+        val until = DateTime.now(DateTimeZone.UTC).plus(ms)
 
-            persistentData.setGuildProperty(guild.asGuild()) {
-                this.mutedUsers.add(MuteEntry(member.id.value, until.toString(dateFormatter), soft))
-            }
+        persistentData.setGuildProperty(guild.asGuild()) {
+            this.mutedUsers.add(MuteEntry(member.id.value, until.toString(dateFormatter), soft))
+        }
 
-            applyMute(member, muteRole, ms)
+        applyMute(member, muteRole, ms)
 
-            event.message.addReaction(Emojis.mute.toReaction())
-            event.buildMuteEmbed(member, ms)
+        event.message.addReaction(Emojis.mute.toReaction())
+        event.buildMuteEmbed(member, ms)
     }
 
     suspend fun launchTimers() {

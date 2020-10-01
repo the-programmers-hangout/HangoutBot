@@ -7,7 +7,7 @@ import me.jakejmattson.discordkt.api.extensions.*
 import me.markhc.hangoutbot.services.*
 
 class CommandLogger(private val botStats: BotStatsService, private val persistentData: PersistentData) : Precondition() {
-    override suspend fun evaluate(event: GlobalCommandEvent<*>): PreconditionResult {
+    override suspend fun evaluate(event: CommandEvent<*>): PreconditionResult {
         event.command ?: return Fail()
 
         botStats.commandExecuted(event)
@@ -26,7 +26,7 @@ class CommandLogger(private val botStats: BotStatsService, private val persisten
                 val message =
                     "${event.author.tag} :: ${event.author.id} :: " +
                         "Invoked `${event.command!!.names.first()}` in #${event.channel}." +
-                        if (args.isEmpty()) "" else " Args: ${args.sanitiseMentions(event.discord)}"
+                        if (args.isEmpty) "" else " Args: ${args.sanitiseMentions(event.discord)}"
 
                 guild.getChannelOf<TextChannel>(loggingChannel).createMessage(message)
             }

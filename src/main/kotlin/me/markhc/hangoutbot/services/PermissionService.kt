@@ -20,8 +20,8 @@ val DEFAULT_REQUIRED_PERMISSION = PermissionLevel.Everyone
 class PermissionsService(private val persistentData: PersistentData, private val botConfig: BotConfiguration) {
     suspend fun getCommandPermissionLevel(guild: Guild, command: Command): PermissionLevel {
         return persistentData.getGuildProperty(guild) {
-                commandPermission[command.names.first()]
-            } ?: command.requiredPermissionLevel
+            commandPermission[command.names.first()]
+        } ?: command.requiredPermissionLevel
     }
 
     suspend fun trySetCommandPermission(guild: Guild, invokingUser: User, command: Command, level: PermissionLevel): Boolean {

@@ -15,12 +15,12 @@ fun macroCommands(macroService: MacroService) = commands("Macros") {
             "promises Programming #javascript Channel specific macro"
         )
         execute(AnyArg("Name"),
-                AnyArg("Category"),
-                ChannelArg<TextChannel>("Channel").makeNullableOptional(),
-                EveryArg("Contents")) {
+            AnyArg("Category"),
+            ChannelArg<TextChannel>("Channel").makeNullableOptional(),
+            EveryArg("Contents")) {
             val (name, category, channel, contents) = args
 
-            respond(macroService.addMacro(guild!!, name, category, channel, contents))
+            respond(macroService.addMacro(guild, name, category, channel, contents))
         }
     }
 
@@ -28,7 +28,7 @@ fun macroCommands(macroService: MacroService) = commands("Macros") {
         description = "Removes a macro"
         requiredPermissionLevel = PermissionLevel.Staff
         execute(AnyArg("Name"), ChannelArg<TextChannel>("Channel").makeNullableOptional()) {
-            respond(macroService.removeMacro(guild!!, args.first, args.second))
+            respond(macroService.removeMacro(guild, args.first, args.second))
         }
     }
 
@@ -36,7 +36,7 @@ fun macroCommands(macroService: MacroService) = commands("Macros") {
         description = "Edits the contents of a macro"
         requiredPermissionLevel = PermissionLevel.Staff
         execute(AnyArg("Name"), ChannelArg<TextChannel>("Channel").makeNullableOptional(), EveryArg("Contents")) {
-            respond(macroService.editMacro(guild!!, args.first, args.second, args.third))
+            respond(macroService.editMacro(guild, args.first, args.second, args.third))
         }
     }
 
@@ -44,7 +44,7 @@ fun macroCommands(macroService: MacroService) = commands("Macros") {
         description = "Edits the category of a macro"
         requiredPermissionLevel = PermissionLevel.Staff
         execute(AnyArg("Name"), ChannelArg<TextChannel>("Channel").makeNullableOptional(), AnyArg("New Category")) {
-            respond(macroService.editMacroCategory(guild!!, args.first, args.second, args.third))
+            respond(macroService.editMacroCategory(guild, args.first, args.second, args.third))
         }
     }
 
@@ -52,7 +52,7 @@ fun macroCommands(macroService: MacroService) = commands("Macros") {
         description = "Lists all macros available in the given channel. If no channel is specified, defaults to the current channel."
         requiredPermissionLevel = PermissionLevel.Everyone
         execute(ChannelArg<TextChannel>("Channel").makeOptional { it.channel as TextChannel }) {
-            macroService.listMacros(this, guild!!, args.first)
+            macroService.listMacros(this, guild, args.first)
         }
     }
 
@@ -60,7 +60,7 @@ fun macroCommands(macroService: MacroService) = commands("Macros") {
         description = "Lists all macros available in the guild, grouped by channel."
         requiredPermissionLevel = PermissionLevel.Everyone
         execute {
-            respond(macroService.listAllMacros(this, guild!!))
+            respond(macroService.listAllMacros(this, guild))
         }
     }
 }
