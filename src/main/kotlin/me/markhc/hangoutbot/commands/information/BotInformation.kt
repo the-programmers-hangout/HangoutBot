@@ -9,8 +9,7 @@ fun botInformationCommands(botStats: BotStatsService, config: Configuration) = c
     command("source") {
         description = "Get the url for the bot source code."
         execute {
-            val properties = discord.getInjectionObjects(Properties::class)
-            respond(properties.repository)
+            respond("https://github.com/the-programmers-hangout/HangoutBot/")
         }
     }
 

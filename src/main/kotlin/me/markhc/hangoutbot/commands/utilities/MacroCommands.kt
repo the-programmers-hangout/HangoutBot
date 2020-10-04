@@ -58,7 +58,7 @@ fun macroCommands(macroService: MacroService) = commands("Macros") {
 
     guildCommand("listallmacros") {
         description = "Lists all macros available in the guild, grouped by channel."
-        requiredPermissionLevel = PermissionLevel.Everyone
+        requiredPermissionLevel = PermissionLevel.Staff
         execute {
             respond(macroService.listAllMacros(this, guild))
         }

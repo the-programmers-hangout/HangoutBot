@@ -10,7 +10,6 @@ import me.jakejmattson.discordkt.api.extensions.toSnowflakeOrNull
 import me.markhc.hangoutbot.services.*
 import me.markhc.hangoutbot.services.requiresPermission
 
-
 fun roleCommands(persistentData: PersistentData) = commands("Roles") {
     guildCommand("grantablerole", "grantableroles") {
         description = "Adds, removes or lists grantable roles."

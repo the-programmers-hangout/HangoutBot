@@ -6,7 +6,6 @@ import me.jakejmattson.discordkt.api.dsl.bot
 import me.jakejmattson.discordkt.api.extensions.addInlineField
 import me.markhc.hangoutbot.commands.utilities.services.*
 import me.markhc.hangoutbot.dataclasses.BotConfiguration
-import me.markhc.hangoutbot.dataclasses.Properties
 import me.markhc.hangoutbot.services.*
 import java.awt.Color
 
@@ -18,12 +17,10 @@ suspend fun main(args: Array<String>) {
     val defaultPrefix = System.getenv("BOT_PREFIX") ?: "++"
     val botOwnerId = System.getenv("BOT_OWNER") ?: "210017247048105985"
 
-    val propFile = Properties::class.java.getResource("/hangoutbot_properties.json").readText()
-    val properties = Json.decodeFromString<Properties>(propFile)
     val config = BotConfiguration(prefix = defaultPrefix, ownerId = botOwnerId)
 
     bot(token) {
-        inject(properties, config)
+        inject(config)
 
         prefix {
             val persistentData = discord.getInjectionObjects(PersistentData::class)
@@ -43,40 +40,27 @@ suspend fun main(args: Array<String>) {
             val self = channel.kord.getSelf()
 
             color = it.discord.configuration.theme
+            description = "*\"The best bot in TheProgrammersHangout Discord server\"*"
 
             thumbnail {
                 url = self.avatar.url
             }
 
-            field {
-                name = self.tag
-                value = "\"The best bot in the TPH server\"\n-- markhc#8366"
-            }
-
             addInlineField("Prefix", it.prefix())
             addInlineField("Contributors", "markhc#8366, JakeyWakey#1569")
 
-            with(properties) {
-                val kotlinVersion = KotlinVersion.CURRENT
-
-                field {
-                    name = "Build Info"
-                    value = "```" +
-                        "Version:   $version\n" +
-                        "DiscordKt: $discordkt\n" +
-                        "Kotlin:    $kotlinVersion" +
-                        "```"
-                }
-
-                field {
-                    name = "Uptime"
-                    value = botStats.uptime
-                }
-
-                field {
-                    name = "Source"
-                    value = "[[GitHub]](${repository})"
-                }
+            field {
+                name = "Uptime"
+                value = botStats.uptime
+            }
+            author {
+                name = "Hangoutbot"
+                url = "https://github.com/the-programmers-hangout/HangoutBot/"
+                icon = self.avatar.url
+            }
+            field {
+                name = "Source"
+                value = "[[GitHub]](https://github.com/the-programmers-hangout/HangoutBot/)"
             }
         }
 
