@@ -11,7 +11,6 @@ RUN mkdir /home/app
 ENV HOME=/home/app
 WORKDIR $HOME
 
-COPY config $HOME/config
 COPY --from=build /home/gradle/src/build/libs/*.jar $HOME/hangoutbot.jar
 
 ENTRYPOINT [ "java", "-jar", "hangoutbot.jar" ]

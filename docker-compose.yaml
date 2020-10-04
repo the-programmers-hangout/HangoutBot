@@ -6,5 +6,8 @@ services:
     volumes:
       - guild_data:/home/app/data
     restart: unless-stopped
+    env_file:
+      - .env
+
 volumes:
   guild_data: {}
