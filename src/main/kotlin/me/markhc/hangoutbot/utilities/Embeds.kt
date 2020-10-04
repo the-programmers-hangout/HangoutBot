@@ -154,7 +154,7 @@ suspend fun GuildCommandEvent<*>.buildRoleInfoEmbed(role: Role) = respond {
     }
     field {
         name = "**Members**"
-        value = "${guild!!.members.toList().filter { role in it.roles.toList() }.size} members"
+        value = "${guild.members.toList().filter { role in it.roles.toList() }.size} members"
     }
 }
 

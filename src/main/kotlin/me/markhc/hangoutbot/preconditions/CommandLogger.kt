@@ -7,7 +7,7 @@ import me.jakejmattson.discordkt.api.extensions.*
 import me.markhc.hangoutbot.services.*
 
 class CommandLogger(private val botStats: BotStatsService, private val persistentData: PersistentData) : Precondition() {
-    override suspend fun evaluate(event: GlobalCommandEvent<*>): PreconditionResult {
+    override suspend fun evaluate(event: CommandEvent<*>): PreconditionResult {
         event.command ?: return Fail()
 
         botStats.commandExecuted(event)

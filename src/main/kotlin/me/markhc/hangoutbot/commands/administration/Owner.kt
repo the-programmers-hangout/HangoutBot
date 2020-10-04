@@ -8,7 +8,7 @@ import me.markhc.hangoutbot.services.*
 
 import javax.script.*
 
-fun ownerCommands(persistentData: PersistentData, scriptEngineService: ScriptEngineService) = commands("Owner Commands") {
+fun ownerCommands(persistentData: PersistentData) = commands("Owner Commands") {
     guildCommand("cooldown") {
         description = "Gets or sets the command cooldown period (in seconds)."
         requiredPermissionLevel = PermissionLevel.GuildOwner

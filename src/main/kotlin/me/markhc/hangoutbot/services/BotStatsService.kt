@@ -10,7 +10,7 @@ import java.util.*
 class BotStatsService(private val persistentData: PersistentData, private val discord: Discord) {
     private var startTime: Date = Date()
 
-    suspend fun commandExecuted(event: GlobalCommandEvent<*>) {
+    suspend fun commandExecuted(event: CommandEvent<*>) {
         totalCommands++
         persistentData.setGlobalProperty {
             totalCommandsExecuted++

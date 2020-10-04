@@ -2,6 +2,10 @@
 .idea/
 **.iml
 
+# Environment file #
+.env
+
+
 # Gradle #
 .gradle
 build

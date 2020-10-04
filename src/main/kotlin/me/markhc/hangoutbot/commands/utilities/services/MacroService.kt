@@ -164,7 +164,7 @@ class MacroService(private val persistentData: PersistentData) {
 }
 
 class MacroPrecondition(private val macroService: MacroService) : Precondition() {
-    override suspend fun evaluate(event: GlobalCommandEvent<*>): PreconditionResult {
+    override suspend fun evaluate(event: CommandEvent<*>): PreconditionResult {
         if(event.command != null)
             return Pass
 

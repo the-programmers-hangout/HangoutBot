@@ -48,7 +48,7 @@ fun produceUtilityCommands(muteService: MuteService) = commands("Selfmute") {
                 return@execute
             }
 
-            val guild = guild!!
+            val guild = guild
             val member = author.asMember(guild.id)
             val millis = timeInSeconds.roundToLong() * 1000
 
@@ -57,8 +57,7 @@ fun produceUtilityCommands(muteService: MuteService) = commands("Selfmute") {
     }
 }
 
-fun reminderCommands(muteService: MuteService,
-                     reminderService: ReminderService) = commands("Reminders") {
+fun reminderCommands(reminderService: ReminderService) = commands("Reminders") {
     command("remindme") {
         description = "A command that'll remind you about something after the specified time."
         execute(TimeArg, EveryArg) {

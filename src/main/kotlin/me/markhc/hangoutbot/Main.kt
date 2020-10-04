@@ -5,21 +5,29 @@ import kotlinx.serialization.json.Json
 import me.jakejmattson.discordkt.api.dsl.bot
 import me.jakejmattson.discordkt.api.extensions.addInlineField
 import me.markhc.hangoutbot.commands.utilities.services.*
+import me.markhc.hangoutbot.dataclasses.BotConfiguration
 import me.markhc.hangoutbot.dataclasses.Properties
 import me.markhc.hangoutbot.services.*
 import java.awt.Color
 
 suspend fun main(args: Array<String>) {
-    val token = args.firstOrNull() ?: throw IllegalArgumentException("Missing token")
+    val token = args.firstOrNull()
+            ?: System.getenv("BOT_TOKEN")
+            ?: throw IllegalArgumentException("Missing bot token.")
+
+    val defaultPrefix = System.getenv("BOT_PREFIX") ?: "++"
+    val botOwnerId = System.getenv("BOT_OWNER") ?: "210017247048105985"
+
     val propFile = Properties::class.java.getResource("/hangoutbot_properties.json").readText()
     val properties = Json.decodeFromString<Properties>(propFile)
+    val config = BotConfiguration(prefix = defaultPrefix, ownerId = botOwnerId)
 
     bot(token) {
-        inject(properties)
+        inject(properties, config)
 
         prefix {
             val persistentData = discord.getInjectionObjects(PersistentData::class)
-            guild?.let { persistentData.getGuildProperty(it) { prefix } } ?: "+"
+            guild?.let { persistentData.getGuildProperty(it) { prefix } } ?: defaultPrefix
         }
 
         configure {
@@ -42,11 +50,11 @@ suspend fun main(args: Array<String>) {
 
             field {
                 name = self.tag
-                value = "A bot to manage utility commands and functionality that does not warrant its own bot"
+                value = "\"The best bot in the TPH server\"\n-- markhc#8366"
             }
 
             addInlineField("Prefix", it.prefix())
-            addInlineField("Contributors", "markhc#8366")
+            addInlineField("Contributors", "markhc#8366, JakeyWakey#1569")
 
             with(properties) {
                 val kotlinVersion = KotlinVersion.CURRENT

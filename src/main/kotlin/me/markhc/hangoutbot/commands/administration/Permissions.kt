@@ -87,13 +87,13 @@ fun producePermissionCommands(persistentData: PersistentData,
                     return@execute
                 }
 
-                persistentData.setGuildProperty(guild!!) {
+                persistentData.setGuildProperty(guild) {
                     rolePermissions[role.id.value] = level
                 }
 
                 respond("${role.name} permission level set to $level")
             } else {
-                persistentData.getGuildProperty(guild!!) {
+                persistentData.getGuildProperty(guild) {
                     respond("The permission level for ${role.name} is ${rolePermissions[role.id.value] ?: "not set"}")
                 }
             }

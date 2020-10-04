@@ -16,7 +16,7 @@ fun colorCommands(persistentData: PersistentData, colorService: ColorService) = 
         execute(HexColorArg("HexColor").makeNullableOptional(), EveryArg("RoleName")) {
             val (color, roleName) = args
 
-            val guild = guild!!
+            val guild = guild
             val member = author.asMember(guild.id)
             val message = channel.createMessage("Working...")
 

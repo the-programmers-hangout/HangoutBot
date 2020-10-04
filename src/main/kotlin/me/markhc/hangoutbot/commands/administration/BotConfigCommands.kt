@@ -36,14 +36,14 @@ fun botConfigCommands(persistentData: PersistentData, greetingService: GreetingS
                 val (role) = args
 
                 if (role != null) {
-                    persistentData.setGuildProperty(guild!!) { softMuteRole = role.id.value }
+                    persistentData.setGuildProperty(guild) { softMuteRole = role.id.value }
 
                     respond("Soft mute role set to **${role.name}**")
                 } else {
-                    val roleId = persistentData.getGuildProperty(guild!!) { softMuteRole }.toSnowflakeOrNull()
+                    val roleId = persistentData.getGuildProperty(guild) { softMuteRole }.toSnowflakeOrNull()
 
                     if (roleId != null) {
-                        respond("Soft mute role is **${guild!!.getRole(roleId).name}**")
+                        respond("Soft mute role is **${guild.getRole(roleId).name}**")
                     } else {
                         respond("Soft mute role is not set")
                     }
@@ -65,7 +65,7 @@ fun botConfigCommands(persistentData: PersistentData, greetingService: GreetingS
                     val channelId = persistentData.getGuildProperty(guild) { loggingChannel }.toSnowflakeOrNull()
 
                     if (channelId != null) {
-                        val channel = guild!!.getChannelOf<TextChannel>(channelId)
+                        val channel = guild.getChannelOf<TextChannel>(channelId)
 
                         respond("Logging channel is ${channel.mention}")
                     } else {
