@@ -1,12 +1,8 @@
 package me.markhc.hangoutbot.commands.administration
 
-import me.jakejmattson.discordkt.api.GenericContainer
 import me.jakejmattson.discordkt.api.arguments.*
 import me.jakejmattson.discordkt.api.dsl.*
-import me.markhc.hangoutbot.commands.administration.services.ScriptEngineService
 import me.markhc.hangoutbot.services.*
-
-import javax.script.*
 
 fun ownerCommands(persistentData: PersistentData) = commands("Owner Commands") {
     guildCommand("cooldown") {
@@ -51,47 +47,5 @@ fun ownerCommands(persistentData: PersistentData) = commands("Owner Commands") {
 
             respond("Bot prefix set to **$newPrefix**")
         }
-    }
-
-    guildCommand("eval") {
-        description = "Evaluates a script"
-        requiredPermissionLevel = PermissionLevel.BotOwner
-        execute(EveryArg) {
-            //evalCommand(scriptEngineService.engine, this)
-        }
-    }
-}
-
-suspend fun <T : GenericContainer> evalCommand(
-    engine: ScriptEngine,
-    commandEvent: CommandEvent<T>) {
-
-    val input = commandEvent.message.content
-        .removePrefix(commandEvent.prefix())
-        .removePrefix(commandEvent.rawInputs.commandName)
-
-    try {
-        val bindings = engine.createBindings()
-        bindings["discord"] = commandEvent.discord
-        bindings["commands"] = commandEvent.discord.commands
-        bindings["event"] = commandEvent
-
-        engine.setBindings(bindings, ScriptContext.ENGINE_SCOPE)
-        engine.eval(
-            """
-                val discord = bindings["discord"] as me.jakejmattson.discordkt.api.Discord
-                val commands = bindings["commands"] as MutableList<me.jakejmattson.discordkt.api.dsl.Command>
-                val event = bindings["event"] as me.jakejmattson.discordkt.api.dsl.CommandEvent<*>
-                val kord = discord.api
-                
-                fun evalScript() {
-                    $input
-                } 
-                
-                evalScript();
-                """.trimIndent()
-        )
-    } catch (e: Exception) {
-        System.err.print(e.message ?: "An exception occurred in the scripting engine.")
     }
 }
