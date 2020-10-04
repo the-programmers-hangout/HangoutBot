@@ -62,7 +62,7 @@ tasks {
         archiveFileName.set("HangoutBot-${Versions.BotVersion}.jar")
         manifest {
             attributes(
-                    "Main-Class" to "me.markhc.hangoutbot.MainAppKt"
+                    "Main-Class" to "me.markhc.hangoutbot.MainKt"
             )
         }
     }
