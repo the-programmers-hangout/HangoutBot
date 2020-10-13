@@ -5,10 +5,28 @@ import com.gitlab.kordlib.core.entity.channel.TextChannel
 import me.jakejmattson.discordkt.api.arguments.*
 import me.jakejmattson.discordkt.api.dsl.commands
 import me.jakejmattson.discordkt.api.extensions.*
+import me.jakejmattson.discordkt.api.services.ConversationService
 import me.markhc.hangoutbot.commands.administration.services.GreetingService
+import me.markhc.hangoutbot.conversations.ConfigurationConversation
 import me.markhc.hangoutbot.services.*
 
-fun botConfigCommands(persistentData: PersistentData, greetingService: GreetingService) = commands("Configuration") {
+fun botConfigCommands(persistentData: PersistentData, greetingService: GreetingService,
+                      conversationService: ConversationService) = commands("Configuration") {
+    guildCommand("setup") {
+        description = "Sets the guild up for first use."
+        requiredPermissionLevel = PermissionLevel.GuildOwner
+        execute {
+
+            if (persistentData.hasGuildConfig(guild.id.value)) {
+                respond("This guild is already setup.")
+                return@execute
+            }
+
+            conversationService.startPublicConversation<ConfigurationConversation>(author, channel.asChannel(), guild)
+            respond("${guild.name} has been setup")
+        }
+    }
+
     guildCommand("muterole") {
         description = "Gets or sets the role used to mute an user."
         requiredPermissionLevel = PermissionLevel.Administrator

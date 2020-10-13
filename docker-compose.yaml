@@ -4,10 +4,9 @@ services:
   bot:
     build: .
     volumes:
-      - guild_data:/home/app/data
+      - type: bind
+        source: ./data/guilds.json
+        target: /home/app/data/guilds.json
     restart: unless-stopped
     env_file:
       - .env
-
-volumes:
-  guild_data: {}
