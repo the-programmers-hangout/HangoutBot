@@ -10,6 +10,7 @@ FROM openjdk:11.0.8-jre-slim
 RUN mkdir /home/app
 ENV HOME=/home/app
 WORKDIR $HOME
+RUN mkdir /data/
 
 COPY --from=build /home/gradle/src/build/libs/*.jar $HOME/hangoutbot.jar
 
