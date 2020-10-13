@@ -1,5 +1,8 @@
 package me.markhc.hangoutbot.dataclasses
 
+import com.gitlab.kordlib.core.entity.Guild
+import com.gitlab.kordlib.core.entity.Role
+import com.gitlab.kordlib.core.entity.channel.Channel
 import me.jakejmattson.discordkt.api.dsl.Data
 import me.markhc.hangoutbot.services.PermissionLevel
 

@@ -1,6 +1,8 @@
 package me.markhc.hangoutbot.services
 
 import com.gitlab.kordlib.core.entity.Guild
+import com.gitlab.kordlib.core.entity.Role
+import com.gitlab.kordlib.core.entity.channel.Channel
 import me.jakejmattson.discordkt.api.annotations.Service
 import me.markhc.hangoutbot.dataclasses.*
 import me.markhc.hangoutbot.dataclasses.BotConfiguration
@@ -44,4 +46,21 @@ class PersistentData(private val botConfiguration: BotConfiguration,
     }
 
     private fun getGuildConfig(guild: Guild) = configuration.guildConfigurations.first { it.guildId == guild.id.value }
+
+    fun hasGuildConfig(guildId: String): Boolean = configuration.guildConfigurations.any { it.guildId == guildId }
+
+    fun setup(guild: Guild, prefix: String, welcomeChannel: Channel, loggingChannel: Channel,
+              muteRole: Role, softMuteRole: Role) {
+
+        configuration.guildConfigurations.add(GuildConfiguration (
+                guildId = guild.id.value,
+                prefix = prefix,
+                welcomeChannel = welcomeChannel.id.value,
+                loggingChannel = loggingChannel.id.value,
+                muteRole = muteRole.id.value,
+                softMuteRole = softMuteRole.id.value
+        ))
+
+        configuration.save()
+    }
 }

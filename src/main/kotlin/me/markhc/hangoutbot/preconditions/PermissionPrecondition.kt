@@ -18,6 +18,9 @@ class PermissionPrecondition(private val persistentData: PersistentData,
             val guild = event.guild!!
             val member = event.author.asMember(guild.id)
 
+            if (!persistentData.hasGuildConfig(guild.id.value))
+                return Pass
+
             val botChannel = persistentData.getGuildProperty(guild) { botChannel }
             if (botChannel.isNotEmpty()
                 && event.channel.id.value != botChannel
