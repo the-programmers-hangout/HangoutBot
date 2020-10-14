@@ -1,5 +1,4 @@
 import org.jetbrains.kotlin.config.KotlinCompilerVersion
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 group = "me.markhc"
 version = "2.1.0"
@@ -18,7 +17,6 @@ repositories {
 }
 
 dependencies {
-    implementation(kotlin("stdlib-jdk8"))
     implementation(kotlin("scripting-compiler-embeddable", KotlinCompilerVersion.VERSION))
     implementation(kotlin("compiler-embeddable", KotlinCompilerVersion.VERSION))
     implementation(kotlin("script-runtime", KotlinCompilerVersion.VERSION))
@@ -35,13 +33,15 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter")
 }
 
-tasks.test {
-    useJUnitPlatform()
-    testLogging {
-        events("passed", "skipped", "failed")
+tasks {
+    compileKotlin {
+        kotlinOptions.jvmTarget = "1.8"
     }
-}
 
-tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.8"
+    test {
+        useJUnitPlatform()
+        testLogging {
+            events("passed", "skipped", "failed")
+        }
+    }
 }

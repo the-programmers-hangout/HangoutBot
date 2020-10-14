@@ -163,18 +163,14 @@ class MacroService(private val persistentData: PersistentData) {
     }
 }
 
-class MacroPrecondition(private val macroService: MacroService) : Precondition() {
-    override suspend fun evaluate(event: CommandEvent<*>): PreconditionResult {
-        if (event.command != null)
-            return Pass
+fun macroPrecondition(macroService: MacroService) = precondition {
+    if (command != null)
+        return@precondition
 
-        val macro = macroService.findMacro(event.guild, event.rawInputs.commandName, event.channel.asChannel())
+    val macro = macroService.findMacro(guild, rawInputs.commandName, channel.asChannel())
 
-        if (macro != null) {
-            event.message.delete()
-            event.channel.createMessage(macro.contents)
-        }
-
-        return Pass
+    if (macro != null) {
+        message.delete()
+        channel.createMessage(macro.contents)
     }
 }

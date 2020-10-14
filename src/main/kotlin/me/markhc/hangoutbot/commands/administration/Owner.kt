@@ -1,6 +1,6 @@
 package me.markhc.hangoutbot.commands.administration
 
-import me.jakejmattson.discordkt.api.GenericContainer
+import me.jakejmattson.discordkt.api.*
 import me.jakejmattson.discordkt.api.arguments.*
 import me.jakejmattson.discordkt.api.dsl.*
 import me.markhc.hangoutbot.commands.administration.services.ScriptEngineService
@@ -62,7 +62,7 @@ fun ownerCommands(persistentData: PersistentData, scriptEngineService: ScriptEng
     }
 }
 
-suspend fun <T : GenericContainer> evalCommand(
+suspend fun <T : TypeContainer> evalCommand(
     engine: ScriptEngine,
     commandEvent: CommandEvent<T>) {
 
