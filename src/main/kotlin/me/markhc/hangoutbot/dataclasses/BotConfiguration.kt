@@ -7,6 +7,7 @@ data class BotConfiguration(var prefix: String = "++",
                             val ownerId: String = "") : Data("config/config.json")
 
 @Serializable
-data class Properties(val version: String = "",
-                      val discordkt: String = "",
-                      val repository: String = "")
+data class Properties(val version: String,
+                      val discordkt: String,
+                      val kotlin: String,
+                      val repository: String)

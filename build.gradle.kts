@@ -22,7 +22,7 @@ dependencies {
     implementation(kotlin("script-runtime", KotlinCompilerVersion.VERSION))
     implementation(kotlin("script-util", KotlinCompilerVersion.VERSION))
 
-    implementation("me.jakejmattson:DiscordKt:0.21.0-SNAPSHOT")
+    implementation("me.jakejmattson:DiscordKt:${Versions.DISCORDKT}")
     implementation("com.github.kittinunf.fuel:fuel-gson:2.3.0")
     implementation("com.github.kittinunf.fuel:fuel:2.3.0")
     implementation("joda-time:joda-time:2.10.6")
@@ -44,4 +44,21 @@ tasks {
             events("passed", "skipped", "failed")
         }
     }
+
+    copy {
+        val resourcePath = "src/main/resources"
+        from(file("$resourcePath/properties-template.json"))
+        into(file(resourcePath))
+        rename { "hangoutbot_properties.json" }
+        expand(
+            "version" to version,
+            "discordkt" to Versions.DISCORDKT,
+            "kotlin" to KotlinCompilerVersion.VERSION,
+            "repository" to "https://github.com/the-programmers-hangout/HangoutBot/"
+        )
+    }
+}
+
+object Versions {
+    const val DISCORDKT: String = "0.21.0-SNAPSHOT"
 }

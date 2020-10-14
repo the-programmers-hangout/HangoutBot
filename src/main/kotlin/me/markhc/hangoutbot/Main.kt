@@ -49,14 +49,12 @@ suspend fun main(args: Array<String>) {
             addInlineField("Contributors", "markhc#8366")
 
             with(properties) {
-                val kotlinVersion = KotlinVersion.CURRENT
-
                 field {
                     name = "Build Info"
                     value = "```" +
                         "Version:   $version\n" +
                         "DiscordKt: $discordkt\n" +
-                        "Kotlin:    $kotlinVersion" +
+                        "Kotlin:    $kotlin" +
                         "```"
                 }
 

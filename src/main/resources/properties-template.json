@@ -1,0 +1,6 @@
+{
+  "version": "${version}",
+  "discordkt": "${discordkt}",
+  "kotlin": "${kotlin}",
+  "repository": "${repository}"
+}
