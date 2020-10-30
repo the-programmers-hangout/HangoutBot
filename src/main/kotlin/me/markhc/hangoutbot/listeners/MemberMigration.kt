@@ -1,14 +1,17 @@
 package me.markhc.hangoutbot.listeners
 
 import com.gitlab.kordlib.common.entity.Snowflake
-import com.gitlab.kordlib.core.behavior.*
 import com.gitlab.kordlib.core.behavior.channel.createEmbed
+import com.gitlab.kordlib.core.behavior.getChannelOf
+import com.gitlab.kordlib.core.behavior.getChannelOfOrNull
 import com.gitlab.kordlib.core.entity.channel.TextChannel
-import com.gitlab.kordlib.core.event.guild.*
-import com.gitlab.kordlib.kordx.emoji.*
-
+import com.gitlab.kordlib.core.event.guild.MemberJoinEvent
+import com.gitlab.kordlib.core.event.guild.MemberLeaveEvent
+import com.gitlab.kordlib.kordx.emoji.Emojis
+import com.gitlab.kordlib.kordx.emoji.toReaction
+import kotlinx.coroutines.runBlocking
 import me.jakejmattson.discordkt.api.dsl.listeners
-import me.jakejmattson.discordkt.api.extensions.*
+import me.jakejmattson.discordkt.api.extensions.toSnowflakeOrNull
 import me.markhc.hangoutbot.commands.administration.services.GreetingService
 import me.markhc.hangoutbot.locale.Messages
 import me.markhc.hangoutbot.services.PersistentData
@@ -21,28 +24,27 @@ fun migrationListeners(persistentData: PersistentData, guildService: GreetingSer
 
         if (!embeds || channel.isEmpty()) return@on
 
-        val welcomeChannel = channel.toSnowflakeOrNull()?.let { guild.getChannelOf<TextChannel>(it) } ?: return@on
+        @Suppress("BlockingMethodInNonBlockingContext")
+        runBlocking {
+            val welcomeChannel = channel.toSnowflakeOrNull()?.let { guild.getChannelOf<TextChannel>(it) }
+                    ?: return@runBlocking
 
-        try {
-            val message = welcomeChannel.createEmbed {
-                title = "Welcome"
-                description = Messages.getRandomJoinMessage("${member.mention} (${member.tag})")
-                color = discord.configuration.theme
+            try {
+                val message = welcomeChannel.createEmbed {
+                    title = "Welcome"
+                    description = Messages.getRandomJoinMessage("${member.mention} (${member.tag})")
+                    color = discord.configuration.theme
 
-                thumbnail {
-                    url = member.avatar.url
+                    thumbnail {
+                        url = member.avatar.url
+                    }
                 }
 
-                field {
-                    name = "How do I start?"
-                    value = Messages.welcomeDescription
-                }
+                guildService.addMessageToCache(member.asUser(), message)
+                message.addReaction(Emojis.wave.toReaction())
+            } catch (ex: Exception) {
+                System.err.println(ex.message ?: "Failed to send message.")
             }
-
-            guildService.addMessageToCache(member.asUser(), message)
-            message.addReaction(Emojis.wave.toReaction())
-        } catch (ex: Exception) {
-            System.err.println(ex.message ?: "Failed to send message.")
         }
     }
 
