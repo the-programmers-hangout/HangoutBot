@@ -1,6 +1,7 @@
 package me.markhc.hangoutbot
 
 import com.gitlab.kordlib.gateway.Intent
+import com.gitlab.kordlib.gateway.PrivilegedIntent
 import me.jakejmattson.discordkt.api.dsl.bot
 import me.jakejmattson.discordkt.api.extensions.addInlineField
 import me.markhc.hangoutbot.commands.utilities.services.MuteService
@@ -11,6 +12,7 @@ import me.markhc.hangoutbot.services.PermissionsService
 import me.markhc.hangoutbot.services.PersistentData
 import java.awt.Color
 
+@PrivilegedIntent
 suspend fun main(args: Array<String>) {
     val token = args.firstOrNull()
             ?: System.getenv("BOT_TOKEN")
@@ -40,6 +42,8 @@ suspend fun main(args: Array<String>) {
 
         intents {
             +Intent.GuildMessages
+            +Intent.GuildMembers
+            +Intent.Guilds
         }
 
         configure {
