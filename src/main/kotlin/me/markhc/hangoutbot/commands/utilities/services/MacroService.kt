@@ -1,10 +1,12 @@
 package me.markhc.hangoutbot.commands.utilities.services
 
 import com.gitlab.kordlib.core.entity.Guild
-import com.gitlab.kordlib.core.entity.channel.*
+import com.gitlab.kordlib.core.entity.channel.MessageChannel
+import com.gitlab.kordlib.core.entity.channel.TextChannel
 import me.jakejmattson.discordkt.api.annotations.Service
-import me.jakejmattson.discordkt.api.dsl.*
-import me.jakejmattson.discordkt.api.extensions.*
+import me.jakejmattson.discordkt.api.dsl.CommandEvent
+import me.jakejmattson.discordkt.api.dsl.precondition
+import me.jakejmattson.discordkt.api.extensions.toSnowflakeOrNull
 import me.markhc.hangoutbot.dataclasses.TextMacro
 import me.markhc.hangoutbot.services.PersistentData
 
@@ -152,8 +154,12 @@ class MacroService(private val persistentData: PersistentData) {
     }
 
     suspend fun findMacro(guild: Guild?, name: String, channel: MessageChannel): TextMacro? {
-        if(guild == null)
+        if (guild == null)
             return null
+
+        if (!persistentData.hasGuildConfig(guild.id.value))
+            return null
+
 
         return persistentData.getGuildProperty(guild) {
             // first try to find a channel specific macro
@@ -163,18 +169,15 @@ class MacroService(private val persistentData: PersistentData) {
     }
 }
 
-class MacroPrecondition(private val macroService: MacroService) : Precondition() {
-    override suspend fun evaluate(event: CommandEvent<*>): PreconditionResult {
-        if(event.command != null)
-            return Pass
+fun macroPrecondition(macroService: MacroService) = precondition {
+    command ?: return@precondition fail()
 
-        val macro = macroService.findMacro(event.guild, event.rawInputs.commandName, event.channel.asChannel())
 
-        if(macro != null) {
-            event.message.delete()
-            event.channel.createMessage(macro.contents)
-        }
+    val macro = macroService.findMacro(guild, rawInputs.commandName, channel.asChannel())
+            ?: return@precondition
 
-        return Pass
-    }
+    message.delete()
+    channel.createMessage(macro.contents)
+
+    return@precondition
 }

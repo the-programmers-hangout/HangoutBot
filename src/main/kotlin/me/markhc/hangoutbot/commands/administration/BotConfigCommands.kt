@@ -2,16 +2,17 @@ package me.markhc.hangoutbot.commands.administration
 
 import com.gitlab.kordlib.core.behavior.getChannelOf
 import com.gitlab.kordlib.core.entity.channel.TextChannel
-import me.jakejmattson.discordkt.api.arguments.*
+import me.jakejmattson.discordkt.api.arguments.ChannelArg
+import me.jakejmattson.discordkt.api.arguments.RoleArg
 import me.jakejmattson.discordkt.api.dsl.commands
-import me.jakejmattson.discordkt.api.extensions.*
-import me.jakejmattson.discordkt.api.services.ConversationService
+import me.jakejmattson.discordkt.api.extensions.toSnowflakeOrNull
 import me.markhc.hangoutbot.commands.administration.services.GreetingService
 import me.markhc.hangoutbot.conversations.ConfigurationConversation
-import me.markhc.hangoutbot.services.*
+import me.markhc.hangoutbot.services.PermissionLevel
+import me.markhc.hangoutbot.services.PersistentData
+import me.markhc.hangoutbot.services.requiredPermissionLevel
 
-fun botConfigCommands(persistentData: PersistentData, greetingService: GreetingService,
-                      conversationService: ConversationService) = commands("Configuration") {
+fun botConfigCommands(persistentData: PersistentData, greetingService: GreetingService) = commands("Configuration") {
     guildCommand("setup") {
         description = "Sets the guild up for first use."
         requiredPermissionLevel = PermissionLevel.GuildOwner
@@ -22,7 +23,10 @@ fun botConfigCommands(persistentData: PersistentData, greetingService: GreetingS
                 return@execute
             }
 
-            conversationService.startPublicConversation<ConfigurationConversation>(author, channel.asChannel(), guild)
+            ConfigurationConversation(persistentData)
+                    .createConfigurationConversation(guild)
+                    .startPublicly(discord, author, channel.asChannel())
+
             respond("${guild.name} has been setup")
         }
     }

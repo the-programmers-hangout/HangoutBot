@@ -1,12 +1,10 @@
 package me.markhc.hangoutbot.preconditions
 
-import me.jakejmattson.discordkt.api.dsl.*
+import me.jakejmattson.discordkt.api.dsl.precondition
 
-class SanitiseInvites : Precondition() {
-    override suspend fun evaluate(event: CommandEvent<*>): PreconditionResult {
-        if (event.rawInputs.commandArgs.any { it.matches(""".*discord\.gg.*""".toRegex()) })
-            return Fail()
+fun sanitiseInvites() = precondition {
+    if (rawInputs.commandArgs.any { it.matches(""".*discord\.gg.*""".toRegex()) })
+        return@precondition fail()
 
-        return Pass
-    }
+    return@precondition
 }

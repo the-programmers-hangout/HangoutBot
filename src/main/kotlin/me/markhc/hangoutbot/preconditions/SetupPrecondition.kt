@@ -1,21 +1,16 @@
 package me.markhc.hangoutbot.preconditions
 
-import me.jakejmattson.discordkt.api.dsl.*
-import me.markhc.hangoutbot.services.*
+import me.jakejmattson.discordkt.api.dsl.precondition
+import me.markhc.hangoutbot.services.PersistentData
 
-class SetupPrecondition(private val persistentData: PersistentData) : Precondition() {
+fun setupPrecondition(persistentData: PersistentData) = precondition {
+    val command = command ?: return@precondition fail()
+    val guild = guild ?: return@precondition fail()
 
-    override suspend fun evaluate(event: CommandEvent<*>): PreconditionResult {
+    if (persistentData.hasGuildConfig(guild.id.value)) return@precondition
 
-        val command = event.command ?: return Fail()
+    if (!command.names.any { it.toLowerCase() == "setup" })
+        fail("This guild is not setup. You must run `${prefix().plus("setup")}` first.")
 
-        val guild = event.guild ?: return Fail()
-        if (persistentData.hasGuildConfig(guild.id.value))
-            return Pass
-
-        if (!command.names.contains("setup"))
-            return Fail("This guild is not setup. You must run `${event.prefix().plus("setup")}` first.")
-
-        return Pass
-    }
+    return@precondition
 }

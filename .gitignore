@@ -11,6 +11,6 @@
 build
 
 # Project #
-data/
+data/*
 config/*
 !config/config.json.example

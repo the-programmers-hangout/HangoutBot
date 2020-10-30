@@ -7,7 +7,7 @@ description = "hangoutbot"
 
 object Versions {
     const val BotVersion = "3.0.0"
-    const val DiscordKt = "0.21.0-SNAPSHOT"
+    const val DiscordKt = "0.21.2"
     const val Fuel = "2.3.0"
     const val JodaTime = "2.10.6"
     const val Cowsay = "1.1.0"

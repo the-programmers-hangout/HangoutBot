@@ -1,10 +1,14 @@
 package me.markhc.hangoutbot
 
+import com.gitlab.kordlib.gateway.Intent
 import me.jakejmattson.discordkt.api.dsl.bot
 import me.jakejmattson.discordkt.api.extensions.addInlineField
-import me.markhc.hangoutbot.commands.utilities.services.*
+import me.markhc.hangoutbot.commands.utilities.services.MuteService
+import me.markhc.hangoutbot.commands.utilities.services.ReminderService
 import me.markhc.hangoutbot.dataclasses.BotConfiguration
-import me.markhc.hangoutbot.services.*
+import me.markhc.hangoutbot.services.BotStatsService
+import me.markhc.hangoutbot.services.PermissionsService
+import me.markhc.hangoutbot.services.PersistentData
 import java.awt.Color
 
 suspend fun main(args: Array<String>) {
@@ -32,6 +36,10 @@ suspend fun main(args: Array<String>) {
             }
 
             defaultPrefix
+        }
+
+        intents {
+            +Intent.GuildMessages
         }
 
         configure {
