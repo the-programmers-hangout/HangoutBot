@@ -1,10 +1,21 @@
 package me.markhc.hangoutbot.services
 
-import com.gitlab.kordlib.core.entity.*
+import com.gitlab.kordlib.core.entity.Guild
+import com.gitlab.kordlib.core.entity.Member
+import com.gitlab.kordlib.core.entity.User
 import me.jakejmattson.discordkt.api.annotations.Service
-import me.jakejmattson.discordkt.api.dsl.*
+import me.jakejmattson.discordkt.api.dsl.Command
+import me.jakejmattson.discordkt.api.dsl.GuildCommandEvent
 import me.markhc.hangoutbot.dataclasses.BotConfiguration
 import me.markhc.hangoutbot.locale.Messages
+import kotlin.collections.MutableMap
+import kotlin.collections.filter
+import kotlin.collections.first
+import kotlin.collections.intersect
+import kotlin.collections.isNotEmpty
+import kotlin.collections.map
+import kotlin.collections.mutableMapOf
+import kotlin.collections.set
 
 enum class PermissionLevel {
     Everyone,
@@ -72,7 +83,7 @@ class PermissionsService(private val persistentData: PersistentData, private val
             .filter { it.value == PermissionLevel.Administrator }
             .map { it.key }
 
-        return adminRoles.intersect(roleIds).isNotEmpty()
+        return adminRoles.intersect(roleIds.map { it.value }).isNotEmpty()
     }
 
     private suspend fun Member.isStaff(): Boolean {
@@ -81,7 +92,7 @@ class PermissionsService(private val persistentData: PersistentData, private val
             .filter { it.value == PermissionLevel.Staff }
             .map { it.key }
 
-        return staffRoles.intersect(roleIds).isNotEmpty()
+        return staffRoles.intersect(roleIds.map { it.value }).isNotEmpty()
     }
 }
 
