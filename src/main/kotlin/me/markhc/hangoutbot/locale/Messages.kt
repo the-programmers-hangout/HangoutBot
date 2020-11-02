@@ -40,7 +40,7 @@ object Messages {
         "A toast to %name%!",
         "The world turned upside down, %name%!",
         "The world will never be the same, %name%!",
-        "Uncaught Exception: TemplateRenderError(\"no user $name found in cache\")",
+        "Uncaught Exception: TemplateRenderError(\"no user %name% found in cache\")",
         "Tell the story of tonight, %name%!",
         "Stay alive, %name%!",
         "History has its eyes on you, %name%!",
