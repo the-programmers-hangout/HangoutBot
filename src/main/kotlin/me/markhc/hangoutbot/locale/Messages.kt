@@ -45,7 +45,7 @@ object Messages {
         "Stay alive, %name%!",
         "History has its eyes on you, %name%!",
         "The world\u0027s gonna know your name, %name%!",
-        "We are waiting in the wings for you, %main%!",
+        "We are waiting in the wings for you, %name%!",
         "%name% is never late. They arrive precisely when they mean to.",
         "I am %name%. And I come back to you now... at the turn of the tide",
         "Oh, it\u0027s quite simple %name%. If you are a friend, you speak the password, and the doors will open.",
