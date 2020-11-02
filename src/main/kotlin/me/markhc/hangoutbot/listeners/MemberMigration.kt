@@ -9,7 +9,6 @@ import com.gitlab.kordlib.core.event.guild.MemberJoinEvent
 import com.gitlab.kordlib.core.event.guild.MemberLeaveEvent
 import com.gitlab.kordlib.kordx.emoji.Emojis
 import com.gitlab.kordlib.kordx.emoji.toReaction
-import kotlinx.coroutines.runBlocking
 import me.jakejmattson.discordkt.api.dsl.listeners
 import me.jakejmattson.discordkt.api.extensions.toSnowflakeOrNull
 import me.markhc.hangoutbot.commands.administration.services.GreetingService
@@ -24,28 +23,26 @@ fun migrationListeners(persistentData: PersistentData, guildService: GreetingSer
 
         if (!embeds || channel.isEmpty()) return@on
 
-        @Suppress("BlockingMethodInNonBlockingContext")
-        runBlocking {
-            val welcomeChannel = channel.toSnowflakeOrNull()?.let { guild.getChannelOf<TextChannel>(it) }
-                    ?: return@runBlocking
+        val welcomeChannel = channel.toSnowflakeOrNull()?.let { guild.getChannelOf<TextChannel>(it) }
+                ?: return@on
 
-            try {
-                val message = welcomeChannel.createEmbed {
-                    title = "Welcome"
-                    description = Messages.getRandomJoinMessage("${member.mention} (${member.tag})")
-                    color = discord.configuration.theme
+        try {
+            val message = welcomeChannel.createEmbed {
+                title = "Welcome"
+                description = Messages.getRandomJoinMessage("${member.mention} (${member.tag})")
+                color = discord.configuration.theme
 
-                    thumbnail {
-                        url = member.avatar.url
-                    }
+                thumbnail {
+                    url = member.avatar.url
                 }
-
-                guildService.addMessageToCache(member.asUser(), message)
-                message.addReaction(Emojis.wave.toReaction())
-            } catch (ex: Exception) {
-                System.err.println(ex.message ?: "Failed to send message.")
             }
+
+            guildService.addMessageToCache(member.asUser(), message)
+            message.addReaction(Emojis.wave.toReaction())
+        } catch (ex: Exception) {
+            System.err.println(ex.message ?: "Failed to send message.")
         }
+
     }
 
     on<MemberLeaveEvent> {
