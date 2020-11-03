@@ -2,10 +2,13 @@ package me.markhc.hangoutbot.commands.utilities
 
 import com.gitlab.kordlib.core.entity.Message
 import com.gitlab.kordlib.core.entity.channel.TextChannel
-import kotlinx.coroutines.flow.*
-import me.jakejmattson.discordkt.api.arguments.*
+import kotlinx.coroutines.flow.toList
+import me.jakejmattson.discordkt.api.arguments.ChannelArg
+import me.jakejmattson.discordkt.api.arguments.EveryArg
+import me.jakejmattson.discordkt.api.arguments.IntegerArg
 import me.jakejmattson.discordkt.api.dsl.commands
-import me.markhc.hangoutbot.services.*
+import me.markhc.hangoutbot.services.PermissionLevel
+import me.markhc.hangoutbot.services.requiredPermissionLevel
 
 fun moderationCommands() = commands("Moderation") {
     guildCommand("echo") {
@@ -21,21 +24,25 @@ fun moderationCommands() = commands("Moderation") {
     guildCommand("nuke") {
         description = "Delete 2 - 99 past messages in the given channel (default is the invoked channel)"
         requiredPermissionLevel = PermissionLevel.Staff
-        execute(ChannelArg.makeOptional { it.channel as TextChannel },
-            IntegerArg) {
-            val (channel, amount) = args
+        execute(ChannelArg.makeNullableOptional(), IntegerArg) {
+            val targetChannel = args.first ?: channel
+            val amount = args.second
 
             if (amount !in 2..99) {
                 respond("You can only nuke between 2 and 99 messages")
                 return@execute
             }
 
-            val sameChannel = channel.id == channel.id
-            val messages = channel.messages.take(amount + if (sameChannel) 1 else 0).toList()
+            val sameChannel = targetChannel.id == channel.id
 
-            safeDeleteMessages(channel, messages)
+            val messages = targetChannel.getMessagesBefore(message.id, amount).toList()
 
-            channel.createMessage("Be nice. No spam.")
+            if (sameChannel)
+                message.delete()
+
+            safeDeleteMessages(targetChannel, messages)
+
+            targetChannel.createMessage("Be nice. No spam.")
 
             if (!sameChannel) respond("$amount messages deleted.")
         }

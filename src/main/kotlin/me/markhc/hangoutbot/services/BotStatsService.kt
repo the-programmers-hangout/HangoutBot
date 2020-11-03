@@ -1,8 +1,8 @@
 package me.markhc.hangoutbot.services
 
+import com.gitlab.kordlib.core.entity.Guild
 import me.jakejmattson.discordkt.api.Discord
 import me.jakejmattson.discordkt.api.annotations.Service
-import me.jakejmattson.discordkt.api.dsl.CommandEvent
 import me.markhc.hangoutbot.utilities.TimeFormatter
 import java.util.*
 
@@ -10,14 +10,14 @@ import java.util.*
 class BotStatsService(private val persistentData: PersistentData, private val discord: Discord) {
     private var startTime: Date = Date()
 
-    suspend fun commandExecuted(event: CommandEvent<*>) {
+    suspend fun commandExecuted(guild: Guild?) {
         totalCommands++
         persistentData.setGlobalProperty {
             totalCommandsExecuted++
         }
 
-        if (event.guild != null) {
-            persistentData.setGuildProperty(event.guild!!) {
+        if (guild != null) {
+            persistentData.setGuildProperty(guild) {
                 totalCommandsExecuted++
             }
         }

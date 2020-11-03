@@ -2,11 +2,15 @@
 .idea/
 **.iml
 
+# Environment file #
+.env
+
+
 # Gradle #
 .gradle
 build
 
 # Project #
-data/
+data/*
 config/*
 !config/config.json.example

@@ -1,14 +1,24 @@
 package me.markhc.hangoutbot.utilities
 
-import com.gitlab.kordlib.core.entity.*
-import com.gitlab.kordlib.core.entity.channel.*
+import com.gitlab.kordlib.core.entity.Guild
+import com.gitlab.kordlib.core.entity.Member
+import com.gitlab.kordlib.core.entity.Role
+import com.gitlab.kordlib.core.entity.User
+import com.gitlab.kordlib.core.entity.channel.TextChannel
+import com.gitlab.kordlib.core.entity.channel.VoiceChannel
 import com.gitlab.kordlib.rest.Image
-import kotlinx.coroutines.flow.*
-import me.jakejmattson.discordkt.api.dsl.*
+import com.gitlab.kordlib.rest.request.RestRequestException
+import kotlinx.coroutines.flow.count
+import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.flow.toList
+import me.jakejmattson.discordkt.api.dsl.CommandEvent
+import me.jakejmattson.discordkt.api.dsl.GuildCommandEvent
 import me.markhc.hangoutbot.dataclasses.Configuration
 import me.markhc.hangoutbot.services.BotStatsService
 import org.joda.time.DateTime
 import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.util.concurrent.TimeUnit
 
@@ -52,8 +62,9 @@ suspend fun CommandEvent<*>.buildGuildInfoEmbed(guild: Guild) = respond {
     color = discord.configuration.theme
 
     footer {
-        text = "Guild creation date: ${DateTimeFormatter.RFC_1123_DATE_TIME.format(guild.id.timeStamp)}"
+        text = "Guild creation date: ${DateTimeFormatter.ISO_LOCAL_DATE.format(LocalDateTime.ofInstant(guild.id.timeStamp, ZoneOffset.UTC))}"
     }
+
     thumbnail {
         url = guild.getIconUrl(Image.Format.PNG) ?: ""
     }
@@ -72,7 +83,7 @@ suspend fun CommandEvent<*>.buildGuildInfoEmbed(guild: Guild) = respond {
     }
     field {
         name = "**Users**"
-        //TODO value = "${guild.members.toList().filter { it.onlineStatus != OnlineStatus.OFFLINE }.size}/${guild.memberCount}"
+        value = "${guild.memberCount}"
         inline = true
     }
     field {
@@ -90,11 +101,12 @@ suspend fun CommandEvent<*>.buildGuildInfoEmbed(guild: Guild) = respond {
         value = guild.channels.filterIsInstance<VoiceChannel>().count().toString()
         inline = true
     }
-    field {
-        name = "**Region**"
-        value = guild.getRegion().name
-        inline = true
-    }
+    //TODO
+//    field {
+//        name = "**Region**"
+//        value = guild.getRegion().name
+//        inline = true
+//    }
     field {
         name = "**Verification Level**"
         value = guild.verificationLevel.toString()
@@ -102,19 +114,28 @@ suspend fun CommandEvent<*>.buildGuildInfoEmbed(guild: Guild) = respond {
     }
     field {
         name = "**Emotes**"
-        //TODO value = "${guild.emojis.size}/${guild * 2}"
+        value = "${guild.emojis.size}"
         inline = true
     }
-    field {
-        name = "**Invite URL**"
-        value = if (guild.getVanityUrl() != null) "[Link](${guild.getVanityUrl()})" else "Not set"
-        inline = true
+
+    //TODO this wont be needed after 0.7.0 kord
+    try {
+        val invite = guild.getVanityUrl()
+
+        field {
+            name = "**Invite URL**"
+            value = if (invite != null) "[Link]($invite)" else "Not set"
+            inline = true
+        }
+    } catch (ex: RestRequestException) {
+
     }
-    field {
-        name = "**Boosts**"
-        //TODO value = "${guild.boostCount} (Tier: ${guild.boostTier.ordinal})"
-        inline = true
-    }
+
+    //TODO field {
+//        name = "**Boosts**"
+//        value = "${guild.boostCount} (Tier: ${guild.boostTier.ordinal})"
+//        inline = true
+//    }
 }
 
 suspend fun GuildCommandEvent<*>.buildRoleInfoEmbed(role: Role) = respond {
@@ -160,11 +181,12 @@ suspend fun GuildCommandEvent<*>.buildRoleInfoEmbed(role: Role) = respond {
 
 private fun formatOffsetTime(time: Instant): String {
     val days = TimeUnit.MILLISECONDS.toDays(DateTime.now().millis - time.toEpochMilli())
+    val dateTime = LocalDateTime.ofInstant(time, ZoneOffset.UTC)
     return if (days > 4) {
-        "$days days ago\n${DateTimeFormatter.ISO_LOCAL_DATE.format(time)}"
+        "$days days ago\n${DateTimeFormatter.ISO_LOCAL_DATE.format(dateTime)}"
     } else {
         val hours = TimeUnit.MILLISECONDS.toHours(DateTime.now().millis - time.toEpochMilli())
-        "$hours hours ago\n${DateTimeFormatter.ISO_LOCAL_DATE.format(time)}"
+        "$hours hours ago\n${DateTimeFormatter.ISO_LOCAL_DATE.format(dateTime)}"
     }
 }
 

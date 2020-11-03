@@ -2,9 +2,12 @@ version: '3'
 
 services:
   bot:
-    build: .
+    container_name: HangoutBot
+    image: theprogrammershangout/hangoutbot:latest
     volumes:
-      - guild_data:/home/app/data
+      - type: bind
+        source: ./data
+        target: /home/app/data
     restart: unless-stopped
-volumes:
-  guild_data: {}
+    env_file:
+      - .env

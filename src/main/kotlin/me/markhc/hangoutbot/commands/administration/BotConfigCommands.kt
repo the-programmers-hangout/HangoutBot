@@ -2,13 +2,35 @@ package me.markhc.hangoutbot.commands.administration
 
 import com.gitlab.kordlib.core.behavior.getChannelOf
 import com.gitlab.kordlib.core.entity.channel.TextChannel
-import me.jakejmattson.discordkt.api.arguments.*
+import me.jakejmattson.discordkt.api.arguments.ChannelArg
+import me.jakejmattson.discordkt.api.arguments.RoleArg
 import me.jakejmattson.discordkt.api.dsl.commands
 import me.jakejmattson.discordkt.api.extensions.toSnowflakeOrNull
 import me.markhc.hangoutbot.commands.administration.services.GreetingService
-import me.markhc.hangoutbot.services.*
+import me.markhc.hangoutbot.conversations.ConfigurationConversation
+import me.markhc.hangoutbot.services.PermissionLevel
+import me.markhc.hangoutbot.services.PersistentData
+import me.markhc.hangoutbot.services.requiredPermissionLevel
 
 fun botConfigCommands(persistentData: PersistentData, greetingService: GreetingService) = commands("Configuration") {
+    guildCommand("setup") {
+        description = "Sets the guild up for first use."
+        requiredPermissionLevel = PermissionLevel.GuildOwner
+        execute {
+
+            if (persistentData.hasGuildConfig(guild.id.value)) {
+                respond("This guild is already setup.")
+                return@execute
+            }
+
+            ConfigurationConversation(persistentData)
+                    .createConfigurationConversation(guild)
+                    .startPublicly(discord, author, channel.asChannel())
+
+            respond("${guild.name} has been setup")
+        }
+    }
+
     guildCommand("muterole") {
         description = "Gets or sets the role used to mute an user."
         requiredPermissionLevel = PermissionLevel.Administrator

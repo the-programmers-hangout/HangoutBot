@@ -2,14 +2,15 @@ package me.markhc.hangoutbot.commands.administration
 
 import com.gitlab.kordlib.core.behavior.edit
 import com.gitlab.kordlib.core.entity.Guild
-import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.flow.count
+import kotlinx.coroutines.flow.toList
 import me.jakejmattson.discordkt.api.arguments.*
 import me.jakejmattson.discordkt.api.dsl.commands
 import me.jakejmattson.discordkt.api.extensions.toSnowflakeOrNull
-import me.markhc.hangoutbot.services.*
+import me.markhc.hangoutbot.services.PermissionLevel
+import me.markhc.hangoutbot.services.PersistentData
+import me.markhc.hangoutbot.services.requiredPermissionLevel
 import me.markhc.hangoutbot.services.requiresPermission
-
 
 fun roleCommands(persistentData: PersistentData) = commands("Roles") {
     guildCommand("grantablerole", "grantableroles") {
@@ -84,7 +85,6 @@ fun roleCommands(persistentData: PersistentData) = commands("Roles") {
                                 color = discord.configuration.theme
 
                                 grantableRoles.entries.forEach {
-                                    runBlocking { }
                                     field {
                                         name = it.key
                                         value = it.value.map { id ->

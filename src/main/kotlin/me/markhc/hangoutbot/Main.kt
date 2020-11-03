@@ -1,25 +1,50 @@
 package me.markhc.hangoutbot
 
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
+import com.gitlab.kordlib.gateway.Intent
+import com.gitlab.kordlib.gateway.PrivilegedIntent
 import me.jakejmattson.discordkt.api.dsl.bot
 import me.jakejmattson.discordkt.api.extensions.addInlineField
-import me.markhc.hangoutbot.commands.utilities.services.*
-import me.markhc.hangoutbot.dataclasses.Properties
-import me.markhc.hangoutbot.services.*
+import me.markhc.hangoutbot.commands.utilities.services.MuteService
+import me.markhc.hangoutbot.commands.utilities.services.ReminderService
+import me.markhc.hangoutbot.dataclasses.BotConfiguration
+import me.markhc.hangoutbot.services.BotStatsService
+import me.markhc.hangoutbot.services.PermissionLevel
+import me.markhc.hangoutbot.services.PermissionsService
+import me.markhc.hangoutbot.services.PersistentData
 import java.awt.Color
 
+@PrivilegedIntent
 suspend fun main(args: Array<String>) {
-    val token = args.firstOrNull() ?: throw IllegalArgumentException("Missing token")
-    val propFile = Properties::class.java.getResource("/hangoutbot_properties.json").readText()
-    val properties = Json.decodeFromString<Properties>(propFile)
+    val token = args.firstOrNull()
+            ?: System.getenv("BOT_TOKEN")
+            ?: throw IllegalArgumentException("Missing bot token.")
+
+    val defaultPrefix = System.getenv("BOT_PREFIX") ?: "++"
+    val botOwnerId = System.getenv("BOT_OWNER") ?: "210017247048105985"
+
+    val config = BotConfiguration(prefix = defaultPrefix, ownerId = botOwnerId)
 
     bot(token) {
-        inject(properties)
+        inject(config)
 
         prefix {
+            if (guild === null) {
+                return@prefix defaultPrefix
+            }
+
             val persistentData = discord.getInjectionObjects(PersistentData::class)
-            guild?.let { persistentData.getGuildProperty(it) { prefix } } ?: "+"
+
+            if (persistentData.hasGuildConfig(guild!!.id.value)) {
+                return@prefix guild!!.let { persistentData.getGuildProperty(it) { prefix } }
+            }
+
+            defaultPrefix
+        }
+
+        intents {
+            +Intent.GuildMessages
+            +Intent.GuildMembers
+            +Intent.Guilds
         }
 
         configure {
@@ -35,48 +60,55 @@ suspend fun main(args: Array<String>) {
             val self = channel.kord.getSelf()
 
             color = it.discord.configuration.theme
+            title = "HangoutBot"
+            description = "*\"The best bot in TheProgrammersHangout Discord server\"*"
 
-            thumbnail {
-                url = self.avatar.url
-            }
-
-            field {
-                name = self.tag
-                value = "A bot to manage utility commands and functionality that does not warrant its own bot"
+            author {
+                name = "Hangoutbot"
+                url = "https://github.com/the-programmers-hangout/HangoutBot/"
+                icon = self.avatar.url
             }
 
             addInlineField("Prefix", it.prefix())
-            addInlineField("Contributors", "markhc#8366")
+            addInlineField("Contributors", "markhc#8366\nJakeyWakey#1569")
+            addInlineField("Ping", botStats.ping)
 
-            with(properties) {
-                field {
-                    name = "Build Info"
-                    value = "```" +
-                        "Version:   $version\n" +
-                        "DiscordKt: $discordkt\n" +
-                        "Kotlin:    $kotlin" +
+            field {
+                val versions = it.discord.versions
+
+                name = "Bot Info"
+                value = "```" +
+                        "Version: 1.0.0\n" +
+                        "DiscordKt: ${versions.library}\n" +
+                        "Kord: ${versions.kord}\n" +
+                        "Kotlin: ${versions.kotlin}" +
                         "```"
-                }
+            }
 
-                field {
-                    name = "Uptime"
-                    value = botStats.uptime
-                }
+            field {
+                name = "Uptime"
+                value = botStats.uptime
+            }
 
-                field {
-                    name = "Source"
-                    value = "[[GitHub]](${repository})"
-                }
+            field {
+                name = "Source"
+                value = "[[GitHub]](https://github.com/the-programmers-hangout/HangoutBot/)"
             }
         }
 
         permissions {
             val permissionsService = discord.getInjectionObjects(PermissionsService::class)
 
-            if (guild != null)
+            if (guild != null) {
+                if (permissionsService.hasPermission(user.asMember(guild!!.id), PermissionLevel.GuildOwner)
+                        && command.names.contains("setup")) {
+                    return@permissions true
+                }
+
                 permissionsService.isCommandVisible(guild!!, user, command)
-            else
+            } else {
                 false
+            }
         }
 
         onStart {

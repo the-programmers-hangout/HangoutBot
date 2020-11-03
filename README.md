@@ -2,9 +2,9 @@
 
 # HangoutBot
 
-A bot to manage utility commands and funcionaility that does not warrant its own bot in the TheProgrammersHangout Discord Server.
+A bot for miscellaneous commands and functionality required in the TheProgrammersHangout Discord server.
 
-Join our server at https://discord.gg/programming
+Join us at https://discord.gg/programming
 
 <a href="https://discord.gg/programming">
 <img src="https://img.shields.io/discord/244230771232079873?label=The%20Programmers%20Hangout&logo=discord" alt="The Programmers Hangout">
@@ -18,23 +18,20 @@ The bot makes use of Docker and Docker Compose to setup the required environment
 $ git clone https://github.com/the-programmers-hangout/HangoutBot.git
 $ cd HangoutBot
 
-# Create the configuration file
-$ cp config/config.json.example config/config.json
-$ vim config/config.json
+# Setup the environment file with the necessary fields
+$ cp .env.example .env
+$ vim .env
 
 # Launch the bot
-$ docker-compose build
-$ docker-compose up
+$ docker-compose up --build --detach
 ``` 
 
-The bot will look for a configuration file at `config/config.json`. This file is used to provide the bot token and the id of the bot owner. 
+The .env file is used to configure the bot token, prefix and owner id, in the following format: 
 
-```json
-{
-  "token" : "<insert-token>",
-  "ownerId": "<insert-bot-owner-id>",
-  "prefix": "!!"
-}
+```
+BOT_TOKEN=<insert-bot-token>
+BOT_PREFIX=++
+BOT_OWNER=<insert-owner-id>
 ```
 
 ## License

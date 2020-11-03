@@ -22,9 +22,7 @@ data class GuildConfiguration(val guildId: String = "",
                               val rolePermissions: MutableMap<String, PermissionLevel> = mutableMapOf(),
                               val commandPermission: MutableMap<String, PermissionLevel> = mutableMapOf(),
                               val assignedColorRoles: MutableMap<String, MutableList<String>> = mutableMapOf(),
-                              val availableMacros: MutableMap<String, TextMacro> = mutableMapOf(),
                               val mutedUsers: MutableList<MuteEntry> = mutableListOf())
 
 data class MuteEntry(val user: String = "", val timeUntil: String = "", val isSoft: Boolean = false)
 data class Reminder(val user: String = "", val timeUntil: String = "", val what: String = "")
-data class TextMacro(val name: String = "", var contents: String = "", val channel: String = "", var category: String = "")
