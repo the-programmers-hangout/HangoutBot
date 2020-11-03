@@ -8,6 +8,7 @@ import me.markhc.hangoutbot.commands.utilities.services.MuteService
 import me.markhc.hangoutbot.commands.utilities.services.ReminderService
 import me.markhc.hangoutbot.dataclasses.BotConfiguration
 import me.markhc.hangoutbot.services.BotStatsService
+import me.markhc.hangoutbot.services.PermissionLevel
 import me.markhc.hangoutbot.services.PermissionsService
 import me.markhc.hangoutbot.services.PersistentData
 import java.awt.Color
@@ -87,7 +88,8 @@ suspend fun main(args: Array<String>) {
             val permissionsService = discord.getInjectionObjects(PermissionsService::class)
 
             if (guild != null) {
-                if (user.asMember(guild!!.id).isOwner() && command.names.contains("setup")) {
+                if (permissionsService.hasPermission(user.asMember(guild!!.id), PermissionLevel.GuildOwner)
+                        && command.names.contains("setup")) {
                     return@permissions true
                 }
 
