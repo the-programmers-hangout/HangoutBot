@@ -85,15 +85,8 @@ suspend fun main(args: Array<String>) {
                         "```"
             }
 
-            field {
-                name = "Uptime"
-                value = botStats.uptime
-            }
-
-            field {
-                name = "Source"
-                value = "[[GitHub]](https://github.com/the-programmers-hangout/HangoutBot/)"
-            }
+            addInlineField("Uptime", botStats.uptime)
+            addInlineField("Source", "[[GitHub]](https://github.com/the-programmers-hangout/HangoutBot/)")
         }
 
         permissions {
