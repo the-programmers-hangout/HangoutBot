@@ -9,11 +9,16 @@ import com.gitlab.kordlib.core.event.guild.MemberJoinEvent
 import com.gitlab.kordlib.core.event.guild.MemberLeaveEvent
 import com.gitlab.kordlib.kordx.emoji.Emojis
 import com.gitlab.kordlib.kordx.emoji.toReaction
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import me.jakejmattson.discordkt.api.dsl.listeners
 import me.jakejmattson.discordkt.api.extensions.toSnowflakeOrNull
 import me.markhc.hangoutbot.commands.administration.services.GreetingService
 import me.markhc.hangoutbot.locale.Messages
 import me.markhc.hangoutbot.services.PersistentData
+
+const val WELCOME_DELAY: Long = 5000
 
 fun migrationListeners(persistentData: PersistentData, guildService: GreetingService) = listeners {
     on<MemberJoinEvent> {
@@ -26,23 +31,24 @@ fun migrationListeners(persistentData: PersistentData, guildService: GreetingSer
         val welcomeChannel = channel.toSnowflakeOrNull()?.let { guild.getChannelOf<TextChannel>(it) }
                 ?: return@on
 
-        try {
-            val message = welcomeChannel.createEmbed {
-                title = "Welcome"
-                description = Messages.getRandomJoinMessage("${member.mention} (${member.tag})")
-                color = discord.configuration.theme
+        GlobalScope.launch {
+            delay(WELCOME_DELAY)
 
-                thumbnail {
-                    url = member.avatar.url
+            if (guild.getMemberOrNull(member.id) != null) {
+                val message = welcomeChannel.createEmbed {
+                    title = "Welcome"
+                    description = Messages.getRandomJoinMessage("${member.mention} (${member.tag})")
+                    color = discord.configuration.theme
+
+                    thumbnail {
+                        url = member.avatar.url
+                    }
                 }
+
+                guildService.addMessageToCache(member.asUser(), message)
+                message.addReaction(Emojis.wave.toReaction())
             }
-
-            guildService.addMessageToCache(member.asUser(), message)
-            message.addReaction(Emojis.wave.toReaction())
-        } catch (ex: Exception) {
-            System.err.println(ex.message ?: "Failed to send message.")
         }
-
     }
 
     on<MemberLeaveEvent> {
