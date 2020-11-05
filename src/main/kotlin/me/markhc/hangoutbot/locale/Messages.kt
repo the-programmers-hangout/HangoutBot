@@ -78,7 +78,8 @@ object Messages {
         "Open the pod bay doors, %name%.",
         "That'll do, %name%. That'll do.",
         "%name%, the question is\u0027nt how... but when...",
-        "%name%, excited to time travel? Here, take this yellow raincoat to be known as the \u0027unchanged\u0027"
+        "%name%, excited to time travel? Here, take this yellow raincoat to be known as the \u0027unchanged\u0027",
+        "We will watch your career with great interest, %name%."
     )
 
     const val welcomeDescription: String = "Hey there, be sure to check out the info section at the top!"
