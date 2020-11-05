@@ -77,7 +77,7 @@ object Messages {
         "%name%, you can't fight in here! This is the War Room!",
         "Open the pod bay doors, %name%.",
         "That'll do, %name%. That'll do.",
-        "%name%, the question is\u0027nt how... but when...",
+        "%name%, the question isn\u0027t how... but when...",
         "%name%, excited to time travel? Here, take this yellow raincoat to be known as the \u0027unchanged\u0027"
     )
 
