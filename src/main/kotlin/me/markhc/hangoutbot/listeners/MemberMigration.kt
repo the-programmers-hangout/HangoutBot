@@ -43,6 +43,9 @@ fun migrationListeners(persistentData: PersistentData, guildService: GreetingSer
                     thumbnail {
                         url = member.avatar.url
                     }
+                    footer {
+                        text = "User ID: ${member.id.value}"
+                    }
                 }
 
                 guildService.addMessageToCache(member.asUser(), message)
