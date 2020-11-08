@@ -37,7 +37,7 @@ fun migrationListeners(persistentData: PersistentData, guildService: GreetingSer
             if (guild.getMemberOrNull(member.id) != null) {
                 val message = welcomeChannel.createEmbed {
                     title = "Welcome"
-                    description = Messages.getRandomJoinMessage("**${member.username}")
+                    description = Messages.getRandomJoinMessage("**${member.username}**")
                     color = discord.configuration.theme
 
                     thumbnail {
