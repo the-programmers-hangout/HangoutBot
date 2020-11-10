@@ -26,7 +26,7 @@ fun migrationListeners(persistentData: PersistentData, guildService: GreetingSer
             welcomeEmbeds to welcomeChannel
         }
 
-        if (!embeds || channel.isEmpty()) return@on
+        if (!embeds || channel.isEmpty) return@on
 
         val welcomeChannel = channel.toSnowflakeOrNull()?.let { guild.getChannelOf<TextChannel>(it) }
                 ?: return@on
