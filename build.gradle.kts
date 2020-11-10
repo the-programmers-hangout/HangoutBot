@@ -1,5 +1,4 @@
 import org.jetbrains.kotlin.config.KotlinCompilerVersion
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 group = "me.markhc"
 version = Versions.BotVersion
@@ -9,7 +8,7 @@ object Versions {
     const val BotVersion = "3.0.0"
     const val DiscordKt = "0.21.3"
     const val Fuel = "2.3.0"
-    const val JodaTime = "2.10.6"
+    const val JodaTime = "2.10.8"
     const val Cowsay = "1.1.0"
     const val Mockk = "1.10.2"
     const val JUnit = "5.7.0"
@@ -18,8 +17,8 @@ object Versions {
 plugins {
     kotlin("jvm") version "1.4.10"
     kotlin("plugin.serialization") version "1.4.10"
-    id("com.github.ben-manes.versions") version "0.33.0"
-    id("com.github.johnrengelman.shadow") version "6.0.0"
+    id("com.github.ben-manes.versions") version "0.36.0"
+    id("com.github.johnrengelman.shadow") version "6.1.0"
 }
 
 repositories {
@@ -46,7 +45,7 @@ dependencies {
 }
 
 tasks {
-    withType<KotlinCompile> {
+    compileKotlin {
         kotlinOptions.jvmTarget = "1.8"
     }
 
@@ -61,7 +60,7 @@ tasks {
         archiveFileName.set("HangoutBot-${Versions.BotVersion}.jar")
         manifest {
             attributes(
-                    "Main-Class" to "me.markhc.hangoutbot.MainKt"
+                "Main-Class" to "me.markhc.hangoutbot.MainKt"
             )
         }
     }

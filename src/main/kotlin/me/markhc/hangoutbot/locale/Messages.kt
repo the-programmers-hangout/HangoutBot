@@ -3,7 +3,7 @@ package me.markhc.hangoutbot.locale
 import kotlin.random.Random
 
 object Messages {
-    val INSUFFICIENT_PERMS = "Sorry, you do not have the required permissions."
+    const val INSUFFICIENT_PERMS = "Sorry, you do not have the required permissions."
     private val FLIP_RESPONSE_CHOICES = listOf(
         "Hmm, I'd say %choice%.",
         "%choice%, no doubt.",
@@ -32,7 +32,7 @@ object Messages {
         "Is that? No, it can\u0027t be... Are you %name%?!?!?",
         "01010111 01100101 01101100 01100011 01101111 01101101 01100101 %name%",
         "Hold on %name%, your welcome message is compiling...",
-        "Here\u0027s your sword, shield, helmet, now go %name%, and vanquish those bugs!",
+        "Here\u0027s your sword, shield, helmet, now go %name%, and vanquish those bugs! 🗡️",
         "%name%, I\u0027ve got a feeling we're not in Kansas anymore...",
         "Don\u0027t throw away your shot, %name%!",
         "One, two, three, four, five, six, seven, eight, nine. It\u0027s %name%!",
@@ -69,7 +69,7 @@ object Messages {
         "Members of TPH! %name%! My coders. I see in your eyes the same fear that would take the heart of me. A day may come when the courage of programmers fail, when we forsake our friends and break all bonds of fellowship, but it is not this day. An hour of bugs and fatal crashes when the Age of Programmers comes crashing down, but it is not this day! This day we code! By all that you hold dear on this good earth, I bid you stand, Programmers of TPH!",
         "The names %name%. %name% Bond.",
         "We're no strangers to code\nYou read the rules and so will I\nA git commit is what I'm thinking of\nYou wouldn't get this from %name%",
-        "%name% has made the wise decision to hide behind a bush. However, %name% has also made the common mistake of hiding in the only bush in the area. This is how not to be seen.",
+        "%name% has made the wise decision to hide behind a bush. However, they have also made the common mistake of hiding in the only bush in the area. This is how not to be seen.",
         "May I have your attention, please?\nWill the real %name% please stand up?\nI repeat, will the real %name% please stand up?\nWe're gonna have a problem here",
         "My name is %name%, Commander of the coders of the North, General of the IDE legions, loyal servant to the true emperor, Open Source. Father to an unfinished project, husband to an idea waiting to be started. And I will have my vengeance, in this life or the next.",
         "git blame %name%",
@@ -77,7 +77,7 @@ object Messages {
         "%name%, you can't fight in here! This is the War Room!",
         "Open the pod bay doors, %name%.",
         "That'll do, %name%. That'll do.",
-        "%name%, the question is\u0027nt how... but when...",
+       "%name%, the question isn\u0027t how... but when...",
         "%name%, excited to time travel? Here, take this yellow raincoat to be known as the \u0027unchanged\u0027",
         "We will watch your career with great interest, %name%."
     )

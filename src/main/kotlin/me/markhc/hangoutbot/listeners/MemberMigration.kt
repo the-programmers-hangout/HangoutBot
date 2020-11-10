@@ -26,7 +26,7 @@ fun migrationListeners(persistentData: PersistentData, guildService: GreetingSer
             welcomeEmbeds to welcomeChannel
         }
 
-        if (!embeds || channel.isEmpty()) return@on
+        if (!embeds || channel.isEmpty) return@on
 
         val welcomeChannel = channel.toSnowflakeOrNull()?.let { guild.getChannelOf<TextChannel>(it) }
                 ?: return@on
@@ -37,7 +37,7 @@ fun migrationListeners(persistentData: PersistentData, guildService: GreetingSer
             if (guild.getMemberOrNull(member.id) != null) {
                 val message = welcomeChannel.createEmbed {
                     title = "Welcome"
-                    description = Messages.getRandomJoinMessage("${member.mention} (${member.tag})")
+                    description = Messages.getRandomJoinMessage("**${member.username}**")
                     color = discord.configuration.theme
 
                     thumbnail {

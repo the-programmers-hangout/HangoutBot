@@ -261,7 +261,7 @@ suspend fun CommandEvent<*>.buildMemberInfoEmbed(member: Member) = respond {
     }
     field {
         name = "**Joined**"
-        value = formatOffsetTime(member.id.timeStamp)
+        value = formatOffsetTime(member.joinedAt)
         inline = true
     }
 
