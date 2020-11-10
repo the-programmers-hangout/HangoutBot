@@ -32,7 +32,7 @@ object Messages {
         "Is that? No, it can\u0027t be... Are you %name%?!?!?",
         "01010111 01100101 01101100 01100011 01101111 01101101 01100101 %name%",
         "Hold on %name%, your welcome message is compiling...",
-        "Here\u0027s your sword, shield, helmet, now go %name%, and vanquish those bugs!",
+        "Here\u0027s your sword, shield, helmet, now go %name%, and vanquish those bugs! 🗡️",
         "%name%, I\u0027ve got a feeling we're not in Kansas anymore...",
         "Don\u0027t throw away your shot, %name%!",
         "One, two, three, four, five, six, seven, eight, nine. It\u0027s %name%!",
