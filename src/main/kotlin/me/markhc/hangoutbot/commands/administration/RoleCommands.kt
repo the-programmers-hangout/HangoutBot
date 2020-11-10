@@ -148,7 +148,6 @@ fun roleCommands(persistentData: PersistentData) = commands("Roles") {
         description = "List all the roles available in the guild."
         requiredPermissionLevel = PermissionLevel.Staff
         execute(EveryArg("GrepRegex").makeNullableOptional(null)) {
-            val guild = guild
             val message = channel.createMessage("Working...")
 
             val messages = buildRolelistMessages(guild,
@@ -183,7 +182,11 @@ fun roleCommands(persistentData: PersistentData) = commands("Roles") {
  */
 private suspend fun buildRolelistMessages(guild: Guild, regex: Regex): List<String> {
     val list = guild.roles.toList().map { role ->
-        "${role.id} (${String.format("#%02x%02x%02x", role.color.red, role.color.green, role.color.blue)}) - ${role.name}: ${guild.members.count { role in it.roles.toList() }} users"
+        val colorString = with (role.color) {
+            "(${String.format("#%02x%02x%02x", red, green, blue)})"
+        }
+
+        "${role.id.value} $colorString - ${role.name}: ${guild.members.count { role in it.roles.toList() }} users"
     }.filter { regex.containsMatchIn(it) }
 
     // Try joining them in a single message
