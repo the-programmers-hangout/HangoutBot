@@ -67,7 +67,7 @@ object Messages {
         "Code for the code god! Tests for the test throne! Glorious programming awaits us %name%!",
         "%name%, you are the stuff that dreams are made of.",
         "Members of TPH! %name%! My coders. I see in your eyes the same fear that would take the heart of me. A day may come when the courage of programmers fail, when we forsake our friends and break all bonds of fellowship, but it is not this day. An hour of bugs and fatal crashes when the Age of Programmers comes crashing down, but it is not this day! This day we code! By all that you hold dear on this good earth, I bid you stand, Programmers of TPH!",
-        "The names %name%. %name% Bond.",
+        "The name's %name%. %name% Bond.",
         "We're no strangers to code\nYou read the rules and so will I\nA git commit is what I'm thinking of\nYou wouldn't get this from %name%",
         "%name% has made the wise decision to hide behind a bush. However, they have also made the common mistake of hiding in the only bush in the area. This is how not to be seen.",
         "May I have your attention, please?\nWill the real %name% please stand up?\nI repeat, will the real %name% please stand up?\nWe're gonna have a problem here",
