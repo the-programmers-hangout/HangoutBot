@@ -80,6 +80,16 @@ object Messages {
        "%name%, the question isn\u0027t how... but when...",
         "%name%, excited to time travel? Here, take this yellow raincoat to be known as the \u0027unchanged\u0027",
         "We will watch your career with great interest, %name%."
+        "Hello there %name%. Bold of you to join."
+        "Sorry we don't have cookies %name%."
+        "Make way for %name%."
+        "Welcome %name%, to uh... What is this place again?"
+        "A %name% has appeared."
+        "The one and only %name% has arrived, make way."
+        "%name%, did you bring the pizza, or was that someone else."
+        "Lord %name% has entered."
+        "I don't know who %name% is but he sounds like a good guy."
+        
     )
 
     const val welcomeDescription: String = "Hey there, be sure to check out the info section at the top!"
