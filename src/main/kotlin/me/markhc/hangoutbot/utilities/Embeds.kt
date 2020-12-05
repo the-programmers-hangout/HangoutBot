@@ -6,6 +6,7 @@ import com.gitlab.kordlib.core.entity.Role
 import com.gitlab.kordlib.core.entity.User
 import com.gitlab.kordlib.core.entity.channel.TextChannel
 import com.gitlab.kordlib.core.entity.channel.VoiceChannel
+import com.gitlab.kordlib.core.supplier.EntitySupplyStrategy
 import com.gitlab.kordlib.rest.Image
 import com.gitlab.kordlib.rest.request.RestRequestException
 import kotlinx.coroutines.flow.count
@@ -83,7 +84,7 @@ suspend fun CommandEvent<*>.buildGuildInfoEmbed(guild: Guild) = respond {
     }
     field {
         name = "**Users**"
-        value = "${guild.memberCount}"
+        value = guild.withStrategy(EntitySupplyStrategy.rest).members.count().toString()
         inline = true
     }
     field {

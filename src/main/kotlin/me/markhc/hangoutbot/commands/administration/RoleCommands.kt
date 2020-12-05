@@ -193,7 +193,7 @@ private suspend fun buildRolelistMessages(guild: Guild, regex: Regex): List<Stri
     val response = list.joinToString("\n")
 
     return when {
-        response.isEmpty -> {
+        response.isEmpty() -> {
             listOf()
         }
         response.length < 1990 -> {
