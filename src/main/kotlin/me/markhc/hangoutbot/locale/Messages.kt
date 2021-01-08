@@ -70,7 +70,6 @@ object Messages {
         "We're no strangers to code\nYou read the rules and so will I\nA git commit is what I'm thinking of\nYou wouldn't get this from %name%",
         "%name% has made the wise decision to hide behind a bush. However, they have also made the common mistake of hiding in the only bush in the area. This is how not to be seen.",
         "May I have your attention, please?\nWill the real %name% please stand up?\nI repeat, will the real %name% please stand up?\nWe're gonna have a problem here",
-        "My name is %name%, Commander of the coders of the North, General of the IDE legions, loyal servant to the true emperor, Open Source. Father to an unfinished project, husband to an idea waiting to be started. And I will have my vengeance, in this life or the next.",
         "git blame %name%",
         "Oh, %name%, don't let's ask for the moon. We have the stars.",
         "%name%, you can't fight in here! This is the War Room!",
@@ -87,7 +86,12 @@ object Messages {
         "The one and only %name% has arrived, make way.",
         "%name%, did you bring the pizza, or was that someone else.",
         "Lord %name% has entered.",
-        "I don't know who %name% is but he sounds like a good guy."
+        "I don't know who %name% is but he sounds like a good guy.",
+        "I don't know why you're here %name% but welcome to the party",
+        "Is %name% on the guest list?",
+        "I'll just permanently borrow you code that you %name%",
+        "We are looking for a %name%, has anyone see them?",
+        "%name% is a jedi, therfore we must welcome him"
     )
 
     const val welcomeDescription: String = "Hey there, be sure to check out the info section at the top!"
