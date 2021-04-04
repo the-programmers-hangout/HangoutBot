@@ -87,7 +87,19 @@ object Messages {
         "The one and only %name% has arrived, make way.",
         "%name%, did you bring the pizza, or was that someone else.",
         "Lord %name% has entered.",
-        "I don't know who %name% is but he sounds like a good guy."
+        "I don't know who %name% is but he sounds like a good guy.",
+        "You were the chosen one! It was said you would destroy TPH, not join them! You were my brother, %name%, I loved you!",
+        "Halt, %name%! The way is shut. It was made by those who are mods, and the mods keep it, until the time comes.",
+        "Welcome, %name%! May your beer be laid under an enchantment of surpassing excellence for seven years!",
+        "It is perilous to study too deeply the arts of %name%, for good or for ill.",
+        "Old %name%, water-lilies bringing, comes hopping to TPH again. Can you hear them singing?",
+        "Old %name% is a merry fellow, bright blue their jacket is, and their boots are yellow!",
+        "Give %name% a fire and he's warm for a day. But set fire to him and he's warm for the rest of his life!",
+        "Never half-ass two things, %name%. Whole-ass one thing.",
+        "Welcome, %name%! This message was written using 100% recycled words.",
+        "Hello, %name%, I don't suppose you're a tester? Mods like to see a tester around, it gives them something to aim at.",
+        "%name% has a mind that ticks like a clock and, like a clock, it regularly goes cuckoo!",
+        "%name% gives their compliments to the mods, and begs them to keep their abnormally large noses out of other people's business."
     )
 
     const val welcomeDescription: String = "Hey there, be sure to check out the info section at the top!"
