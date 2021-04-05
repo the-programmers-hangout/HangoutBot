@@ -72,7 +72,7 @@ object Messages {
         "May I have your attention, please?\nWill the real %name% please stand up?\nI repeat, will the real %name% please stand up?\nWe're gonna have a problem here",
         "My name is %name%, Commander of the coders of the North, General of the IDE legions, loyal servant to the true emperor, Open Source. Father to an unfinished project, husband to an idea waiting to be started. And I will have my vengeance, in this life or the next.",
         "git blame %name%",
-        "Oh, %name%, don't let's ask for the moon. We have the stars.",
+        "Oh, %name%, don't ask for the moon. We have the stars.",
         "%name%, you can't fight in here! This is the War Room!",
         "Open the pod bay doors, %name%.",
         "That'll do, %name%. That'll do.",
