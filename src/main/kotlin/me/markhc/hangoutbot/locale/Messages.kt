@@ -9,7 +9,7 @@ object Messages {
         "%choice%, no doubt.",
         "Perhaps... %choice%.",
         "%choice% sounds good to me.",
-        "If it were up to me, I'd go with %choice%"
+        "If it were up to me, I'd go with %choice%",
         "East or west, %choice% is the best."
     )
 
