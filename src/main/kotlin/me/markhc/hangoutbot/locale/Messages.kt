@@ -100,7 +100,7 @@ object Messages {
         "Welcome, %name%! This message was written using 100% recycled words.",
         "Hello, %name%, I don't suppose you're a tester? Mods like to see a tester around, it gives them something to aim at.",
         "%name% has a mind that ticks like a clock and, like a clock, it regularly goes cuckoo!",
-        "%name% gives their compliments to the mods, and begs them to keep their abnormally large noses out of other people's business."
+        "%name% gives their compliments to the mods, and begs them to keep their abnormally large noses out of other people's business.",
         "Have you ever heard the tragedy of %name% the Wise? I thought not. It's not a story the mods would tell you."
     )
 
