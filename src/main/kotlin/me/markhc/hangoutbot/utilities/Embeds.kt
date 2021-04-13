@@ -229,7 +229,7 @@ fun getSafeNickname(member: Member): String {
 
 suspend fun CommandEvent<*>.buildMemberInfoEmbed(member: Member) = respond {
     title = "User information"
-    color = member.roles.toList().maxByOrNull { it.rawPosition }?.color
+    color = member.roles.filter { it.color.rgb != 0 }.toList().maxByOrNull { it.rawPosition }?.color
     thumbnail {
         url = member.avatar.url
     }
