@@ -67,7 +67,7 @@ object Messages {
         "We are outgunned, outmanned, outnumbered, outplanned! We gotta make an all out stand. Ayo we\u0027re gonna need %name%!",
         "Code for the code god! Tests for the test throne! Glorious programming awaits us %name%!",
         "%name%, you are the stuff that dreams are made of.",
-        "The name\u0027s %name%. %name% Bond.",
+        "The name\u0027s Bond. %name% Bond.",
         "We're no strangers to code\nYou read the rules and so will I\nA git commit is what I'm thinking of\nYou wouldn't get this from %name%",
         "%name% has made the wise decision to hide behind a bush. However, they have also made the common mistake of hiding in the only bush in the area. This is how not to be seen.",
         "May I have your attention, please?\nWill the real %name% please stand up?\nI repeat, will the real %name% please stand up?\nWe're gonna have a problem here",
