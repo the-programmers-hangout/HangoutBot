@@ -1,5 +1,7 @@
 package me.markhc.hangoutbot.commands.information
 
+import com.github.kittinunf.fuel.Fuel
+import com.github.kittinunf.result.Result
 import me.jakejmattson.discordkt.api.arguments.AnyArg
 import me.jakejmattson.discordkt.api.arguments.CommandArg
 import me.jakejmattson.discordkt.api.arguments.RoleArg
@@ -106,8 +108,21 @@ fun produceInformationCommands(helpService: HelpService) = commands("Information
                 return@execute
             }
 
-            // TODO: check if status 404
-            respond("Looking up ${name}... https://theprogrammershangout.com/archives/what-is-${name}.md/")
+            val link = "https://theprogrammershangout.com/archives/what-is-${name}.md/"
+            val (_, _, result) = Fuel
+                .get(link)
+                .set("User-Agent", "HangoutBot (https://github.com/the-programmers-hangout/HangoutBot/)")
+                .responseString()
+
+            when (result) {
+                is Result.Failure -> {
+                    respond("Sorry, a spotlight for `${name}` could not be found. If the spotlight happened recently, it's possible the spotlight hasn't been uploaded to the website yet. If so, please try again later.")
+                }
+
+                is Result.Success -> {
+                    respond("Checkout our spotlight on `${name}`! Available here: ${link}")
+                }
+            }
         }
     }
 }
