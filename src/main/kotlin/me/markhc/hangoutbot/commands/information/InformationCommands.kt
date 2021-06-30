@@ -1,5 +1,8 @@
 package me.markhc.hangoutbot.commands.information
 
+import com.github.kittinunf.fuel.Fuel
+import com.github.kittinunf.result.Result
+import me.jakejmattson.discordkt.api.arguments.AnyArg
 import me.jakejmattson.discordkt.api.arguments.CommandArg
 import me.jakejmattson.discordkt.api.arguments.RoleArg
 import me.jakejmattson.discordkt.api.arguments.UserArg
@@ -92,6 +95,34 @@ fun produceInformationCommands(helpService: HelpService) = commands("Information
             val user = args.first
 
             respond("${user.avatar.url}?size=512")
+        }
+    }
+
+    command("spotlight") {
+        description = "Gets relevant link to spotlights."
+        execute(AnyArg("name").makeOptional("")) {
+            val (name) = args
+
+            if (name.isBlank()) {
+                respond("Spotlights are occasional, temporary channels that cover a piece of technology that might be unknown to part of our users. Past tech spotlight write-ups are available here https://theprogrammershangout.com/archives. If you have a suggestion, please post in server-meta or contact ModMail.")
+                return@execute
+            }
+
+            val link = "https://theprogrammershangout.com/archives/what-is-${name}.md/"
+            val (_, _, result) = Fuel
+                .get(link)
+                .set("User-Agent", "HangoutBot (https://github.com/the-programmers-hangout/HangoutBot/)")
+                .responseString()
+
+            when (result) {
+                is Result.Failure -> {
+                    respond("Sorry, a spotlight for `${name}` could not be found. If the spotlight happened recently, it's possible the spotlight hasn't been uploaded to the website yet. If so, please try again later.")
+                }
+
+                is Result.Success -> {
+                    respond("Checkout our spotlight on `${name}`! Available here: ${link}")
+                }
+            }
         }
     }
 }
