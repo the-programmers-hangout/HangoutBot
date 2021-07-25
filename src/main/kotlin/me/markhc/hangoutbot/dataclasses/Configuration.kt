@@ -25,4 +25,4 @@ data class GuildConfiguration(val guildId: String = "",
                               val mutedUsers: MutableList<MuteEntry> = mutableListOf())
 
 data class MuteEntry(val user: String = "", val timeUntil: String = "", val isSoft: Boolean = false)
-data class Reminder(val user: String = "", val timeUntil: String = "", val what: String = "")
+data class Reminder(val user: String = "", val timeUntil: String = "", val what: String = "", val repeatingTime: Long? = null)

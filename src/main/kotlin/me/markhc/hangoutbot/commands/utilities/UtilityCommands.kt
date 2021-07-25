@@ -56,8 +56,8 @@ fun produceUtilityCommands(muteService: MuteService) = commands("Selfmute") {
 fun reminderCommands(reminderService: ReminderService) = commands("Reminders") {
     command("remindme") {
         description = "A command that'll remind you about something after the specified time."
-        execute(TimeArg, EveryArg) {
-            val (timeInSeconds, sentence) = args
+        execute(TimeArg, TimeArg.makeNullableOptional(null), EveryArg) {
+            val (timeInSeconds, repeatingTimeinSeconds, sentence) = args
 
             if (timeInSeconds < 5) {
                 respond("You cannot set a reminder for less than 5 seconds.")
@@ -69,8 +69,13 @@ fun reminderCommands(reminderService: ReminderService) = commands("Reminders") {
             }
 
             val millis = timeInSeconds.roundToLong() * 1000
+            var repeatingMillis: Long? = null
 
-            reminderService.addReminder(author, millis, sentence).fold(
+            if (repeatingTimeinSeconds != null) {
+                repeatingMillis = repeatingTimeinSeconds.roundToLong() * 1000
+            }
+
+            reminderService.addReminder(author, millis, sentence, null).fold(
                 success = { msg -> respond(msg) },
                 failure = { ex -> respond(ex.message!!) }
             )
