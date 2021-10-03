@@ -6,9 +6,9 @@ object Messages {
     const val INSUFFICIENT_PERMS = "Sorry, you do not have the required permissions."
     private val FLIP_RESPONSE_CHOICES = listOf(
         "Hmm, I'd say %choice%.",
-        "%choice%, no doubt.",
+        "\u200b%choice%, no doubt.",
         "Perhaps... %choice%.",
-        "%choice% sounds good to me.",
+        "\u200b%choice% sounds good to me.",
         "If it were up to me, I'd go with %choice%",
         "East or west, %choice% is the best."
     )
