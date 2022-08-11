@@ -1,4 +1,4 @@
-package me.markhc.hangoutbot.commands.information
+package me.markhc.hangoutbot.commands
 
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.result.Result
