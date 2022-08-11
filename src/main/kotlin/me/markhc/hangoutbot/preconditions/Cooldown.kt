@@ -1,19 +1,18 @@
 package me.markhc.hangoutbot.preconditions
 
+import dev.kord.common.entity.Permission
 import me.jakejmattson.discordkt.dsl.precondition
-import me.markhc.hangoutbot.services.PermissionLevel
-import me.markhc.hangoutbot.services.PermissionsService
 import me.markhc.hangoutbot.services.PersistentData
 import kotlin.collections.set
 
 val cooldownMap = mutableMapOf<Long, Long>()
 
-fun cooldown(persistentData: PersistentData, permissionsService: PermissionsService) = precondition {
+fun cooldown(persistentData: PersistentData) = precondition {
     command ?: return@precondition
 
     val member = guild?.getMember(author.id)
 
-    if (member != null && permissionsService.getPermissionLevel(member) >= PermissionLevel.Staff)
+    if (member != null && member.getPermissions().contains(Permission.ManageMessages))
         return@precondition
 
     val cd = guild?.let {

@@ -7,8 +7,7 @@ import me.jakejmattson.discordkt.annotations.Service
 import me.markhc.hangoutbot.dataclasses.*
 
 @Service
-class PersistentData(private val botConfiguration: BotConfiguration,
-                     private val configuration: Configuration) {
+class PersistentData(private val configuration: Configuration) {
     fun getGuilds() = configuration.guildConfigurations
 
     fun <R> setGlobalProperty(fn: Configuration.() -> R) =
@@ -22,25 +21,8 @@ class PersistentData(private val botConfiguration: BotConfiguration,
         return fn(config).also { configuration.save() }
     }
 
-    fun <R> setGuildProperty(guild: String, fn: GuildConfiguration.() -> R): R {
-        val config = getGuildConfig(guild)
-        return fn(config).also { configuration.save() }
-    }
-
     suspend fun <R> getGuildProperty(guild: Guild, fn: suspend GuildConfiguration.() -> R) =
         fn(getGuildConfig(guild))
-
-    private fun getGuildConfig(guildId: String): GuildConfiguration {
-        val guild = configuration.guildConfigurations.find { it.guildId == guildId }
-
-        if (guild != null) {
-            return guild
-        }
-
-        configuration.guildConfigurations.add(GuildConfiguration(guildId, botConfiguration.prefix))
-
-        return configuration.guildConfigurations.first { it.guildId == guildId }
-    }
 
     private fun getGuildConfig(guild: Guild) = configuration.guildConfigurations.first { it.guildId == guild.id.toString() }
 
@@ -52,7 +34,6 @@ class PersistentData(private val botConfiguration: BotConfiguration,
         configuration.guildConfigurations.add(GuildConfiguration (
                 guildId = guild.id.toString(),
                 prefix = prefix,
-                welcomeChannel = welcomeChannel.id.toString(),
                 loggingChannel = loggingChannel.id.toString(),
                 muteRole = muteRole.id.toString(),
                 softMuteRole = softMuteRole.id.toString()

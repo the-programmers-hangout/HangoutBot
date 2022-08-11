@@ -1,5 +1,7 @@
 package me.markhc.hangoutbot.commands.utilities
 
+import dev.kord.common.entity.Permission
+import dev.kord.common.entity.Permissions
 import dev.kord.core.entity.Message
 import dev.kord.core.entity.channel.GuildMessageChannel
 import dev.kord.core.entity.channel.TextChannel
@@ -8,13 +10,10 @@ import me.jakejmattson.discordkt.arguments.ChannelArg
 import me.jakejmattson.discordkt.arguments.EveryArg
 import me.jakejmattson.discordkt.arguments.IntegerArg
 import me.jakejmattson.discordkt.commands.commands
-import me.markhc.hangoutbot.services.PermissionLevel
-import me.markhc.hangoutbot.services.requiredPermissionLevel
 
-fun moderationCommands() = commands("Moderation") {
+fun moderationCommands() = commands("Moderation", Permissions(Permission.ManageMessages)) {
     text("echo") {
         description = "Echo a message to a channel."
-        requiredPermissionLevel = PermissionLevel.Staff
         execute(ChannelArg.optional { it.channel as TextChannel }, EveryArg) {
             val (target, message) = args
 
@@ -24,7 +23,6 @@ fun moderationCommands() = commands("Moderation") {
 
     text("nuke") {
         description = "Delete 2 - 99 past messages in the given channel (default is the invoked channel)"
-        requiredPermissionLevel = PermissionLevel.Staff
         execute(ChannelArg.optionalNullable(), IntegerArg) {
             val targetChannel = args.first ?: channel
             val amount = args.second

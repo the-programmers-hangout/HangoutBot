@@ -4,12 +4,6 @@ import java.util.concurrent.TimeUnit
 
 class TimeFormatter {
     companion object {
-        fun toShortDurationString(ms: Long) =
-            String.format("%02d:%02d:%02d",
-                TimeUnit.MILLISECONDS.toHours(ms),
-                TimeUnit.MILLISECONDS.toMinutes(ms) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(ms)),
-                TimeUnit.MILLISECONDS.toSeconds(ms) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(ms)))
-
         fun toLongDurationString(ms: Long): String {
             val units = decompose(ms)
 

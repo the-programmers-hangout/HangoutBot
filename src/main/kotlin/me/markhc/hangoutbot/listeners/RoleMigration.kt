@@ -11,7 +11,6 @@ fun roleMigration(persistentData: PersistentData) = listeners {
     on<RoleDeleteEvent> {
         val roleId = role!!.id.toString()
         persistentData.setGuildProperty(guild.asGuild()) {
-            this.rolePermissions.remove(roleId)
             this.grantableRoles.entries.removeIf {
                 it.value.remove(roleId)
                 it.value.isEmpty()

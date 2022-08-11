@@ -1,18 +1,20 @@
 package me.markhc.hangoutbot.commands.utilities.services
 
+import dev.kord.common.entity.Permission
 import dev.kord.common.kColor
-import dev.kord.core.behavior.addRole
 import dev.kord.core.behavior.createRole
-import dev.kord.core.entity.*
-import dev.kord.rest.builder.role.RoleCreateBuilder
-import kotlinx.coroutines.flow.*
+import dev.kord.core.entity.Guild
+import dev.kord.core.entity.Member
+import dev.kord.core.entity.Role
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.toList
 import me.jakejmattson.discordkt.annotations.Service
 import me.jakejmattson.discordkt.extensions.toSnowflakeOrNull
-import me.markhc.hangoutbot.services.*
+import me.markhc.hangoutbot.services.PersistentData
 import java.awt.Color
 
 @Service
-class ColorService(private val persistentData: PersistentData, private val permissionsService: PermissionsService) {
+class ColorService(private val persistentData: PersistentData) {
     suspend fun setMemberColor(member: Member, roleName: String, roleColor: Color?) {
         if (!isValidName(member, roleName)) {
             throw Exception("The role name for regular users is only allowed ASCII characters ([\\x20-\\x7F])")
@@ -118,7 +120,7 @@ class ColorService(private val persistentData: PersistentData, private val permi
     private suspend fun isValidName(member: Member, roleName: String): Boolean {
         // If user permissions are lower than Administrator, only allow
         // role names with ASCII characters
-        if (!permissionsService.hasPermission(member, PermissionLevel.Administrator)) {
+        if (!member.getPermissions().contains(Permission.Administrator)) {
             if (!Regex("^[\\x20-\\x7F]+$").matches(roleName)) {
                 return false
             }

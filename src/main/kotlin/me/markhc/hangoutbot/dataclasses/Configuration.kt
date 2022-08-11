@@ -1,28 +1,27 @@
 package me.markhc.hangoutbot.dataclasses
 
+import kotlinx.serialization.Serializable
 import me.jakejmattson.discordkt.dsl.Data
-import me.markhc.hangoutbot.services.PermissionLevel
 
+@Serializable
 data class Configuration(val guildConfigurations: MutableList<GuildConfiguration> = mutableListOf(),
                          var totalCommandsExecuted: Int = 0,
-                         val commandPermission: MutableMap<String, PermissionLevel> = mutableMapOf(),
                          val reminders: MutableList<Reminder> = mutableListOf()) : Data()
 
+@Serializable
 data class GuildConfiguration(val guildId: String = "",
                               var prefix: String = "++",
                               var cooldown: Int = 5,
-                              var welcomeEmbeds: Boolean = false,
-                              var welcomeChannel: String = "",
-                              var botChannel: String = "",
                               var loggingChannel: String = "",
                               var muteRole: String = "",
                               var softMuteRole: String = "",
                               var totalCommandsExecuted: Int = 0,
                               val grantableRoles: MutableMap<String, MutableList<String>> = mutableMapOf(),
-                              val rolePermissions: MutableMap<String, PermissionLevel> = mutableMapOf(),
-                              val commandPermission: MutableMap<String, PermissionLevel> = mutableMapOf(),
                               val assignedColorRoles: MutableMap<String, MutableList<String>> = mutableMapOf(),
                               val mutedUsers: MutableList<MuteEntry> = mutableListOf())
 
+@Serializable
 data class MuteEntry(val user: String = "", val timeUntil: String = "", val isSoft: Boolean = false)
+
+@Serializable
 data class Reminder(val user: String = "", val timeUntil: String = "", val what: String = "")

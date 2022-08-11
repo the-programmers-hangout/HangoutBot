@@ -20,41 +20,6 @@ import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.util.concurrent.TimeUnit
 
-suspend fun CommandEvent<*>.createBotStatsEmbed(botStats: BotStatsService, config: Configuration) = respond {
-    title = "Stats"
-    color = discord.configuration.theme
-
-    field {
-        name = "Commands"
-        value = """
-            ```
-            Commands executed:      ${String.format("%6d", config.totalCommandsExecuted)}
-            Commands since restart: ${String.format("%6d", botStats.totalCommands)}
-            ```
-        """.trimIndent()
-    }
-
-    val runtime = Runtime.getRuntime()
-    val usedMemory = runtime.totalMemory() - runtime.freeMemory()
-
-    field {
-        name = "Memory"
-        value = "${usedMemory / 1000000}/${runtime.totalMemory() / 1000000} MiB"
-        inline = true
-    }
-
-    field {
-        name = "Ping"
-        value = botStats.ping
-        inline = true
-    }
-
-    field {
-        name = "Uptime"
-        value = botStats.uptime
-    }
-}
-
 suspend fun CommandEvent<*>.buildGuildInfoEmbed(guild: Guild) = respond {
     title = guild.name
     color = discord.configuration.theme

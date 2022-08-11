@@ -1,16 +1,15 @@
 package me.markhc.hangoutbot
 
 import dev.kord.common.annotation.KordPreview
+import dev.kord.common.entity.Permission
+import dev.kord.common.entity.Permissions
 import dev.kord.gateway.Intent
 import dev.kord.gateway.PrivilegedIntent
 import me.jakejmattson.discordkt.dsl.bot
-import me.jakejmattson.discordkt.extensions.addInlineField
-import me.jakejmattson.discordkt.extensions.pfpUrl
 import me.jakejmattson.discordkt.extensions.plus
 import me.markhc.hangoutbot.commands.utilities.services.MuteService
 import me.markhc.hangoutbot.commands.utilities.services.ReminderService
-import me.markhc.hangoutbot.dataclasses.BotConfiguration
-import me.markhc.hangoutbot.services.*
+import me.markhc.hangoutbot.dataclasses.Configuration
 import java.awt.Color
 
 @OptIn(KordPreview::class)
@@ -20,25 +19,10 @@ suspend fun main(args: Array<String>) {
         ?: System.getenv("BOT_TOKEN")
         ?: throw IllegalArgumentException("Missing bot token.")
 
-    val defaultPrefix = System.getenv("BOT_PREFIX") ?: "++"
-    val botOwnerId = System.getenv("BOT_OWNER") ?: "210017247048105985"
-
     bot(token) {
-        data("data/guilds.json") { BotConfiguration(prefix = defaultPrefix, ownerId = botOwnerId) }
+        data("data/guilds.json") { Configuration() }
 
-        prefix {
-            if (guild === null) {
-                return@prefix defaultPrefix
-            }
-
-            val persistentData = discord.getInjectionObjects(PersistentData::class)
-
-            if (persistentData.hasGuildConfig(guild!!.id.toString())) {
-                return@prefix guild!!.let { persistentData.getGuildProperty(it) { prefix } }
-            }
-
-            defaultPrefix
-        }
+        prefix { "/" }
 
         configure {
             mentionAsPrefix = true
@@ -46,6 +30,7 @@ suspend fun main(args: Array<String>) {
             commandReaction = null
             theme = Color.CYAN
             intents = Intent.GuildMembers + Intent.Guilds + Intent.GuildMessages
+            defaultPermissions = Permissions(Permission.UseApplicationCommands)
         }
 
         onStart {

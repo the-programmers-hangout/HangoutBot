@@ -1,31 +1,30 @@
 package me.markhc.hangoutbot.commands.administration
 
+import dev.kord.common.entity.Permission
+import dev.kord.common.entity.Permissions
 import dev.kord.core.behavior.getChannelOf
 import dev.kord.core.entity.channel.TextChannel
 import me.jakejmattson.discordkt.arguments.ChannelArg
+import me.jakejmattson.discordkt.arguments.IntegerArg
 import me.jakejmattson.discordkt.arguments.RoleArg
 import me.jakejmattson.discordkt.commands.commands
 import me.jakejmattson.discordkt.extensions.toSnowflakeOrNull
-import me.markhc.hangoutbot.commands.administration.services.GreetingService
 import me.markhc.hangoutbot.conversations.ConfigurationConversation
-import me.markhc.hangoutbot.services.PermissionLevel
 import me.markhc.hangoutbot.services.PersistentData
-import me.markhc.hangoutbot.services.requiredPermissionLevel
 
-fun botConfigCommands(persistentData: PersistentData, greetingService: GreetingService) = commands("Configuration") {
+fun botConfigCommands(persistentData: PersistentData) = commands("Configuration", Permissions(Permission.Administrator)) {
     text("setup") {
         description = "Sets the guild up for first use."
-        requiredPermissionLevel = PermissionLevel.GuildOwner
+        requiredPermissions = Permissions(Permission.ManageGuild)
         execute {
-
             if (persistentData.hasGuildConfig(guild.id.toString())) {
                 respond("This guild is already setup.")
                 return@execute
             }
 
             ConfigurationConversation(persistentData)
-                    .createConfigurationConversation(guild)
-                    .startPublicly(discord, author, channel.asChannel())
+                .createConfigurationConversation(guild)
+                .startPublicly(discord, author, channel.asChannel())
 
             respond("${guild.name} has been setup")
         }
@@ -33,7 +32,6 @@ fun botConfigCommands(persistentData: PersistentData, greetingService: GreetingS
 
     text("muterole") {
         description = "Gets or sets the role used to mute an user."
-        requiredPermissionLevel = PermissionLevel.Administrator
         execute(RoleArg.optionalNullable(null)) {
             val (role) = args
 
@@ -53,7 +51,6 @@ fun botConfigCommands(persistentData: PersistentData, greetingService: GreetingS
 
         text("softmuterole") {
             description = "Gets or sets the role used to soft mute an user"
-            requiredPermissionLevel = PermissionLevel.Administrator
             execute(RoleArg.optionalNullable(null)) {
                 val (role) = args
 
@@ -75,7 +72,6 @@ fun botConfigCommands(persistentData: PersistentData, greetingService: GreetingS
 
         text("logchannel") {
             description = "Sets the channel used to log executed commands"
-            requiredPermissionLevel = PermissionLevel.Administrator
             execute(ChannelArg.optionalNullable(null)) {
                 val (textChannel) = args
 
@@ -97,35 +93,31 @@ fun botConfigCommands(persistentData: PersistentData, greetingService: GreetingS
             }
         }
 
-        text("botchannel") {
-            description = "Sets the bot channel. If set, the bot channel will be the only channel where the bot will accept commands from."
-            requiredPermissionLevel = PermissionLevel.Administrator
-            execute(ChannelArg.optionalNullable(null)) {
-                val channel = args.first
+        text("cooldown") {
+            description = "Gets or sets the command cooldown period (in seconds)."
+            execute(IntegerArg.optionalNullable(null)) {
+                val (cd) = args
 
-                persistentData.setGuildProperty(guild) {
-                    botChannel = channel?.id?.toString() ?: ""
-                }
+                if (cd != null) {
+                    if (cd < 1) {
+                        respond("Cooldown cannot be less than 1 second!")
+                        return@execute
+                    }
+                    if (cd > 3600) {
+                        respond("Cooldown cannot be more than 1 hour!")
+                        return@execute
+                    }
 
-                if (channel != null)
-                    respond("Bot channel set to #${channel.name}. The bot will now ignore commands from anywhere else.")
-                else
-                    respond("Bot channel cleared. Now accepting commands in any channel.")
-            }
-        }
+                    persistentData.setGuildProperty(guild) {
+                        cooldown = cd.toInt()
+                    }
 
-        text("greetchannel") {
-            description = "Gets or sets the channel used for welcome greetings."
-            requiredPermissionLevel = PermissionLevel.Administrator
-            execute(ChannelArg.optionalNullable(null)) {
-                val (textChannel) = args
-
-                if (textChannel != null) {
-                    greetingService.setChannel(guild, textChannel)
-                    respond("Greeting channel set to **#${textChannel.name}**")
+                    respond("Command cooldown set to $cd seconds")
                 } else {
-                    val channel = greetingService.getChannel(guild)?.mention ?: "not set"
-                    respond("Greeting channel is $channel")
+                    val value = persistentData.getGuildProperty(guild) {
+                        cooldown
+                    }
+                    respond("Command cooldown is $value seconds")
                 }
             }
         }

@@ -114,14 +114,13 @@ class MuteService(private val persistentData: PersistentData, private val discor
 
     private suspend fun CommandEvent<*>.buildMuteEmbed(member: Member, duration: Long) = member.sendPrivateMessage {
         title = "You have been muted"
-        description = "The mute will be automatically removed when the timer expires. " +
-            "If you think this was an error, contact a staff member."
+        description = "The mute will be automatically removed when the timer expires."
         color = discord.configuration.theme
 
         field {
             inline = true
             name = "Duration"
-            value = TimeFormatter.toShortDurationString(duration)
+            value = "For a bit"//TODO TimeFormatter.toShortDurationString(duration)
         }
 
         field {

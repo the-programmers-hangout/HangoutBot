@@ -1,5 +1,7 @@
 package me.markhc.hangoutbot.commands.utilities
 
+import dev.kord.common.entity.Permission
+import dev.kord.common.entity.Permissions
 import dev.kord.core.behavior.edit
 import me.jakejmattson.discordkt.arguments.*
 import me.jakejmattson.discordkt.commands.commands
@@ -8,10 +10,9 @@ import me.markhc.hangoutbot.commands.utilities.services.ColorService
 import me.markhc.hangoutbot.services.*
 import java.awt.Color
 
-fun colorCommands(persistentData: PersistentData, colorService: ColorService) = commands("Colors") {
+fun colorCommands(persistentData: PersistentData, colorService: ColorService) = commands("Colors", Permissions(Permission.ManageMessages)) {
     text("setcolor") {
         description = "Creates a role with the given name and color and assigns it to the user."
-        requiredPermissionLevel = PermissionLevel.Staff
         execute(HexColorArg("HexColor").optionalNullable(), EveryArg("RoleName")) {
             val (color, roleName) = args
 
@@ -35,7 +36,6 @@ fun colorCommands(persistentData: PersistentData, colorService: ColorService) = 
 
     text("clearcolor") {
         description = "Clears the current color role."
-        requiredPermissionLevel = PermissionLevel.Staff
         execute {
             val member = author.asMember(guild.id)
             colorService.clearMemberColor(member)
@@ -45,7 +45,6 @@ fun colorCommands(persistentData: PersistentData, colorService: ColorService) = 
 
     text("listcolors") {
         description = "Creates a role with the given name and color and assigns it to the user."
-        requiredPermissionLevel = PermissionLevel.Staff
         execute {
             val (colorRoles, prefix) = persistentData.getGuildProperty(guild) { assignedColorRoles to prefix }
 

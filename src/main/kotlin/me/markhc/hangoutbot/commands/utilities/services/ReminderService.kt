@@ -28,7 +28,8 @@ class ReminderService(private val persistentData: PersistentData, private val di
 
         launchReminder(user.id.toString(), ms, what)
 
-        return Result.Success("Got it, I'll remind you in ${TimeFormatter.toLongDurationString(ms)} about that.")
+        //TODO use new time format for reminders
+        return Result.Success("Got it, I'll remind you in a bit about that.")
     }
 
     fun listReminders(user: User, fn: (Reminder) -> Unit) =
@@ -39,7 +40,7 @@ class ReminderService(private val persistentData: PersistentData, private val di
             .size
 
     fun launchTimers() {
-        TODO("Handle time parsing")
+        //TODO Handle time parsing
 
         persistentData.getGlobalProperty { reminders }.forEach {
             val millis = 0L //it.timeUntil - System.currentTimeMillis()
