@@ -3,7 +3,6 @@ package me.markhc.hangoutbot.locale
 import kotlin.random.Random
 
 object Messages {
-    const val INSUFFICIENT_PERMS = "Sorry, you do not have the required permissions."
     private val FLIP_RESPONSE_CHOICES = listOf(
         "Hmm, I'd say %choice%.",
         "%choice%, no doubt.",

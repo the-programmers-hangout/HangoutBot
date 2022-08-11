@@ -2,6 +2,7 @@ package me.markhc.hangoutbot.commands
 
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.gson.responseObject
+import me.jakejmattson.discordkt.arguments.EveryArg
 import me.jakejmattson.discordkt.arguments.SplitterArg
 import me.jakejmattson.discordkt.commands.commands
 import me.markhc.hangoutbot.locale.Messages
@@ -10,16 +11,16 @@ import kotlin.random.Random
 private data class JokeResponse(val id: String = "", val joke: String = "", val status: Int = 500)
 
 fun produceFunCommands() = commands("Fun") {
-    text("flip") {
+    slash("flip") {
         description = "Choose one of the given choices."
-        execute(SplitterArg("Choices", ";")) {
+        execute(SplitterArg(";", "Choices")) {
             val (args) = args
             val choice = args[Random.nextInt(args.size)]
-            respond(Messages.getRandomFlipMessage(choice))
+            respondPublic(Messages.getRandomFlipMessage(choice))
         }
     }
 
-    text("dadjoke") {
+    slash("dadjoke") {
         description = "Returns a random dad joke."
         execute {
             val (_, _, result) = Fuel
@@ -31,7 +32,7 @@ fun produceFunCommands() = commands("Fun") {
             result.fold<Unit>(
                 success = {
                     if (it.status == 200) {
-                        respond(it.joke)
+                        respondPublic(it.joke)
                     } else {
                         respond("Failed to fetch joke. Status: ${it.status}")
                     }

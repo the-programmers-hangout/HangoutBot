@@ -57,7 +57,6 @@ fun produceUtilityCommands(muteService: MuteService) = commands("Selfmute") {
 
 fun reminderCommands(reminderService: ReminderService) = commands("Reminders") {
     text("remindme") {
-
         description = "A command that'll remind you about something after the specified time."
         execute(TimeArg, EveryArg) {
             val (timeInSeconds, sentence) = args
@@ -81,7 +80,6 @@ fun reminderCommands(reminderService: ReminderService) = commands("Reminders") {
     }
 
     text("listreminders") {
-
         description = "List your active reminders"
         execute {
             val authorTag = author.tag
