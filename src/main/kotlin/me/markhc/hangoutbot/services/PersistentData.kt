@@ -4,7 +4,8 @@ import dev.kord.core.entity.Guild
 import dev.kord.core.entity.Role
 import dev.kord.core.entity.channel.Channel
 import me.jakejmattson.discordkt.annotations.Service
-import me.markhc.hangoutbot.dataclasses.*
+import me.markhc.hangoutbot.dataclasses.Configuration
+import me.markhc.hangoutbot.dataclasses.GuildConfiguration
 
 @Service
 class PersistentData(private val configuration: Configuration) {
@@ -31,12 +32,12 @@ class PersistentData(private val configuration: Configuration) {
     fun setup(guild: Guild, prefix: String, welcomeChannel: Channel, loggingChannel: Channel,
               muteRole: Role, softMuteRole: Role) {
 
-        configuration.guildConfigurations.add(GuildConfiguration (
-                guildId = guild.id.toString(),
-                prefix = prefix,
-                loggingChannel = loggingChannel.id.toString(),
-                muteRole = muteRole.id.toString(),
-                softMuteRole = softMuteRole.id.toString()
+        configuration.guildConfigurations.add(GuildConfiguration(
+            guildId = guild.id.toString(),
+            prefix = prefix,
+            loggingChannel = loggingChannel.id.toString(),
+            muteRole = muteRole.id.toString(),
+            softMuteRole = softMuteRole.id.toString()
         ))
 
         configuration.save()

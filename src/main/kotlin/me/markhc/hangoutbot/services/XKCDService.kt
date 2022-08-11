@@ -1,7 +1,8 @@
 package me.markhc.hangoutbot.services
 
-import com.github.kittinunf.fuel.*
+import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.gson.responseObject
+import com.github.kittinunf.fuel.httpGet
 import me.jakejmattson.discordkt.annotations.Service
 import java.net.URLEncoder
 

@@ -28,9 +28,9 @@ fun commandLogger(botStats: BotStatsService, persistentData: PersistentData) = p
             val channel = channel as TextChannel
 
             val message =
-                    "${author.tag} :: ${author.id.toString()} :: " +
-                            "Invoked `${command!!.names.first()}` in #${channel.name}." +
-                            if (args.isEmpty()) "" else " Args: ${args.sanitiseMentions(discord)}"
+                "${author.tag} :: ${author.id} :: " +
+                    "Invoked `${command!!.names.first()}` in #${channel.name}." +
+                    if (args.isEmpty()) "" else " Args: ${args.sanitiseMentions(discord)}"
 
             guild.getChannelOf<TextChannel>(loggingChannel).createMessage(message)
         }

@@ -1,8 +1,7 @@
 package me.markhc.hangoutbot.commands
 
-import com.github.kittinunf.fuel.Fuel
-import com.github.kittinunf.result.Result
-import me.jakejmattson.discordkt.arguments.*
+import me.jakejmattson.discordkt.arguments.RoleArg
+import me.jakejmattson.discordkt.arguments.UserArg
 import me.jakejmattson.discordkt.commands.commands
 import me.jakejmattson.discordkt.extensions.pfpUrl
 import me.markhc.hangoutbot.utilities.*
@@ -19,7 +18,7 @@ fun produceInformationCommands() = commands("Information") {
         description = "Displays information about the given user."
         execute(UserArg("user").optional { it.author }) {
             val (user) = args
-            val member = guild?.getMember(user.id)
+            val member = guild.getMember(user.id)
 
             if (member != null)
                 buildMemberInfoEmbed(member)

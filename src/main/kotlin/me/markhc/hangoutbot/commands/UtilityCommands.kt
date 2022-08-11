@@ -1,6 +1,7 @@
 package me.markhc.hangoutbot.commands
 
-import me.jakejmattson.discordkt.arguments.*
+import me.jakejmattson.discordkt.arguments.EveryArg
+import me.jakejmattson.discordkt.arguments.TimeArg
 import me.jakejmattson.discordkt.commands.commands
 import me.markhc.hangoutbot.services.MuteService
 import me.markhc.hangoutbot.services.ReminderService
@@ -55,7 +56,8 @@ fun produceUtilityCommands(muteService: MuteService) = commands("Selfmute") {
 }
 
 fun reminderCommands(reminderService: ReminderService) = commands("Reminders") {
-    command("remindme") {
+    text("remindme") {
+
         description = "A command that'll remind you about something after the specified time."
         execute(TimeArg, EveryArg) {
             val (timeInSeconds, sentence) = args
@@ -71,14 +73,15 @@ fun reminderCommands(reminderService: ReminderService) = commands("Reminders") {
 
             val millis = timeInSeconds.roundToLong() * 1000
 
-            reminderService.addReminder(author, millis, sentence).fold(
+            reminderService.addReminder(author, millis, sentence).fold<Unit>(
                 success = { msg -> respond(msg) },
                 failure = { ex -> respond(ex.message!!) }
             )
         }
     }
 
-    command("listreminders") {
+    text("listreminders") {
+
         description = "List your active reminders"
         execute {
             val authorTag = author.tag

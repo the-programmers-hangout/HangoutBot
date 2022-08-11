@@ -13,8 +13,6 @@ import kotlinx.datetime.toJavaInstant
 import me.jakejmattson.discordkt.commands.CommandEvent
 import me.jakejmattson.discordkt.commands.GuildCommandEvent
 import me.jakejmattson.discordkt.extensions.pfpUrl
-import me.markhc.hangoutbot.dataclasses.Configuration
-import me.markhc.hangoutbot.services.BotStatsService
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter

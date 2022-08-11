@@ -7,9 +7,9 @@ import dev.kord.gateway.Intent
 import dev.kord.gateway.PrivilegedIntent
 import me.jakejmattson.discordkt.dsl.bot
 import me.jakejmattson.discordkt.extensions.plus
+import me.markhc.hangoutbot.dataclasses.Configuration
 import me.markhc.hangoutbot.services.MuteService
 import me.markhc.hangoutbot.services.ReminderService
-import me.markhc.hangoutbot.dataclasses.Configuration
 import java.awt.Color
 
 @OptIn(KordPreview::class)

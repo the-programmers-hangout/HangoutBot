@@ -10,7 +10,7 @@ import kotlin.random.Random
 private data class JokeResponse(val id: String = "", val joke: String = "", val status: Int = 500)
 
 fun produceFunCommands() = commands("Fun") {
-    command("flip") {
+    text("flip") {
         description = "Choose one of the given choices."
         execute(SplitterArg("Choices", ";")) {
             val (args) = args
@@ -19,7 +19,7 @@ fun produceFunCommands() = commands("Fun") {
         }
     }
 
-    command("dadjoke") {
+    text("dadjoke") {
         description = "Returns a random dad joke."
         execute {
             val (_, _, result) = Fuel
@@ -28,7 +28,7 @@ fun produceFunCommands() = commands("Fun") {
                 .set("Accept", "application/json")
                 .responseObject<JokeResponse>()
 
-            result.fold(
+            result.fold<Unit>(
                 success = {
                     if (it.status == 200) {
                         respond(it.joke)

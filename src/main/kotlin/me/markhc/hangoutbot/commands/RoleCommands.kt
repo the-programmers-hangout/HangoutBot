@@ -5,7 +5,8 @@ import dev.kord.common.entity.Permissions
 import dev.kord.core.entity.Guild
 import kotlinx.coroutines.flow.count
 import kotlinx.coroutines.flow.toList
-import me.jakejmattson.discordkt.arguments.*
+import me.jakejmattson.discordkt.arguments.MemberArg
+import me.jakejmattson.discordkt.arguments.RoleArg
 import me.jakejmattson.discordkt.commands.commands
 import me.jakejmattson.discordkt.commands.subcommand
 import me.jakejmattson.discordkt.extensions.toSnowflakeOrNull
@@ -142,7 +143,7 @@ private suspend fun buildRolelistMessages(guild: Guild, regex: Regex): List<Stri
             "(${String.format("#%02x%02x%02x", red, green, blue)})"
         }
 
-        "${role.id.toString()} $colorString - ${role.name}: ${guild.members.count { role in it.roles.toList() }} users"
+        "${role.id} $colorString - ${role.name}: ${guild.members.count { role in it.roles.toList() }} users"
     }.filter { regex.containsMatchIn(it) }
 
     // Try joining them in a single message

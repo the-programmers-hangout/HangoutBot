@@ -2,10 +2,13 @@ package me.markhc.hangoutbot.services
 
 import com.github.kittinunf.result.Result
 import dev.kord.core.entity.User
-import kotlinx.coroutines.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import me.jakejmattson.discordkt.Discord
 import me.jakejmattson.discordkt.annotations.Service
-import me.jakejmattson.discordkt.extensions.*
+import me.jakejmattson.discordkt.extensions.sendPrivateMessage
+import me.jakejmattson.discordkt.extensions.toSnowflakeOrNull
 import me.markhc.hangoutbot.dataclasses.Reminder
 import java.time.Instant
 

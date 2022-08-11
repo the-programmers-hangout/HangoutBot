@@ -3,8 +3,6 @@ package me.markhc.hangoutbot.services
 import dev.kord.core.entity.Guild
 import me.jakejmattson.discordkt.Discord
 import me.jakejmattson.discordkt.annotations.Service
-import me.markhc.hangoutbot.utilities.TimeFormatter
-import java.util.*
 
 @Service
 class BotStatsService(private val persistentData: PersistentData, private val discord: Discord) {

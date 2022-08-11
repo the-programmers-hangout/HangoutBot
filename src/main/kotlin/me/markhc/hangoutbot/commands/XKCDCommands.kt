@@ -7,7 +7,7 @@ import me.markhc.hangoutbot.services.XKCDService
 import kotlin.random.Random
 
 fun xkcdCommands(xkcd: XKCDService) = commands("XKCD") {
-    command("xkcd") {
+    text("xkcd") {
         description = "Returns the XKCD comic number specified, or a random comic if you don't supply a number."
         execute(IntegerArg("Comic Number").optionalNullable()) {
             val (id) = args
@@ -29,7 +29,7 @@ fun xkcdCommands(xkcd: XKCDService) = commands("XKCD") {
         }
     }
 
-    command("xkcd-latest") {
+    text("xkcd-latest") {
         description = "Grabs the latest XKCD comic."
         execute {
             val latest = xkcd.getLatest()
@@ -43,7 +43,7 @@ fun xkcdCommands(xkcd: XKCDService) = commands("XKCD") {
         }
     }
 
-    command("xkcd-search") {
+    text("xkcd-search") {
         description = "Returns a XKCD comic that most closely matches your query."
         execute(EveryArg("Query")) {
             val (what) = args
