@@ -1,30 +1,31 @@
 package me.markhc.hangoutbot.commands.utilities
 
-import com.gitlab.kordlib.core.entity.Message
-import com.gitlab.kordlib.core.entity.channel.TextChannel
+import dev.kord.core.entity.Message
+import dev.kord.core.entity.channel.GuildMessageChannel
+import dev.kord.core.entity.channel.TextChannel
 import kotlinx.coroutines.flow.toList
-import me.jakejmattson.discordkt.api.arguments.ChannelArg
-import me.jakejmattson.discordkt.api.arguments.EveryArg
-import me.jakejmattson.discordkt.api.arguments.IntegerArg
-import me.jakejmattson.discordkt.api.dsl.commands
+import me.jakejmattson.discordkt.arguments.ChannelArg
+import me.jakejmattson.discordkt.arguments.EveryArg
+import me.jakejmattson.discordkt.arguments.IntegerArg
+import me.jakejmattson.discordkt.commands.commands
 import me.markhc.hangoutbot.services.PermissionLevel
 import me.markhc.hangoutbot.services.requiredPermissionLevel
 
 fun moderationCommands() = commands("Moderation") {
-    guildCommand("echo") {
+    text("echo") {
         description = "Echo a message to a channel."
         requiredPermissionLevel = PermissionLevel.Staff
-        execute(ChannelArg.makeOptional { it.channel as TextChannel }, EveryArg) {
+        execute(ChannelArg.optional { it.channel as TextChannel }, EveryArg) {
             val (target, message) = args
 
             target.createMessage(message)
         }
     }
 
-    guildCommand("nuke") {
+    text("nuke") {
         description = "Delete 2 - 99 past messages in the given channel (default is the invoked channel)"
         requiredPermissionLevel = PermissionLevel.Staff
-        execute(ChannelArg.makeNullableOptional(), IntegerArg) {
+        execute(ChannelArg.optionalNullable(), IntegerArg) {
             val targetChannel = args.first ?: channel
             val amount = args.second
 
@@ -49,4 +50,4 @@ fun moderationCommands() = commands("Moderation") {
     }
 }
 
-private suspend fun safeDeleteMessages(channel: TextChannel, messages: List<Message>) = channel.bulkDelete(messages.map { it.id })
+private suspend fun safeDeleteMessages(channel: GuildMessageChannel, messages: List<Message>) = channel.bulkDelete(messages.map { it.id })

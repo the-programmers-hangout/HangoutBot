@@ -1,6 +1,6 @@
 package me.markhc.hangoutbot.preconditions
 
-import me.jakejmattson.discordkt.api.dsl.precondition
+import me.jakejmattson.discordkt.dsl.precondition
 import me.markhc.hangoutbot.locale.Messages
 import me.markhc.hangoutbot.services.PermissionLevel
 import me.markhc.hangoutbot.services.PermissionsService
@@ -20,13 +20,13 @@ fun permissionPrecondition(persistentData: PersistentData, permissionsService: P
         val guild = guild!!
         val member = author.asMember(guild.id)
 
-        if (!persistentData.hasGuildConfig(guild.id.value))
+        if (!persistentData.hasGuildConfig(guild.id.toString()))
             return@precondition
 
         val botChannel = persistentData.getGuildProperty(guild) { botChannel }
 
         if (botChannel.isNotEmpty()
-                && channel.id.value != botChannel
+                && channel.id.toString() != botChannel
                 && permissionsService.getPermissionLevel(member) > PermissionLevel.Administrator)
 
             return@precondition fail()

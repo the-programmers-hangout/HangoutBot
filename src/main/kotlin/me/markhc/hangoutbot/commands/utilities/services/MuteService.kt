@@ -1,24 +1,26 @@
 package me.markhc.hangoutbot.commands.utilities.services
 
-import com.gitlab.kordlib.common.entity.Snowflake
-import com.gitlab.kordlib.core.entity.*
-import com.gitlab.kordlib.kordx.emoji.*
+import dev.kord.common.entity.Snowflake
+import dev.kord.core.entity.*
+import dev.kord.x.emoji.*
+import dev.kord.x.emoji.Emojis
 import kotlinx.coroutines.*
 import kotlinx.coroutines.launch
-import me.jakejmattson.discordkt.api.Discord
-import me.jakejmattson.discordkt.api.annotations.Service
-import me.jakejmattson.discordkt.api.dsl.*
-import me.jakejmattson.discordkt.api.extensions.*
+import me.jakejmattson.discordkt.Discord
+import me.jakejmattson.discordkt.annotations.Service
+import me.jakejmattson.discordkt.commands.CommandEvent
+import me.jakejmattson.discordkt.commands.GuildCommandEvent
+import me.jakejmattson.discordkt.dsl.*
+import me.jakejmattson.discordkt.extensions.*
 import me.markhc.hangoutbot.dataclasses.*
 import me.markhc.hangoutbot.services.PersistentData
 import me.markhc.hangoutbot.utilities.TimeFormatter
-import org.joda.time.*
-import org.joda.time.format.DateTimeFormat
+import java.time.Instant
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.DurationUnit
 
 @Service
 class MuteService(private val persistentData: PersistentData, private val discord: Discord) {
-    private val dateFormatter = DateTimeFormat.longDateTime()
-
     suspend fun addMutedMember(event: GuildCommandEvent<*>, member: Member, ms: Long, soft: Boolean) {
         val guild = event.guild
         val muteRoleId = persistentData.getGuildProperty(guild.asGuild()) { if (soft) softMuteRole else muteRole }.toSnowflakeOrNull()
@@ -37,15 +39,15 @@ class MuteService(private val persistentData: PersistentData, private val discor
 
         val mutedUsers = persistentData.getGuildProperty(guild) { mutedUsers }
 
-        if (mutedUsers.any { muted -> muted.user == member.id.value }) {
+        if (mutedUsers.any { muted -> muted.user == member.id.toString() }) {
             event.respond("Sorry, you already have an active mute!")
             return
         }
 
-        val until = DateTime.now(DateTimeZone.UTC).plus(ms)
+        val until = Instant.now().plusMillis(ms)
 
         persistentData.setGuildProperty(guild.asGuild()) {
-            this.mutedUsers.add(MuteEntry(member.id.value, until.toString(dateFormatter), soft))
+            this.mutedUsers.add(MuteEntry(member.id.toString(), until.toString(), soft))
         }
 
         applyMute(member, muteRole, ms)
@@ -63,7 +65,7 @@ class MuteService(private val persistentData: PersistentData, private val discor
     private suspend fun startMuteTimers(config: GuildConfiguration) {
         if (config.mutedUsers.isEmpty()) return
 
-        val guild = config.guildId.toSnowflakeOrNull()?.let { discord.api.getGuild(it) } ?: return
+        val guild = config.guildId.toSnowflakeOrNull()?.let { discord.kord.getGuild(it) } ?: return
 
         val muteRole = config.muteRole.ifBlank { null }?.let {
             it.toSnowflakeOrNull()?.let { guild.getRole(it) }
@@ -74,7 +76,9 @@ class MuteService(private val persistentData: PersistentData, private val discor
         }
 
         config.mutedUsers.forEach { entry ->
-            val millis = dateFormatter.parseMillis(entry.timeUntil) - DateTime.now().millis
+            TODO("Handle time parsing")
+
+            val millis = 0L //parseMillis(entry.timeUntil) - System.currentTimeMillis()
             val member = entry.user.toSnowflakeOrNull()?.let { guild.getMember(it) }
 
             if (member != null) {
@@ -97,12 +101,12 @@ class MuteService(private val persistentData: PersistentData, private val discor
         GlobalScope.launch {
             delay(millis)
 
-            val guild = discord.api.getGuild(guildId) ?: return@launch
+            val guild = discord.kord.getGuild(guildId) ?: return@launch
             val member = guild.getMemberOrNull(memberId) ?: return@launch
             val role = guild.getRoleOrNull(roleId) ?: return@launch
 
             persistentData.setGuildProperty(guild) {
-                mutedUsers.removeIf { member.id.value == it.user }
+                mutedUsers.removeIf { member.id.toString() == it.user }
             }
             member.removeRole(role.id)
         }
@@ -123,11 +127,11 @@ class MuteService(private val persistentData: PersistentData, private val discor
         field {
             inline = true
             name = "You will be unmuted on"
-            value = DateTime.now(DateTimeZone.UTC).plus(duration).toString(DateTimeFormat.fullDateTime())
+            value = "Someday"// TODO timestamp.offsetBy(duration.toInt())
         }
 
         thumbnail {
-            url = member.avatar.url
+            url = member.pfpUrl
         }
     }
 }

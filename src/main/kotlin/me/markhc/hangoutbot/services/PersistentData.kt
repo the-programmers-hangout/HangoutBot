@@ -1,9 +1,9 @@
 package me.markhc.hangoutbot.services
 
-import com.gitlab.kordlib.core.entity.Guild
-import com.gitlab.kordlib.core.entity.Role
-import com.gitlab.kordlib.core.entity.channel.Channel
-import me.jakejmattson.discordkt.api.annotations.Service
+import dev.kord.core.entity.Guild
+import dev.kord.core.entity.Role
+import dev.kord.core.entity.channel.Channel
+import me.jakejmattson.discordkt.annotations.Service
 import me.markhc.hangoutbot.dataclasses.*
 
 @Service
@@ -42,7 +42,7 @@ class PersistentData(private val botConfiguration: BotConfiguration,
         return configuration.guildConfigurations.first { it.guildId == guildId }
     }
 
-    private fun getGuildConfig(guild: Guild) = configuration.guildConfigurations.first { it.guildId == guild.id.value }
+    private fun getGuildConfig(guild: Guild) = configuration.guildConfigurations.first { it.guildId == guild.id.toString() }
 
     fun hasGuildConfig(guildId: String): Boolean = configuration.guildConfigurations.any { it.guildId == guildId }
 
@@ -50,12 +50,12 @@ class PersistentData(private val botConfiguration: BotConfiguration,
               muteRole: Role, softMuteRole: Role) {
 
         configuration.guildConfigurations.add(GuildConfiguration (
-                guildId = guild.id.value,
+                guildId = guild.id.toString(),
                 prefix = prefix,
-                welcomeChannel = welcomeChannel.id.value,
-                loggingChannel = loggingChannel.id.value,
-                muteRole = muteRole.id.value,
-                softMuteRole = softMuteRole.id.value
+                welcomeChannel = welcomeChannel.id.toString(),
+                loggingChannel = loggingChannel.id.toString(),
+                muteRole = muteRole.id.toString(),
+                softMuteRole = softMuteRole.id.toString()
         ))
 
         configuration.save()

@@ -1,18 +1,18 @@
 package me.markhc.hangoutbot.commands.utilities
 
-import com.gitlab.kordlib.core.behavior.edit
-import me.jakejmattson.discordkt.api.arguments.*
-import me.jakejmattson.discordkt.api.dsl.commands
-import me.jakejmattson.discordkt.api.extensions.toSnowflakeOrNull
+import dev.kord.core.behavior.edit
+import me.jakejmattson.discordkt.arguments.*
+import me.jakejmattson.discordkt.commands.commands
+import me.jakejmattson.discordkt.extensions.toSnowflakeOrNull
 import me.markhc.hangoutbot.commands.utilities.services.ColorService
 import me.markhc.hangoutbot.services.*
 import java.awt.Color
 
 fun colorCommands(persistentData: PersistentData, colorService: ColorService) = commands("Colors") {
-    guildCommand("setcolor") {
+    text("setcolor") {
         description = "Creates a role with the given name and color and assigns it to the user."
         requiredPermissionLevel = PermissionLevel.Staff
-        execute(HexColorArg("HexColor").makeNullableOptional(), EveryArg("RoleName")) {
+        execute(HexColorArg("HexColor").optionalNullable(), EveryArg("RoleName")) {
             val (color, roleName) = args
 
             val guild = guild
@@ -33,7 +33,7 @@ fun colorCommands(persistentData: PersistentData, colorService: ColorService) = 
         }
     }
 
-    guildCommand("clearcolor") {
+    text("clearcolor") {
         description = "Clears the current color role."
         requiredPermissionLevel = PermissionLevel.Staff
         execute {
@@ -43,7 +43,7 @@ fun colorCommands(persistentData: PersistentData, colorService: ColorService) = 
         }
     }
 
-    guildCommand("listcolors") {
+    text("listcolors") {
         description = "Creates a role with the given name and color and assigns it to the user."
         requiredPermissionLevel = PermissionLevel.Staff
         execute {

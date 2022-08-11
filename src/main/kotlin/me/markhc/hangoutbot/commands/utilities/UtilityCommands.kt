@@ -1,15 +1,15 @@
 package me.markhc.hangoutbot.commands.utilities
 
-import me.jakejmattson.discordkt.api.arguments.*
-import me.jakejmattson.discordkt.api.dsl.commands
+import me.jakejmattson.discordkt.arguments.*
+import me.jakejmattson.discordkt.commands.commands
 import me.markhc.hangoutbot.commands.utilities.services.*
 import java.util.concurrent.TimeUnit
 import kotlin.math.roundToLong
 
 fun produceUtilityCommands(muteService: MuteService) = commands("Selfmute") {
-    guildCommand("selfmute") {
+    text("selfmute") {
         description = "Mute yourself for the given amount of time. A mute will stop you from talking in any channel. Default is 1 hour. Max is 24 hours."
-        execute(TimeArg.makeOptional(3600.0)) {
+        execute(TimeArg.optional(3600.0)) {
             val (timeInSeconds) = args
 
             if (timeInSeconds < 5) {
@@ -28,11 +28,11 @@ fun produceUtilityCommands(muteService: MuteService) = commands("Selfmute") {
         }
     }
 
-    guildCommand("productivemute") {
+    text("productivemute") {
         description = "Trying to be productive? Mute yourself for the specified amount of time. " +
             "A productive mute will prevent you from talking in the social channels while still allowing " +
             "the use of the language channels. Default is 1 hour. Max is 24 hours."
-        execute(TimeArg.makeOptional(3600.0)) {
+        execute(TimeArg.optional(3600.0)) {
             val (timeInSeconds) = args
 
             if (timeInSeconds < 5) {

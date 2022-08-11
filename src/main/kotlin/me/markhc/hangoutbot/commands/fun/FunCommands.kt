@@ -3,8 +3,8 @@ package me.markhc.hangoutbot.commands.`fun`
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.gson.responseObject
 import com.github.ricksbrown.cowsay.Cowsay
-import me.jakejmattson.discordkt.api.arguments.*
-import me.jakejmattson.discordkt.api.dsl.commands
+import me.jakejmattson.discordkt.arguments.*
+import me.jakejmattson.discordkt.commands.commands
 import me.markhc.hangoutbot.locale.Messages
 import kotlin.random.Random
 
@@ -17,7 +17,7 @@ private data class JokeResponse(val id: String = "", val joke: String = "", val 
 fun produceFunCommands() = commands("Fun") {
     command("coin") {
         description = "Flip a coin (or coins)."
-        execute(IntegerArg("Coins").makeOptional(1)) {
+        execute(IntegerArg("Coins").optional(1)) {
             val response = when (val coins = args.first) {
                 1 -> if (Random.nextDouble() > 0.5) "Heads!" else "Tails!"
                 in 2..100000 -> {
@@ -43,7 +43,7 @@ fun produceFunCommands() = commands("Fun") {
 
     command("roll") {
         description = "Rolls a number in a range (default 1-100)"
-        execute(IntegerArg("Min").makeOptional(1), IntegerArg("Max").makeOptional(100)) {
+        execute(IntegerArg("Min").optional(1), IntegerArg("Max").optional(100)) {
             val (a, b) = args
 
             val result =
@@ -59,7 +59,7 @@ fun produceFunCommands() = commands("Fun") {
 
     command("cowsay") {
         description = "Displays a cowsay with a given message. Run with no arguments to get a list of valid cows."
-        execute(AnyArg("Cow").makeOptional(""), EveryArg("Message").makeOptional("")) {
+        execute(AnyArg("Cow").optional(""), EveryArg("Message").optional("")) {
             val (arg0, arg1) = args
 
             respond(when {

@@ -1,15 +1,15 @@
 package me.markhc.hangoutbot.listeners
 
-import com.gitlab.kordlib.core.event.guild.MemberUpdateEvent
-import com.gitlab.kordlib.core.event.role.RoleDeleteEvent
+import dev.kord.core.event.guild.MemberUpdateEvent
+import dev.kord.core.event.role.RoleDeleteEvent
 import kotlinx.coroutines.flow.toList
-import me.jakejmattson.discordkt.api.dsl.listeners
-import me.jakejmattson.discordkt.api.extensions.toSnowflakeOrNull
+import me.jakejmattson.discordkt.dsl.listeners
+import me.jakejmattson.discordkt.extensions.toSnowflakeOrNull
 import me.markhc.hangoutbot.services.PersistentData
 
 fun roleMigration(persistentData: PersistentData) = listeners {
     on<RoleDeleteEvent> {
-        val roleId = role!!.id.value
+        val roleId = role!!.id.toString()
         persistentData.setGuildProperty(guild.asGuild()) {
             this.rolePermissions.remove(roleId)
             this.grantableRoles.entries.removeIf {
@@ -26,7 +26,7 @@ fun roleMigration(persistentData: PersistentData) = listeners {
     }
 
     on<MemberUpdateEvent> {
-        if (old?.roleIds == currentRoleIds)
+        if (old?.roleIds == member.roleIds)
             return@on
 
         val guild = guild.asGuild()
@@ -35,13 +35,13 @@ fun roleMigration(persistentData: PersistentData) = listeners {
             assignedColorRoles.map { it.key }
         }
 
-        val roles = currentRoles.toList().map { it.id }.intersect(colors)
+        val roles = member.roles.toList().map { it.id }.intersect(colors)
 
         if (roles.isNotEmpty()) {
             persistentData.setGuildProperty(guild) {
                 roles.forEach { roleId ->
                     // Remove member from the users of this color
-                    assignedColorRoles[roleId]?.remove(memberId.value)
+                    assignedColorRoles[roleId]?.remove(member.id.toString())
                 }
 
                 // Find any roles without users and delete them

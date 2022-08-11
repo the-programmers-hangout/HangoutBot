@@ -2,8 +2,7 @@ package me.markhc.hangoutbot.commands.`fun`.services
 
 import com.github.kittinunf.fuel.*
 import com.github.kittinunf.fuel.gson.responseObject
-import me.jakejmattson.discordkt.api.annotations.Service
-import org.joda.time.*
+import me.jakejmattson.discordkt.annotations.Service
 import java.net.URLEncoder
 
 private data class XKCDInfo(val num: Int = 0)
@@ -12,13 +11,14 @@ private data class XKCDInfo(val num: Int = 0)
 class XKCDService {
     companion object {
         private var xkcdLatest: Int = 1
-        private var xkcdLatestCacheTime: DateTime = DateTime(0)
+        private var xkcdLatestCacheTime: Long = System.currentTimeMillis()
     }
 
     fun getLatest(): Int? {
-        val timeDiff = Duration(xkcdLatestCacheTime, DateTime.now())
+        val timeDiff = System.currentTimeMillis() - xkcdLatestCacheTime
 
-        return if (timeDiff.standardHours < 24) {
+        //24 hours
+        return if (timeDiff < 86_400_000) {
             xkcdLatest
         } else {
             fetchLatest()
@@ -45,7 +45,7 @@ class XKCDService {
 
         return result.fold(
             success = {
-                xkcdLatestCacheTime = DateTime.now()
+                xkcdLatestCacheTime = System.currentTimeMillis()
                 xkcdLatest = it.num
                 xkcdLatest
             },

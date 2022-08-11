@@ -1,35 +1,32 @@
 package me.markhc.hangoutbot.commands.utilities.services
 
 import com.github.kittinunf.result.Result
-import com.gitlab.kordlib.core.entity.User
+import dev.kord.core.entity.User
 import kotlinx.coroutines.*
-import me.jakejmattson.discordkt.api.Discord
-import me.jakejmattson.discordkt.api.annotations.Service
-import me.jakejmattson.discordkt.api.extensions.*
+import me.jakejmattson.discordkt.Discord
+import me.jakejmattson.discordkt.annotations.Service
+import me.jakejmattson.discordkt.extensions.*
 import me.markhc.hangoutbot.dataclasses.Reminder
 import me.markhc.hangoutbot.services.PersistentData
 import me.markhc.hangoutbot.utilities.TimeFormatter
-import org.joda.time.*
-import org.joda.time.format.DateTimeFormat
+import java.time.Instant
 
 @Service
 class ReminderService(private val persistentData: PersistentData, private val discord: Discord) {
-    private val dateFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ssZ")
-
     fun addReminder(user: User, ms: Long, what: String): Result<String, Exception> {
         val reminders = persistentData.getGlobalProperty { reminders }
 
-        if (reminders.count { it.user == user.id.value } > 10) {
+        if (reminders.count { it.user == user.id.toString() } > 10) {
             return Result.Failure(Exception("Sorry, you cannot create any more reminders!"))
         }
 
-        val until = DateTime.now(DateTimeZone.UTC).plus(ms)
+        val until = Instant.now().plusMillis(ms)
 
         persistentData.setGlobalProperty {
-            reminders.add(Reminder(user.id.value, until.toString(dateFormatter), what))
+            reminders.add(Reminder(user.id.toString(), until.toString(), what))
         }
 
-        launchReminder(user.id.value, ms, what)
+        launchReminder(user.id.toString(), ms, what)
 
         return Result.Success("Got it, I'll remind you in ${TimeFormatter.toLongDurationString(ms)} about that.")
     }
@@ -37,13 +34,15 @@ class ReminderService(private val persistentData: PersistentData, private val di
     fun listReminders(user: User, fn: (Reminder) -> Unit) =
         persistentData
             .getGlobalProperty { reminders }
-            .filter { it.user == user.id.value }
+            .filter { it.user == user.id.toString() }
             .also { it.forEach(fn) }
             .size
 
     fun launchTimers() {
+        TODO("Handle time parsing")
+
         persistentData.getGlobalProperty { reminders }.forEach {
-            val millis = dateFormatter.parseDateTime(it.timeUntil).millis - DateTime.now().millis
+            val millis = 0L //it.timeUntil - System.currentTimeMillis()
             launchReminder(it.user, millis, it.what)
         }
     }
@@ -53,7 +52,7 @@ class ReminderService(private val persistentData: PersistentData, private val di
             delay(ms)
 
             userId.toSnowflakeOrNull()?.let {
-                discord.api.getUser(it)?.sendPrivateMessage {
+                discord.kord.getUser(it)?.sendPrivateMessage {
                     title = "Reminder"
                     description = what
                     color = discord.configuration.theme
@@ -62,7 +61,8 @@ class ReminderService(private val persistentData: PersistentData, private val di
 
             persistentData.setGlobalProperty {
                 reminders.removeIf {
-                    dateFormatter.parseDateTime(it.timeUntil).millis < DateTime.now().millis
+                    false
+                    //it.timeUntil.millis < System.currentTimeMillis()
                 }
             }
         }

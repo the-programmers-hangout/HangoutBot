@@ -1,16 +1,14 @@
 package me.markhc.hangoutbot.preconditions
 
-import me.jakejmattson.discordkt.api.dsl.precondition
+import me.jakejmattson.discordkt.dsl.precondition
 import me.markhc.hangoutbot.services.PermissionLevel
 import me.markhc.hangoutbot.services.PermissionsService
 import me.markhc.hangoutbot.services.PersistentData
-import org.joda.time.DateTime
 import kotlin.collections.set
 
 val cooldownMap = mutableMapOf<Long, Long>()
 
-fun cooldown(persistentData: PersistentData,
-             permissionsService: PermissionsService) = precondition {
+fun cooldown(persistentData: PersistentData, permissionsService: PermissionsService) = precondition {
     command ?: return@precondition
 
     val member = guild?.getMember(author.id)
@@ -22,15 +20,15 @@ fun cooldown(persistentData: PersistentData,
         persistentData.getGuildProperty(it) { cooldown }
     } ?: 5
 
-    if (cooldownMap[author.id.longValue] != null) {
-        val diff = DateTime.now().millis - cooldownMap[author.id.longValue]!!
+    if (cooldownMap[author.id.value.toLong()] != null) {
+        val diff = System.currentTimeMillis() - cooldownMap[author.id.value.toLong()]!!
 
         if (diff < cd * 1000) {
             return@precondition fail("You're doing that too quickly. (${String.format("%.2f", (cd * 1000 - diff) / 1000.0f)} s)")
         }
     }
 
-    cooldownMap[author.id.longValue] = DateTime.now().millis
+    cooldownMap[author.id.value.toLong()] = System.currentTimeMillis()
 
     return@precondition
 

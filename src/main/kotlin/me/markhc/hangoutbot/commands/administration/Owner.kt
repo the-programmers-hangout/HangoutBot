@@ -1,14 +1,15 @@
 package me.markhc.hangoutbot.commands.administration
 
-import me.jakejmattson.discordkt.api.arguments.*
-import me.jakejmattson.discordkt.api.dsl.*
+import me.jakejmattson.discordkt.arguments.*
+import me.jakejmattson.discordkt.commands.commands
+import me.jakejmattson.discordkt.dsl.*
 import me.markhc.hangoutbot.services.*
 
 fun ownerCommands(persistentData: PersistentData) = commands("Owner Commands") {
-    guildCommand("cooldown") {
+    text("cooldown") {
         description = "Gets or sets the command cooldown period (in seconds)."
         requiredPermissionLevel = PermissionLevel.GuildOwner
-        execute(IntegerArg.makeNullableOptional(null)) {
+        execute(IntegerArg.optionalNullable(null)) {
             val (cd) = args
 
             if (cd != null) {
@@ -35,7 +36,7 @@ fun ownerCommands(persistentData: PersistentData) = commands("Owner Commands") {
         }
     }
 
-    guildCommand("setprefix") {
+    text("setprefix") {
         description = "Sets the bot prefix."
         requiredPermissionLevel = PermissionLevel.GuildOwner
         execute(AnyArg("Prefix")) {

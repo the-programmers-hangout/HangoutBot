@@ -1,10 +1,13 @@
 package me.markhc.hangoutbot.commands.utilities.services
 
-import com.gitlab.kordlib.core.behavior.addRole
-import com.gitlab.kordlib.core.entity.*
+import dev.kord.common.kColor
+import dev.kord.core.behavior.addRole
+import dev.kord.core.behavior.createRole
+import dev.kord.core.entity.*
+import dev.kord.rest.builder.role.RoleCreateBuilder
 import kotlinx.coroutines.flow.*
-import me.jakejmattson.discordkt.api.annotations.Service
-import me.jakejmattson.discordkt.api.extensions.toSnowflakeOrNull
+import me.jakejmattson.discordkt.annotations.Service
+import me.jakejmattson.discordkt.extensions.toSnowflakeOrNull
 import me.markhc.hangoutbot.services.*
 import java.awt.Color
 
@@ -38,7 +41,7 @@ class ColorService(private val persistentData: PersistentData, private val permi
     private suspend fun createAndAssignRole(member: Member, roleName: String, roleColor: Color) {
         val existingRole = persistentData.getGuildProperty(member.guild.asGuild()) {
             assignedColorRoles.keys.mapNotNull { it.toSnowflakeOrNull()?.let { it1 -> member.guild.getRole(it1) } }
-                .firstOrNull { it.name.equals(roleName, true) && it.color == roleColor }
+                .firstOrNull { it.name.equals(roleName, true) && it.color == roleColor.kColor }
         }
 
         val role = existingRole ?: createNewColorRole(member.guild.asGuild(), roleName, roleColor)
@@ -54,10 +57,10 @@ class ColorService(private val persistentData: PersistentData, private val permi
         member.addRole(role.id)
 
         persistentData.setGuildProperty(member.getGuild()) {
-            if (assignedColorRoles[role.id.value] != null) {
-                assignedColorRoles[role.id.value]!!.add(member.id.value)
+            if (assignedColorRoles[role.id.toString()] != null) {
+                assignedColorRoles[role.id.toString()]!!.add(member.id.toString())
             } else {
-                assignedColorRoles[role.id.value] = mutableListOf(member.id.value)
+                assignedColorRoles[role.id.toString()] = mutableListOf(member.id.toString())
             }
         }
     }
@@ -65,12 +68,12 @@ class ColorService(private val persistentData: PersistentData, private val permi
     private suspend fun removeColorRole(member: Member) {
         val assignedRoles = persistentData.getGuildProperty(member.guild.asGuild()) {
             assignedColorRoles.entries
-                .filter { it.value.contains(member.id.value) }
+                .filter { it.value.contains(member.id.toString()) }
                 .map { it.key }
         }
 
         assignedRoles.forEach { role ->
-            member.roles.toList().find { it.id.value == role }?.let {
+            member.roles.toList().find { it.id.toString() == role }?.let {
                 member.removeRole(it.id)
             }
         }
@@ -92,9 +95,9 @@ class ColorService(private val persistentData: PersistentData, private val permi
         if (guild.roles.toList().any { it.name.equals(roleName, true) })
             throw Exception("This guild already has a role by that name.")
 
-        val role = guild.addRole {
+        val role = guild.createRole {
             name = roleName
-            color = roleColor
+            color = roleColor.kColor
             hoist = false
             mentionable = false
             permissions = separator.permissions

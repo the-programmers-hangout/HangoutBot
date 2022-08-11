@@ -1,10 +1,10 @@
 package me.markhc.hangoutbot.commands.administration.services
 
-import com.gitlab.kordlib.core.behavior.getChannelOfOrNull
-import com.gitlab.kordlib.core.entity.*
-import com.gitlab.kordlib.core.entity.channel.TextChannel
-import me.jakejmattson.discordkt.api.annotations.Service
-import me.jakejmattson.discordkt.api.extensions.toSnowflakeOrNull
+import dev.kord.core.behavior.getChannelOfOrNull
+import dev.kord.core.entity.*
+import dev.kord.core.entity.channel.TextChannel
+import me.jakejmattson.discordkt.annotations.Service
+import me.jakejmattson.discordkt.extensions.toSnowflakeOrNull
 import me.markhc.hangoutbot.services.PersistentData
 import me.markhc.hangoutbot.utilities.EvictingQueue
 
@@ -15,19 +15,19 @@ class GreetingService(private val persistentData: PersistentData) {
     }
 
     suspend fun addMessageToCache(user: User, msg: Message) {
-        if (welcomeMessages.containsKey(msg.getGuild().id.longValue)) {
-            welcomeMessages[msg.getGuild().id.longValue]!!.add(user.id.longValue to msg.id.longValue)
+        if (welcomeMessages.containsKey(msg.getGuild().id.value.toLong())) {
+            welcomeMessages[msg.getGuild().id.value.toLong()]!!.add(user.id.value.toLong() to msg.id.value.toLong())
         } else {
-            welcomeMessages[msg.getGuild().id.longValue] = EvictingQueue.create(200)
-            welcomeMessages[msg.getGuild().id.longValue]!!.add(user.id.longValue to msg.id.longValue)
+            welcomeMessages[msg.getGuild().id.value.toLong()] = EvictingQueue.create(200)
+            welcomeMessages[msg.getGuild().id.value.toLong()]!!.add(user.id.value.toLong() to msg.id.value.toLong())
         }
     }
 
     fun getCachedMessage(guild: Guild, user: User) =
-        welcomeMessages[guild.id.longValue]?.find { it.first == user.id.longValue }?.second
+        welcomeMessages[guild.id.value.toLong()]?.find { it.first == user.id.value.toLong() }?.second
 
     fun removeMessagesFromCache(guild: Guild, user: User) =
-        welcomeMessages[guild.id.longValue]?.removeIf { it.first == user.id.longValue }
+        welcomeMessages[guild.id.value.toLong()]?.removeIf { it.first == user.id.value.toLong() }
 
     suspend fun setEnabled(guild: Guild, state: Boolean) = persistentData.setGuildProperty(guild) {
         welcomeEmbeds = state
@@ -38,7 +38,7 @@ class GreetingService(private val persistentData: PersistentData) {
     }
 
     suspend fun setChannel(guild: Guild, textChannel: TextChannel) = persistentData.setGuildProperty(guild) {
-        welcomeChannel = textChannel.id.value
+        welcomeChannel = textChannel.id.toString()
     }
 
     suspend fun getChannel(guild: Guild) = persistentData.getGuildProperty(guild) { welcomeChannel }.let {

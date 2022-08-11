@@ -1,22 +1,20 @@
 package me.markhc.hangoutbot.utilities
 
-import com.gitlab.kordlib.core.entity.Guild
-import com.gitlab.kordlib.core.entity.Member
-import com.gitlab.kordlib.core.entity.Role
-import com.gitlab.kordlib.core.entity.User
-import com.gitlab.kordlib.core.entity.channel.TextChannel
-import com.gitlab.kordlib.core.entity.channel.VoiceChannel
-import com.gitlab.kordlib.rest.Image
-import com.gitlab.kordlib.rest.request.RestRequestException
+import dev.kord.core.entity.*
+import dev.kord.core.entity.channel.TextChannel
+import dev.kord.core.entity.channel.VoiceChannel
+import dev.kord.rest.Image
+import dev.kord.rest.request.RestRequestException
 import kotlinx.coroutines.flow.count
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.toList
-import me.jakejmattson.discordkt.api.dsl.CommandEvent
-import me.jakejmattson.discordkt.api.dsl.GuildCommandEvent
+import kotlinx.datetime.Instant
+import kotlinx.datetime.toJavaInstant
+import me.jakejmattson.discordkt.commands.CommandEvent
+import me.jakejmattson.discordkt.commands.GuildCommandEvent
+import me.jakejmattson.discordkt.extensions.pfpUrl
 import me.markhc.hangoutbot.dataclasses.Configuration
 import me.markhc.hangoutbot.services.BotStatsService
-import org.joda.time.DateTime
-import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
@@ -62,7 +60,7 @@ suspend fun CommandEvent<*>.buildGuildInfoEmbed(guild: Guild) = respond {
     color = discord.configuration.theme
 
     footer {
-        text = "Guild creation date: ${DateTimeFormatter.ISO_LOCAL_DATE.format(LocalDateTime.ofInstant(guild.id.timeStamp, ZoneOffset.UTC))}"
+        text = "Guild creation date: ${DateTimeFormatter.ISO_LOCAL_DATE.format(LocalDateTime.ofInstant(guild.id.timestamp.toJavaInstant(), ZoneOffset.UTC))}"
     }
 
     thumbnail {
@@ -114,7 +112,7 @@ suspend fun CommandEvent<*>.buildGuildInfoEmbed(guild: Guild) = respond {
     }
     field {
         name = "**Emotes**"
-        value = "${guild.emojis.size}"
+        value = "${guild.emojis.count()}"
         inline = true
     }
 
@@ -127,7 +125,7 @@ suspend fun CommandEvent<*>.buildGuildInfoEmbed(guild: Guild) = respond {
             value = if (invite != null) "[Link]($invite)" else "Not set"
             inline = true
         }
-    } catch (ex: RestRequestException) {
+    } catch (_: RestRequestException) {
 
     }
 
@@ -149,7 +147,7 @@ suspend fun GuildCommandEvent<*>.buildRoleInfoEmbed(role: Role) = respond {
     }
     field {
         name = "**Id**"
-        value = role.id.value
+        value = role.id.toString()
         inline = true
     }
     field {
@@ -180,12 +178,12 @@ suspend fun GuildCommandEvent<*>.buildRoleInfoEmbed(role: Role) = respond {
 }
 
 private fun formatOffsetTime(time: Instant): String {
-    val days = TimeUnit.MILLISECONDS.toDays(DateTime.now().millis - time.toEpochMilli())
-    val dateTime = LocalDateTime.ofInstant(time, ZoneOffset.UTC)
+    val days = TimeUnit.MILLISECONDS.toDays(System.currentTimeMillis() - time.epochSeconds)
+    val dateTime = LocalDateTime.ofInstant(time.toJavaInstant(), ZoneOffset.UTC)
     return if (days > 4) {
         "$days days ago\n${DateTimeFormatter.ISO_LOCAL_DATE.format(dateTime)}"
     } else {
-        val hours = TimeUnit.MILLISECONDS.toHours(DateTime.now().millis - time.toEpochMilli())
+        val hours = TimeUnit.MILLISECONDS.toHours(System.currentTimeMillis() - time.epochSeconds)
         "$hours hours ago\n${DateTimeFormatter.ISO_LOCAL_DATE.format(dateTime)}"
     }
 }
@@ -194,7 +192,7 @@ suspend fun CommandEvent<*>.buildUserInfoEmbed(user: User) = respond {
     title = "User information"
     color = discord.configuration.theme
     thumbnail {
-        url = user.avatar.url
+        url = user.pfpUrl
     }
 
     field {
@@ -204,17 +202,17 @@ suspend fun CommandEvent<*>.buildUserInfoEmbed(user: User) = respond {
     }
     field {
         name = "**Avatar**"
-        value = "[[Link]](${user.avatar.url}?size=512)\n[[Search]](https://www.google.com/searchbyimage?&image_url=${user.avatar.url})"
+        value = "[[Link]](${user.pfpUrl}?size=512)\n[[Search]](https://www.google.com/searchbyimage?&image_url=${user.pfpUrl})"
         inline = true
     }
     field {
         name = "**Id**"
-        value = user.id.value
+        value = user.id.toString()
         inline = true
     }
     field {
         name = "**Created**"
-        value = formatOffsetTime(user.id.timeStamp)
+        value = formatOffsetTime(user.id.timestamp)
         inline = true
     }
 }
@@ -231,7 +229,7 @@ suspend fun CommandEvent<*>.buildMemberInfoEmbed(member: Member) = respond {
     title = "User information"
     color = member.roles.toList().maxByOrNull { it.rawPosition }?.color
     thumbnail {
-        url = member.avatar.url
+        url = member.pfpUrl
     }
 
     field {
@@ -246,17 +244,17 @@ suspend fun CommandEvent<*>.buildMemberInfoEmbed(member: Member) = respond {
     }
     field {
         name = "**Id**"
-        value = member.id.value
+        value = member.id.toString()
         inline = true
     }
     field {
         name = "**Avatar**"
-        value = "[[Link]](${member.avatar.url}?size=512)\n[[Search]](https://www.google.com/searchbyimage?&image_url=${member.avatar.url})"
+        value = "[[Link]](${member.pfpUrl}?size=512)\n[[Search]](https://www.google.com/searchbyimage?&image_url=${member.pfpUrl})"
         inline = true
     }
     field {
         name = "**Created**"
-        value = formatOffsetTime(member.id.timeStamp)
+        value = formatOffsetTime(member.id.timestamp)
         inline = true
     }
     field {

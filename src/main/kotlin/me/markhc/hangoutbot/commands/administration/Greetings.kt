@@ -1,16 +1,16 @@
 package me.markhc.hangoutbot.commands.administration
 
-import me.jakejmattson.discordkt.api.arguments.BooleanArg
-import me.jakejmattson.discordkt.api.dsl.commands
+import me.jakejmattson.discordkt.arguments.BooleanArg
+import me.jakejmattson.discordkt.commands.commands
 import me.markhc.hangoutbot.commands.administration.services.GreetingService
 import me.markhc.hangoutbot.services.*
 
 
 fun greetingCommands(greetingService: GreetingService) = commands("Greetings") {
-    guildCommand("greetings") {
+    text("greetings") {
         description = "Enables or disables the greetings on member join."
         requiredPermissionLevel = PermissionLevel.Administrator
-        execute(BooleanArg("enable/disable", "enable", "disable").makeNullableOptional(null)) {
+        execute(BooleanArg("enable/disable", "enable", "disable").optionalNullable(null)) {
             val (enable) = args
 
             if (enable != null) {

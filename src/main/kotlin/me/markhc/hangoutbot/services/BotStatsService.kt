@@ -1,8 +1,8 @@
 package me.markhc.hangoutbot.services
 
-import com.gitlab.kordlib.core.entity.Guild
-import me.jakejmattson.discordkt.api.Discord
-import me.jakejmattson.discordkt.api.annotations.Service
+import dev.kord.core.entity.Guild
+import me.jakejmattson.discordkt.Discord
+import me.jakejmattson.discordkt.annotations.Service
 import me.markhc.hangoutbot.utilities.TimeFormatter
 import java.util.*
 
@@ -27,7 +27,7 @@ class BotStatsService(private val persistentData: PersistentData, private val di
         get() = TimeFormatter.toLongDurationString(Date().time - startTime.time)
 
     val ping: String
-        get() = "${discord.api.gateway.averagePing} ms"
+        get() = "${discord.kord.gateway.averagePing}"
 
     private var _totalCommands: Int = 0
     var totalCommands: Int

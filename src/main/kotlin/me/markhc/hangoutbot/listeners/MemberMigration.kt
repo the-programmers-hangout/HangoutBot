@@ -1,19 +1,20 @@
 package me.markhc.hangoutbot.listeners
 
-import com.gitlab.kordlib.common.entity.Snowflake
-import com.gitlab.kordlib.core.behavior.channel.createEmbed
-import com.gitlab.kordlib.core.behavior.getChannelOf
-import com.gitlab.kordlib.core.behavior.getChannelOfOrNull
-import com.gitlab.kordlib.core.entity.channel.TextChannel
-import com.gitlab.kordlib.core.event.guild.MemberJoinEvent
-import com.gitlab.kordlib.core.event.guild.MemberLeaveEvent
-import com.gitlab.kordlib.kordx.emoji.Emojis
-import com.gitlab.kordlib.kordx.emoji.toReaction
+import dev.kord.common.entity.Snowflake
+import dev.kord.core.behavior.channel.createEmbed
+import dev.kord.core.behavior.getChannelOf
+import dev.kord.core.behavior.getChannelOfOrNull
+import dev.kord.core.entity.channel.TextChannel
+import dev.kord.core.event.guild.MemberJoinEvent
+import dev.kord.core.event.guild.MemberLeaveEvent
+import dev.kord.x.emoji.Emojis
+import dev.kord.x.emoji.toReaction
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import me.jakejmattson.discordkt.api.dsl.listeners
-import me.jakejmattson.discordkt.api.extensions.toSnowflakeOrNull
+import me.jakejmattson.discordkt.dsl.listeners
+import me.jakejmattson.discordkt.extensions.pfpUrl
+import me.jakejmattson.discordkt.extensions.toSnowflakeOrNull
 import me.markhc.hangoutbot.commands.administration.services.GreetingService
 import me.markhc.hangoutbot.locale.Messages
 import me.markhc.hangoutbot.services.PersistentData
@@ -41,7 +42,7 @@ fun migrationListeners(persistentData: PersistentData, guildService: GreetingSer
                     color = discord.configuration.theme
 
                     thumbnail {
-                        url = member.avatar.url
+                        url = member.pfpUrl
                     }
                 }
 

@@ -1,14 +1,14 @@
 package me.markhc.hangoutbot.commands.`fun`
 
-import me.jakejmattson.discordkt.api.arguments.*
-import me.jakejmattson.discordkt.api.dsl.commands
+import me.jakejmattson.discordkt.arguments.*
+import me.jakejmattson.discordkt.commands.commands
 import me.markhc.hangoutbot.commands.`fun`.services.XKCDService
 import kotlin.random.Random
 
 fun xkcdCommands(xkcd: XKCDService) = commands("XKCD") {
     command("xkcd") {
         description = "Returns the XKCD comic number specified, or a random comic if you don't supply a number."
-        execute(IntegerArg("Comic Number").makeNullableOptional()) {
+        execute(IntegerArg("Comic Number").optionalNullable()) {
             val (id) = args
 
             val latest = xkcd.getLatest()

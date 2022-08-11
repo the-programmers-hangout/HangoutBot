@@ -1,20 +1,13 @@
 package me.markhc.hangoutbot.services
 
-import com.gitlab.kordlib.core.entity.Guild
-import com.gitlab.kordlib.core.entity.Member
-import com.gitlab.kordlib.core.entity.User
-import me.jakejmattson.discordkt.api.annotations.Service
-import me.jakejmattson.discordkt.api.dsl.Command
-import me.jakejmattson.discordkt.api.dsl.GuildCommandEvent
+import dev.kord.core.entity.Guild
+import dev.kord.core.entity.Member
+import dev.kord.core.entity.User
+import me.jakejmattson.discordkt.annotations.Service
+import me.jakejmattson.discordkt.commands.Command
+import me.jakejmattson.discordkt.commands.GuildCommandEvent
 import me.markhc.hangoutbot.dataclasses.BotConfiguration
 import me.markhc.hangoutbot.locale.Messages
-import kotlin.collections.MutableMap
-import kotlin.collections.filter
-import kotlin.collections.first
-import kotlin.collections.intersect
-import kotlin.collections.isNotEmpty
-import kotlin.collections.map
-import kotlin.collections.mutableMapOf
 import kotlin.collections.set
 
 enum class PermissionLevel {
@@ -55,7 +48,7 @@ class PermissionsService(private val persistentData: PersistentData, private val
         val permissionLevel = guild?.getMember(user.id)?.let { getPermissionLevel(it) }
 
         return if (permissionLevel == null) {
-            requiredPermissionLevel == PermissionLevel.Everyone || user.id.value == botConfig.ownerId
+            requiredPermissionLevel == PermissionLevel.Everyone
         } else {
             permissionLevel >= requiredPermissionLevel
         }
@@ -68,14 +61,12 @@ class PermissionsService(private val persistentData: PersistentData, private val
 
     suspend fun getPermissionLevel(member: Member) =
         when {
-            member.isBotOwner() -> PermissionLevel.BotOwner
             member.isGuildOwner() -> PermissionLevel.GuildOwner
             member.isAdministrator() -> PermissionLevel.Administrator
             member.isStaff() -> PermissionLevel.Staff
             else -> PermissionLevel.Everyone
         }
 
-    private fun Member.isBotOwner() = id.value == botConfig.ownerId
     private suspend fun Member.isGuildOwner() = isOwner()
     private suspend fun Member.isAdministrator(): Boolean {
         val roles = persistentData.getGuildProperty(guild.asGuild()) { rolePermissions }

@@ -1,6 +1,6 @@
 package me.markhc.hangoutbot.commands.information
 
-import me.jakejmattson.discordkt.api.dsl.commands
+import me.jakejmattson.discordkt.commands.commands
 import me.markhc.hangoutbot.dataclasses.*
 import me.markhc.hangoutbot.services.BotStatsService
 import me.markhc.hangoutbot.utilities.createBotStatsEmbed

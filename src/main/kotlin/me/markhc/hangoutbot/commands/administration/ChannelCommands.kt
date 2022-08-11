@@ -1,12 +1,13 @@
 package me.markhc.hangoutbot.commands.administration
 
-import com.gitlab.kordlib.core.behavior.channel.edit
-import me.jakejmattson.discordkt.api.arguments.*
-import me.jakejmattson.discordkt.api.dsl.commands
+import dev.kord.core.behavior.channel.edit
+import me.jakejmattson.discordkt.arguments.*
+import me.jakejmattson.discordkt.commands.commands
+import me.jakejmattson.discordkt.commands.commands
 import me.markhc.hangoutbot.services.*
 
 fun channelCommands() = commands("Channel") {
-    guildCommand("slowmode") {
+    text("slowmode") {
         description = "Set the slowmode in a channel."
         requiredPermissionLevel = PermissionLevel.Staff
         execute(ChannelArg, TimeArg) {
@@ -18,7 +19,7 @@ fun channelCommands() = commands("Channel") {
             }
 
             channel.edit {
-                rateLimitPerUser = interval.toInt()
+                //rateLimitPerUser = interval
             }
 
             respond("Successfully set slow-mode in channel ${channel.mention} to ${interval.toInt()} seconds.")
