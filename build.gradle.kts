@@ -2,7 +2,7 @@ import java.util.*
 
 group = "me.markhc"
 version = "4.0.0"
-description = "hangoutbot"
+description = "An misc bot for TheProgrammersHangout"
 
 plugins {
     kotlin("jvm") version "1.7.10"

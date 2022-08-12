@@ -2,12 +2,12 @@ package me.markhc.hangoutbot.preconditions
 
 import dev.kord.common.entity.Permission
 import me.jakejmattson.discordkt.dsl.precondition
-import me.markhc.hangoutbot.services.PersistentData
+import me.markhc.hangoutbot.dataclasses.Configuration
 import kotlin.collections.set
 
 val cooldownMap = mutableMapOf<Long, Long>()
 
-fun cooldown(persistentData: PersistentData) = precondition {
+fun cooldown(configuration: Configuration) = precondition {
     command ?: return@precondition
 
     val member = guild?.getMember(author.id)
@@ -16,7 +16,7 @@ fun cooldown(persistentData: PersistentData) = precondition {
         return@precondition
 
     val cd = guild?.let {
-        persistentData.getGuildProperty(it) { cooldown }
+        configuration[it].cooldown
     } ?: 5
 
     if (cooldownMap[author.id.value.toLong()] != null) {

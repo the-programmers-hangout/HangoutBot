@@ -10,10 +10,11 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.toList
 import me.jakejmattson.discordkt.annotations.Service
 import me.jakejmattson.discordkt.extensions.toSnowflakeOrNull
+import me.markhc.hangoutbot.dataclasses.Configuration
 import java.awt.Color
 
 @Service
-class ColorService(private val persistentData: PersistentData) {
+class ColorService(private val configuration: Configuration) {
     suspend fun setMemberColor(member: Member, roleName: String, roleColor: Color?) {
         if (!isValidName(member, roleName)) {
             throw Exception("The role name for regular users is only allowed ASCII characters ([\\x20-\\x7F])")
@@ -40,10 +41,9 @@ class ColorService(private val persistentData: PersistentData) {
     }
 
     private suspend fun createAndAssignRole(member: Member, roleName: String, roleColor: Color) {
-        val existingRole = persistentData.getGuildProperty(member.guild.asGuild()) {
-            assignedColorRoles.keys.mapNotNull { it.toSnowflakeOrNull()?.let { it1 -> member.guild.getRole(it1) } }
-                .firstOrNull { it.name.equals(roleName, true) && it.color == roleColor.kColor }
-        }
+        val existingRole = configuration[member.guild].assignedColorRoles.keys
+            .map { it.let { it1 -> member.guild.getRole(it1) } }
+            .firstOrNull { it.name.equals(roleName, true) && it.color == roleColor.kColor }
 
         val role = existingRole ?: createNewColorRole(member.guild.asGuild(), roleName, roleColor)
 
@@ -57,73 +57,68 @@ class ColorService(private val persistentData: PersistentData) {
     private suspend fun addColorRole(member: Member, role: Role) {
         member.addRole(role.id)
 
-        persistentData.setGuildProperty(member.getGuild()) {
-            if (assignedColorRoles[role.id.toString()] != null) {
-                assignedColorRoles[role.id.toString()]!!.add(member.id.toString())
-            } else {
-                assignedColorRoles[role.id.toString()] = mutableListOf(member.id.toString())
-            }
+        val assignedColorRoles = configuration[member.guild].assignedColorRoles
+
+        if (assignedColorRoles[role.id] != null) {
+            assignedColorRoles[role.id]!!.add(member.id)
+        } else {
+            assignedColorRoles[role.id] = mutableListOf(member.id)
         }
     }
 
     private suspend fun removeColorRole(member: Member) {
-        val assignedRoles = persistentData.getGuildProperty(member.guild.asGuild()) {
-            assignedColorRoles.entries
-                .filter { it.value.contains(member.id.toString()) }
-                .map { it.key }
-        }
+        val assignedRoles = configuration[member.guild].assignedColorRoles.entries
+            .filter { it.value.contains(member.id) }
+            .map { it.key }
 
         assignedRoles.forEach { role ->
-            member.roles.toList().find { it.id.toString() == role }?.let {
+            member.roles.toList().find { it.id == role }?.let {
                 member.removeRole(it.id)
             }
         }
-
     }
 
     private suspend fun findExistingRole(member: Member, roleName: String): Role? {
-        return persistentData.getGuildProperty(member.guild.asGuild()) {
-            assignedColorRoles.keys
-                .mapNotNull { it.toSnowflakeOrNull()?.let { member.guild.getRole(it) } }
-                .firstOrNull { it.name == roleName }
-        }
+        return configuration[member.guild].assignedColorRoles.keys
+            .map { it.let { member.guild.getRole(it) } }
+            .firstOrNull { it.name == roleName }
+    }
+}
+
+private suspend fun createNewColorRole(guild: Guild, roleName: String, roleColor: Color): Role {
+    val separator = getSeparatorRole(guild)
+        ?: throw Exception("Could not find separator role. The guild needs a role named \"Colors\" that marks where the new roles should be placed.")
+
+    if (guild.roles.toList().any { it.name.equals(roleName, true) })
+        throw Exception("This guild already has a role by that name.")
+
+    val role = guild.createRole {
+        name = roleName
+        color = roleColor.kColor
+        hoist = false
+        mentionable = false
+        permissions = separator.permissions
     }
 
-    private suspend fun createNewColorRole(guild: Guild, roleName: String, roleColor: Color): Role {
-        val separator = getSeparatorRole(guild)
-            ?: throw Exception("Could not find separator role. The guild needs a role named \"Colors\" that marks where the new roles should be placed.")
+    try {
+        role.changePosition(separator.rawPosition - 1)
+        return role
+    } catch (ex: Exception) {
+        role.delete()
+        throw Exception("Failed to reorder roles. This is likely due to hierarchy issues, try moving the bot role higher.")
+    }
+}
 
-        if (guild.roles.toList().any { it.name.equals(roleName, true) })
-            throw Exception("This guild already has a role by that name.")
+private suspend fun getSeparatorRole(guild: Guild) =
+    guild.roles.firstOrNull { it.name.equals("Colors", true) }
 
-        val role = guild.createRole {
-            name = roleName
-            color = roleColor.kColor
-            hoist = false
-            mentionable = false
-            permissions = separator.permissions
-        }
-
-        try {
-            role.changePosition(separator.rawPosition - 1)
-            return role
-        } catch (ex: Exception) {
-            role.delete()
-            throw Exception("Failed to reorder roles. This is likely due to hierarchy issues, try moving the bot role higher.")
+private suspend fun isValidName(member: Member, roleName: String): Boolean {
+    // If user permissions are lower than Administrator, only allow
+    // role names with ASCII characters
+    if (!member.getPermissions().contains(Permission.Administrator)) {
+        if (!Regex("^[\\x20-\\x7F]+$").matches(roleName)) {
+            return false
         }
     }
-
-    private suspend fun getSeparatorRole(guild: Guild) =
-        persistentData.getGuildProperty(guild) { guild.roles.firstOrNull { it.name.equals("Colors", true) } }
-
-    private suspend fun isValidName(member: Member, roleName: String): Boolean {
-        // If user permissions are lower than Administrator, only allow
-        // role names with ASCII characters
-        if (!member.getPermissions().contains(Permission.Administrator)) {
-            if (!Regex("^[\\x20-\\x7F]+$").matches(roleName)) {
-                return false
-            }
-        }
-        return true
-    }
+    return true
 }

@@ -9,30 +9,19 @@ import me.jakejmattson.discordkt.arguments.MemberArg
 import me.jakejmattson.discordkt.arguments.RoleArg
 import me.jakejmattson.discordkt.commands.commands
 import me.jakejmattson.discordkt.commands.subcommand
-import me.jakejmattson.discordkt.extensions.toSnowflakeOrNull
-import me.markhc.hangoutbot.services.PersistentData
+import me.markhc.hangoutbot.dataclasses.Configuration
 
-fun grantableRoles(persistentData: PersistentData) = subcommand("GrantableRoles", Permissions(Permission.ManageGuild)) {
+fun grantableRoles(configuration: Configuration) = subcommand("GrantableRoles", Permissions(Permission.ManageGuild)) {
     sub("Add") {
         execute(RoleArg) {
             val role = args.first
+            val grantableRoles = configuration[guild].grantableRoles
 
-            persistentData.setGuildProperty(guild) {
-                if (grantableRoles.any { it.value.contains(role.id.toString()) }) {
-                    respond("Role is already grantable")
-                } else {
-                    val key = grantableRoles.keys.find {
-                        it.compareTo(category, true) == 0
-                    }
-
-                    if (key == null) {
-                        grantableRoles[category] = mutableListOf(role.id.toString())
-                    } else {
-                        grantableRoles[key]!!.add(role.id.toString())
-                    }
-
-                    respond("Added \"${role.name}\" to the category \"${key ?: category}\".")
-                }
+            if (role.id in grantableRoles) {
+                respond("Role is already grantable")
+            } else {
+                grantableRoles.add(role.id)
+                respond("Added \"${role.name}\" to grantable roles.")
             }
         }
     }
@@ -40,53 +29,42 @@ fun grantableRoles(persistentData: PersistentData) = subcommand("GrantableRoles"
     sub("Remove") {
         execute(RoleArg) {
             val role = args.first
+            val grantableRoles = configuration[guild].grantableRoles
 
-            persistentData.setGuildProperty(guild) {
-                val entry = grantableRoles.entries.find {
-                    it.value.contains(role.id.toString())
-                }
-                if (entry == null) {
-                    respond("Role ${role.name} is not a grantable role.")
-                    return@setGuildProperty
-                }
-
-                entry.value.remove(role.id.toString())
-
-                if (entry.value.isEmpty()) {
-                    grantableRoles.remove(entry.key)
-                }
-
-                respond("Removed \"${role.name}\" from the list of grantable roles.")
+            if (role.id !in grantableRoles) {
+                respond("Role ${role.name} is not a grantable role.")
+                return@execute
             }
+
+            grantableRoles.remove(role.id)
+            respond("Removed \"${role.name}\" from the list of grantable roles.")
         }
     }
 
     sub("List") {
         execute {
-            persistentData.getGuildProperty(guild) {
-                if (grantableRoles.isEmpty()) {
-                    respond("No roles set")
-                } else {
-                    respond {
-                        title = "Grantable roles"
-                        color = discord.configuration.theme
+            val grantableRoles = configuration[guild].grantableRoles
 
-                        grantableRoles.entries.forEach {
-                            field {
-                                name = it.key
-                                value = it.value.map { id ->
-                                    id.toSnowflakeOrNull()?.let { guild.getRole(it).name } ?: id
-                                }.joinToString("\n")
-                            }
-                        }
-                    }
+            if (grantableRoles.isEmpty()) {
+                respond("No roles set")
+                return@execute
+            }
+
+            respond {
+                color = discord.configuration.theme
+
+                field {
+                    name = "Grantable roles"
+                    value = grantableRoles.map { id ->
+                        guild.getRoleOrNull(id)?.name ?: id
+                    }.joinToString("\n")
                 }
             }
         }
     }
 }
 
-fun roleCommands(persistentData: PersistentData) = commands("Roles", Permissions(Permission.ManageMessages)) {
+fun roleCommands(configuration: Configuration) = commands("Roles", Permissions(Permission.ManageMessages)) {
     text("grant") {
         description = "Grants a role to a lower ranked member or yourself"
         execute(MemberArg("Member").optional { it.guild!!.getMember(it.author.id) },
@@ -94,9 +72,9 @@ fun roleCommands(persistentData: PersistentData) = commands("Roles", Permissions
             val (member, role) = args
             val guild = guild
 
-            val roles = persistentData.getGuildProperty(guild) { grantableRoles }
+            val roles = configuration[guild].grantableRoles
 
-            if (roles.values.any { r -> r.contains(role.id.toString()) }) {
+            if (roles.any { r -> r == role.id }) {
                 member.addRole(role.id)
                 respond("Granted ${role.name} to ${member.tag}")
             } else {
@@ -111,11 +89,7 @@ fun roleCommands(persistentData: PersistentData) = commands("Roles", Permissions
             RoleArg("GrantableRole")) {
             val (member, role) = args
             val guild = guild
-
-            val roles = persistentData.getGuildProperty(guild) { grantableRoles }
-            val isGrantable = roles.any {
-                it.value.any { it.equals(role.id.toString(), true) }
-            }
+            val isGrantable = role.id in configuration[guild].grantableRoles
 
             if (isGrantable) {
                 member.removeRole(role.id)

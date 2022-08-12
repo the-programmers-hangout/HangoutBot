@@ -18,7 +18,7 @@ fun produceInformationCommands() = commands("Information") {
         description = "Displays information about the given user."
         execute(UserArg("user").optional { it.author }) {
             val (user) = args
-            val member = guild.getMember(user.id)
+            val member = guild.getMemberOrNull(user.id)
 
             if (member != null)
                 buildMemberInfoEmbed(member)

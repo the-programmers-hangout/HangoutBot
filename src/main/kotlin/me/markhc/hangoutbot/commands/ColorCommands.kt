@@ -7,11 +7,11 @@ import me.jakejmattson.discordkt.arguments.EveryArg
 import me.jakejmattson.discordkt.arguments.HexColorArg
 import me.jakejmattson.discordkt.commands.commands
 import me.jakejmattson.discordkt.extensions.toSnowflakeOrNull
+import me.markhc.hangoutbot.dataclasses.Configuration
 import me.markhc.hangoutbot.services.ColorService
-import me.markhc.hangoutbot.services.PersistentData
 import java.awt.Color
 
-fun colorCommands(persistentData: PersistentData, colorService: ColorService) = commands("Colors", Permissions(Permission.ManageMessages)) {
+fun colorCommands(configuration: Configuration, colorService: ColorService) = commands("Colors", Permissions(Permission.ManageMessages)) {
     text("setcolor") {
         description = "Creates a role with the given name and color and assigns it to the user."
         execute(HexColorArg("HexColor").optionalNullable(), EveryArg("RoleName")) {
@@ -47,16 +47,16 @@ fun colorCommands(persistentData: PersistentData, colorService: ColorService) = 
     text("listcolors") {
         description = "Creates a role with the given name and color and assigns it to the user."
         execute {
-            val (colorRoles, prefix) = persistentData.getGuildProperty(guild) { assignedColorRoles to prefix }
+            val colorRoles = configuration[guild].assignedColorRoles
 
             if (colorRoles.isEmpty()) {
-                respond("No colors set. For more information, see `${prefix}help setcolor`")
+                respond("No colors set. For more information, see `/help setcolor`")
                 return@execute
             }
 
             val colorInfo = colorRoles.map {
-                it.key.toSnowflakeOrNull()?.let { guild.getRole(it) }
-            }.filterNotNull().sortedBy {
+                it.key.let { guild.getRole(it) }
+            }.sortedBy {
                 val rgb = it.color
                 val hsv = Color.RGBtoHSB(rgb.red, rgb.green, rgb.blue, null)
 
