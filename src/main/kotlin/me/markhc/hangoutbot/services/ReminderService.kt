@@ -8,6 +8,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import me.jakejmattson.discordkt.Discord
 import me.jakejmattson.discordkt.annotations.Service
+import me.jakejmattson.discordkt.extensions.TimeStamp
+import me.jakejmattson.discordkt.extensions.TimeStyle
 import me.jakejmattson.discordkt.extensions.sendPrivateMessage
 import me.markhc.hangoutbot.dataclasses.Configuration
 import me.markhc.hangoutbot.dataclasses.Reminder
@@ -27,8 +29,7 @@ class ReminderService(private val configuration: Configuration, private val disc
         configuration.reminders.add(Reminder(user.id, until.toString(), what))
         launchReminder(user.id, ms, what)
 
-        //TODO use new time format for reminders
-        return Result.Success("Got it, I'll remind you in a bit about that.")
+        return Result.Success("Got it, I'll remind you ${TimeStamp.at(until, TimeStyle.RELATIVE)}")
     }
 
     fun listReminders(user: User, fn: (Reminder) -> Unit) =
@@ -46,16 +47,14 @@ class ReminderService(private val configuration: Configuration, private val disc
         }
     }
 
-    private fun launchReminder(userId: Snowflake, ms: Long, what: String) {
+    private fun launchReminder(userId: Snowflake, ms: Long, reminder: String) {
         GlobalScope.launch {
             delay(ms)
 
-            userId.let {
-                discord.kord.getUser(it)?.sendPrivateMessage {
-                    title = "Reminder"
-                    description = what
-                    color = discord.configuration.theme
-                }
+            discord.kord.getUser(userId)?.sendPrivateMessage {
+                title = "Reminder"
+                description = reminder
+                color = discord.configuration.theme
             }
 
             configuration.reminders.removeIf {

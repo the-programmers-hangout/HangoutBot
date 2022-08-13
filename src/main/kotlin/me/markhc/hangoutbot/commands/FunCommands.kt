@@ -12,8 +12,6 @@ fun produceFunCommands() = commands("Fun") {
     slash("flip") {
         description = "Choose one of the given choices."
         execute(SplitterArg(";", "Choices")) {
-            val (args) = args
-            val choice = args[Random.nextInt(args.size)]
             val response = listOf(
                 "Hmm, I'd say %choice%.",
                 "%choice%, no doubt.",
@@ -21,7 +19,7 @@ fun produceFunCommands() = commands("Fun") {
                 "%choice% sounds good to me.",
                 "If it were up to me, I'd go with %choice%",
                 "East or west, %choice% is the best."
-            ).random().replace("%choice%", choice)
+            ).random().replace("%choice%", args.first.random())
 
             respondPublic(response)
         }

@@ -16,8 +16,6 @@ fun colorCommands(configuration: Configuration, colorService: ColorService) = co
         description = "Creates a role with the given name and color and assigns it to the user."
         execute(HexColorArg("HexColor").optionalNullable(), EveryArg("RoleName")) {
             val (color, roleName) = args
-
-            val guild = guild
             val member = author.asMember(guild.id)
             val message = channel.createMessage("Working...")
 
