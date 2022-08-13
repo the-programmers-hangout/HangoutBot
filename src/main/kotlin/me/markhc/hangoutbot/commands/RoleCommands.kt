@@ -2,9 +2,6 @@ package me.markhc.hangoutbot.commands
 
 import dev.kord.common.entity.Permission
 import dev.kord.common.entity.Permissions
-import dev.kord.core.entity.Guild
-import kotlinx.coroutines.flow.count
-import kotlinx.coroutines.flow.toList
 import me.jakejmattson.discordkt.arguments.MemberArg
 import me.jakejmattson.discordkt.arguments.RoleArg
 import me.jakejmattson.discordkt.commands.commands
@@ -65,7 +62,7 @@ fun grantableRoles(configuration: Configuration) = subcommand("GrantableRoles", 
 }
 
 fun roleCommands(configuration: Configuration) = commands("Roles", Permissions(Permission.ManageMessages)) {
-    text("grant") {
+    slash("grant") {
         description = "Grants a role to a lower ranked member or yourself"
         execute(MemberArg("Member").optional { it.guild!!.getMember(it.author.id) },
             RoleArg("GrantableRole")) {
@@ -83,7 +80,7 @@ fun roleCommands(configuration: Configuration) = commands("Roles", Permissions(P
         }
     }
 
-    text("revoke") {
+    slash("revoke") {
         description = "Revokes a role from a lower ranked member or yourself"
         execute(MemberArg("Member").optional { it.guild!!.getMember(it.author.id) },
             RoleArg("GrantableRole")) {
@@ -97,56 +94,6 @@ fun roleCommands(configuration: Configuration) = commands("Roles", Permissions(P
             } else {
                 respond("${role.name} is not a grantable role")
             }
-        }
-    }
-}
-
-/**
- *  @brief Builds the list of messages required to display the roles
- *
- *  The role list may be too big to send in a single message.
- *  This function returns a list of messages that should be sent.
- *
- *  @param guild The target guild
- *
- *  @return The list of messages to send
- */
-private suspend fun buildRolelistMessages(guild: Guild, regex: Regex): List<String> {
-    val list = guild.roles.toList().map { role ->
-        val colorString = with(role.color) {
-            "(${String.format("#%02x%02x%02x", red, green, blue)})"
-        }
-
-        "${role.id} $colorString - ${role.name}: ${guild.members.count { role in it.roles.toList() }} users"
-    }.filter { regex.containsMatchIn(it) }
-
-    // Try joining them in a single message
-    val response = list.joinToString("\n")
-
-    return when {
-        response.isEmpty() -> {
-            listOf()
-        }
-
-        response.length < 1990 -> {
-            // If the length is less than the max, we good.
-            listOf("```\n$response\n```")
-        }
-
-        else -> {
-            // Otherwise, break it into multiple messages
-            val result = mutableListOf<String>()
-            var data = "```\n"
-            for (i in list.indices) {
-                if (data.length + list[i].length < 1990) {
-                    data += list[i] + '\n'
-                } else {
-                    result.add("$data```")
-                    data = "```\n${list[i]}\n"
-                }
-            }
-            result.add("$data```")
-            result
         }
     }
 }

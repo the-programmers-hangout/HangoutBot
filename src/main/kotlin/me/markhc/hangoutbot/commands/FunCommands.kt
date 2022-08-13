@@ -4,7 +4,6 @@ import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.gson.responseObject
 import me.jakejmattson.discordkt.arguments.SplitterArg
 import me.jakejmattson.discordkt.commands.commands
-import kotlin.random.Random
 
 private data class JokeResponse(val id: String = "", val joke: String = "", val status: Int = 500)
 

@@ -9,11 +9,11 @@ import kotlinx.coroutines.flow.toList
 import kotlinx.datetime.toJavaInstant
 import me.jakejmattson.discordkt.arguments.RoleArg
 import me.jakejmattson.discordkt.arguments.UserArg
-import me.jakejmattson.discordkt.commands.commands
+import me.jakejmattson.discordkt.commands.subcommand
 import me.jakejmattson.discordkt.extensions.*
 
-fun produceInformationCommands() = commands("Information") {
-    slash("serverinfo") {
+fun produceInformationCommands() = subcommand("Info") {
+    sub("server") {
         description = "Display a message giving basic server information."
         execute {
             respondPublic {
@@ -44,7 +44,7 @@ fun produceInformationCommands() = commands("Information") {
         }
     }
 
-    slash("userinfo") {
+    sub("user") {
         description = "Displays information about the given user."
         execute(UserArg("user").optional { it.author }) {
             val (user) = args
@@ -69,7 +69,7 @@ fun produceInformationCommands() = commands("Information") {
         }
     }
 
-    slash("roleinfo") {
+    sub("role") {
         description = "Displays information about the given role."
         execute(RoleArg) {
             val role = args.first
@@ -89,11 +89,10 @@ fun produceInformationCommands() = commands("Information") {
         }
     }
 
-    slash("avatar") {
+    sub("avatar") {
         description = "Gets the avatar from the given user"
         execute(UserArg("user").optional { it.author }) {
             val user = args.first
-
             respond("${user.pfpUrl}?size=512")
         }
     }

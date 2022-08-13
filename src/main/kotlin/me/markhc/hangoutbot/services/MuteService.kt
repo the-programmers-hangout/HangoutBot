@@ -3,15 +3,13 @@ package me.markhc.hangoutbot.services
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.entity.Member
 import dev.kord.core.entity.Role
-import dev.kord.x.emoji.Emojis
-import dev.kord.x.emoji.toReaction
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import me.jakejmattson.discordkt.Discord
 import me.jakejmattson.discordkt.annotations.Service
 import me.jakejmattson.discordkt.commands.CommandEvent
-import me.jakejmattson.discordkt.commands.GuildCommandEvent
+import me.jakejmattson.discordkt.commands.GuildSlashCommandEvent
 import me.jakejmattson.discordkt.extensions.pfpUrl
 import me.jakejmattson.discordkt.extensions.sendPrivateMessage
 import me.markhc.hangoutbot.dataclasses.Configuration
@@ -21,7 +19,7 @@ import java.time.Instant
 
 @Service
 class MuteService(private val configuration: Configuration, private val discord: Discord) {
-    suspend fun addMutedMember(event: GuildCommandEvent<*>, member: Member, ms: Long, soft: Boolean) {
+    suspend fun addMutedMember(event: GuildSlashCommandEvent<*>, member: Member, ms: Long, soft: Boolean) {
         val guild = event.guild
         val config = configuration[guild]
 
@@ -48,7 +46,6 @@ class MuteService(private val configuration: Configuration, private val discord:
         config.mutedUsers.add(MuteEntry(member.id, until.toString(), soft))
         applyMute(member, muteRole, ms)
 
-        event.message.addReaction(Emojis.mute.toReaction())
         event.buildMuteEmbed(member, ms)
     }
 

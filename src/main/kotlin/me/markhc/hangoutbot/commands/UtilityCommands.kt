@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit
 import kotlin.math.roundToLong
 
 fun produceUtilityCommands(muteService: MuteService) = commands("Selfmute") {
-    text("selfmute") {
+    slash("selfmute") {
         description = "Mute yourself for the given amount of time. A mute will stop you from talking in any channel. Default is 1 hour. Max is 24 hours."
         execute(TimeArg.optional(3600.0)) {
             val (timeInSeconds) = args
@@ -30,7 +30,7 @@ fun produceUtilityCommands(muteService: MuteService) = commands("Selfmute") {
         }
     }
 
-    text("productivemute") {
+    slash("productivemute") {
         description = "Trying to be productive? Mute yourself for the specified amount of time. " +
             "A productive mute will prevent you from talking in the social channels while still allowing " +
             "the use of the language channels. Default is 1 hour. Max is 24 hours."
@@ -56,7 +56,7 @@ fun produceUtilityCommands(muteService: MuteService) = commands("Selfmute") {
 }
 
 fun reminderCommands(reminderService: ReminderService) = commands("Reminders") {
-    text("remindme") {
+    slash("remindme") {
         description = "A command that'll remind you about something after the specified time."
         execute(TimeArg, EveryArg) {
             val (seconds, reminder) = args
@@ -79,7 +79,7 @@ fun reminderCommands(reminderService: ReminderService) = commands("Reminders") {
         }
     }
 
-    text("listreminders") {
+    slash("listreminders") {
         description = "List your active reminders"
         execute {
             val authorTag = author.tag

@@ -6,13 +6,12 @@ import dev.kord.core.behavior.edit
 import me.jakejmattson.discordkt.arguments.EveryArg
 import me.jakejmattson.discordkt.arguments.HexColorArg
 import me.jakejmattson.discordkt.commands.commands
-import me.jakejmattson.discordkt.extensions.toSnowflakeOrNull
 import me.markhc.hangoutbot.dataclasses.Configuration
 import me.markhc.hangoutbot.services.ColorService
 import java.awt.Color
 
 fun colorCommands(configuration: Configuration, colorService: ColorService) = commands("Colors", Permissions(Permission.ManageMessages)) {
-    text("setcolor") {
+    slash("setcolor") {
         description = "Creates a role with the given name and color and assigns it to the user."
         execute(HexColorArg("HexColor").optionalNullable(), EveryArg("RoleName")) {
             val (color, roleName) = args
@@ -33,7 +32,7 @@ fun colorCommands(configuration: Configuration, colorService: ColorService) = co
         }
     }
 
-    text("clearcolor") {
+    slash("clearcolor") {
         description = "Clears the current color role."
         execute {
             val member = author.asMember(guild.id)
@@ -42,7 +41,7 @@ fun colorCommands(configuration: Configuration, colorService: ColorService) = co
         }
     }
 
-    text("listcolors") {
+    slash("listcolors") {
         description = "Creates a role with the given name and color and assigns it to the user."
         execute {
             val colorRoles = configuration[guild].assignedColorRoles

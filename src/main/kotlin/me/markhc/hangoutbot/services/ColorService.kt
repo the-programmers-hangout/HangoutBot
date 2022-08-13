@@ -9,7 +9,6 @@ import dev.kord.core.entity.Role
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.toList
 import me.jakejmattson.discordkt.annotations.Service
-import me.jakejmattson.discordkt.extensions.toSnowflakeOrNull
 import me.markhc.hangoutbot.dataclasses.Configuration
 import java.awt.Color
 
