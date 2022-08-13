@@ -1,8 +1,6 @@
-import java.util.*
-
 group = "me.markhc"
 version = "4.0.0"
-description = "An misc bot for TheProgrammersHangout"
+description = "A misc feature bot for TheProgrammersHangout"
 
 plugins {
     kotlin("jvm") version "1.7.10"
@@ -21,15 +19,15 @@ dependencies {
 tasks {
     compileKotlin {
         kotlinOptions.jvmTarget = "1.8"
+        dependsOn("writeProperties")
+    }
 
-        Properties().apply {
-            setProperty("name", project.name)
-            setProperty("description", project.description)
-            setProperty("version", version.toString())
-            setProperty("url", "https://github.com/the-programmers-hangout/HangoutBot")
-
-            store(file("src/main/resources/bot.properties").outputStream(), null)
-        }
+    register<WriteProperties>("writeProperties") {
+        property("name", project.name)
+        property("description", project.description.toString())
+        property("version", version.toString())
+        property("url", "https://github.com/the-programmers-hangout/HangoutBot")
+        setOutputFile("src/main/resources/bot.properties")
     }
 
     shadowJar {
