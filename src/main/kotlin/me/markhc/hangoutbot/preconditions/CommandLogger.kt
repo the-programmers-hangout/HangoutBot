@@ -11,11 +11,12 @@ fun commandLogger(configuration: Configuration) = precondition {
 
     val args = rawInputs.commandArgs.joinToString()
 
-    if (args.length > 1500)
-        return@precondition fail("Command is too long (${args.length} chars, max: 1500")
-
     if (guild != null) {
         val guild = guild!!
+
+        if (!configuration.hasGuildConfig(guild))
+            return@precondition
+
         val loggingChannel = configuration[guild].loggingChannel
         val channel = channel as TextChannel
 

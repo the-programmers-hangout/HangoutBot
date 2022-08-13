@@ -8,8 +8,6 @@ fun setupPrecondition(configuration: Configuration) = precondition {
 
     if (configuration.hasGuildConfig(guild)) return@precondition
 
-    if (rawInputs.commandName.lowercase() == "configure")
+    if (rawInputs.commandName.lowercase() != "configure")
         fail("This guild is not setup. You must run `/configure` first.")
-
-    return@precondition
 }
