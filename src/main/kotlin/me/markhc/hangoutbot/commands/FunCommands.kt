@@ -1,11 +1,11 @@
 package me.markhc.hangoutbot.commands
 
-import com.github.kittinunf.fuel.Fuel
-import com.github.kittinunf.fuel.gson.responseObject
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import me.jakejmattson.discordkt.arguments.SplitterArg
 import me.jakejmattson.discordkt.commands.commands
-
-private data class JokeResponse(val id: String = "", val joke: String = "", val status: Int = 500)
+import java.net.HttpURLConnection
+import java.net.URL
 
 fun produceFunCommands() = commands("Fun") {
     slash("flip") {
@@ -27,23 +27,14 @@ fun produceFunCommands() = commands("Fun") {
     slash("dadjoke") {
         description = "Returns a random dad joke."
         execute {
-            val (_, _, result) = Fuel
-                .get("https://icanhazdadjoke.com/")
-                .set("User-Agent", "HangoutBot (https://github.com/the-programmers-hangout/HangoutBot/)")
-                .set("Accept", "application/json")
-                .responseObject<JokeResponse>()
-
-            result.fold<Unit>(
-                success = {
-                    if (it.status == 200) {
-                        respondPublic(it.joke)
-                    } else {
-                        respond("Failed to fetch joke. Status: ${it.status}")
-                    }
-                },
-                failure = {
-                    respond("Error trying to fetch joke")
-                })
+            val connection = URL("https://icanhazdadjoke.com/").openConnection() as HttpURLConnection
+            connection.setRequestProperty("User-Agent", "HangoutBot (https://github.com/the-programmers-hangout/HangoutBot/)");
+            connection.setRequestProperty("Accept", "text/plain");
+            connection.setRequestProperty("Accept-Language", "en-US");
+            connection.setRequestProperty("Connection", "close");
+            respondPublic(withContext(Dispatchers.IO) {
+                String(connection.inputStream.readAllBytes())
+            })
         }
     }
 }

@@ -16,8 +16,6 @@ repositories {
 
 dependencies {
     implementation("me.jakejmattson:DiscordKt:0.23.3")
-    implementation("com.github.kittinunf.fuel:fuel-gson:2.3.1")
-    implementation("com.github.kittinunf.fuel:fuel:2.3.1")
 }
 
 tasks {
