@@ -7,7 +7,7 @@ import me.jakejmattson.discordkt.extensions.sanitiseMentions
 import me.markhc.hangoutbot.dataclasses.Configuration
 
 fun commandLogger(configuration: Configuration) = precondition {
-    command ?: return@precondition fail()
+    command ?: return@precondition
 
     val args = rawInputs.commandArgs.joinToString()
 

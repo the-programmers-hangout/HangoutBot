@@ -10,7 +10,7 @@ import kotlin.math.roundToLong
 
 fun produceUtilityCommands(muteService: MuteService) = commands("Selfmute") {
     slash("selfmute") {
-        description = "Mute yourself for the given amount of time. A mute will stop you from talking in any channel. Default is 1 hour. Max is 24 hours."
+        description = "Mute yourself for the given amount of time."
         execute(TimeArg.optional(3600.0)) {
             val (timeInSeconds) = args
 
@@ -31,9 +31,7 @@ fun produceUtilityCommands(muteService: MuteService) = commands("Selfmute") {
     }
 
     slash("productivemute") {
-        description = "Trying to be productive? Mute yourself for the specified amount of time. " +
-            "A productive mute will prevent you from talking in the social channels while still allowing " +
-            "the use of the language channels. Default is 1 hour. Max is 24 hours."
+        description = "Hide social channels for a given amount of time."
         execute(TimeArg.optional(3600.0)) {
             val (timeInSeconds) = args
 
@@ -46,7 +44,6 @@ fun produceUtilityCommands(muteService: MuteService) = commands("Selfmute") {
                 return@execute
             }
 
-            val guild = guild
             val member = author.asMember(guild.id)
             val millis = timeInSeconds.roundToLong() * 1000
 
@@ -71,11 +68,8 @@ fun reminderCommands(reminderService: ReminderService) = commands("Reminders") {
             }
 
             val millis = seconds.roundToLong() * 1000
-
-            reminderService.addReminder(author, millis, reminder).fold<Unit>(
-                success = { msg -> respond(msg) },
-                failure = { ex -> respond(ex.message!!) }
-            )
+            val response = reminderService.addReminder(author, millis, reminder)
+            respond(response)
         }
     }
 

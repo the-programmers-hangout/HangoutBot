@@ -28,10 +28,10 @@ fun produceFunCommands() = commands("Fun") {
         description = "Returns a random dad joke."
         execute {
             val connection = URL("https://icanhazdadjoke.com/").openConnection() as HttpURLConnection
-            connection.setRequestProperty("User-Agent", "HangoutBot (https://github.com/the-programmers-hangout/HangoutBot/)");
-            connection.setRequestProperty("Accept", "text/plain");
-            connection.setRequestProperty("Accept-Language", "en-US");
-            connection.setRequestProperty("Connection", "close");
+            connection.setRequestProperty("User-Agent", "HangoutBot (https://github.com/the-programmers-hangout/HangoutBot/)")
+            connection.setRequestProperty("Accept", "text/plain")
+            connection.setRequestProperty("Accept-Language", "en-US")
+            connection.setRequestProperty("Connection", "close")
             respondPublic(withContext(Dispatchers.IO) {
                 String(connection.inputStream.readAllBytes())
             })

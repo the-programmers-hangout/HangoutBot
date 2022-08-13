@@ -1,6 +1,5 @@
 package me.markhc.hangoutbot.services
 
-import com.github.kittinunf.result.Result
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.entity.User
 import kotlinx.coroutines.GlobalScope
@@ -17,19 +16,12 @@ import java.time.Instant
 
 @Service
 class ReminderService(private val configuration: Configuration, private val discord: Discord) {
-    fun addReminder(user: User, ms: Long, what: String): Result<String, Exception> {
-        val reminders = configuration.reminders
-
-        if (reminders.count { it.user == user.id } > 10) {
-            return Result.Failure(Exception("Sorry, you cannot create any more reminders!"))
-        }
-
+    fun addReminder(user: User, ms: Long, what: String): String {
         val until = Instant.now().plusMillis(ms)
-
         configuration.reminders.add(Reminder(user.id, until.toString(), what))
         launchReminder(user.id, ms, what)
 
-        return Result.Success("Got it, I'll remind you ${TimeStamp.at(until, TimeStyle.RELATIVE)}")
+        return "Got it, I'll remind you ${TimeStamp.at(until, TimeStyle.RELATIVE)}"
     }
 
     fun listReminders(user: User, fn: (Reminder) -> Unit) =

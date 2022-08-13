@@ -13,7 +13,7 @@ import java.awt.Color
 fun colorCommands(configuration: Configuration, colorService: ColorService) = commands("Colors", Permissions(Permission.ManageMessages)) {
     slash("setcolor") {
         description = "Creates a role with the given name and color and assigns it to the user."
-        execute(HexColorArg("HexColor").optionalNullable(), EveryArg("RoleName")) {
+        execute(HexColorArg("HexColor"), EveryArg("RoleName")) {
             val (color, roleName) = args
             val member = author.asMember(guild.id)
             val message = channel.createMessage("Working...")

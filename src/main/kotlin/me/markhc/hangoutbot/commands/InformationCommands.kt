@@ -46,7 +46,7 @@ fun produceInformationCommands() = subcommand("Info") {
 
     sub("user") {
         description = "Displays information about the given user."
-        execute(UserArg("user").optional { it.author }) {
+        execute(UserArg("User", "The user to see more information about").optional { it.author }) {
             val (user) = args
             val member = guild.getMemberOrNull(user.id)
 
@@ -71,7 +71,7 @@ fun produceInformationCommands() = subcommand("Info") {
 
     sub("role") {
         description = "Displays information about the given role."
-        execute(RoleArg) {
+        execute(RoleArg("Role", "The role to see information about")) {
             val role = args.first
 
             respond {
@@ -91,7 +91,7 @@ fun produceInformationCommands() = subcommand("Info") {
 
     sub("avatar") {
         description = "Gets the avatar from the given user"
-        execute(UserArg("user").optional { it.author }) {
+        execute(UserArg("User", "The user to see the avatar of")) {
             val user = args.first
             respond("${user.pfpUrl}?size=512")
         }

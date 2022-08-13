@@ -10,6 +10,7 @@ import me.markhc.hangoutbot.dataclasses.Configuration
 
 fun grantableRoles(configuration: Configuration) = subcommand("GrantableRoles", Permissions(Permission.ManageGuild)) {
     sub("Add") {
+        description = "Add a role to the list of grantable roles"
         execute(RoleArg) {
             val role = args.first
             val grantableRoles = configuration[guild].grantableRoles
@@ -24,6 +25,7 @@ fun grantableRoles(configuration: Configuration) = subcommand("GrantableRoles", 
     }
 
     sub("Remove") {
+        description = "Remove a role from the list of grantable roles"
         execute(RoleArg) {
             val role = args.first
             val grantableRoles = configuration[guild].grantableRoles
@@ -39,6 +41,7 @@ fun grantableRoles(configuration: Configuration) = subcommand("GrantableRoles", 
     }
 
     sub("List") {
+        description = "List all grantable roles"
         execute {
             val grantableRoles = configuration[guild].grantableRoles
 
@@ -64,11 +67,8 @@ fun grantableRoles(configuration: Configuration) = subcommand("GrantableRoles", 
 fun roleCommands(configuration: Configuration) = commands("Roles", Permissions(Permission.ManageMessages)) {
     slash("grant") {
         description = "Grants a role to a lower ranked member or yourself"
-        execute(MemberArg("Member").optional { it.guild!!.getMember(it.author.id) },
-            RoleArg("GrantableRole")) {
+        execute(MemberArg("Member"), RoleArg("GrantableRole")) {
             val (member, role) = args
-            val guild = guild
-
             val roles = configuration[guild].grantableRoles
 
             if (roles.any { r -> r == role.id }) {
@@ -82,10 +82,8 @@ fun roleCommands(configuration: Configuration) = commands("Roles", Permissions(P
 
     slash("revoke") {
         description = "Revokes a role from a lower ranked member or yourself"
-        execute(MemberArg("Member").optional { it.guild!!.getMember(it.author.id) },
-            RoleArg("GrantableRole")) {
+        execute(MemberArg("Member"), RoleArg("GrantableRole")) {
             val (member, role) = args
-            val guild = guild
             val isGrantable = role.id in configuration[guild].grantableRoles
 
             if (isGrantable) {
