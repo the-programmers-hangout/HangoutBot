@@ -3,8 +3,13 @@ package me.markhc.hangoutbot.dataclasses
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.entity.Guild
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
+import me.jakejmattson.discordkt.Discord
 import me.jakejmattson.discordkt.dsl.Data
+import me.jakejmattson.discordkt.extensions.sendPrivateMessage
 
 @Serializable
 data class Configuration(val guildConfigurations: MutableMap<Snowflake, GuildConfiguration> = mutableMapOf(),
@@ -27,7 +32,22 @@ data class GuildConfiguration(var muteRole: Snowflake,
                               val mutedUsers: MutableList<MuteEntry> = mutableListOf())
 
 @Serializable
-data class MuteEntry(val user: Snowflake, val timeUntil: String = "", val isSoft: Boolean = false)
+data class MuteEntry(val user: Snowflake, val endTime: Long, val isSoft: Boolean = false)
 
 @Serializable
-data class Reminder(val user: Snowflake, val timeUntil: String = "", val what: String = "")
+data class Reminder(val user: Snowflake, val endTime: Long, val message: String) {
+    fun launch(discord: Discord, configuration: Configuration) {
+        GlobalScope.launch {
+            delay(endTime - System.currentTimeMillis())
+
+            discord.kord.getUser(user)?.sendPrivateMessage {
+                title = "Reminder"
+                description = message
+                color = discord.configuration.theme
+            }
+
+            configuration.reminders.remove(this@Reminder)
+            configuration.save()
+        }
+    }
+}

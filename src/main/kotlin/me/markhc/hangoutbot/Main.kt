@@ -9,7 +9,6 @@ import me.jakejmattson.discordkt.dsl.bot
 import me.jakejmattson.discordkt.extensions.plus
 import me.markhc.hangoutbot.dataclasses.Configuration
 import me.markhc.hangoutbot.services.MuteService
-import me.markhc.hangoutbot.services.ReminderService
 import java.awt.Color
 
 @OptIn(KordPreview::class)
@@ -20,7 +19,7 @@ suspend fun main(args: Array<String>) {
         ?: throw IllegalArgumentException("Missing bot token.")
 
     bot(token) {
-        data("data/guilds.json") { Configuration() }
+        val configuration = data("data/guilds.json") { Configuration() }
 
         prefix { "/" }
 
@@ -34,10 +33,11 @@ suspend fun main(args: Array<String>) {
         }
 
         onStart {
-            val (muteService, reminderService) = getInjectionObjects(MuteService::class, ReminderService::class)
-
+            val muteService = getInjectionObjects<MuteService>()
             muteService.launchTimers()
-            reminderService.launchTimers()
+
+            configuration.reminders.removeIf { it.endTime < System.currentTimeMillis() }
+            configuration.reminders.forEach { it.launch(this, configuration) }
         }
     }
 }

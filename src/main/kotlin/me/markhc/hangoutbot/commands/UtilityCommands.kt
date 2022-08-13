@@ -3,12 +3,16 @@ package me.markhc.hangoutbot.commands
 import me.jakejmattson.discordkt.arguments.EveryArg
 import me.jakejmattson.discordkt.arguments.TimeArg
 import me.jakejmattson.discordkt.commands.commands
+import me.jakejmattson.discordkt.extensions.TimeStamp
+import me.jakejmattson.discordkt.extensions.TimeStyle
+import me.markhc.hangoutbot.dataclasses.Configuration
+import me.markhc.hangoutbot.dataclasses.Reminder
 import me.markhc.hangoutbot.services.MuteService
-import me.markhc.hangoutbot.services.ReminderService
+import java.time.Instant
 import java.util.concurrent.TimeUnit
 import kotlin.math.roundToLong
 
-fun produceUtilityCommands(muteService: MuteService) = commands("Selfmute") {
+fun produceUtilityCommands(muteService: MuteService, configuration: Configuration) = commands("Selfmute") {
     slash("selfmute") {
         description = "Mute yourself for the given amount of time."
         execute(TimeArg.optional(3600.0)) {
@@ -50,13 +54,11 @@ fun produceUtilityCommands(muteService: MuteService) = commands("Selfmute") {
             muteService.addMutedMember(this, member, millis, soft = true)
         }
     }
-}
 
-fun reminderCommands(reminderService: ReminderService) = commands("Reminders") {
     slash("remindme") {
         description = "A command that'll remind you about something after the specified time."
         execute(TimeArg, EveryArg) {
-            val (seconds, reminder) = args
+            val (seconds, message) = args
 
             if (seconds < 5) {
                 respond("You cannot set a reminder for less than 5 seconds.")
@@ -67,31 +69,15 @@ fun reminderCommands(reminderService: ReminderService) = commands("Reminders") {
                 return@execute
             }
 
-            val millis = seconds.roundToLong() * 1000
-            val response = reminderService.addReminder(author, millis, reminder)
-            respond(response)
-        }
-    }
+            val ms = seconds.roundToLong() * 1000
+            val until = Instant.now().plusMillis(ms)
+            val reminder = Reminder(author.id, until.toEpochMilli(), message)
 
-    slash("listreminders") {
-        description = "List your active reminders"
-        execute {
-            val authorTag = author.tag
+            configuration.reminders.add(reminder)
+            configuration.save()
+            reminder.launch(discord, configuration)
 
-            respond {
-                title = "Active reminders for $authorTag"
-
-                val count = reminderService.listReminders(this@execute.author) {
-                    field {
-                        name = it.timeUntil
-                        value = "```\n${if (it.what.length < 100) it.what else "${it.what.take(100)}..."}\n```"
-                    }
-                }
-
-                if (count == 0) {
-                    description = "There doesn't seem to be anything here."
-                }
-            }
+            respond("Got it, I'll remind you ${TimeStamp.at(until, TimeStyle.RELATIVE)}")
         }
     }
 }

@@ -21,6 +21,12 @@ fun moderationCommands() = commands("Moderation", Permissions(Permission.ManageM
 
     message("Nuke Messages After", "NukeAfter", "Delete all message following this one") {
         val delete = channel.getMessagesAfter(arg.id).map { it.id }.toList()
+
+        if (delete.size >= 100) {
+            respond("Cannot nuke more than 100 messages")
+            return@message
+        }
+
         (channel as GuildMessageChannel).bulkDelete(delete)
         respondPublic("Deleted ${delete.size} messages.")
     }

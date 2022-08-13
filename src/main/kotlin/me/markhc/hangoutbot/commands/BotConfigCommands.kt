@@ -18,6 +18,7 @@ fun botConfigCommands(configuration: Configuration) = commands("Configuration", 
 
             val (muteRole, softMuteRole, loggingChannel) = args
             configuration[guild.id] = GuildConfiguration(muteRole.id, softMuteRole.id, loggingChannel.id)
+            configuration.save()
             respond("${guild.name} configured!")
         }
     }

@@ -3,15 +3,14 @@ package me.markhc.hangoutbot.services
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.entity.Member
 import dev.kord.core.entity.Role
+import dev.kord.rest.Image
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import me.jakejmattson.discordkt.Discord
 import me.jakejmattson.discordkt.annotations.Service
-import me.jakejmattson.discordkt.commands.CommandEvent
 import me.jakejmattson.discordkt.commands.GuildSlashCommandEvent
-import me.jakejmattson.discordkt.extensions.pfpUrl
-import me.jakejmattson.discordkt.extensions.sendPrivateMessage
+import me.jakejmattson.discordkt.extensions.*
 import me.markhc.hangoutbot.dataclasses.Configuration
 import me.markhc.hangoutbot.dataclasses.GuildConfiguration
 import me.markhc.hangoutbot.dataclasses.MuteEntry
@@ -22,31 +21,34 @@ class MuteService(private val configuration: Configuration, private val discord:
     suspend fun addMutedMember(event: GuildSlashCommandEvent<*>, member: Member, ms: Long, soft: Boolean) {
         val guild = event.guild
         val config = configuration[guild]
-
-        val muteRoleId = with(config) {
-            if (soft) softMuteRole else muteRole
-        }
-
+        val muteRoleId = with(config) { if (soft) softMuteRole else muteRole }
         val muteRole = guild.getRole(muteRoleId)
 
         if (muteRole.id in member.roleIds) {
-            event.respond("Nice try, but you're already muted!")
+            event.respond("You're already muted!")
             return
         }
-
-        val mutedUsers = configuration[guild].mutedUsers
 
         if (config.mutedUsers.any { muted -> muted.user == member.id }) {
             event.respond("Sorry, you already have an active mute!")
             return
         }
 
-        val until = Instant.now().plusMillis(ms)
-
-        config.mutedUsers.add(MuteEntry(member.id, until.toString(), soft))
+        val end = Instant.now().plusMillis(ms)
+        config.mutedUsers.add(MuteEntry(member.id, end.toEpochMilli(), soft))
         applyMute(member, muteRole, ms)
 
-        event.buildMuteEmbed(member, ms)
+        member.sendPrivateMessage {
+            author {
+                name = guild.name
+                icon = guild.getIconUrl(Image.Format.PNG)
+            }
+            title = "Self-Muted"
+            description = "Your mute will expire on\n${TimeStamp.at(end)} (${TimeStamp.at(end, TimeStyle.RELATIVE)})"
+            color = discord.configuration.theme
+        }
+
+        event.respond("Mute applied. See DM for info.")
     }
 
     suspend fun launchTimers() {
@@ -80,7 +82,6 @@ class MuteService(private val configuration: Configuration, private val discord:
 
     private suspend fun applyMute(member: Member, role: Role, ms: Long) {
         member.addRole(role.id)
-
         startUnmuteTimer(member.guild.id, member.id, role.id, ms)
     }
 
@@ -94,28 +95,6 @@ class MuteService(private val configuration: Configuration, private val discord:
 
             configuration[guild].mutedUsers.removeIf { member.id == it.user }
             member.removeRole(role.id)
-        }
-    }
-
-    private suspend fun CommandEvent<*>.buildMuteEmbed(member: Member, duration: Long) = member.sendPrivateMessage {
-        title = "You have been muted"
-        description = "The mute will be automatically removed when the timer expires."
-        color = discord.configuration.theme
-
-        field {
-            inline = true
-            name = "Duration"
-            value = "For a bit"//TODO TimeFormatter.toShortDurationString(duration)
-        }
-
-        field {
-            inline = true
-            name = "You will be unmuted on"
-            value = "Someday"// TODO timestamp.offsetBy(duration.toInt())
-        }
-
-        thumbnail {
-            url = member.pfpUrl
         }
     }
 }
