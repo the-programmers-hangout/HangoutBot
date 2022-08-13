@@ -7,14 +7,14 @@ import me.jakejmattson.discordkt.extensions.pfpUrl
 import me.markhc.hangoutbot.utilities.*
 
 fun produceInformationCommands() = commands("Information") {
-    text("serverinfo") {
+    slash("serverinfo") {
         description = "Display a message giving basic server information."
         execute {
             buildGuildInfoEmbed(guild)
         }
     }
 
-    text("userinfo") {
+    slash("userinfo") {
         description = "Displays information about the given user."
         execute(UserArg("user").optional { it.author }) {
             val (user) = args
@@ -27,14 +27,14 @@ fun produceInformationCommands() = commands("Information") {
         }
     }
 
-    text("roleinfo") {
+    slash("roleinfo") {
         description = "Displays information about the given role."
         execute(RoleArg) {
             buildRoleInfoEmbed(args.first)
         }
     }
 
-    text("avatar") {
+    slash("avatar") {
         description = "Gets the avatar from the given user"
         execute(UserArg("user").optional { it.author }) {
             val user = args.first

@@ -2,10 +2,8 @@ package me.markhc.hangoutbot.commands
 
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.gson.responseObject
-import me.jakejmattson.discordkt.arguments.EveryArg
 import me.jakejmattson.discordkt.arguments.SplitterArg
 import me.jakejmattson.discordkt.commands.commands
-import me.markhc.hangoutbot.locale.Messages
 import kotlin.random.Random
 
 private data class JokeResponse(val id: String = "", val joke: String = "", val status: Int = 500)
@@ -16,7 +14,16 @@ fun produceFunCommands() = commands("Fun") {
         execute(SplitterArg(";", "Choices")) {
             val (args) = args
             val choice = args[Random.nextInt(args.size)]
-            respondPublic(Messages.getRandomFlipMessage(choice))
+            val response = listOf(
+                "Hmm, I'd say %choice%.",
+                "%choice%, no doubt.",
+                "Perhaps... %choice%.",
+                "%choice% sounds good to me.",
+                "If it were up to me, I'd go with %choice%",
+                "East or west, %choice% is the best."
+            ).random().replace("%choice%", choice)
+
+            respondPublic(response)
         }
     }
 

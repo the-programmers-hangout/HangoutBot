@@ -11,7 +11,7 @@ import me.jakejmattson.discordkt.arguments.EveryArg
 import me.jakejmattson.discordkt.commands.commands
 
 fun moderationCommands() = commands("Moderation", Permissions(Permission.ManageMessages)) {
-    text("echo") {
+    slash("echo") {
         description = "Echo a message to a channel."
         execute(ChannelArg.optional { it.channel as TextChannel }, EveryArg) {
             val (target, message) = args

@@ -22,7 +22,6 @@ data class Configuration(val guildConfigurations: MutableMap<Snowflake, GuildCon
 data class GuildConfiguration(var muteRole: Snowflake,
                               var softMuteRole: Snowflake,
                               var loggingChannel: Snowflake,
-                              var cooldown: Int = 5,
                               val grantableRoles: MutableSet<Snowflake> = mutableSetOf(),
                               val assignedColorRoles: MutableMap<Snowflake, MutableList<Snowflake>> = mutableMapOf(),
                               val mutedUsers: MutableList<MuteEntry> = mutableListOf())

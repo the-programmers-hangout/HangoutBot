@@ -59,20 +59,20 @@ fun reminderCommands(reminderService: ReminderService) = commands("Reminders") {
     text("remindme") {
         description = "A command that'll remind you about something after the specified time."
         execute(TimeArg, EveryArg) {
-            val (timeInSeconds, sentence) = args
+            val (seconds, reminder) = args
 
-            if (timeInSeconds < 5) {
+            if (seconds < 5) {
                 respond("You cannot set a reminder for less than 5 seconds.")
                 return@execute
             }
-            if (timeInSeconds > TimeUnit.DAYS.toSeconds(90)) {
+            if (seconds > TimeUnit.DAYS.toSeconds(90)) {
                 respond("You cannot set a reminder more than 90 days into the future.")
                 return@execute
             }
 
-            val millis = timeInSeconds.roundToLong() * 1000
+            val millis = seconds.roundToLong() * 1000
 
-            reminderService.addReminder(author, millis, sentence).fold<Unit>(
+            reminderService.addReminder(author, millis, reminder).fold<Unit>(
                 success = { msg -> respond(msg) },
                 failure = { ex -> respond(ex.message!!) }
             )
