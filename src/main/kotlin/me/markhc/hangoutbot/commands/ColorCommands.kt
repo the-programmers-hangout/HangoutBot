@@ -2,68 +2,75 @@ package me.markhc.hangoutbot.commands
 
 import dev.kord.common.entity.Permission
 import dev.kord.common.entity.Permissions
-import dev.kord.core.behavior.edit
-import me.jakejmattson.discordkt.arguments.EveryArg
-import me.jakejmattson.discordkt.arguments.HexColorArg
-import me.jakejmattson.discordkt.commands.commands
+import me.jakejmattson.discordkt.arguments.*
+import me.jakejmattson.discordkt.commands.subcommand
+import me.jakejmattson.discordkt.extensions.stringify
 import me.markhc.hangoutbot.dataclasses.Configuration
 import me.markhc.hangoutbot.services.ColorService
 import java.awt.Color
 
-fun colorCommands(configuration: Configuration, colorService: ColorService) = commands("Colors", Permissions(Permission.ManageMessages)) {
-    slash("setcolor") {
-        description = "Creates a role with the given name and color and assigns it to the user."
-        execute(HexColorArg("HexColor"), EveryArg("RoleName")) {
-            val (color, roleName) = args
-            val member = author.asMember(guild.id)
-            val message = channel.createMessage("Working...")
+fun colorCommands(configuration: Configuration, colorService: ColorService) = subcommand("colors", Permissions(Permission.ManageMessages)) {
+    sub("create") {
+        description = "Create a color role."
+        execute(AnyArg("Name"), HexColorArg) {
+            val (name, color) = args
+            val member = getMember()!!
+            val existingRole = colorService.findRole(name, color, guild)
 
-            runCatching {
-                colorService.setMemberColor(member, roleName, color)
-            }.onSuccess {
-                message.edit {
-                    content = "Successfully assigned color $roleName"
-                }
-            }.onFailure {
-                message.edit {
-                    content = it.message!!
-                }
+            if (existingRole != null) {
+                respond("Similar role already exists: ${existingRole.name} - ${stringify(existingRole.color)}")
+            } else {
+                val newRole = colorService.createRole(name, color, guild)
+                colorService.setMemberColor(member, newRole)
+                respondPublic("Role created: ${newRole.mention}")
             }
         }
     }
 
-    slash("clearcolor") {
-        description = "Clears the current color role."
+    sub("apply") {
+        description = "Apply a color role."
+        execute(RoleArg) {
+            val role = args.first
+            val member = author.asMember(guild.id)
+            val wasApplied = colorService.setMemberColor(member, role)
+
+            if (wasApplied)
+                respondPublic("Color applied: ${role.name}")
+            else
+                respond("Not a valid color role.")
+        }
+    }
+
+    sub("clear") {
+        description = "Clears your color role."
         execute {
             val member = author.asMember(guild.id)
-            colorService.clearMemberColor(member)
+            colorService.removeColorRole(member)
             respond("Cleared user color")
         }
     }
 
-    slash("listcolors") {
-        description = "Creates a role with the given name and color and assigns it to the user."
+    sub("list") {
+        description = "List all color roles."
         execute {
-            val colorRoles = configuration[guild].assignedColorRoles
+            val colorRoles = configuration[guild].assignedColorRoles.keys
 
             if (colorRoles.isEmpty()) {
-                respond("No colors set. For more information, see `/help setcolor`")
+                respond("No color roles")
                 return@execute
             }
 
             val colorInfo = colorRoles.map {
-                it.key.let { guild.getRole(it) }
+                it.let { guild.getRole(it) }
             }.sortedBy {
                 val rgb = it.color
                 val hsv = Color.RGBtoHSB(rgb.red, rgb.green, rgb.blue, null)
-
                 hsv[0]
             }.joinToString("\n") { it.mention }
 
             respond {
                 title = "Currently used colors"
-                description = "Run `setcolor <name>` to use one of the colors here.\n" +
-                    "Run `setcolor <hexcolor> <name>` to create a new color."
+                description = "Run `/create color <name> <color>` to create some"
                 color = discord.configuration.theme
 
                 field {
