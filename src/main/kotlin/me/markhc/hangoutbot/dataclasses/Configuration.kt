@@ -9,6 +9,7 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import me.jakejmattson.discordkt.Discord
 import me.jakejmattson.discordkt.dsl.Data
+import me.jakejmattson.discordkt.dsl.edit
 import me.jakejmattson.discordkt.extensions.sendPrivateMessage
 
 @Serializable
@@ -46,8 +47,7 @@ data class Reminder(val user: Snowflake, val endTime: Long, val message: String)
                 color = discord.configuration.theme
             }
 
-            configuration.reminders.remove(this@Reminder)
-            configuration.save()
+            configuration.edit { reminders.remove(this@Reminder) }
         }
     }
 }

@@ -2,6 +2,7 @@ package me.markhc.hangoutbot.services
 
 import dev.kord.common.entity.Permission
 import dev.kord.common.kColor
+import dev.kord.core.behavior.GuildBehavior
 import dev.kord.core.behavior.createRole
 import dev.kord.core.entity.Guild
 import dev.kord.core.entity.Member
@@ -9,9 +10,12 @@ import dev.kord.core.entity.Role
 import dev.kord.rest.request.RestRequestException
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.runBlocking
 import me.jakejmattson.discordkt.annotations.Service
+import me.jakejmattson.discordkt.dsl.edit
 import me.jakejmattson.discordkt.extensions.stringify
 import me.markhc.hangoutbot.dataclasses.Configuration
+import me.markhc.hangoutbot.dataclasses.GuildConfiguration
 import java.awt.Color
 
 @Service
@@ -22,6 +26,7 @@ class ColorService(private val configuration: Configuration) {
 
         removeColorRole(member)
         assignColorRole(member, role)
+        deleteUnusedRoles(configuration[member.guild], member.guild)
         return true
     }
 
@@ -31,14 +36,31 @@ class ColorService(private val configuration: Configuration) {
             .find { it.name.equals(name, true) || it.color == color.kColor }
 
     suspend fun removeColorRole(member: Member) {
-        configuration[member.guild].assignedColorRoles.entries
+        val guildConfiguration = configuration[member.guild]
+        guildConfiguration.assignedColorRoles.entries
             .filter { it.value.contains(member.id) }
             .map { it.key }
             .forEach { role ->
-                member.roles.toList().find { it.id == role }?.let {
-                    member.removeRole(it.id)
+                member.roles.toList().find { it.id == role }?.let { roleToRemove ->
+                    member.removeRole(roleToRemove.id)
+                    configuration.edit {
+                        guildConfiguration.assignedColorRoles[role]?.remove(member.id)
+                    }
                 }
             }
+    }
+
+    suspend fun deleteUnusedRoles(config: GuildConfiguration, guild: GuildBehavior) {
+        config.assignedColorRoles.entries
+            .filter { it.value.isEmpty() }
+            .forEach {
+                it.key.let { guild.getRoleOrNull(it) }?.delete()
+            }
+        configuration.edit {
+            config.assignedColorRoles.entries.removeIf {
+                it.value.isEmpty()
+            }
+        }
     }
 
     suspend fun createRole(name: String, color: Color, guild: Guild): Role {

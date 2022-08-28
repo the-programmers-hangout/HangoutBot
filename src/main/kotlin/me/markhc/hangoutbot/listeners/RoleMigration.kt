@@ -20,33 +20,4 @@ fun roleMigration(configuration: Configuration) = listeners {
             config.muteRole = Snowflake(0)
         }
     }
-
-    on<MemberUpdateEvent> {
-        if (old?.roleIds == member.roleIds)
-            return@on
-
-        val guild = guild.asGuild()
-        val config = configuration[guild]
-        val colors = config.assignedColorRoles.map { it.key }.toSet()
-        val roles = member.roles.toList().map { it.id }.intersect(colors)
-
-        if (roles.isNotEmpty()) {
-            roles.forEach { roleId ->
-                // Remove member from the users of this color
-                config.assignedColorRoles[roleId]?.remove(member.id)
-            }
-
-            // Find any roles without users and delete them
-            config.assignedColorRoles.entries
-                .filter { it.value.isEmpty() }
-                .forEach {
-                    it.key.let { guild.getRoleOrNull(it) }?.delete()
-                }
-
-            // and then remove them from the list
-            config.assignedColorRoles.entries.removeIf {
-                it.value.isEmpty()
-            }
-        }
-    }
 }

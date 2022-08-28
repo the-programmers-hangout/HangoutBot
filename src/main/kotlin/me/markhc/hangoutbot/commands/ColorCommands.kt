@@ -2,6 +2,7 @@ package me.markhc.hangoutbot.commands
 
 import dev.kord.common.entity.Permission
 import dev.kord.common.entity.Permissions
+import dev.kord.core.entity.interaction.GuildAutoCompleteInteraction
 import me.jakejmattson.discordkt.arguments.*
 import me.jakejmattson.discordkt.commands.subcommand
 import me.jakejmattson.discordkt.extensions.stringify
@@ -27,7 +28,7 @@ fun colorCommands(configuration: Configuration, colorService: ColorService) = su
     }
 
     sub("apply", "Apply a color role.") {
-        execute(RoleArg) {
+        execute(RoleArg()) {
             val role = args.first
             val member = author.asMember(guild.id)
             val wasApplied = colorService.setMemberColor(member, role)
@@ -43,6 +44,7 @@ fun colorCommands(configuration: Configuration, colorService: ColorService) = su
         execute {
             val member = author.asMember(guild.id)
             colorService.removeColorRole(member)
+            colorService.deleteUnusedRoles(configuration[guild], guild)
             respond("Cleared user color")
         }
     }
