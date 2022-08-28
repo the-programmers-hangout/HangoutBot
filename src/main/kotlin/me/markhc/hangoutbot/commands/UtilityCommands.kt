@@ -13,8 +13,7 @@ import java.util.concurrent.TimeUnit
 import kotlin.math.roundToLong
 
 fun produceUtilityCommands(muteService: MuteService, configuration: Configuration) = commands("Selfmute") {
-    slash("selfmute") {
-        description = "Mute yourself for the given amount of time."
+    slash("selfmute", "Mute yourself for the given amount of time.") {
         execute(TimeArg.optional(3600.0)) {
             val (timeInSeconds) = args
 
@@ -34,8 +33,7 @@ fun produceUtilityCommands(muteService: MuteService, configuration: Configuratio
         }
     }
 
-    slash("productivemute") {
-        description = "Hide social channels for a given amount of time."
+    slash("productivemute", "Hide social channels for a given amount of time.") {
         execute(TimeArg.optional(3600.0)) {
             val (timeInSeconds) = args
 
@@ -55,8 +53,7 @@ fun produceUtilityCommands(muteService: MuteService, configuration: Configuratio
         }
     }
 
-    slash("remindme") {
-        description = "A command that'll remind you about something after the specified time."
+    slash("remindme", "A command that'll remind you about something after the specified time.") {
         execute(TimeArg, EveryArg) {
             val (seconds, message) = args
 

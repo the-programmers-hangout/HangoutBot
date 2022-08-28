@@ -8,8 +8,7 @@ import java.net.HttpURLConnection
 import java.net.URL
 
 fun produceFunCommands() = commands("Fun") {
-    slash("flip") {
-        description = "Choose one of the given choices."
+    slash("flip", "Choose one of the given choices.") {
         execute(SplitterArg(";", "Choices")) {
             val response = listOf(
                 "Hmm, I'd say %choice%.",
@@ -24,8 +23,7 @@ fun produceFunCommands() = commands("Fun") {
         }
     }
 
-    slash("dadjoke") {
-        description = "Returns a random dad joke."
+    slash("dadjoke", "Returns a random dad joke.") {
         execute {
             val connection = URL("https://icanhazdadjoke.com/").openConnection() as HttpURLConnection
             connection.setRequestProperty("User-Agent", "HangoutBot (https://github.com/the-programmers-hangout/HangoutBot/)")

@@ -10,8 +10,7 @@ import me.markhc.hangoutbot.services.ColorService
 import java.awt.Color
 
 fun colorCommands(configuration: Configuration, colorService: ColorService) = subcommand("colors", Permissions(Permission.ManageMessages)) {
-    sub("create") {
-        description = "Create a color role."
+    sub("create", "Create a color role.") {
         execute(AnyArg("Name"), HexColorArg) {
             val (name, color) = args
             val member = getMember()!!
@@ -27,8 +26,7 @@ fun colorCommands(configuration: Configuration, colorService: ColorService) = su
         }
     }
 
-    sub("apply") {
-        description = "Apply a color role."
+    sub("apply", "Apply a color role.") {
         execute(RoleArg) {
             val role = args.first
             val member = author.asMember(guild.id)
@@ -41,8 +39,7 @@ fun colorCommands(configuration: Configuration, colorService: ColorService) = su
         }
     }
 
-    sub("clear") {
-        description = "Clears your color role."
+    sub("clear", "Clears your color role.") {
         execute {
             val member = author.asMember(guild.id)
             colorService.removeColorRole(member)
@@ -50,8 +47,7 @@ fun colorCommands(configuration: Configuration, colorService: ColorService) = su
         }
     }
 
-    sub("list") {
-        description = "List all color roles."
+    sub("list", "List all color roles.") {
         execute {
             val colorRoles = configuration[guild].assignedColorRoles.keys
 

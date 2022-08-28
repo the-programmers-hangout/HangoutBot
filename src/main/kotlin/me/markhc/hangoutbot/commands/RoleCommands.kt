@@ -9,8 +9,7 @@ import me.jakejmattson.discordkt.commands.subcommand
 import me.markhc.hangoutbot.dataclasses.Configuration
 
 fun grantableRoles(configuration: Configuration) = subcommand("GrantableRoles", Permissions(Permission.ManageGuild)) {
-    sub("Add") {
-        description = "Add a role to the list of grantable roles"
+    sub("Add", "Add a role to the list of grantable roles") {
         execute(RoleArg) {
             val role = args.first
             val grantableRoles = configuration[guild].grantableRoles
@@ -24,8 +23,7 @@ fun grantableRoles(configuration: Configuration) = subcommand("GrantableRoles", 
         }
     }
 
-    sub("Remove") {
-        description = "Remove a role from the list of grantable roles"
+    sub("Remove", "Remove a role from the list of grantable roles") {
         execute(RoleArg) {
             val role = args.first
             val grantableRoles = configuration[guild].grantableRoles
@@ -40,8 +38,7 @@ fun grantableRoles(configuration: Configuration) = subcommand("GrantableRoles", 
         }
     }
 
-    sub("List") {
-        description = "List all grantable roles"
+    sub("List", "List all grantable roles") {
         execute {
             val grantableRoles = configuration[guild].grantableRoles
 
@@ -65,8 +62,7 @@ fun grantableRoles(configuration: Configuration) = subcommand("GrantableRoles", 
 }
 
 fun roleCommands(configuration: Configuration) = commands("Roles", Permissions(Permission.ManageMessages)) {
-    slash("grant") {
-        description = "Grants a role to a lower ranked member or yourself"
+    slash("grant", "Grants a role to a lower ranked member or yourself") {
         execute(MemberArg("Member"), RoleArg("GrantableRole")) {
             val (member, role) = args
             val roles = configuration[guild].grantableRoles
@@ -80,8 +76,7 @@ fun roleCommands(configuration: Configuration) = commands("Roles", Permissions(P
         }
     }
 
-    slash("revoke") {
-        description = "Revokes a role from a lower ranked member or yourself"
+    slash("revoke", "Revokes a role from a lower ranked member or yourself") {
         execute(MemberArg("Member"), RoleArg("GrantableRole")) {
             val (member, role) = args
             val isGrantable = role.id in configuration[guild].grantableRoles
