@@ -90,8 +90,7 @@ class ColorService(private val configuration: Configuration) {
 
     private suspend fun assignColorRole(member: Member, role: Role) {
         member.addRole(role.id)
-        configuration[member.guild].assignedColorRoles.getOrPut(role.id) { mutableListOf() }.add(member.id)
-        configuration.save()
+        configuration.edit { this[member.guild].assignedColorRoles.getOrPut(role.id) { mutableListOf() }.add(member.id) }
     }
 }
 

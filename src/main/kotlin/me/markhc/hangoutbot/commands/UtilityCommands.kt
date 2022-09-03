@@ -3,6 +3,7 @@ package me.markhc.hangoutbot.commands
 import me.jakejmattson.discordkt.arguments.EveryArg
 import me.jakejmattson.discordkt.arguments.TimeArg
 import me.jakejmattson.discordkt.commands.commands
+import me.jakejmattson.discordkt.dsl.edit
 import me.jakejmattson.discordkt.extensions.TimeStamp
 import me.jakejmattson.discordkt.extensions.TimeStyle
 import me.markhc.hangoutbot.dataclasses.Configuration
@@ -70,8 +71,7 @@ fun produceUtilityCommands(muteService: MuteService, configuration: Configuratio
             val until = Instant.now().plusMillis(ms)
             val reminder = Reminder(author.id, until.toEpochMilli(), message)
 
-            configuration.reminders.add(reminder)
-            configuration.save()
+            configuration.edit { reminders.add(reminder) }
             reminder.launch(discord, configuration)
 
             respond("Got it, I'll remind you ${TimeStamp.at(until, TimeStyle.RELATIVE)}")

@@ -5,6 +5,7 @@ import dev.kord.common.entity.Permissions
 import me.jakejmattson.discordkt.arguments.ChannelArg
 import me.jakejmattson.discordkt.arguments.RoleArg
 import me.jakejmattson.discordkt.commands.commands
+import me.jakejmattson.discordkt.dsl.edit
 import me.markhc.hangoutbot.dataclasses.Configuration
 import me.markhc.hangoutbot.dataclasses.GuildConfiguration
 
@@ -15,8 +16,7 @@ fun botConfigCommands(configuration: Configuration) = commands("Configuration", 
             ChannelArg("Logging", "The channel where logging messages will be sent")) {
 
             val (muteRole, softMuteRole, loggingChannel) = args
-            configuration[guild.id] = GuildConfiguration(muteRole.id, softMuteRole.id, loggingChannel.id)
-            configuration.save()
+            configuration.edit { this[guild.id] = GuildConfiguration(muteRole.id, softMuteRole.id, loggingChannel.id) }
             respond("${guild.name} configured!")
         }
     }
