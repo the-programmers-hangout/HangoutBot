@@ -64,20 +64,22 @@ class MuteService(private val configuration: Configuration, private val discord:
         val muteRole = guild.getRoleOrNull(config.muteRole)
         val softMuteRole = guild.getRoleOrNull(config.softMuteRole)
 
+        val now = System.currentTimeMillis()
+
+        config.mutedUsers.removeIf { it.endTime < now }
+
         config.mutedUsers.forEach { entry ->
-            val millis = 0L //parseMillis(entry.timeUntil) - System.currentTimeMillis()
+            val timeRemaining = entry.endTime - System.currentTimeMillis()
             val member = entry.user.let { guild.getMemberOrNull(it) }
 
             if (member != null) {
                 if (entry.isSoft && softMuteRole != null) {
-                    applyMute(member, softMuteRole, millis)
+                    applyMute(member, softMuteRole, timeRemaining)
                 } else if (muteRole != null) {
-                    applyMute(member, muteRole, millis)
+                    applyMute(member, muteRole, timeRemaining)
                 }
             }
         }
-
-        TODO("Handle time parsing")
     }
 
     private suspend fun applyMute(member: Member, role: Role, ms: Long) {
