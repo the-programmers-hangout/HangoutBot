@@ -1,28 +1,53 @@
 package me.markhc.hangoutbot.dataclasses
 
-import me.jakejmattson.discordkt.api.dsl.Data
-import me.markhc.hangoutbot.services.PermissionLevel
+import dev.kord.common.entity.Snowflake
+import dev.kord.core.behavior.GuildBehavior
+import dev.kord.core.entity.Guild
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.serialization.Serializable
+import me.jakejmattson.discordkt.Discord
+import me.jakejmattson.discordkt.dsl.Data
+import me.jakejmattson.discordkt.dsl.edit
+import me.jakejmattson.discordkt.extensions.sendPrivateMessage
 
-data class Configuration(val guildConfigurations: MutableList<GuildConfiguration> = mutableListOf(),
-                         var totalCommandsExecuted: Int = 0,
-                         val commandPermission: MutableMap<String, PermissionLevel> = mutableMapOf(),
-                         val reminders: MutableList<Reminder> = mutableListOf()) : Data("data/guilds.json", killIfGenerated = false)
+@Serializable
+data class Configuration(val guildConfigurations: MutableMap<Snowflake, GuildConfiguration> = mutableMapOf(),
+                         val reminders: MutableList<Reminder> = mutableListOf()) : Data() {
+    operator fun get(guild: GuildBehavior) = guildConfigurations[guild.id]!!
 
-data class GuildConfiguration(val guildId: String = "",
-                              var prefix: String = "++",
-                              var cooldown: Int = 5,
-                              var welcomeEmbeds: Boolean = false,
-                              var welcomeChannel: String = "",
-                              var botChannel: String = "",
-                              var loggingChannel: String = "",
-                              var muteRole: String = "",
-                              var softMuteRole: String = "",
-                              var totalCommandsExecuted: Int = 0,
-                              val grantableRoles: MutableMap<String, MutableList<String>> = mutableMapOf(),
-                              val rolePermissions: MutableMap<String, PermissionLevel> = mutableMapOf(),
-                              val commandPermission: MutableMap<String, PermissionLevel> = mutableMapOf(),
-                              val assignedColorRoles: MutableMap<String, MutableList<String>> = mutableMapOf(),
+    operator fun set(id: Snowflake, value: GuildConfiguration) {
+        guildConfigurations[id] = value
+    }
+
+    fun hasGuildConfig(guild: Guild) = guildConfigurations[guild.id] != null
+}
+
+@Serializable
+data class GuildConfiguration(var muteRole: Snowflake,
+                              var softMuteRole: Snowflake,
+                              var loggingChannel: Snowflake,
+                              val grantableRoles: MutableSet<Snowflake> = mutableSetOf(),
+                              val assignedColorRoles: MutableMap<Snowflake, MutableList<Snowflake>> = mutableMapOf(),
                               val mutedUsers: MutableList<MuteEntry> = mutableListOf())
 
-data class MuteEntry(val user: String = "", val timeUntil: String = "", val isSoft: Boolean = false)
-data class Reminder(val user: String = "", val timeUntil: String = "", val what: String = "")
+@Serializable
+data class MuteEntry(val user: Snowflake, val endTime: Long, val isSoft: Boolean = false)
+
+@Serializable
+data class Reminder(val user: Snowflake, val endTime: Long, val message: String) {
+    fun launch(discord: Discord, configuration: Configuration) {
+        GlobalScope.launch {
+            delay(endTime - System.currentTimeMillis())
+
+            discord.kord.getUser(user)?.sendPrivateMessage {
+                title = "Reminder"
+                description = message
+                color = discord.configuration.theme
+            }
+
+            configuration.edit { reminders.remove(this@Reminder) }
+        }
+    }
+}
