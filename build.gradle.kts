@@ -1,5 +1,5 @@
 group = "me.markhc"
-version = "4.0.0"
+version = "4.0.0-RC1"
 description = "A misc feature bot for TheProgrammersHangout"
 
 plugins {
