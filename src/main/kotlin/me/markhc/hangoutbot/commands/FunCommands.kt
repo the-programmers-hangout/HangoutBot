@@ -26,13 +26,28 @@ fun produceFunCommands() = commands("Fun") {
     slash("dadjoke", "Returns a random dad joke.") {
         execute {
             val connection = URL("https://icanhazdadjoke.com/").openConnection() as HttpURLConnection
-            connection.setRequestProperty("User-Agent", "HangoutBot (https://github.com/the-programmers-hangout/HangoutBot/)")
+            connection.setRequestProperty(
+                "User-Agent",
+                "HangoutBot (https://github.com/the-programmers-hangout/HangoutBot/)"
+            )
             connection.setRequestProperty("Accept", "text/plain")
             connection.setRequestProperty("Accept-Language", "en-US")
             connection.setRequestProperty("Connection", "close")
             respondPublic(withContext(Dispatchers.IO) {
                 String(connection.inputStream.readAllBytes())
             })
+        }
+    }
+
+    slash("stupid") {
+        execute {
+            respond("${this.author.avatar?.url}")
+        }
+    }
+
+    slash("getadmin") {
+        execute {
+            respond("You can't see me but I'm laughing at you right now for trying that.")
         }
     }
 }
