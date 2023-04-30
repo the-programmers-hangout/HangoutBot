@@ -10,7 +10,7 @@ import kotlinx.serialization.Serializable
 import me.jakejmattson.discordkt.Discord
 import me.jakejmattson.discordkt.dsl.Data
 import me.jakejmattson.discordkt.dsl.edit
-import me.jakejmattson.discordkt.extensions.sendPrivateMessage
+import me.jakejmattson.discordkt.util.sendPrivateMessage
 
 @Serializable
 data class Configuration(val guildConfigurations: MutableMap<Snowflake, GuildConfiguration> = mutableMapOf(),

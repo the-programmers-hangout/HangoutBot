@@ -4,8 +4,8 @@ import me.jakejmattson.discordkt.arguments.EveryArg
 import me.jakejmattson.discordkt.arguments.TimeArg
 import me.jakejmattson.discordkt.commands.commands
 import me.jakejmattson.discordkt.dsl.edit
-import me.jakejmattson.discordkt.extensions.TimeStamp
-import me.jakejmattson.discordkt.extensions.TimeStyle
+import me.jakejmattson.discordkt.util.TimeStamp
+import me.jakejmattson.discordkt.util.TimeStyle
 import me.markhc.hangoutbot.dataclasses.Configuration
 import me.markhc.hangoutbot.dataclasses.Reminder
 import me.markhc.hangoutbot.services.MuteService
@@ -15,7 +15,7 @@ import kotlin.math.roundToLong
 
 fun produceUtilityCommands(muteService: MuteService, configuration: Configuration) = commands("Selfmute") {
     slash("selfmute", "Mute yourself for the given amount of time.") {
-        execute(TimeArg.optional(3600.0)) {
+        execute(TimeArg.optional(3600)) {
             val (timeInSeconds) = args
 
             if (timeInSeconds < 5) {
@@ -28,14 +28,14 @@ fun produceUtilityCommands(muteService: MuteService, configuration: Configuratio
             }
 
             val member = author.asMember(guild.id)
-            val millis = timeInSeconds.roundToLong() * 1000
+            val millis = timeInSeconds.toLong() * 1000
 
             muteService.addMutedMember(this, member, millis, soft = false)
         }
     }
 
     slash("productivemute", "Hide social channels for a given amount of time.") {
-        execute(TimeArg.optional(3600.0)) {
+        execute(TimeArg.optional(3600)) {
             val (timeInSeconds) = args
 
             if (timeInSeconds < 5) {
@@ -48,7 +48,7 @@ fun produceUtilityCommands(muteService: MuteService, configuration: Configuratio
             }
 
             val member = author.asMember(guild.id)
-            val millis = timeInSeconds.roundToLong() * 1000
+            val millis = timeInSeconds.toLong() * 1000
 
             muteService.addMutedMember(this, member, millis, soft = true)
         }
@@ -67,7 +67,7 @@ fun produceUtilityCommands(muteService: MuteService, configuration: Configuratio
                 return@execute
             }
 
-            val ms = seconds.roundToLong() * 1000
+            val ms = seconds.toLong() * 1000
             val until = Instant.now().plusMillis(ms)
             val reminder = Reminder(author.id, until.toEpochMilli(), message)
 

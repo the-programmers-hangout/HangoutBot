@@ -10,7 +10,7 @@ import kotlinx.datetime.toJavaInstant
 import me.jakejmattson.discordkt.arguments.RoleArg
 import me.jakejmattson.discordkt.arguments.UserArg
 import me.jakejmattson.discordkt.commands.subcommand
-import me.jakejmattson.discordkt.extensions.*
+import me.jakejmattson.discordkt.util.*
 
 fun produceInformationCommands() = subcommand("details") {
     sub("server", "Display a message giving basic server information.") {
@@ -23,7 +23,7 @@ fun produceInformationCommands() = subcommand("details") {
 
                 author(guild.getOwner())
                 footer("Guild creation")
-                thumbnail(guild.getIconUrl(Image.Format.PNG) ?: "")
+                thumbnail(guild.icon?.cdnUrl?.toUrl { format = Image.Format.PNG } ?: "")
 
                 field {
                     name = "Count"

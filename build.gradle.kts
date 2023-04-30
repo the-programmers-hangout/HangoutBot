@@ -3,22 +3,31 @@ version = "4.0.0-RC1"
 description = "A misc feature bot for TheProgrammersHangout"
 
 plugins {
-    kotlin("jvm") version "1.7.10"
-    kotlin("plugin.serialization") version "1.7.10"
+    kotlin("jvm") version "1.8.21"
+    kotlin("plugin.serialization") version "1.8.21"
     id("com.github.johnrengelman.shadow") version "7.1.2"
 }
 
 repositories {
     mavenCentral()
+    mavenLocal()
+    maven("https://oss.sonatype.org/content/repositories/snapshots/")
 }
 
 dependencies {
-    implementation("me.jakejmattson:DiscordKt:0.23.4")
+    implementation("me.jakejmattson:DiscordKt:0.24.0-SNAPSHOT")
 }
 
 tasks {
+    val jvmTarget = "11"
+
+    compileJava {
+        sourceCompatibility = jvmTarget
+        targetCompatibility = jvmTarget
+    }
+
     compileKotlin {
-        kotlinOptions.jvmTarget = "1.8"
+        kotlinOptions.jvmTarget = jvmTarget
         dependsOn("writeProperties")
     }
 

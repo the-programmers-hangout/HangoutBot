@@ -10,7 +10,7 @@ import kotlinx.coroutines.launch
 import me.jakejmattson.discordkt.Discord
 import me.jakejmattson.discordkt.annotations.Service
 import me.jakejmattson.discordkt.commands.GuildSlashCommandEvent
-import me.jakejmattson.discordkt.extensions.*
+import me.jakejmattson.discordkt.util.*
 import me.markhc.hangoutbot.dataclasses.Configuration
 import me.markhc.hangoutbot.dataclasses.GuildConfiguration
 import me.markhc.hangoutbot.dataclasses.MuteEntry
@@ -41,7 +41,7 @@ class MuteService(private val configuration: Configuration, private val discord:
         member.sendPrivateMessage {
             author {
                 name = guild.name
-                icon = guild.getIconUrl(Image.Format.PNG)
+                icon = guild.icon?.cdnUrl?.toUrl { format = Image.Format.PNG }
             }
             title = "Self-Muted"
             description = "Your mute will expire on\n${TimeStamp.at(end)} (${TimeStamp.at(end, TimeStyle.RELATIVE)})"
@@ -60,7 +60,7 @@ class MuteService(private val configuration: Configuration, private val discord:
     private suspend fun startMuteTimers(guildId: Snowflake, config: GuildConfiguration) {
         if (config.mutedUsers.isEmpty()) return
 
-        val guild = discord.kord.getGuild(guildId) ?: return
+        val guild = discord.kord.getGuildOrNull(guildId) ?: return
         val muteRole = guild.getRoleOrNull(config.muteRole)
         val softMuteRole = guild.getRoleOrNull(config.softMuteRole)
 
@@ -91,7 +91,7 @@ class MuteService(private val configuration: Configuration, private val discord:
         GlobalScope.launch {
             delay(millis)
 
-            val guild = discord.kord.getGuild(guildId) ?: return@launch
+            val guild = discord.kord.getGuildOrNull(guildId) ?: return@launch
             val member = guild.getMemberOrNull(memberId) ?: return@launch
             val role = guild.getRoleOrNull(roleId) ?: return@launch
 

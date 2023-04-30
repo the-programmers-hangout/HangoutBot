@@ -3,13 +3,11 @@ package me.markhc.hangoutbot.preconditions
 import dev.kord.core.behavior.getChannelOf
 import dev.kord.core.entity.channel.TextChannel
 import me.jakejmattson.discordkt.dsl.precondition
-import me.jakejmattson.discordkt.extensions.sanitiseMentions
+import me.jakejmattson.discordkt.util.sanitiseMentions
 import me.markhc.hangoutbot.dataclasses.Configuration
 
 fun commandLogger(configuration: Configuration) = precondition {
-    command ?: return@precondition
-
-    val args = rawInputs.commandArgs.joinToString()
+    val args = args.toList().joinToString()
 
     if (guild != null) {
         val guild = guild!!
@@ -22,7 +20,7 @@ fun commandLogger(configuration: Configuration) = precondition {
 
         val message =
             "${author.tag} :: ${author.id} :: " +
-                "Invoked `${command!!.names.first()}` in #${channel.name}." +
+                "Invoked `${command.name}` in #${channel.name}." +
                 if (args.isEmpty()) "" else " Args: ${args.sanitiseMentions(discord)}"
 
         guild.getChannelOf<TextChannel>(loggingChannel).createMessage(message)

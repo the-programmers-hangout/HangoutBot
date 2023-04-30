@@ -4,7 +4,7 @@ import dev.kord.common.entity.Permission
 import dev.kord.common.entity.Permissions
 import me.jakejmattson.discordkt.arguments.*
 import me.jakejmattson.discordkt.commands.subcommand
-import me.jakejmattson.discordkt.extensions.stringify
+import me.jakejmattson.discordkt.util.stringify
 import me.markhc.hangoutbot.dataclasses.Configuration
 import me.markhc.hangoutbot.services.ColorService
 import java.awt.Color

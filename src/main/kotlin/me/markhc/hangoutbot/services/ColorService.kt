@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
 import me.jakejmattson.discordkt.annotations.Service
 import me.jakejmattson.discordkt.dsl.edit
-import me.jakejmattson.discordkt.extensions.stringify
+import me.jakejmattson.discordkt.util.stringify
 import me.markhc.hangoutbot.dataclasses.Configuration
 import me.markhc.hangoutbot.dataclasses.GuildConfiguration
 import java.awt.Color
