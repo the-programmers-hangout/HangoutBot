@@ -27,6 +27,7 @@ suspend fun main(args: Array<String>) {
             mentionAsPrefix = true
             documentCommands = false
             commandReaction = null
+            recommendCommands = false
             theme = Color.CYAN
             intents = Intent.GuildMembers + Intent.Guilds + Intent.GuildMessages
             defaultPermissions = Permissions(Permission.UseApplicationCommands)
